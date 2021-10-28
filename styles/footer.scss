@@ -1,0 +1,98 @@
+@import "./variables.module.scss";
+
+.footer_container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #111F35;
+    background: $color_gradiant_main;
+    width: 100%;
+    h1{
+        font-size: $font_38_size;
+        font-family: $font_alatsi;
+        color: $color_bright_grey;
+        font-weight: 500;
+        margin-top: 3rem;
+    }
+    
+    .socials_container{
+        display: flex;
+        margin: 5rem 0rem 5rem 0rem;
+        a{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 32px;
+            width: 32px;
+            margin: 0 1rem;
+        }
+    }
+
+    
+    .legal_container{
+        margin-bottom: 0rem;
+        a{
+            font-size: $font_14_size;
+            font-family: $font_alatsi;
+            color: $color_dark_grey;
+            text-decoration: none;
+            margin: 0rem 1.2rem;
+            font-weight: 500;
+            &:hover{
+                
+                color: $color_bright_grey
+            }
+        }
+    }
+
+    p{
+        color: $color_bright_grey;
+        opacity: 0.3;
+        font-weight: 500;
+        margin: 2rem 0 1.4rem;
+        font-size: $font_14_size;
+        font-family: $font_alata;
+        text-align: center;
+    }
+}
+
+
+@media (max-width: 1024px) {
+    .footer_container{
+        h1{
+            font-size: $font_32_size;
+        }
+
+        .socials_container{
+            a{
+                height: 28px;
+                width: 28px;
+            }
+        }
+        .legal_container{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            a{
+                font-size: $font_12_size;
+                font-family: $font_alatsi;
+                color: $color_dark_grey;
+                text-decoration: none;
+                margin: 0rem 5%;
+                
+                font-weight: 500;
+                &:hover{
+                    
+                    color: $color_bright_grey
+                }
+            }
+        }
+    
+        p{
+            margin: 2rem 0 1.4rem;
+            padding: 0 1rem;
+            font-size: $font_12_size;
+        }
+    }
+}
