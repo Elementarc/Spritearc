@@ -12,7 +12,7 @@ import SearchIcon from "../public/icons/SearchIcon.svg"
 import SignInIcon from "../public/icons/SignInIcon.svg"
 //Context
 import { appContext } from "../components/layout";
-import { useRouter } from "next/router";
+import router, { useRouter } from "next/router";
 import { navigateTo } from "../lib/pixels";
 
 export default function Navigation(): ReactElement {
@@ -278,8 +278,7 @@ function Navigation_mobile(): ReactElement {
 function Nav_item(props: NavItem) {
     const App: AppContext = useContext(appContext)
     const nav = App.nav
-    const router = useRouter()
-    const location = router.asPath
+    const Router = useRouter()
     
     const navItemLabelAnimation = useAnimation()
     //Showing Labels of navItems when toggling navState
@@ -301,10 +300,12 @@ function Nav_item(props: NavItem) {
     useEffect(() => {
         const getNavItems = document.getElementsByClassName(`nav_li_item`) as HTMLCollection
         const navItems = Array.from(getNavItems)
-
+        
         function setNavItemTarget() {
+            const pathname = router.pathname.split("/")
             for(let i = 0; i < navItems.length; ++i) {
-                if(navItems[i].id === location) {
+                
+                if(navItems[i].id === `/${pathname[1]}`) {
                     navItems[i].classList.add(`nav_li_item_target`)
                     navItems[i].classList.remove(`nav_li_item_none_target`)
                 } else {
@@ -313,7 +314,7 @@ function Nav_item(props: NavItem) {
             }
         }
         setNavItemTarget()
-    }, [location]);
+    }, [Router.pathname]);
 
     const Icon = props.icon
     return(

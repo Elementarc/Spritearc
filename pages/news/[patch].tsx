@@ -6,7 +6,7 @@ export default function patch(props: any) {
   
   return (
     <>
-      <h1 style={{color: 'white'}}>{props.name}</h1>
+      <h1 style={{color: 'white'}}>Hello</h1>
     </>
   );
 }
