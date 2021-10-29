@@ -300,9 +300,9 @@ function Nav_item(props: NavItem) {
     useEffect(() => {
         const getNavItems = document.getElementsByClassName(`nav_li_item`) as HTMLCollection
         const navItems = Array.from(getNavItems)
-        
+
         function setNavItemTarget() {
-            const pathname = router.pathname.split("/")
+            const pathname = router.route.split("/")
             for(let i = 0; i < navItems.length; ++i) {
                 
                 if(navItems[i].id === `/${pathname[1]}`) {

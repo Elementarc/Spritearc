@@ -21,6 +21,8 @@ export default function Layout( { children }: any) {
     }
     //Checks if Application IsDesktop or not
     useEffect(() => {
+        //Disabling scrollRestoration
+        window.history.scrollRestoration ="manual"
         function checkApplicationWidth(){
             const deviceWidth = window.innerWidth
 
@@ -36,15 +38,15 @@ export default function Layout( { children }: any) {
             window.removeEventListener("resize", checkApplicationWidth)
         })
     }, []);
-
+    
     return (
         <appContext.Provider value={appContextObj}>
             <div className="app_container" id="app_container">
                 <Navigation/>
                 <div className="app_content_container" id="app_content_container">
                     <div onClick={() => {setNavState(false)}} className="app_content_blur" id="app_content_blur"/>
-                    <AnimatePresence exitBeforeEnter onExitComplete={() => window.scrollTo(0,0)}>
-                        <motion.main key={Router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.15}}} exit={{opacity: 0, transition: {duration: 0.15}}}>
+                    <AnimatePresence exitBeforeEnter onExitComplete={() => window.scrollTo(0, 0)}>
+                        <motion.main key={Router.asPath} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.15}}} exit={{opacity: 0, transition: {duration: 0.15}}}>
                             {children}
                         </motion.main>
                     </AnimatePresence>

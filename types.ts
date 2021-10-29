@@ -12,7 +12,6 @@ export interface NavContext {
 export interface AppContext {
     isDesktop: boolean,
     nav: NavContext
-    
 }
 
 export interface PatchInformation{
