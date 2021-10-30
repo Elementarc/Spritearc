@@ -7,14 +7,43 @@ import { getAllPatchInfos } from "../lib/patch"
 import { GetStaticProps } from 'next'
 import { FullPatchInformation } from '../types';
 import { navigateTo } from '../lib/pixels';
-
+import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+const maxPatchesPerPage = 3
 //News Component
 export default  function News(props: any): ReactElement {
-	
+	const Router = useRouter()
+	const page = Router.query.page as string
+	const pageInt = parseInt(page)
+	//Adding & Removing Load more button based on available pages
+	useEffect(() => {
+		const getButtonContainer = document.getElementById("news_load_more_button_container") as HTMLDivElement
+		
+
+		if(pageInt >= Math.ceil(props.patchInfos.length / maxPatchesPerPage)) {
+			getButtonContainer.style.display = "none"
+		} else {
+			getButtonContainer.style.display = ""
+		}
+	}, [Router.query.page])
+
+
+	//Frontend Pagination. Paginating through array
+	function load_more_content() {
+		if(page) {
+			const PageNum = parseInt(page)
+			if(PageNum < Math.ceil(props.patchInfos.length / maxPatchesPerPage)) {
+				Router.push(`?page=${PageNum + 1}`, undefined, {shallow: true, scroll:false})
+			} 
+		} else {
+			Router.push(`?page=2`, undefined, {shallow: true,  scroll:false})
+		}
+	}
+
 	return (
 		<>
 			<Head>
-				<title>Everything new about Pixels</title>
+				<title>Pixel News</title>
 				<meta name="description" content="You can see the patchnotes of our application"/>
 			</Head>
 
@@ -38,8 +67,13 @@ export default  function News(props: any): ReactElement {
 				</div>
 				
 				<div className="news_content_container">
-					<Patch_template_component patch={props.patchArray}/>
+					<Patch_template_component patchInfos={props.patchInfos}/>
+
+					<div className="news_load_more_button_container" id="news_load_more_button_container">
+						<button onClick={load_more_content}>Load More</button>
+					</div>
 				</div>
+				
 				<Footer />
 			</div>
 		</>
@@ -48,10 +82,45 @@ export default  function News(props: any): ReactElement {
 
 //Component to create a Patch template
 function Patch_template_component(props: any): ReactElement{
-	const patch: FullPatchInformation[] = props.patch
+	const patchInfos: FullPatchInformation[] = props.patchInfos
+	
+	const Router = useRouter()
+	const page = Router.query.page as string
 
-	function generate_patch_templates(): ReactElement[] {
-		const jsxArray = patch.map((patch: FullPatchInformation) => {
+	function generate_page_patch_templates(page: string): ReactElement[] | ReactElement {
+		const pageNum = parseInt(page)
+		//An Array of Patch Templates for each Array of PatchInfos
+		if(page) {
+			//An Array of Patch Templates for each Array of PatchInfos
+			const jsxArray = patchInfos.map((patch: FullPatchInformation) => {
+				return(
+					<div onClick={() => {navigateTo(`/news/${patch.id}`)}} key={`${patch.id}`} className="patch_template_container">
+						<div className="patch_preview_image_container">
+							<Image quality="100%" priority={true} layout="fill" src={`/images/${patch.image}`}  className="patch_preview_image"/>
+						</div>
+						<div className="patch_information">
+							<h2>{patch.update}</h2>
+							<h1>{patch.title}</h1>
+							<p>{patch.date}</p>
+						</div>
+					</div>
+				)
+			})
+
+			return(jsxArray.slice(maxPatchesPerPage, maxPatchesPerPage * pageNum))	
+		} else {
+			return(
+				<>
+				</>
+			)
+		}
+		
+
+		
+		
+	}
+	function generate_patch_templates() {
+		const jsxArray = patchInfos.map((patch: FullPatchInformation) => {
 			return(
 				<div onClick={() => {navigateTo(`/news/${patch.id}`)}} key={`${patch.id}`} className="patch_template_container">
 					<div className="patch_preview_image_container">
@@ -65,23 +134,23 @@ function Patch_template_component(props: any): ReactElement{
 				</div>
 			)
 		})
-		return(jsxArray)
+		return(jsxArray.slice(0, maxPatchesPerPage))
 	}
-
 	return(
 		<>
 			{generate_patch_templates()}
+			{generate_page_patch_templates(page)}
 		</>
 	)
 }
 
 
-export const getStaticProps: GetStaticProps = async () => {
-	const patchArray: FullPatchInformation[] = getAllPatchInfos()
-
+export const getServerSideProps: GetStaticProps = async () => {
+	const patchInfos: FullPatchInformation[] = getAllPatchInfos()
+	
 	return{
 		props: {
-			patchArray
+			patchInfos
 		}
 	}
 }

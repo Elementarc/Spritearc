@@ -34,7 +34,7 @@ export default function Navigation(): ReactElement {
 function Navigation_desktop(): ReactElement {
     const App: AppContext = useContext(appContext)
     const Nav: NavContext = App.nav
-    
+    const Router = useRouter()
     const navContainerAnimation = useAnimation()
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
@@ -94,10 +94,12 @@ function Navigation_desktop(): ReactElement {
         const getAppContentContainer = document.getElementById("app_content_container") as HTMLDivElement
         const getNavContentContainer = document.getElementById("nav_content") as HTMLDivElement
         
+        
         //Creating Observer for AppContentContainer and setting maxHeight for navContainer. maxHeight will always be appContent Height.
         const resizeObserver = new ResizeObserver((entries) => {
             for(const entry of entries){
                 if(entry.contentRect.height < 1080) {
+                   
                     getNavContentContainer.style.maxHeight = `1080px`
                 } else {
                     getNavContentContainer.style.maxHeight = `${entry.contentRect.height}px`
@@ -105,7 +107,6 @@ function Navigation_desktop(): ReactElement {
             }
             
         })
-
 
         if(App.isDesktop === true) {
             resizeObserver.observe(getAppContentContainer)
@@ -149,7 +150,7 @@ function Navigation_desktop(): ReactElement {
                     <div onClick={() => {Nav.setNavState(false)}}>
                         <ul>
                             <Nav_item label="Home" icon={HomeIcon} link="/"/>
-                            <Nav_item label="News" icon={NewsIcon} link="/news" />
+                            <Nav_item label="News" icon={NewsIcon} link="/news" query="?page=1"/>
                             <Nav_item label="Packs" icon={PacksIcon} link="/packs"/>
                             <Nav_item label="Search" icon={SearchIcon} link="/search"/>
                         </ul>
@@ -318,7 +319,7 @@ function Nav_item(props: NavItem) {
 
     const Icon = props.icon
     return(
-        <motion.li onClick={() => {navigateTo(props.link)}} className="nav_li_item" id={`${props.link.toLowerCase()}`} >
+        <motion.li onClick={() => {navigateTo(`${props.link}`)}} className="nav_li_item" id={`${props.link.toLowerCase()}`} >
             <div className="nav_item">
                 <Icon className="icon_svg"/>
                 <motion.p animate={navItemLabelAnimation} >{props.label}</motion.p>

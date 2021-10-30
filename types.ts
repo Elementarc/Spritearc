@@ -2,6 +2,7 @@ export interface NavItem{
     label: string
     icon: any
     link: string
+    query?: string
 }
 
 export interface NavContext {

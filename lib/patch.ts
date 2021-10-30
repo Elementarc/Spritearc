@@ -4,10 +4,10 @@ import matter from 'gray-matter';
 import { PatchInformation, FullPatchInformation} from "../types";
 const marked = require("marked")
 
-const patchDirectory = path.join(process.cwd(), 'public', "patches")
+const patchDirectory = path.join(process.cwd(), "patches")
 
 //Getting all patches from patches directory. Returning an Array of paths for those Patches
-function getPatches(): string[] {
+export function getPatches(): string[] {
     //Getting all Files in patches directory
     const files = fs.readdirSync(patchDirectory)
 

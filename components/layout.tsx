@@ -8,6 +8,7 @@ export const appContext: any = React.createContext(null)
 
 export default function Layout( { children }: any) {
     const Router = useRouter()
+    
     //Setting IsDesktop to tell other Components if App is mobileDevice or DesktopDevice
     const [isDesktop, setIsDesktop] = useState(true)
     const [NavState, setNavState] = useState(false);
@@ -21,8 +22,7 @@ export default function Layout( { children }: any) {
     }
     //Checks if Application IsDesktop or not
     useEffect(() => {
-        //Disabling scrollRestoration
-        window.history.scrollRestoration ="manual"
+        history.scrollRestoration = "manual"
         function checkApplicationWidth(){
             const deviceWidth = window.innerWidth
 
@@ -46,7 +46,7 @@ export default function Layout( { children }: any) {
                 <div className="app_content_container" id="app_content_container">
                     <div onClick={() => {setNavState(false)}} className="app_content_blur" id="app_content_blur"/>
                     <AnimatePresence exitBeforeEnter onExitComplete={() => window.scrollTo(0, 0)}>
-                        <motion.main key={Router.asPath} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.15}}} exit={{opacity: 0, transition: {duration: 0.15}}}>
+                        <motion.main key={Router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}}>
                             {children}
                         </motion.main>
                     </AnimatePresence>
