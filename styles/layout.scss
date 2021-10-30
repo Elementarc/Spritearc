@@ -8,10 +8,7 @@
     max-width: 2560px;
     
     .app_content_container{
-        display: grid;
         position: relative;
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr;
         align-self: start;
         width: 100%;
         min-height: 1080px;

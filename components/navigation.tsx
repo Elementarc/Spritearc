@@ -34,7 +34,6 @@ export default function Navigation(): ReactElement {
 function Navigation_desktop(): ReactElement {
     const App: AppContext = useContext(appContext)
     const Nav: NavContext = App.nav
-    const Router = useRouter()
     const navContainerAnimation = useAnimation()
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
@@ -102,6 +101,7 @@ function Navigation_desktop(): ReactElement {
                    
                     getNavContentContainer.style.maxHeight = `1080px`
                 } else {
+                    getAppContentContainer.style.height = ``
                     getNavContentContainer.style.maxHeight = `${entry.contentRect.height}px`
                 }
             }

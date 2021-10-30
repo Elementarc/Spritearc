@@ -78,8 +78,9 @@
 
     .news_content_container{
         position: relative;
-        padding: 10rem;
-        margin-bottom: 2rem;
+        padding: 6%;
+        margin-bottom: 5rem;
+        margin-top: 5rem;
         display: grid;
         column-gap: 5rem;
         row-gap: 5rem;
@@ -131,7 +132,7 @@
             position: absolute;
             display: flex;
             justify-content: center;
-            bottom: 4rem;
+            bottom: 1.5rem;
             width: 100%;
             button{
                 background-color: unset;

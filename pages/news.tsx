@@ -1,42 +1,54 @@
-import React, { ReactElement} from 'react';
+import React, { ReactElement, useState} from 'react';
 import Head from "next/head"
 import Image from "next/image"
 import Eclipse from "../public/images/eclipse.jpg"
 import Footer from '../components/footer';
-import { getAllPatchInfos } from "../lib/patch"
+
 import { GetStaticProps } from 'next'
-import { FullPatchInformation } from '../types';
+import { PatchInformation } from '../types';
 import { navigateTo } from '../lib/pixels';
-import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-const maxPatchesPerPage = 3
+
+
+const maxPatchesPerPage = 4
+
 //News Component
 export default  function News(props: any): ReactElement {
-	const Router = useRouter()
-	const page = Router.query.page as string
-	const pageInt = parseInt(page)
+	const patch = props.allPatchInfos
+	const [page, setPage] = useState(() => {
+		if(process.browser) {
+			if(sessionStorage.getItem("newsPage")) {
+				const page = sessionStorage.getItem("newsPage")
+				if(page) {
+					return parseInt(page)
+				} else {
+					return 1
+				}
+			} else {
+				return 1
+			}
+		} else {
+			return 1
+		}
+		
+	})
 	//Adding & Removing Load more button based on available pages
 	useEffect(() => {
+		sessionStorage.setItem("newsPage", `${page}`)
 		const getButtonContainer = document.getElementById("news_load_more_button_container") as HTMLDivElement
 		
-
-		if(pageInt >= Math.ceil(props.patchInfos.length / maxPatchesPerPage)) {
+		
+		if(page >= Math.ceil(patch.length / maxPatchesPerPage)) {
 			getButtonContainer.style.display = "none"
 		} else {
 			getButtonContainer.style.display = ""
 		}
-	}, [Router.query.page])
-
+	}, [page, patch.length])
 
 	//Frontend Pagination. Paginating through array
 	function load_more_content() {
-		if(page) {
-			const PageNum = parseInt(page)
-			if(PageNum < Math.ceil(props.patchInfos.length / maxPatchesPerPage)) {
-				Router.push(`?page=${PageNum + 1}`, undefined, {shallow: true, scroll:false})
-			} 
-		} else {
-			Router.push(`?page=2`, undefined, {shallow: true,  scroll:false})
+		if(page < Math.ceil(patch.length / maxPatchesPerPage)) {
+			setPage(page + 1)
 		}
 	}
 
@@ -67,7 +79,7 @@ export default  function News(props: any): ReactElement {
 				</div>
 				
 				<div className="news_content_container">
-					<Patch_template_component patchInfos={props.patchInfos}/>
+					<Patch_template_component patchInfos={patch} page={page} />
 
 					<div className="news_load_more_button_container" id="news_load_more_button_container">
 						<button onClick={load_more_content}>Load More</button>
@@ -82,45 +94,34 @@ export default  function News(props: any): ReactElement {
 
 //Component to create a Patch template
 function Patch_template_component(props: any): ReactElement{
-	const patchInfos: FullPatchInformation[] = props.patchInfos
-	
-	const Router = useRouter()
-	const page = Router.query.page as string
+	const patch: PatchInformation[] = props.patchInfos
+	const page = props.page as number
 
-	function generate_page_patch_templates(page: string): ReactElement[] | ReactElement {
-		const pageNum = parseInt(page)
+	//Generating Extra patches based of page State
+	function generate_page_patch_templates(page: number, patchInfos: PatchInformation[]): ReactElement[] | ReactElement {
 		//An Array of Patch Templates for each Array of PatchInfos
-		if(page) {
-			//An Array of Patch Templates for each Array of PatchInfos
-			const jsxArray = patchInfos.map((patch: FullPatchInformation) => {
-				return(
-					<div onClick={() => {navigateTo(`/news/${patch.id}`)}} key={`${patch.id}`} className="patch_template_container">
-						<div className="patch_preview_image_container">
-							<Image quality="100%" priority={true} layout="fill" src={`/images/${patch.image}`}  className="patch_preview_image"/>
-						</div>
-						<div className="patch_information">
-							<h2>{patch.update}</h2>
-							<h1>{patch.title}</h1>
-							<p>{patch.date}</p>
-						</div>
-					</div>
-				)
-			})
-
-			return(jsxArray.slice(maxPatchesPerPage, maxPatchesPerPage * pageNum))	
-		} else {
+		//An Array of Patch Templates for each Array of PatchInfos
+		const jsxArray = patchInfos.map((patch: PatchInformation) => {
 			return(
-				<>
-				</>
+				<div onClick={() => {navigateTo(`/news/${patch.id}`)}} key={`${patch.id}`} className="patch_template_container">
+					<div className="patch_preview_image_container">
+						<Image quality="100%" priority={true} layout="fill" src={`/images/${patch.image}`}  className="patch_preview_image"/>
+					</div>
+					<div className="patch_information">
+						<h2>{patch.update}</h2>
+						<h1>{patch.title}</h1>
+						<p>{patch.date}</p>
+					</div>
+				</div>
 			)
-		}
-		
+		})
 
-		
-		
+		return(jsxArray.slice(maxPatchesPerPage, maxPatchesPerPage * page))	
 	}
-	function generate_patch_templates() {
-		const jsxArray = patchInfos.map((patch: FullPatchInformation) => {
+
+	//Generating Default patches
+	function generate_patch_templates(patchInfos: PatchInformation[]): ReactElement[] {
+		const jsxArray = patchInfos.map((patch: PatchInformation) => {
 			return(
 				<div onClick={() => {navigateTo(`/news/${patch.id}`)}} key={`${patch.id}`} className="patch_template_container">
 					<div className="patch_preview_image_container">
@@ -136,21 +137,21 @@ function Patch_template_component(props: any): ReactElement{
 		})
 		return(jsxArray.slice(0, maxPatchesPerPage))
 	}
+
 	return(
 		<>
-			{generate_patch_templates()}
-			{generate_page_patch_templates(page)}
+			{generate_patch_templates(patch)}
+			{generate_page_patch_templates(page, patch)}
 		</>
 	)
 }
 
-
+import { getAllPatchInfos, getAllPatchIds, getPatchInfo} from "../lib/patch_lib"
 export const getServerSideProps: GetStaticProps = async () => {
-	const patchInfos: FullPatchInformation[] = getAllPatchInfos()
-	
+	const allPatchInfos = getAllPatchInfos(getAllPatchIds())
 	return{
 		props: {
-			patchInfos
+			allPatchInfos
 		}
 	}
 }
