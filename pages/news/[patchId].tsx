@@ -1,28 +1,27 @@
 import React from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { getPatchContent, getPatchInfo, getAllStaticPatchUrls, getAllPatchIds} from '../../lib/patch_lib';
 import Footer from '../../components/footer';
-import { PatchInformation } from '../../types';
+import { Patchnote } from '../../types';
 import Image from "next/image"
 
 //Frontend
 export default function Patch(props: any) {
-  	const patchInfos: PatchInformation = props.patchInfos
-
+  	const patchnote: Patchnote = JSON.parse(props.patchnote)
+	
 	return (
 		<div className="patch_container">
 
 			<div className="patch_preview_container">
-				<Image quality="100%" priority={true} src={`/images/${patchInfos.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="background_image"/>
+				<Image quality="100%" priority={true} src={`/images/${patchnote.info.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="background_image"/>
 				<div className="patch_preview_blur"></div>
 			</div>
 
 			<div className="patch_content_container">
 				<div className="patch_main_content_container">
 					<div className="patch_main_content">
-						<h2>{patchInfos.update}</h2>
-						<h1>{patchInfos.title}, {patchInfos.date}</h1>
-
+						<h2>{patchnote.info.update}</h2>
+						<h1>{patchnote.info.title}, {patchnote.info.date}</h1>
+						<p>{patchnote.content}</p>
 						
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat fermentum tellus tellus sed justo elementum nunc, vel. Lacus, ipsum eleifend eget erat faucibus lectus. Aenean ultricies ullamcorper convallis lorem. Aliquam elit sociis nec tellus nibh. Elit turpis tempus placerat mi. Mollis lectus sed risus nisi, et. Dignissim urna, vitae sed laoreet ut at neque netus.</p>
 						<br />
@@ -47,23 +46,26 @@ export default function Patch(props: any) {
 }
 
 
+import { patchHandler } from '../../lib/patch_lib';
 //Serverside
 export const getStaticProps: GetStaticProps = async (context) => {
-  const params: any = context.params
-  const patchInfos = getPatchInfo(params.patchId)
-  const patchContent = getPatchContent(params.patchId)
+	const params: any = context.params
+	const patchnote = JSON.stringify(patchHandler.getPatchnote(params.patchId))
+	
   
-  return {
-    props: {
-      patchContent,
-      patchInfos,
-    }
-  }
+	return {
+		props: {
+			patchnote
+		}
+	}
 }
-
 export const getStaticPaths: GetStaticPaths  = async ()  => {
+	const patchnoteList = patchHandler.getPatchnoteList
     //Prerendering Paths for Patches. Function returns all paths for possible patches.
-    const paths = getAllStaticPatchUrls(getAllPatchIds())
+	const paths: string [] = patchnoteList.map((patch) => {
+		
+		return `/news/${patch.id}`
+	})
     return{
         paths,
         fallback: false,

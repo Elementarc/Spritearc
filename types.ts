@@ -15,7 +15,12 @@ export interface AppContext {
     nav: NavContext
 }
 
-export interface PatchInformation {
+export interface Patchnote {
+    info: PatchnoteInfo
+    content: string
+}
+
+export interface PatchnoteInfo {
     id: string
     title: string,
     update: string,
