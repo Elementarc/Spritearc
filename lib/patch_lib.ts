@@ -22,6 +22,7 @@ class PatchHandler {
         }
     }
 
+    
     get getPatchnoteList() {
         return this.#patchnoteList
     }
@@ -85,5 +86,6 @@ class Patchnote {
     }
 }
 
-export const patchHandler = new PatchHandler()
+const patchHandler = new PatchHandler()
+export default patchHandler
 

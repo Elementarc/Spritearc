@@ -46,7 +46,7 @@ export default function Layout( { children }: any) {
                 <div className="app_content_container" id="app_content_container">
                     <div onClick={() => {setNavState(false)}} className="app_content_blur" id="app_content_blur"/>
                     <AnimatePresence exitBeforeEnter onExitComplete={() => window.scrollTo(0, 0)}>
-                        <motion.main key={Router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}}>
+                        <motion.main key={Router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
                             {children}
                         </motion.main>
                     </AnimatePresence>

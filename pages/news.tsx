@@ -110,7 +110,7 @@ function Patch_template_component(props: any): ReactElement{
 	)
 }
 
-import { patchHandler } from "../lib/patch_lib"
+import patchHandler from "../lib/patch_lib"
 export const getServerSideProps: GetStaticProps = async () => {
 	const patchnoteList = patchHandler.getPatchnoteList
 	return{

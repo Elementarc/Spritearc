@@ -46,7 +46,7 @@ export default function Patch(props: any) {
 }
 
 
-import { patchHandler } from '../../lib/patch_lib';
+import patchHandler from '../../lib/patch_lib';
 //Serverside
 export const getStaticProps: GetStaticProps = async (context) => {
 	const params: any = context.params
