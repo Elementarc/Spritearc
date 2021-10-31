@@ -2,7 +2,7 @@ import path from "path"
 import fs from "fs"
 import matter from 'gray-matter';
 import { PatchnoteInfo} from "../types";
-import { compareDesc, format } from "date-fns";
+import { compareDesc, compareAsc , format} from "date-fns";
 const marked = require("marked")
 
 //Directory of patches
@@ -10,45 +10,53 @@ const directoryOfPatches: string = path.join(process.cwd(), "patches")
 export class PatchHandler {
     #patchDirectory: string
     patchnoteList: Patchnote[]
-    
+
     //Can take directory to look for pathes. has a Default value.
     constructor(patchDirectory: string = directoryOfPatches) {
         this.#patchDirectory = patchDirectory
-        this.patchnoteList = createPatchnoteList(this.#patchDirectory)
-
-        //Returning an Array of Patchnotes
+        this.patchnoteList = createOrderedPatchnoteList(createPatchnoteList(this.#patchDirectory))
+        
+        //Creating a patchnote Instance for each file in patchDirectory that ends with .md
         function createPatchnoteList(patchDirectory: string): Patchnote[] {
             const patchnoteFiles = fs.readdirSync(patchDirectory)
             //Returning filtered patchnoteList
             let patchnoteList: Patchnote[] = []
 
-            //Checking if Files exist
+            //Checking if Files exist.
             if(patchnoteFiles.length > 0) {
-                //Rules for filename
+                //Rules for filename.
                 const patchnoteFilenameValidator = new RegExp(/^[a-zA-Z1-9{_}?]+\.md$/)
                 
+                //Lopping through files to push an patchnote instance into this.patchnoteList.
                 for(let i = 0; i < patchnoteFiles.length; i++) {
                     
-                    //Checking if Filenames are valid
+                    //Checking if Filenames are valid.
                     if(patchnoteFilenameValidator.test(patchnoteFiles[i]) === true) {
+                        //Initialzing an array that will contain patchnote files without extentions. Used for ids.
                         let filteredPatchnoteFilesWithoutExtentions: string[] = []
                         //Pushing patchnoteFiles without extention to patchArrWithoutExtentions
                         filteredPatchnoteFilesWithoutExtentions.push(patchnoteFiles[i].split(".")[0])
 
                         
-                        //Pushing Pathcnote instance into PatchnoteList
+                        //Looping through filteredPatchnoteArr to create a Patchnote instance for each patchnotefile without extention
                         for(let i = 0; i < filteredPatchnoteFilesWithoutExtentions.length; i++) {
+                            //Creating patchnote instance using filenames without extention as id
                             let patchnote = new Patchnote(patchDirectory, filteredPatchnoteFilesWithoutExtentions[i])
-                            patchnoteList.push(patchnote)
+                            
+                            //Checking if Patchnote files have correct structure and not to be null.
+                            if(patchnote.info.date && patchnote.info.image  && patchnote.info.title  && patchnote.info.update  && patchnote.content) {
+                                patchnoteList.push(patchnote)
+                            } else {
+                                console.log(`Did not create ${patchnote.id}.md because file contains mistakes`)
+                            }
                         }
 
                     } else {
-                        //console.log(`${patchnoteFiles[i]} did not pass the patchnoteFilenameValidator`)
+                        console.log(`${patchnoteFiles[i]} did not pass the patchnoteFilenameValidator`)
                     }
                     
 
                 }
-               
                 
                 //Patchnote[]
                 return patchnoteList
@@ -61,6 +69,47 @@ export class PatchHandler {
             }
         }
         
+        //Creates a new patchnote list ordered by their dates. Takes in the patchnoteList as a parameter
+        function createOrderedPatchnoteList(patchnoteList: Patchnote[]): Patchnote[] {
+            //Array that contains patchnoteDates
+            let patchnoteDates: Date[] = []
+            //Looping through each patchnote of patchnote list to create a new Array that only contains the dates of each patchnote.
+            for(let patchnote of patchnoteList) {
+                if(patchnote.info.date) {
+                    const DDMMYYYY_DateArr = patchnote.info.date.split(".")
+                    const day = parseInt(DDMMYYYY_DateArr[0])
+                    const month = parseInt(DDMMYYYY_DateArr[1]) - 1
+                    const year = parseInt(DDMMYYYY_DateArr[2])
+
+                    const dateArr = new Date(year, month, day)
+                    //Pushing DateObj into array
+                    patchnoteDates.push(dateArr)
+                }
+            }
+            //Orders the dates DESC. Array contains ordered Dates.
+            const orderedPatchnoteDates: Date[] = patchnoteDates.sort(compareDesc)
+
+            //Formats the Dates to dd.MM.yyyy. Array contains ordered dates that look like this dd.MM.yyyy
+            const formattedPatchnoteDates: string[] = orderedPatchnoteDates.map((date) => {
+                
+                const dateString = format(date, "dd.MM.yyyy")
+                
+                return dateString
+            })
+
+            let finishedPatchnotes: Patchnote[] = []
+            for(let n = 0; n < formattedPatchnoteDates.length; n++) {
+                
+                for(let i = 0; i < patchnoteList.length ; i++) {
+                    //Pushing the patchnotes into array in the right order.
+                    if(formattedPatchnoteDates[n] === patchnoteList[i].info.date) {
+                        finishedPatchnotes.push(patchnoteList[i])
+                    }
+                }
+            }
+            
+            return finishedPatchnotes
+        }
         
     }
 
@@ -74,7 +123,6 @@ export class PatchHandler {
 
     }
 }
-
 
 export class Patchnote {
     id: string
@@ -97,20 +145,11 @@ export class Patchnote {
             const matterResult = matter(getPatchContent)
             const patchInfo =  matterResult.data as { title?: string, date?: string, update?: string, image?: string}
             
-            //If Any of them are undefined this function replaces it with a string called Fallback
-            function validatePatchInfoData(info: string | undefined): string {
-                if(info !== undefined) {
-                    return info
-                } else {
-                    return `Fallback`
-                }
-            }
-        
             const fullPatchInfo: PatchnoteInfo = {
-                title: validatePatchInfoData(patchInfo.title),
-                update: validatePatchInfoData(patchInfo.update),
-                date: validatePatchInfoData(patchInfo.date),
-                image: validatePatchInfoData(patchInfo.image),
+                title: patchInfo.title,
+                update: patchInfo.update,
+                date: patchInfo.date,
+                image: patchInfo.image,
             }
             return fullPatchInfo
         }
