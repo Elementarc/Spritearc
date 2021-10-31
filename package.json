@@ -10,7 +10,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@types/moment": "^2.13.0",
     "date-fns": "^2.25.0",
     "framer-motion": "^5.0.0",
     "gray-matter": "^4.0.3",
