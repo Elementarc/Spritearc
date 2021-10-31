@@ -115,7 +115,7 @@ function Patch_template_component(props: any): ReactElement{
 import patchHandler from "../lib/patch_lib"
 export const getStaticProps: GetStaticProps = async () => {
 	//Getting an array of all patchnotes
-	const patchnoteList = patchHandler.patchnoteList
+	const patchnoteList = patchHandler.patchnoteListOrdered
 
 
 	return{

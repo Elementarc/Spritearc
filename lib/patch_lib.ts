@@ -10,12 +10,13 @@ const directoryOfPatches: string = path.join(process.cwd(), "patches")
 export class PatchHandler {
     #patchDirectory: string
     patchnoteList: Patchnote[]
+    patchnoteListOrdered: Patchnote[]
 
     //Can take directory to look for pathes. has a Default value.
     constructor(patchDirectory: string = directoryOfPatches) {
         this.#patchDirectory = patchDirectory
-        this.patchnoteList = createOrderedPatchnoteList(createPatchnoteList(this.#patchDirectory))
-        
+        this.patchnoteList = createPatchnoteList(this.#patchDirectory) 
+        this.patchnoteListOrdered = createOrderedPatchnoteList(this.patchnoteList)
         //Creating a patchnote Instance for each file in patchDirectory that ends with .md
         function createPatchnoteList(patchDirectory: string): Patchnote[] {
             const patchnoteFiles = fs.readdirSync(patchDirectory)
@@ -47,7 +48,7 @@ export class PatchHandler {
                             if(patchnote.info.date && patchnote.info.image  && patchnote.info.title  && patchnote.info.update  && patchnote.content) {
                                 patchnoteList.push(patchnote)
                             } else {
-                                console.log(`Did not create ${patchnote.id}.md because file contains mistakes`)
+                                console.log(`Did not create ${patchnote.id}.md because file is not correctly structured.`)
                             }
                         }
 
@@ -107,7 +108,7 @@ export class PatchHandler {
                     }
                 }
             }
-            
+
             return finishedPatchnotes
         }
         
