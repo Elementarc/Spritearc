@@ -68,6 +68,7 @@ export class PatchHandler {
                 return patchnoteList
                 
             }
+            
         }
         
         //Creates a new patchnote list ordered by their dates. Takes in the patchnoteList as a parameter
@@ -76,6 +77,7 @@ export class PatchHandler {
             let patchnoteDates: Date[] = []
             //Looping through each patchnote of patchnote list to create a new Array that only contains the dates of each patchnote.
             for(let patchnote of patchnoteList) {
+                
                 if(patchnote.info.date) {
                     const DDMMYYYY_DateArr = patchnote.info.date.split(".")
                     const day = parseInt(DDMMYYYY_DateArr[0])
@@ -87,9 +89,10 @@ export class PatchHandler {
                     patchnoteDates.push(dateArr)
                 }
             }
+            
             //Orders the dates DESC. Array contains ordered Dates.
             const orderedPatchnoteDates: Date[] = patchnoteDates.sort(compareDesc)
-
+            
             //Formats the Dates to dd.MM.yyyy. Array contains ordered dates that look like this dd.MM.yyyy
             const formattedPatchnoteDates: string[] = orderedPatchnoteDates.map((date) => {
                 
@@ -97,22 +100,26 @@ export class PatchHandler {
                 
                 return dateString
             })
-
+           
             let finishedPatchnotes: Patchnote[] = []
             for(let n = 0; n < formattedPatchnoteDates.length; n++) {
-                
-                for(let i = 0; i < patchnoteList.length ; i++) {
-                    //Pushing the patchnotes into array in the right order.
+
+                for(let i = 0; i < patchnoteList.length; i++) {
                     if(formattedPatchnoteDates[n] === patchnoteList[i].info.date) {
+                        
                         finishedPatchnotes.push(patchnoteList[i])
                     }
                 }
+                
             }
 
             return finishedPatchnotes
         }
         
+        
     }
+
+    
 
     getPatchnote(id: string) {
 

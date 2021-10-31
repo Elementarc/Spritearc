@@ -77,30 +77,31 @@ export default  function News(props: any): ReactElement {
 	);
 }
 
+
 //Component to create a Patch template
 function Patch_template_component(props: any): ReactElement{
 	const patchnoteList: Patchnote[] = props.patchnoteList
 	const page = props.page
-
+	console.log(page)
 	//Generating Default patches
 	function Patchnote_template(): ReactElement[] {
-		const jsxPatchTemplate: ReactElement[] = []
-		for(let i = 0; i < patchnoteList.length; i++) {
-			jsxPatchTemplate.push(
-				<div onClick={() => {navigateTo(`/news/${patchnoteList[i].id}`)}} key={`${patchnoteList[i].id}`} className="patch_template_container">
+		const jsxPatch = patchnoteList.map((patchnote) => {
+
+			return (
+				<div key={`${patchnote.id}`} onClick={() => {navigateTo(`/news/${patchnote.id}`)}} className="patch_template_container">
 					<div className="patch_preview_image_container">
-						<Image quality="100%" priority={true} layout="fill" src={`/images/${patchnoteList[i].info.image}`}  className="patch_preview_image"/>
+						<Image quality="100%" priority={true} layout="fill" src={`/images/${patchnote.info.image}`}  className="patch_preview_image"/>
 					</div>
 					<div className="patch_information">
-						<h2>{patchnoteList[i].info.update}</h2>
-						<h1>{patchnoteList[i].info.title}</h1>
-						<p>{patchnoteList[i].info.date}</p>
+						<h2>{patchnote.info.update}</h2>
+						<h1>{patchnote.info.title}</h1>
+						<p>{patchnote.info.date}</p>
 					</div>
 				</div>
 			)
-		}
+		})
 		
-		return(jsxPatchTemplate.slice(0, maxPatchesPerPage))
+		return(jsxPatch.slice(0, maxPatchesPerPage * page))
 	}
 	
 	return(
@@ -116,7 +117,6 @@ import patchHandler from "../lib/patch_lib"
 export const getStaticProps: GetStaticProps = async () => {
 	//Getting an array of all patchnotes
 	const patchnoteList = patchHandler.patchnoteListOrdered
-
 
 	return{
 		props: {
