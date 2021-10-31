@@ -112,6 +112,7 @@ function Patch_template_component(props: any): ReactElement{
 }
 
 
+
 //Serverside
 import patchHandler from "../lib/patch_lib"
 export const getStaticProps: GetStaticProps = async () => {

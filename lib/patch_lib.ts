@@ -10,7 +10,7 @@ const directoryOfPatches: string = path.join(process.cwd(), "patches")
 export class PatchHandler {
     #patchDirectory: string
     patchnoteList: Patchnote[]
-    patchnoteListOrdered: Patchnote[]
+    patchnoteListOrdered: any
 
     //Can take directory to look for pathes. has a Default value.
     constructor(patchDirectory: string = directoryOfPatches) {
@@ -72,50 +72,31 @@ export class PatchHandler {
         }
         
         //Creates a new patchnote list ordered by their dates. Takes in the patchnoteList as a parameter
-        function createOrderedPatchnoteList(patchnoteList: Patchnote[]): Patchnote[] {
-            //Array that contains patchnoteDates
-            let patchnoteDates: Date[] = []
-            //Looping through each patchnote of patchnote list to create a new Array that only contains the dates of each patchnote.
-            for(let patchnote of patchnoteList) {
-                
-                if(patchnote.info.date) {
-                    const DDMMYYYY_DateArr = patchnote.info.date.split(".")
+        function createOrderedPatchnoteList(patchnoteList: Patchnote[]) {
+            const patchnotesByDate: Map<Date, Patchnote> = new Map()
+            const dates: Date[] = []
+
+            for(let patch of patchnoteList) {
+                if(patch.info.date) {
+                    const DDMMYYYY_DateArr = patch.info.date.split(".")
                     const day = parseInt(DDMMYYYY_DateArr[0])
                     const month = parseInt(DDMMYYYY_DateArr[1]) - 1
                     const year = parseInt(DDMMYYYY_DateArr[2])
-
-                    const dateArr = new Date(year, month, day)
-                    //Pushing DateObj into array
-                    patchnoteDates.push(dateArr)
-                }
-            }
-            
-            //Orders the dates DESC. Array contains ordered Dates.
-            const orderedPatchnoteDates: Date[] = patchnoteDates.sort(compareDesc)
-            
-            //Formats the Dates to dd.MM.yyyy. Array contains ordered dates that look like this dd.MM.yyyy
-            const formattedPatchnoteDates: string[] = orderedPatchnoteDates.map((date) => {
-                
-                const dateString = format(date, "dd.MM.yyyy")
-                
-                return dateString
-            })
-           
-            let finishedPatchnotes: Patchnote[] = []
-            for(let n = 0; n < formattedPatchnoteDates.length; n++) {
-
-                for(let i = 0; i < patchnoteList.length; i++) {
-                    if(formattedPatchnoteDates[n] === patchnoteList[i].info.date) {
-                        
-                        finishedPatchnotes.push(patchnoteList[i])
-                    }
-                }
-                
-            }
-
-            return finishedPatchnotes
-        }
         
+                    const dateObj = new Date(year, month, day)
+                    dates.push(dateObj)
+                    patchnotesByDate.set(dateObj, patch)
+                }
+            }
+            
+            const sortedPatchnotes = dates.sort().map((date) => {
+                
+                return patchnotesByDate.get(date)
+            })
+
+            return sortedPatchnotes
+            
+        }
         
     }
 
