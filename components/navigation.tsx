@@ -12,8 +12,8 @@ import SearchIcon from "../public/icons/SearchIcon.svg"
 import SignInIcon from "../public/icons/SignInIcon.svg"
 //Context
 import { appContext } from "../components/layout";
-import router, { useRouter } from "next/router";
-import { navigateTo } from "../lib/pixels";
+import { useRouter } from "next/router";
+import { navigateTo } from "../lib/router_lib";
 
 export default function Navigation(): ReactElement {
     const appVars: AppContext = useContext(appContext)
@@ -303,7 +303,7 @@ function Nav_item(props: NavItem) {
         const navItems = Array.from(getNavItems)
 
         function setNavItemTarget() {
-            const pathname = router.route.split("/")
+            const pathname = Router.route.split("/")
             for(let i = 0; i < navItems.length; ++i) {
                 
                 if(navItems[i].id === `/${pathname[1]}`) {

@@ -4,6 +4,9 @@ import Router from "next/router"
 export function navigateTo(path: string): void {
   Router.push(`${path}`, `${path}` , {scroll: false})
 }
+export function navigateBack(): void {
+  Router.back()
+}
 
 
 

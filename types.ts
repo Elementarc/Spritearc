@@ -16,12 +16,12 @@ export interface AppContext {
 }
 
 export interface Patchnote {
+    id: string
     info: PatchnoteInfo
     content: string
 }
 
 export interface PatchnoteInfo {
-    id: string
     title: string,
     update: string,
     date: string,

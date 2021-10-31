@@ -7,32 +7,60 @@ const marked = require("marked")
 const patchDirectory = path.join(process.cwd(), "patches")
 
 class PatchHandler {
-    #patchnoteList: Patchnote[]
+    patchnoteList: Patchnote[]
 
     constructor() {
-        this.#patchnoteList = []
+        this.patchnoteList = createPatchnoteList()
 
-        const files = fs.readdirSync(patchDirectory)
-        let patchArrWithoutExtentions = files.map((patch) => {
-            return patch.split(".")[0]
-        })
-        for(let i = 0; i < files.length; i++) {
-            let patchnote = new Patchnote(patchArrWithoutExtentions[i])
-            this.#patchnoteList.push(patchnote)
-        }
-    }
+        
+        function createPatchnoteList(): Patchnote[] {
+            const patchnoteFiles = fs.readdirSync(patchDirectory)
+            //Returning filtered patchnoteList
+            let patchnoteList: Patchnote[] = []
 
+            if(patchnoteFiles.length > 0) {
+                const patchnoteFilenameValidator = new RegExp(/^[a-zA-Z1-9{_}?]+\.md$/gm)
+                
+                //Looping through patchnoteFiles to return patchArrWithoutExtentions
+                for(let i = 0; i < patchnoteFiles.length; i++) {
+
+                    //Checking if Filenames are valid
+                    if(patchnoteFilenameValidator.test(patchnoteFiles[i]) === true) {
+                        let filteredPatchnoteFilesWithoutExtentions: string[] = []
+                        //Pushing patchnoteFiles without extention to patchArrWithoutExtentions
+                        filteredPatchnoteFilesWithoutExtentions.push(patchnoteFiles[i].split(".")[0])
+
+                        //Pushing Pathcnote instance into PatchnoteList
+                        for(let i = 0; i < filteredPatchnoteFilesWithoutExtentions.length; i++) {
+                            let patchnote = new Patchnote(filteredPatchnoteFilesWithoutExtentions[i])
+                            patchnoteList.push(patchnote)
+                        }
+
+                    } else {
+                        console.log(`${patchnoteFiles[i]} did not pass the patchnoteFilenameValidator`)
+                    }
+
+                }
+               
+                //Patchnote[]
+                return patchnoteList
     
-    get getPatchnoteList() {
-        return this.#patchnoteList
+            } else {
+                console.log("could not find any patches! Or Patch filename contains not allowed Characters")
+                //Empty PatchnoteList
+                return patchnoteList
+                
+            }
+        }
+        
+        
     }
-
 
     getPatchnote(id: string) {
 
-        for(let i = 0; i < this.#patchnoteList.length; i++) {
-            if(id === this.#patchnoteList[i].id) {
-                return this.#patchnoteList[i]
+        for(let i = 0; i < this.patchnoteList.length; i++) {
+            if(id === this.patchnoteList[i].id) {
+                return this.patchnoteList[i]
             }
         }
 
@@ -47,9 +75,9 @@ class Patchnote {
         this.id = id
         this.info
         this.content
+
         //Returning Patchinformations about a specific Patch
         function getInfo(id: string): PatchnoteInfo {
-        
             const getPatchContent = fs.readFileSync(`${patchDirectory}/${id}.md`, "utf-8")
         
             //Getting md variables from patch
@@ -66,7 +94,6 @@ class Patchnote {
             }
         
             const fullPatchInfo: PatchnoteInfo = {
-                id: id,
                 title: validatePatchInfoData(patchInfo.title),
                 update: validatePatchInfoData(patchInfo.update),
                 date: validatePatchInfoData(patchInfo.date),

@@ -6,8 +6,7 @@ import Footer from '../components/footer';
 import { useEffect } from 'react';
 import { GetStaticProps } from 'next'
 import { Patchnote } from '../types';
-import { navigateTo } from '../lib/pixels';
-
+import { navigateTo } from '../lib/router_lib';
 const maxPatchesPerPage = 4
 
 //News Component
@@ -84,9 +83,10 @@ function Patch_template_component(props: any): ReactElement{
 	const page = props.page
 	//Generating Default patches
 	function Patchnote_template(): ReactElement[] {
+		//Creating an Patchnote Preview for each Patchnotelist item.
 		const jsxArray = patchnoteList.map((patchnote) => {
 			return(
-				<div onClick={() => {navigateTo(`/news/${patchnote.info.id}`)}} key={`${patchnote.info.id}`} className="patch_template_container">
+				<div onClick={() => {navigateTo(`/news/${patchnote.id}`)}} key={`${patchnote.id}`} className="patch_template_container">
 					<div className="patch_preview_image_container">
 						<Image quality="100%" priority={true} layout="fill" src={`/images/${patchnote.info.image}`}  className="patch_preview_image"/>
 					</div>
@@ -100,8 +100,6 @@ function Patch_template_component(props: any): ReactElement{
 		})
 		return(jsxArray.slice(0, maxPatchesPerPage))
 	}
-
-	
 	
 	return(
 		<>
@@ -110,12 +108,16 @@ function Patch_template_component(props: any): ReactElement{
 	)
 }
 
+//Serverside
 import patchHandler from "../lib/patch_lib"
-export const getServerSideProps: GetStaticProps = async () => {
-	const patchnoteList = patchHandler.getPatchnoteList
+export const getStaticProps: GetStaticProps = async () => {
+	//Getting an array of all patchnotes
+	const patchnoteList = patchHandler.patchnoteList
+
 	return{
 		props: {
 			patchnoteList: JSON.stringify(patchnoteList)
 		}
 	}
+	
 }
