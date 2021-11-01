@@ -2,7 +2,6 @@ import path from "path"
 import fs from "fs"
 import matter from 'gray-matter';
 import { PatchnoteInfo} from "../types";
-import { compareDesc, compareAsc , format} from "date-fns";
 const marked = require("marked")
 
 //Directory of patches
@@ -95,12 +94,10 @@ export class PatchHandler {
             })
 
             return sortedPatchnotes
-            
         }
         
+        
     }
-
-    
 
     getPatchnote(id: string) {
 
