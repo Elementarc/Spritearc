@@ -24,6 +24,6 @@ export interface Patchnote {
 export interface PatchnoteInfo {
     title: string | undefined,
     update: string | undefined,
-    date: string | undefined,
+    date: Date | undefined,
     image: string | undefined,
 }

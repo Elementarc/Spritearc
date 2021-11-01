@@ -2,10 +2,12 @@ import path from "path"
 import fs from "fs"
 import matter from 'gray-matter';
 import { PatchnoteInfo} from "../types";
+import compareDesc from "date-fns/compareDesc";
 const marked = require("marked")
 
 //Directory of patches
 const directoryOfPatches: string = path.join(process.cwd(), "patches")
+
 export class PatchHandler {
     #patchDirectory: string
     patchnoteList: Patchnote[]
@@ -16,6 +18,8 @@ export class PatchHandler {
         this.#patchDirectory = patchDirectory
         this.patchnoteList = createPatchnoteList(this.#patchDirectory) 
         this.patchnoteListOrdered = createOrderedPatchnoteList(this.patchnoteList)
+
+
         //Creating a patchnote Instance for each file in patchDirectory that ends with .md
         function createPatchnoteList(patchDirectory: string): Patchnote[] {
             const patchnoteFiles = fs.readdirSync(patchDirectory)
@@ -39,16 +43,12 @@ export class PatchHandler {
 
                         
                         //Looping through filteredPatchnoteArr to create a Patchnote instance for each patchnotefile without extention
-                        for(let i = 0; i < filteredPatchnoteFilesWithoutExtentions.length; i++) {
+                        for(let n = 0; n < filteredPatchnoteFilesWithoutExtentions.length; n++) {
                             //Creating patchnote instance using filenames without extention as id
-                            let patchnote = new Patchnote(patchDirectory, filteredPatchnoteFilesWithoutExtentions[i])
+                            let patchnote = new Patchnote(patchDirectory, filteredPatchnoteFilesWithoutExtentions[n])
                             
-                            //Checking if Patchnote files have correct structure and not to be null.
-                            if(patchnote.info.date && patchnote.info.image  && patchnote.info.title  && patchnote.info.update  && patchnote.content) {
-                                patchnoteList.push(patchnote)
-                            } else {
-                                console.log(`Did not create ${patchnote.id}.md because file is not correctly structured.`)
-                            }
+                            patchnoteList.push(patchnote)
+                            
                         }
 
                     } else {
@@ -69,26 +69,22 @@ export class PatchHandler {
             }
             
         }
-        
+
         //Creates a new patchnote list ordered by their dates. Takes in the patchnoteList as a parameter
         function createOrderedPatchnoteList(patchnoteList: Patchnote[]) {
             const patchnotesByDate: Map<Date, Patchnote> = new Map()
             const dates: Date[] = []
 
             for(let patch of patchnoteList) {
+
                 if(patch.info.date) {
-                    const DDMMYYYY_DateArr = patch.info.date.split(".")
-                    const day = parseInt(DDMMYYYY_DateArr[0])
-                    const month = parseInt(DDMMYYYY_DateArr[1]) - 1
-                    const year = parseInt(DDMMYYYY_DateArr[2])
-        
-                    const dateObj = new Date(year, month, day)
-                    dates.push(dateObj)
-                    patchnotesByDate.set(dateObj, patch)
+                    dates.push(patch.info.date)
+                    patchnotesByDate.set(patch.info.date, patch)
                 }
+
             }
             
-            const sortedPatchnotes = dates.sort().map((date) => {
+            const sortedPatchnotes = dates.sort(compareDesc).map((date) => {
                 
                 return patchnotesByDate.get(date)
             })
@@ -118,24 +114,71 @@ export class Patchnote {
 
     //Reading .md Files to get info & content of a Patchnote. Finding Patchnote by id. id = filename without extention
     constructor(patchDirectory: string ,id: string) {
+        const dateRegEx = new RegExp(/\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})\s*$/)
         this.#patchDirectory = patchDirectory
         this.id = id
-        this.info
-        this.content
-
+        this.info = getInfo(this.#patchDirectory, this.id)
+        this.content = getContent(this.#patchDirectory, this.id)
+        
         //Returning Patchinformations about a specific Patch
         function getInfo(directory: string, id: string): PatchnoteInfo {
             const getPatchContent = fs.readFileSync(`${directory}/${id}.md`, "utf-8")
-        
             //Getting md variables from patch
             const matterResult = matter(getPatchContent)
-            const patchInfo =  matterResult.data as { title?: string, date?: string, update?: string, image?: string}
+            const mdPatchInfo =  matterResult.data as { title?: string, update?: string, date?: string, image?: string}
+
+            function patchInfoTitleValidator(title: string | undefined) {
+                if(title) {
+                    return title
+                } else {
+                    console.log(`Could not find a title property in ${id}.md, created a fallback. Please review the file!`)
+                    return "Title Fallback"
+                }
+            }
+
+            function patchInfoUpdateValidator(update: string | undefined) {
+                if(update) {
+                    return update
+                } else {
+                    console.log(`Could not find an update property in ${id}.md, Created a Fallback. Please review the File!`)
+                    return "Update Fallback"
+                }
+            }
             
+            function patchInfoDateValidator(date: string | undefined) {
+                const fallbackDate = new Date(2000, 1, 1)
+                if(date) {
+                    if(dateRegEx.test(date) === true) {
+                        const DDMMYYYY_DateArr = date.split(".")
+                        const day = parseInt(DDMMYYYY_DateArr[0])
+                        const month = parseInt(DDMMYYYY_DateArr[1]) - 1
+                        const year = parseInt(DDMMYYYY_DateArr[2])
+            
+                        return new Date(year, month, day)
+                    } else {
+                        console.log(`The Date property in ${id}.md has the wrong format, created a fallback. Please review the file and use the format: dd.mm.yyyy.`)
+                        return fallbackDate
+                    }
+                } else {
+                    console.log(`Could not find a Date property in ${id}.md, created a fallback. Please review the file!`)
+                    return fallbackDate
+                }
+            }
+
+            function patchInfoImageValidator(image: string | undefined) {
+                if(image) {
+                    return image
+                } else {
+                    console.log(`Could not find an Image property in ${id}.md, created a fallback. Please review the file!`)
+                    return "fallback.jpg"
+                }
+            }
+
             const fullPatchInfo: PatchnoteInfo = {
-                title: patchInfo.title,
-                update: patchInfo.update,
-                date: patchInfo.date,
-                image: patchInfo.image,
+                title: patchInfoTitleValidator(mdPatchInfo.title),
+                update:  patchInfoUpdateValidator(mdPatchInfo.update),
+                date: patchInfoDateValidator(mdPatchInfo.date),
+                image:  patchInfoImageValidator(mdPatchInfo.image),
             }
             return fullPatchInfo
         }
@@ -143,13 +186,17 @@ export class Patchnote {
         function getContent(directory: string, id: string): string {
             const getPatchContent = fs.readFileSync(path.join(directory, `${id}.md`), "utf-8")
         
-            const html = marked(`${getPatchContent}`);
-            return html
+            if(getPatchContent) {
+                const html = marked(`${getPatchContent}`);
+                return html
+            } else {
+                return "Content Fallback"
+            }
+            
         }
-        this.info = getInfo(this.#patchDirectory, this.id)
-        this.content = getContent(this.#patchDirectory, this.id)
     }
 }
+
 
 const patchHandler = new PatchHandler()
 export default patchHandler
