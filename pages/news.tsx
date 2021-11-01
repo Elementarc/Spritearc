@@ -11,13 +11,55 @@ function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
 }
 
-const maxPages = 2
+const maxPages = 4
 //News Component
 export default  function News(props: any): ReactElement {
+	//All Patchnotes
 	const patchnoteList: Patchnote[] = JSON.parse(props.patchnoteList)
-	const [Page, setPage] = useState(1)
+	const [CurrentPage, setPage] = useState(() => {
+		if(process.browser) {
+			const page = sessionStorage.getItem("news_page")
+			if(typeof page === "string") {
+				return parseInt(page)
+			} else {
+				return 1
+			}
+		} else {
+			return 1
+		}
+	})
 	const lastPage = Math.ceil(patchnoteList.length / maxPages)
+	//JSX Elements of Initial Patchnotes that will be rendered
+	const JSXInitialPatchnotes: ReactElement<Patchnote>[] = (() => {
+
+		const jsxPatchnotes = patchnoteList.map((patchnote) => {
+
+			return (
+				<Patchnote_template key={patchnote.id} patchnote={patchnote} />
+			)
+		});
+
+		return jsxPatchnotes.slice(0, maxPages)
+	})();
 	
+	//JSX Elements That renders More Patchnotes based on Page state
+	const [ExtraPatchnotes, setExtraPatchnotes] = useState<ReactElement[]>([])
+	
+	useEffect(() => {
+		sessionStorage.setItem("news_page", `${CurrentPage}`)
+		function create_extra_patchnotes() {
+			const jsxPatchnotes = patchnoteList.map((patchnote) => {
+	
+				return (
+					<Patchnote_template key={patchnote.id} patchnote={patchnote} />
+				)
+			})
+	
+			setExtraPatchnotes(jsxPatchnotes.slice(maxPages, maxPages * CurrentPage));
+		}
+		create_extra_patchnotes()
+	}, [CurrentPage])
+
 	useEffect(() => {
 		const getIncrementButton = document.getElementById("increment_page_button") as HTMLDivElement
 		function showButton(page: number | undefined) {
@@ -30,38 +72,15 @@ export default  function News(props: any): ReactElement {
 				}
 			} 
 		}
-		showButton(Page)
-	}, [Page, lastPage])
+		showButton(CurrentPage)
+	}, [CurrentPage, lastPage])
 	
 	//Adding + 1 to page query
 	function increment_page() {
 		
-		if(Page < lastPage) {
-			console.log("test")
-			setPage(Page + 1)
+		if(CurrentPage < lastPage) {
+			setPage(CurrentPage + 1)
 		}
-	}
-	
-	function create_default_patchnotes() {
-		const jsxPatchnotes = patchnoteList.map((patchnote) => {
-
-			return (
-				<Patchnote_template key={patchnote.id} patchnote={patchnote} />
-			)
-		})
-
-		return jsxPatchnotes.slice(0, maxPages)
-	}
-
-	function create_extra_patchnotes() {
-		const jsxPatchnotes = patchnoteList.map((patchnote) => {
-
-			return (
-				<Patchnote_template key={patchnote.id} patchnote={patchnote} />
-			)
-		})
-
-		return jsxPatchnotes.slice(maxPages, maxPages * Page)
 	}
 	
 	return (
@@ -91,8 +110,8 @@ export default  function News(props: any): ReactElement {
 				</div>
 				
 				<div className="news_content_container">
-					{create_default_patchnotes()}
-					{create_extra_patchnotes()}
+					{JSXInitialPatchnotes}
+					{ExtraPatchnotes}
 
 					<div className="news_load_more_button_container" id="news_load_more_button_container">
 						<button onClick={increment_page} id="increment_page_button">Load More</button>
@@ -132,19 +151,11 @@ function Patchnote_template(props: any): ReactElement{
 import patchHandler from "../lib/patch_lib"
 import { useRouter } from 'next/router';
 export const getStaticProps: GetStaticProps = async () => {
-	
 	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
 	
-	
-	
-
 	return {
 		props: {
 			patchnoteList: JSON.stringify(patchnoteList)
 		}
 	}
-		
-	
-	
-	
 }

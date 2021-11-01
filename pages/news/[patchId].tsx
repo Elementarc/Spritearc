@@ -9,7 +9,6 @@ import Router from "next/router"
 export default function Patch(props: any) {
   	const patchnote: Patchnote = JSON.parse(props.patchnote)
 	
-	
 	return (
 		<div className="patch_container">
 
