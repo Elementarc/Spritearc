@@ -5,35 +5,18 @@ import Eclipse from "../public/images/eclipse.jpg"
 import Router from "next/router"
 import Footer from '../components/footer';
 import { useEffect } from 'react';
-import {  GetServerSideProps } from 'next'
+import {  GetServerSideProps , GetStaticProps} from 'next'
 import { Patchnote } from '../types';
 function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
 }
 
+const maxPages = 2
 //News Component
 export default  function News(props: any): ReactElement {
 	const patchnoteList: Patchnote[] = JSON.parse(props.patchnoteList)
-	const lastPage: number = props.lastPage
-	const Router = useRouter()
-
-	const getPage = useCallback(
-	  () => {
-		function getPage() {
-			if(Router.query) {
-				if(Router.query.page) {
-					return parseInt(Router.query.page as string)
-				} else {
-					return 1
-				}
-			} else {
-				return 1
-			}
-		}
-		return getPage()
-	  },
-	  [Router.query],
-	)
+	const [Page, setPage] = useState(1)
+	const lastPage = Math.ceil(patchnoteList.length / maxPages)
 	
 	useEffect(() => {
 		const getIncrementButton = document.getElementById("increment_page_button") as HTMLDivElement
@@ -47,21 +30,19 @@ export default  function News(props: any): ReactElement {
 				}
 			} 
 		}
-		showButton(getPage())
-	}, [getPage, lastPage])
-	
-	
+		showButton(Page)
+	}, [Page, lastPage])
 	
 	//Adding + 1 to page query
 	function increment_page() {
 		
-		if(getPage() < lastPage) {
-			Router.replace(`/news?page=${getPage() + 1}`, "", {scroll: false})
+		if(Page < lastPage) {
+			console.log("test")
+			setPage(Page + 1)
 		}
-		
 	}
 	
-	function create_patchnotes() {
+	function create_default_patchnotes() {
 		const jsxPatchnotes = patchnoteList.map((patchnote) => {
 
 			return (
@@ -69,7 +50,18 @@ export default  function News(props: any): ReactElement {
 			)
 		})
 
-		return jsxPatchnotes
+		return jsxPatchnotes.slice(0, maxPages)
+	}
+
+	function create_extra_patchnotes() {
+		const jsxPatchnotes = patchnoteList.map((patchnote) => {
+
+			return (
+				<Patchnote_template key={patchnote.id} patchnote={patchnote} />
+			)
+		})
+
+		return jsxPatchnotes.slice(maxPages, maxPages * Page)
 	}
 	
 	return (
@@ -99,7 +91,8 @@ export default  function News(props: any): ReactElement {
 				</div>
 				
 				<div className="news_content_container">
-					{create_patchnotes()}
+					{create_default_patchnotes()}
+					{create_extra_patchnotes()}
 
 					<div className="news_load_more_button_container" id="news_load_more_button_container">
 						<button onClick={increment_page} id="increment_page_button">Load More</button>
@@ -138,32 +131,20 @@ function Patchnote_template(props: any): ReactElement{
 //Serverside
 import patchHandler from "../lib/patch_lib"
 import { useRouter } from 'next/router';
-export const getServerSideProps: GetServerSideProps = async ( context) => {
-	const maxPages = 2
-	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
-	const lastPage = Math.ceil(patchnoteList.length / maxPages)
+export const getStaticProps: GetStaticProps = async () => {
 	
-	function getQueryPage() {
-		if(context.query.page) {
-			const page = parseInt(context.query.page as string)
-			return page
-		} else {
-			return 1
-		}
-	}
+	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
+	
+	
+	
 
-	if(getQueryPage() <= lastPage) {
-		return{
-			props: {
-				patchnoteList: JSON.stringify(patchnoteList.slice(0, maxPages * getQueryPage())),
-				lastPage: lastPage
-			},
-		}
-	} else {
-		return{
-			notFound: true
+	return {
+		props: {
+			patchnoteList: JSON.stringify(patchnoteList)
 		}
 	}
+		
+	
 	
 	
 }
