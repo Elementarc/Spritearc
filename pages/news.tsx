@@ -2,35 +2,65 @@ import React, { ReactElement, useState, useCallback} from 'react';
 import Head from "next/head"
 import Image from "next/image"
 import Eclipse from "../public/images/eclipse.jpg"
+import Router from "next/router"
 import Footer from '../components/footer';
 import { useEffect } from 'react';
-import { GetStaticProps } from 'next'
+import {  GetServerSideProps } from 'next'
 import { Patchnote } from '../types';
-import { navigateTo } from '../lib/router_lib';
-const maxPatchesPerPage = 1
+function navigateTo(path: string): void {
+    Router.push(`${path}`, `${path}` , {scroll: false})
+}
 
 //News Component
 export default  function News(props: any): ReactElement {
 	const patchnoteList: Patchnote[] = JSON.parse(props.patchnoteList)
-	const lastPage = Math.ceil(patchnoteList.length / maxPatchesPerPage)
-	
-	function showButton(page: number) {
-		const getIncrementButton = document.getElementById("increment_page_button") as HTMLDivElement
-		if(page < lastPage) {
-			getIncrementButton.style.display = ""
-			
-		} else {
-			getIncrementButton.style.display = "none"
-		}
-	}
-	
-	//Adding + 1 to page state
-	function increment_page() {
-		if(page < maxPage) {
-			setPage(page + 1)
-		}
-	}
+	const lastPage: number = props.lastPage
+	const Router = useRouter()
 
+	const getPage = useCallback(
+	  () => {
+		function getPage() {
+			if(Router.query) {
+				if(Router.query.page) {
+					return parseInt(Router.query.page as string)
+				} else {
+					return 1
+				}
+			} else {
+				return 1
+			}
+		}
+		return getPage()
+	  },
+	  [Router.query],
+	)
+	
+	useEffect(() => {
+		const getIncrementButton = document.getElementById("increment_page_button") as HTMLDivElement
+		function showButton(page: number | undefined) {
+			if(page) {
+				if(page < lastPage) {
+					getIncrementButton.style.display = ""
+					
+				} else {
+					getIncrementButton.style.display = "none"
+				}
+			} 
+		}
+		showButton(getPage())
+	}, [getPage, lastPage])
+	
+	
+	
+	//Adding + 1 to page query
+	function increment_page() {
+		
+		if(getPage() < lastPage) {
+			Router.replace(`/news?page=${getPage() + 1}`, "", {scroll: false})
+		}
+		
+	}
+	
 	function create_patchnotes() {
 		const jsxPatchnotes = patchnoteList.map((patchnote) => {
 
@@ -107,14 +137,33 @@ function Patchnote_template(props: any): ReactElement{
 
 //Serverside
 import patchHandler from "../lib/patch_lib"
-export const getStaticProps: GetStaticProps = async (context) => {
-	//Getting an array of all patchnotes
-	const patchnoteList = patchHandler.patchnoteListOrdered
-
-	return{
-		props: {
-			patchnoteList: JSON.stringify(patchnoteList)
+import { useRouter } from 'next/router';
+export const getServerSideProps: GetServerSideProps = async ( context) => {
+	const maxPages = 2
+	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
+	const lastPage = Math.ceil(patchnoteList.length / maxPages)
+	
+	function getQueryPage() {
+		if(context.query.page) {
+			const page = parseInt(context.query.page as string)
+			return page
+		} else {
+			return 1
 		}
 	}
+
+	if(getQueryPage() <= lastPage) {
+		return{
+			props: {
+				patchnoteList: JSON.stringify(patchnoteList.slice(0, maxPages * getQueryPage())),
+				lastPage: lastPage
+			},
+		}
+	} else {
+		return{
+			notFound: true
+		}
+	}
+	
 	
 }

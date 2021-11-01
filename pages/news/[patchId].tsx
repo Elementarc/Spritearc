@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import Footer from '../../components/footer';
 import { Patchnote } from '../../types';
 import Image from "next/image"
-import { navigateBack } from '../../lib/router_lib';
+import Router from "next/router"
 
 //Frontend
 export default function Patch(props: any) {
@@ -36,7 +36,7 @@ export default function Patch(props: any) {
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat fermentum tellus tellus sed justo elementum nunc, vel. Lacus, ipsum eleifend eget erat faucibus lectus. Aenean ultricies ullamcorper convallis lorem. Aliquam elit sociis nec tellus nibh. Elit turpis tempus placerat mi. Mollis lectus sed risus nisi, et. Dignissim urna, vitae sed laoreet ut at neque netus.</p>
 						<br />
 						<p style={{marginBottom: "2rem"}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat fermentum tellus tellus sed justo elementum nunc, vel. Lacus, ipsum eleifend eget erat faucibus lectus. Aenean ultricies ullamcorper convallis lorem. Aliquam elit sociis nec tellus nibh. Elit turpis tempus placerat mi. Mollis lectus sed risus nisi, et. Dignissim urna, vitae sed laoreet ut at neque netus.  Mollis lectus sed risus nisi,  Mollis lectus sed risus nisi.</p>
-						<button onClick={navigateBack} style={{marginBottom: "6rem"}}>Go Back</button>
+						<button onClick={() => {Router.back()}} style={{marginBottom: "6rem"}}>Go Back</button>
 					</div>
 				</div>
 

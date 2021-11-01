@@ -12,9 +12,11 @@ import SearchIcon from "../public/icons/SearchIcon.svg"
 import SignInIcon from "../public/icons/SignInIcon.svg"
 //Context
 import { appContext } from "../components/layout";
-import { useRouter } from "next/router";
-import { navigateTo } from "../lib/router_lib";
+import Router, { useRouter } from "next/router";
 
+function navigateTo(path: string): void {
+    Router.push(`${path}`, `${path}` , {scroll: false})
+}
 export default function Navigation(): ReactElement {
     const appVars: AppContext = useContext(appContext)
     const isDesktop = appVars.isDesktop
