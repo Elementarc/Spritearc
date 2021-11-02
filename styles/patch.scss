@@ -33,19 +33,39 @@
         .patch_main_content{
             margin: 0rem 1rem;
             color: $color_white;
+            padding-bottom: 5rem;
+            //Small Header
             h2{
                 font-family: $font_alatsi;
                 font-weight: unset;
                 color: $color_main_bright;
                 font-size: $font_18_size;
             }
+            //Header
             h1{
                 font-family: $font_alatsi;
                 font-size: $font_32_size;
                 font-weight: unset;
-                margin-top: -.2rem;
-                margin-bottom: .7rem;
+                margin-top: -.1rem;
             }
+            //Date
+            h3{
+                font-family: $font_alatsi;
+                color: $color_dark_grey;
+                font-weight: unset;
+                font-size: $font_16_size;
+            }
+            //List Header
+            h4{
+                font-family: $font_alata;
+                font-size: $font_24_size;
+                color: $color_white;
+                font-weight: unset;
+                line-height: $font_line_height_text_p;
+                padding-right: 2rem; 
+                margin-bottom: .3rem;
+            }
+            //Default Text
             p{
                 font-family: $font_alata;
                 font-size: $font_18_size;
@@ -54,14 +74,34 @@
                 line-height: $font_line_height_text_p;
                 padding-right: 2rem;
             }
+            ul{
+                margin-left: 3rem;
+                margin-bottom: 1rem;
+                line-height: $font_line_height_text_p;
+                li{
+                    line-height: 2.3rem;
+                    list-style-type: random($limit: 1);
+                    font-family: $font_alata;
+                    color: $color_grey;
+                    font-size: $font_18_size;
+                }
+            }
             img{
-                margin-top: 2rem;
+                position: relative;
+                margin: 1rem 0;
+                width: 100%;
+                object-fit: cover;
+                object-position: center;
                 width: 100%;
             }
-            button{
+            blockquote{
+                margin-top: .7rem;
+            }
+            .patch_goback_button{
                 background-color: unset;
                 outline: none;
                 border-style: none;
+                margin-top: 1.5rem;
                 color: $color_main;
                 font-weight: unset;
                 font-size: $font_18_size;

@@ -3,10 +3,10 @@ import fs from "fs"
 import matter from 'gray-matter';
 import { PatchnoteInfo} from "../types";
 import compareDesc from "date-fns/compareDesc";
-const marked = require("marked")
 
 //Directory of patches
 const directoryOfPatches: string = path.join(process.cwd(), "patches")
+
 
 export class PatchHandler {
     #patchDirectory: string
@@ -176,9 +176,9 @@ export class Patchnote {
         function getContent(directory: string, id: string): string {
             const getPatchContent = fs.readFileSync(path.join(directory, `${id}.md`), "utf-8")
             const matterResult = matter(getPatchContent)
+
             if(getPatchContent) {
-                const html = marked(`${matterResult.content}`);
-                return html
+                return matterResult.content
             } else {
                 return "Content Fallback"
             }

@@ -4,18 +4,17 @@ import Footer from '../../components/footer';
 import { Patchnote } from '../../types';
 import Image from "next/image"
 import Router from "next/router"
-import { parse } from "node-html-parser"
-
+import {formatDistanceStrict} from "date-fns"
+import Markdown from 'markdown-to-jsx';
 
 //Frontend
 export default function Patch(props: any) {
   	const patchnote: Patchnote = JSON.parse(props.patchnote)
-	const html = Array.from(parse(patchnote.content).childNodes)
+	const distance = formatDistanceStrict(new Date(patchnote.info.date), new Date())
 	
-
 	return (
 		<div className="patch_container">
-
+			
 			<div className="patch_preview_container">
 				<Image quality="100%" priority={true} src={`/images/${patchnote.info.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="background_image"/>
 				<div className="patch_preview_blur"></div>
@@ -25,20 +24,11 @@ export default function Patch(props: any) {
 				<div className="patch_main_content_container">
 					<div className="patch_main_content" id="patch_main_content">
 						<h2>{patchnote.info.update}</h2>
-						<h1>{patchnote.info.title}, {patchnote.info.date}</h1>
+						<h1>{patchnote.info.title}</h1>
+						<h3>{distance} ago</h3>
+						<Markdown options={{forceBlock: true}} >{patchnote.content}</Markdown>
 						
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat fermentum tellus tellus sed justo elementum nunc, vel. Lacus, ipsum eleifend eget erat faucibus lectus. Aenean ultricies ullamcorper convallis lorem. Aliquam elit sociis nec tellus nibh. Elit turpis tempus placerat mi. Mollis lectus sed risus nisi, et. Dignissim urna, vitae sed laoreet ut at neque netus.</p>
-						<br />
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat fermentum tellus tellus sed justo elementum nunc, vel.</p>
-						<br />
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat fermentum tellus tellus sed justo elementum nunc, vel. Lacus, ipsum eleifend eget erat faucibus lectus. Aenean ultricies ullamcorper convallis lorem. Aliquam elit sociis nec tellus nibh. Elit turpis tempus placerat mi. Mollis lectus sed risus nisi, et. Dignissim urna, vitae sed laoreet ut at neque netus.  Mollis lectus sed risus nisi,  Mollis lectus sed risus nisi.</p>
-
-						<img src={""} alt="" />
-						<h1 style={{marginTop: "2rem"}}>PixelPalast</h1>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat fermentum tellus tellus sed justo elementum nunc, vel. Lacus, ipsum eleifend eget erat faucibus lectus. Aenean ultricies ullamcorper convallis lorem. Aliquam elit sociis nec tellus nibh. Elit turpis tempus placerat mi. Mollis lectus sed risus nisi, et. Dignissim urna, vitae sed laoreet ut at neque netus.</p>
-						<br />
-						<p style={{marginBottom: "2rem"}}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat fermentum tellus tellus sed justo elementum nunc, vel. Lacus, ipsum eleifend eget erat faucibus lectus. Aenean ultricies ullamcorper convallis lorem. Aliquam elit sociis nec tellus nibh. Elit turpis tempus placerat mi. Mollis lectus sed risus nisi, et. Dignissim urna, vitae sed laoreet ut at neque netus.  Mollis lectus sed risus nisi,  Mollis lectus sed risus nisi.</p>
-						<button onClick={() => {Router.back()}} style={{marginBottom: "6rem"}}>Go Back</button>
+						<button className="patch_goback_button" onClick={() => {Router.back()}}>Go Back</button>
 					</div>
 				</div>
 
@@ -49,13 +39,13 @@ export default function Patch(props: any) {
 	);
 }
 
-
 //Serverside
 import patchHandler from '../../lib/patch_lib';
 
 export const getStaticProps: GetStaticProps = async (context) => {
 	const params: any = context.params
 	const patchnote = JSON.stringify(patchHandler.getPatchnote(params.patchId))
+
 
 	if(patchnote) {
 		return {

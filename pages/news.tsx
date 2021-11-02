@@ -153,7 +153,6 @@ export default  function News(props: any): ReactElement {
 	);
 }
 
-
 //Component to create a Patch template
 function Patchnote_template(props: any): ReactElement{
 	const patchnote: Patchnote = props.patchnote
@@ -176,7 +175,6 @@ function Patchnote_template(props: any): ReactElement{
 		</>
 	)
 }
-
 
 
 //Serverside
