@@ -114,7 +114,7 @@ export default  function News(props: any): ReactElement {
 				<meta name="description" content="You can see the patchnotes of our application"/>
 			</Head>
 
-			<div className="news_container">
+			<div className="news_container" id="news_container">
 
 				<div className="news_header_container">
 

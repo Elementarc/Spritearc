@@ -33,7 +33,7 @@ export default function Layout( { children }: any) {
             }
         }
         checkApplicationWidth()
-
+        
         window.addEventListener("resize", checkApplicationWidth)
         return(() => {
             window.removeEventListener("resize", checkApplicationWidth)
