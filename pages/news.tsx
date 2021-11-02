@@ -5,8 +5,10 @@ import Eclipse from "../public/images/eclipse.jpg"
 import Router from "next/router"
 import Footer from '../components/footer';
 import { useEffect } from 'react';
-import {  GetServerSideProps , GetStaticProps} from 'next'
+import { GetStaticProps} from 'next'
 import { Patchnote } from '../types';
+import { formatDistanceStrict } from "date-fns"
+import { motion, useViewportScroll} from 'framer-motion';
 function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
 }
@@ -45,6 +47,7 @@ export default  function News(props: any): ReactElement {
 	//JSX Elements That renders More Patchnotes based on Page state
 	const [ExtraPatchnotes, setExtraPatchnotes] = useState<ReactElement[]>([])
 	
+	//Creating extra patchnotes whenever currentpage gets increased
 	useEffect(() => {
 		sessionStorage.setItem("news_page", `${CurrentPage}`)
 		function create_extra_patchnotes() {
@@ -60,18 +63,24 @@ export default  function News(props: any): ReactElement {
 		create_extra_patchnotes()
 	}, [CurrentPage])
 
+	//Button Load More. Checking if button should be displayed
 	useEffect(() => {
 		const getIncrementButton = document.getElementById("increment_page_button") as HTMLDivElement
+
 		function showButton(page: number | undefined) {
 			if(page) {
+				//Showing button when not reached last page
 				if(page < lastPage) {
-					getIncrementButton.style.display = ""
+					getIncrementButton.style.opacity = ""
+					getIncrementButton.style.pointerEvents = ""
 					
 				} else {
-					getIncrementButton.style.display = "none"
+					getIncrementButton.style.opacity = "0"
+					getIncrementButton.style.pointerEvents = "none"
 				}
 			} 
 		}
+
 		showButton(CurrentPage)
 	}, [CurrentPage, lastPage])
 	
@@ -83,6 +92,21 @@ export default  function News(props: any): ReactElement {
 		}
 	}
 	
+	//Parallax effect for backgroundImage
+	const { scrollY } = useViewportScroll()
+	useEffect(() => {
+		const getBackgroundImagContainer = document.getElementById("news_background_image_container") as HTMLDivElement
+		function parallax() {
+			getBackgroundImagContainer.style.transform = `translateY(-${scrollY.get() / 3.5}px)`
+		}
+
+		window.addEventListener("scroll", parallax)
+
+		return(() => {
+			window.removeEventListener("scroll", parallax)
+		})
+	}, [])
+
 	return (
 		<>
 			<Head>
@@ -91,13 +115,14 @@ export default  function News(props: any): ReactElement {
 			</Head>
 
 			<div className="news_container">
+
 				<div className="news_header_container">
 
-					<div className="background_container">
-						<div className="background_image_container">
-							<Image quality="100%" priority={true} src={Eclipse} layout="fill" alt="A Background image for header. Represent a cool planet." className="background_image"/>
-						</div>
-						<div className="background_blur" />
+					<div className="news_background_container">
+						<motion.div className="news_background_image_container" id="news_background_image_container">
+							<Image quality="100%" priority={true} src={Eclipse} layout="fixed" alt="A Background image for header. Represent a cool planet." className="news_background_image" id="news_background_image"/>
+						</motion.div>
+						<div className="news_background_blur" />
 					</div>
 
 					<div className="header_content_container">
@@ -110,8 +135,12 @@ export default  function News(props: any): ReactElement {
 				</div>
 				
 				<div className="news_content_container">
-					{JSXInitialPatchnotes}
-					{ExtraPatchnotes}
+
+					<div className="news_all_patch_container">
+						{JSXInitialPatchnotes}
+						{ExtraPatchnotes}
+					</div>
+					
 
 					<div className="news_load_more_button_container" id="news_load_more_button_container">
 						<button onClick={increment_page} id="increment_page_button">Load More</button>
@@ -128,6 +157,9 @@ export default  function News(props: any): ReactElement {
 //Component to create a Patch template
 function Patchnote_template(props: any): ReactElement{
 	const patchnote: Patchnote = props.patchnote
+	const date = new Date(patchnote.info.date)
+	const distance = formatDistanceStrict(date, new Date())
+	
 
 	return(
 		<>
@@ -138,7 +170,7 @@ function Patchnote_template(props: any): ReactElement{
 				<div className="patch_information">
 					<h2>{patchnote.info.update}</h2>
 					<h1>{patchnote.info.title}</h1>
-					<p>{patchnote.info.date}</p>
+					<p>{distance} ago</p>
 				</div>
 			</div>
 		</>
@@ -149,7 +181,6 @@ function Patchnote_template(props: any): ReactElement{
 
 //Serverside
 import patchHandler from "../lib/patch_lib"
-import { useRouter } from 'next/router';
 export const getStaticProps: GetStaticProps = async () => {
 	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
 	

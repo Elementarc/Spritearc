@@ -10,7 +10,7 @@ export default function Layout( { children }: any) {
     const Router = useRouter()
     
     //Setting IsDesktop to tell other Components if App is mobileDevice or DesktopDevice
-    const [isDesktop, setIsDesktop] = useState(true)
+    const [isDesktop, setIsDesktop] = useState<undefined | boolean>(undefined)
     const [NavState, setNavState] = useState(false);
     //Context that gets Send to all childs
     const appContextObj: AppContext = {
@@ -32,6 +32,7 @@ export default function Layout( { children }: any) {
                 setIsDesktop(false)
             }
         }
+        checkApplicationWidth()
 
         window.addEventListener("resize", checkApplicationWidth)
         return(() => {

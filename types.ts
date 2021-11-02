@@ -11,7 +11,7 @@ export interface NavContext {
 }
 
 export interface AppContext {
-    isDesktop: boolean,
+    isDesktop: boolean | undefined,
     nav: NavContext
 }
 
@@ -22,8 +22,9 @@ export interface Patchnote {
 }
 
 export interface PatchnoteInfo {
-    title: string | undefined,
-    update: string | undefined,
-    date: Date | undefined,
-    image: string | undefined,
+    title: string,
+    update: string,
+    date: Date,
+    image: string,
+    author: string
 }

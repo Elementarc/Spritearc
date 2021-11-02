@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Footer from '../../components/footer';
 import { Patchnote } from '../../types';
 import Image from "next/image"
 import Router from "next/router"
+import { parse } from "node-html-parser"
+
 
 //Frontend
 export default function Patch(props: any) {
   	const patchnote: Patchnote = JSON.parse(props.patchnote)
+	const html = Array.from(parse(patchnote.content).childNodes)
 	
+
 	return (
 		<div className="patch_container">
 
@@ -19,10 +23,9 @@ export default function Patch(props: any) {
 
 			<div className="patch_content_container">
 				<div className="patch_main_content_container">
-					<div className="patch_main_content">
+					<div className="patch_main_content" id="patch_main_content">
 						<h2>{patchnote.info.update}</h2>
 						<h1>{patchnote.info.title}, {patchnote.info.date}</h1>
-						<p>{patchnote.content}</p>
 						
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Placerat fermentum tellus tellus sed justo elementum nunc, vel. Lacus, ipsum eleifend eget erat faucibus lectus. Aenean ultricies ullamcorper convallis lorem. Aliquam elit sociis nec tellus nibh. Elit turpis tempus placerat mi. Mollis lectus sed risus nisi, et. Dignissim urna, vitae sed laoreet ut at neque netus.</p>
 						<br />
@@ -49,10 +52,11 @@ export default function Patch(props: any) {
 
 //Serverside
 import patchHandler from '../../lib/patch_lib';
+
 export const getStaticProps: GetStaticProps = async (context) => {
 	const params: any = context.params
 	const patchnote = JSON.stringify(patchHandler.getPatchnote(params.patchId))
-	
+
 	if(patchnote) {
 		return {
 			props: {

@@ -6,17 +6,20 @@
     height: auto;
     .news_header_container{
         position: relative;
-        .background_container{
+        .news_background_container{
             position: absolute;
             width: 100%;
             height: 100%;
             z-index: 0;
             overflow: hidden;
-            .background_image_container{
-                position: relative;
+            .news_background_image_container{
+                position: fixed;
                 width: 100%;
                 height: 100%;
-                .background_image{
+                overflow: hidden;
+                .news_background_image{
+                    position: sticky;
+                    top: 0;
                     object-fit: cover;
                     object-position: center;
                     opacity: .15;
@@ -25,7 +28,7 @@
                 }
             }
             
-            .background_blur{
+            .news_background_blur{
                 position: absolute;
                 top: 0;
                 height: 100%;
@@ -38,6 +41,7 @@
             position: relative;
             color: $color_bright_grey;
             font-family: $font_alatsi;
+            
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -78,72 +82,90 @@
 
     .news_content_container{
         position: relative;
-        padding: 6%;
-        margin-bottom: 5rem;
-        margin-top: 5rem;
-        display: grid;
-        column-gap: 5rem;
-        row-gap: 5rem;
-        grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto;
-        .patch_template_container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        background-color: $color_dark_blue;
+        
+        .news_all_patch_container {
             position: relative;
-            &:hover{
-                cursor: pointer;
-                box-shadow: 1px 3px 6px 0px $shadow_25;
-                background: $color_bright_blue;
-            }
-            
-            .patch_preview_image_container{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto;
+            row-gap: 5rem;
+            column-gap: 5rem;
+            margin-top: 10rem;
+            padding: 0 8%;
+            width: 100%;
+            height: auto;
+            .patch_template_container{
                 position: relative;
-                object-fit: cover;
-                height: 250px;
-                .patch_preview_image{
-                    object-fit: cover;
-                    object-position: center;
-                }
-            }
-            
-            .patch_information{
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                margin: 2rem 2rem 1.5rem 2rem;
-                font-family: $font_alatsi;
-                h2{
-                    color: $color_main_bright;
-                    font-weight: unset;
-                    font-size: $font_16_size;
-                }
-                h1{
-                    color: $color_white;
-                    font-weight: unset;
-                    font-size: $font_28_size;
-                    margin-top: -.1rem;
-                }
-                p{
-                    color: $color_dark_grey;
-                    margin-top: 1rem;
+                
+                &:hover{
+                    cursor: pointer;
+                    box-shadow: 1px 3px 6px 0px $shadow_25;
+                    background: $color_bright_blue;
                 }
                 
+                .patch_preview_image_container{
+                    position: relative;
+                    object-fit: cover;
+                    height: 250px;
+                    .patch_preview_image{
+                        object-fit: cover;
+                        object-position: center;
+                    }
+                }
+                
+                .patch_information{
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    margin: 2rem 2rem 1.5rem 2rem;
+                    font-family: $font_alatsi;
+                    h2{
+                        color: $color_main_bright;
+                        font-weight: unset;
+                        font-size: $font_16_size;
+                    }
+                    h1{
+                        color: $color_white;
+                        font-weight: unset;
+                        font-size: $font_28_size;
+                        margin-top: -.1rem;
+                    }
+                    p{
+                        color: $color_dark_grey;
+                        margin-top: 1rem;
+                    }
+                    
+                }
             }
+
+            
         }
+        
         .news_load_more_button_container{
-            position: absolute;
             display: flex;
             justify-content: center;
             bottom: 0rem;
             width: 100%;
             button{
+                margin-bottom: 5rem;
+                margin-top: 5rem;
                 background-color: unset;
                 color: $color_main;
                 font-size: $font_18_size;
+                opacity: 1;
                 &:hover{
                     color: $color_main_bright;
                     cursor: pointer;
                 }
             }
-        }
+        } 
     }
     
 }
@@ -173,9 +195,33 @@
         }
 
         .news_content_container{
-            padding: 8rem 0rem;
-            row-gap: 2rem;
-            grid-template-columns: 1fr;
+            .news_all_patch_container {
+                grid-template-columns: 1fr;
+                row-gap: 3rem;
+                margin-top: 5rem;
+                padding: unset;
+                
+                .patch_template_container{
+                    .patch_preview{
+                        height: 230px;
+                    }
+                    .patch_information{
+                        h2{
+                            font-size: $font_14_size;
+                            font-weight: 500;
+                        }
+                        h1{
+                            font-size: $font_24_size;
+                            margin-top: unset;
+                            font-weight: 500;
+                        }
+                        p{
+                            font-size: $font_14_size;
+                        }
+                    }
+                }
+            }
+
             .patch_template_container{
                 .patch_preview{
                     height: 230px;
@@ -193,7 +239,6 @@
                     p{
                         font-size: $font_14_size;
                     }
-                    
                 }
             }
             .news_load_more_button_container{

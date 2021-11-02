@@ -11,7 +11,7 @@ const directoryOfPatches: string = path.join(process.cwd(), "patches")
 export class PatchHandler {
     #patchDirectory: string
     patchnoteList: Patchnote[]
-    patchnoteListOrdered: any
+    patchnoteListOrdered: Patchnote[]
 
     //Can take directory to look for pathes. has a Default value.
     constructor(patchDirectory: string = directoryOfPatches) {
@@ -74,7 +74,7 @@ export class PatchHandler {
         function createOrderedPatchnoteList(patchnoteList: Patchnote[]) {
             const patchnotesByDate: Map<Date, Patchnote> = new Map()
             const dates: Date[] = []
-
+            
             for(let patch of patchnoteList) {
 
                 if(patch.info.date) {
@@ -86,7 +86,7 @@ export class PatchHandler {
             
             const sortedPatchnotes = dates.sort(compareDesc).map((date) => {
                 
-                return patchnotesByDate.get(date)
+                return patchnotesByDate.get(date) as Patchnote
             })
 
             return sortedPatchnotes
@@ -114,7 +114,6 @@ export class Patchnote {
 
     //Reading .md Files to get info & content of a Patchnote. Finding Patchnote by id. id = filename without extention
     constructor(patchDirectory: string ,id: string) {
-        const dateRegEx = new RegExp(/\s*(3[01]|[12][0-9]|0?[1-9])\.(1[012]|0?[1-9])\.((?:19|20)\d{2})\s*$/)
         this.#patchDirectory = patchDirectory
         this.id = id
         this.info = getInfo(this.#patchDirectory, this.id)
@@ -123,9 +122,10 @@ export class Patchnote {
         //Returning Patchinformations about a specific Patch
         function getInfo(directory: string, id: string): PatchnoteInfo {
             const getPatchContent = fs.readFileSync(`${directory}/${id}.md`, "utf-8")
+            const { birthtime } = fs.statSync(`${directory}/${id}.md`)
             //Getting md variables from patch
             const matterResult = matter(getPatchContent)
-            const mdPatchInfo =  matterResult.data as { title?: string, update?: string, date?: string, image?: string}
+            const mdPatchInfo =  matterResult.data as { title?: string, update?: string, image?: string, author?: string}
 
             function patchInfoTitleValidator(title: string | undefined) {
                 if(title) {
@@ -144,26 +144,6 @@ export class Patchnote {
                     return "Update Fallback"
                 }
             }
-            
-            function patchInfoDateValidator(date: string | undefined) {
-                const fallbackDate = new Date(2000, 1, 1)
-                if(date) {
-                    if(dateRegEx.test(date) === true) {
-                        const DDMMYYYY_DateArr = date.split(".")
-                        const day = parseInt(DDMMYYYY_DateArr[0])
-                        const month = parseInt(DDMMYYYY_DateArr[1]) - 1
-                        const year = parseInt(DDMMYYYY_DateArr[2])
-            
-                        return new Date(year, month, day)
-                    } else {
-                        console.log(`The Date property in ${id}.md has the wrong format, created a fallback. Please review the file and use the format: dd.mm.yyyy.`)
-                        return fallbackDate
-                    }
-                } else {
-                    console.log(`Could not find a Date property in ${id}.md, created a fallback. Please review the file!`)
-                    return fallbackDate
-                }
-            }
 
             function patchInfoImageValidator(image: string | undefined) {
                 if(image) {
@@ -174,20 +154,30 @@ export class Patchnote {
                 }
             }
 
+            function patchInfoAuthorValidator(author: string | undefined) {
+                if(author) {
+                    return author
+                } else {
+                    console.log(`Could not find an Author property in ${id}.md, created a fallback. Please review the file!`)
+                    return "PixelPalast"
+                }
+            }
+            
             const fullPatchInfo: PatchnoteInfo = {
                 title: patchInfoTitleValidator(mdPatchInfo.title),
                 update:  patchInfoUpdateValidator(mdPatchInfo.update),
-                date: patchInfoDateValidator(mdPatchInfo.date),
+                date: new Date(birthtime),
                 image:  patchInfoImageValidator(mdPatchInfo.image),
+                author: patchInfoAuthorValidator(mdPatchInfo.author)
             }
             return fullPatchInfo
         }
         //Returning Patchcontent about a specific Patchas an HTMLString
         function getContent(directory: string, id: string): string {
             const getPatchContent = fs.readFileSync(path.join(directory, `${id}.md`), "utf-8")
-        
+            const matterResult = matter(getPatchContent)
             if(getPatchContent) {
-                const html = marked(`${getPatchContent}`);
+                const html = marked(`${matterResult.content}`);
                 return html
             } else {
                 return "Content Fallback"
