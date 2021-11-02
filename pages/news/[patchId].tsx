@@ -32,12 +32,50 @@ export default function Patch(props: any) {
 					</div>
 				</div>
 
+				<Forward_container/>
 			</div>
 
 			<Footer/>
 	</div>
 	);
 }
+//Container That Renders all Forward_items
+function Forward_container(): ReactElement {
+	return (
+	  <div className="patch_forward_container">
+  
+		  <Forward_item img={"/images/patch1.jpg"} header="Plans for the future" description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."/>
+		  <Forward_item img={"/images/patch1.jpg"} header="Plans for the future" description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."/>
+  
+	  </div>
+	);
+}
+//Creating a Forward item. Used by Forward_container
+function Forward_item(props: any) {
+return (
+
+	<div className="patch_forward_content_container">
+
+		<div className="patch_forward_1_container">
+
+			<div className="patch_forward_img_container">
+				<Image layout="fill" src={props.img} alt="" />
+			</div>
+			
+			<div className="patch_forward_info_content">
+				<h2>{props.header}</h2>
+				<p>{props.description}</p>
+			</div>
+			
+		</div>
+		<span />
+
+	</div>
+
+);
+}
+
+
 
 //Serverside
 import patchHandler from '../../lib/patch_lib';
