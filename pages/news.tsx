@@ -169,7 +169,7 @@ function Patchnote_template(props: any): ReactElement{
 				<div className="patch_information">
 					<h2>{patchnote.info.update}</h2>
 					<h1>{patchnote.info.title}</h1>
-					<p>{distance} ago</p>
+					<h4>{distance} ago</h4>
 				</div>
 			</div>
 		</>

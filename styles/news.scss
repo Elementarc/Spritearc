@@ -41,41 +41,42 @@
             position: relative;
             color: $color_bright_grey;
             font-family: $font_alatsi;
-            
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             padding-top: 14rem;
             z-index: 1;
+            
+            @include breakpoint(mobile) {
+                padding-top: 8.5rem;
+            }
+            
             h2 {
-                font-size: $font_18_size;
-                color: $color_main_bright;
-                font-weight: unset;
-    
+                @include h2;
             }
             h1{
-                margin-top: -.1rem;
-                color: $color_white;
-                font-size: $font_38_size;
-                font-weight: unset;
-    
+                @include h1;
             }
             p{
+                @include p;
                 margin-top: 1rem;
-                font-weight: unset;
-                line-height: $font_line_height_text_p;
-                width: 50%;
-                font-size: $font_18_size;
-                font-family: $font_alata;
+                width: 55%;
+                
+
+                @include breakpoint(mobile) {
+                    width: 100%;
+                }
             }
             span{
+                @include next_section_line;
+                margin-top: 12rem;
                 width: 80%;
-                height: 1px;
-                opacity: .5;
-                margin-top: 14rem;
-                background: rgb(255,255,255);
-                background: $color_gradiant_white_line_3;
+
+                @include breakpoint(mobile) {
+                    width: 100%;
+                    margin-top: 8.5rem;
+                }
             }
         }
     }
@@ -90,6 +91,7 @@
         height: 100%;
         background-color: $color_dark_blue;
         
+        
         .news_all_patch_container {
             position: relative;
             display: grid;
@@ -101,6 +103,14 @@
             padding: 0 8%;
             width: 100%;
             height: auto;
+
+            @include breakpoint(mobile) {
+                grid-template-columns: 1fr;
+                row-gap: 3rem;
+                margin-top: 5rem;
+                padding: unset;
+            }
+
             .patch_template_container{
                 position: relative;
                 
@@ -127,25 +137,18 @@
                     margin: 2rem 2rem 1.5rem 2rem;
                     font-family: $font_alatsi;
                     h2{
-                        color: $color_main_bright;
-                        font-weight: unset;
-                        font-size: $font_16_size;
+                        @include h2;
                     }
                     h1{
-                        color: $color_white;
-                        font-weight: unset;
-                        font-size: $font_28_size;
-                        margin-top: -.1rem;
+                        @include h1;
                     }
-                    p{
-                        color: $color_dark_grey;
-                        margin-top: 1rem;
+                    h4{
+                        @include h4;
+                        margin-top: .5rem;
                     }
                     
                 }
             }
-
-            
         }
         
         .news_load_more_button_container{
@@ -167,95 +170,9 @@
             }
         } 
     }
-    
 }
 
-@media (max-width: 1024px) {
-    .news_container {
-        .news_header_container{
-            .header_content_container{
-                padding-top: 8.5rem;
-                h2{
-                    font-size: $font_16_size;
-                    font-weight: 500;
-                }
-                h1 {
-                    font-size: $font_32_size;
-                    font-weight: 500;
-                }
-                p{
-                    width: 100%;
-                    padding: 0 1rem;
-                    font-size: $font_16_size;
-                }
-                span{
-                    margin-top: 8.5rem;
-                }
-            }
-        }
 
-        .news_content_container{
-            .news_all_patch_container {
-                grid-template-columns: 1fr;
-                row-gap: 3rem;
-                margin-top: 5rem;
-                padding: unset;
-                
-                .patch_template_container{
-                    .patch_preview{
-                        height: 230px;
-                    }
-                    .patch_information{
-                        h2{
-                            font-size: $font_14_size;
-                            font-weight: 500;
-                        }
-                        h1{
-                            font-size: $font_24_size;
-                            margin-top: unset;
-                            font-weight: 500;
-                        }
-                        p{
-                            font-size: $font_14_size;
-                        }
-                    }
-                }
-            }
-
-            .patch_template_container{
-                .patch_preview{
-                    height: 230px;
-                }
-                .patch_information{
-                    h2{
-                        font-size: $font_14_size;
-                        font-weight: 500;
-                    }
-                    h1{
-                        font-size: $font_24_size;
-                        margin-top: unset;
-                        font-weight: 500;
-                    }
-                    p{
-                        font-size: $font_14_size;
-                    }
-                }
-            }
-            .news_load_more_button_container{
-                bottom: 3rem;
-                button{
-                    background-color: unset;
-                    color: $color_main;
-                    font-size: $font_18_size;
-                    &:hover{
-                        color: $color_main_bright;
-                        cursor: pointer;
-                    }
-                }
-            }
-        }
-    }
-}
 
 
 

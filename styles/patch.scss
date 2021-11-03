@@ -1,3 +1,5 @@
+@import "./variables.module.scss";
+
 .patch_container{
     grid-column: 1/1;
     grid-row: 1/1;
@@ -30,33 +32,31 @@
         margin: 0rem 6rem;
         column-gap: 6rem;
         margin-top: 2.7rem;
+        
+        @include breakpoint(mobile) {
+            grid-template-columns: 1fr;
+            grid-template-rows: auto;
+            margin: unset;
+        }
+
         .patch_main_content{
-            margin: 0rem 1rem;
             color: $color_white;
-            padding-bottom: 5rem;
+            width: 100%;
             //Small Header
             h2{
-                font-family: $font_alatsi;
-                font-weight: unset;
-                color: $color_main_bright;
-                font-size: $font_18_size;
+                @include h2
             }
             //Header
             h1{
-                font-family: $font_alatsi;
-                font-size: $font_32_size;
-                font-weight: unset;
-                margin-top: -.1rem;
+                @include h1;
             }
             //Date
-            h3{
-                font-family: $font_alatsi;
-                color: $color_dark_grey;
-                font-weight: unset;
-                font-size: $font_16_size;
-            }
-            //List Header
             h4{
+                @include h4;
+            }
+
+            //List Header
+            h3{
                 font-family: $font_alata;
                 font-size: $font_24_size;
                 color: $color_white;
@@ -67,12 +67,7 @@
             }
             //Default Text
             p{
-                font-family: $font_alata;
-                font-size: $font_18_size;
-                color: $color_grey;
-                font-weight: unset;
-                line-height: $font_line_height_text_p;
-                padding-right: 2rem;
+                @include p;
             }
             ul{
                 margin-left: 3rem;
@@ -185,168 +180,3 @@
     }
 }
 
-@media (max-width: 1500px) {
-
-    .patch_container {
-        .patch_content_container{
-            grid-template-columns: 1fr;
-            grid-template-rows: 1fr auto;
-            margin: 0rem 3rem;
-            margin-top: 2rem;
-            
-            .patch_main_content{
-                margin: 0 1rem;
-                h3{
-                    font-size: $font_14_size;
-                    margin-top: -.7rem;
-                }
-                h4{
-                    font-size: $font_18_size;
-                }
-                ul{
-                    li{
-                        font-size: $font_16_size;
-                    }
-                }
-                img{
-                    position: relative;
-                    margin: 1rem 0;
-                    width: 100%;
-                    object-fit: cover;
-                    object-position: center;
-                    width: 100%;
-                }
-                p{
-                    padding-right: unset;
-                }
-            }
-            .patch_forward_container{
-                align-items: unset;
-                width: 100%;
-                margin-bottom: 5rem;
-
-                .patch_forward_content_container{
-                    align-items: unset;
-                    width: 100%;
-                    padding: 0 1rem;
-
-    
-                    .patch_forward_1_container{
-                        width: 100%;
-                        height: 145px;
-    
-                        .patch_forward_img_container{
-                            width: 35%;
-                            max-width: 250px;
-                        }
-                    }
-    
-                }
-            }
-        }
-    }
-}
-
-@media (max-width: 1024px) {
-    .patch_container {
-        .patch_preview_container{
-            width: 100%;
-            height: 350px;
-        }
-
-        .patch_content_container{
-            grid-template-columns: 1fr;
-            grid-template-rows: 1fr auto;
-            margin: unset;
-            margin-top: 0rem;
-            
-
-            .patch_main_content{
-                h2{
-                    
-                    font-size: $font_16_size;
-                }
-                h1{
-                    font-family: $font_alatsi;
-                    font-size: $font_32_size;
-                    font-weight: unset;
-                    margin-top: unset;
-                    margin-bottom: .7rem;
-                }
-                p{
-                    font-size: $font_16_size;
-                    color: $color_grey;
-                }
-                button{
-                    font-size: $font_16_size;
-                }
-            }
-
-            .patch_forward_container{
-                align-items: unset;
-                width: 100%;
-                margin-bottom: 5rem;
-
-                .patch_forward_content_container{
-                    display: flex;
-                    flex-direction: column;
-                    align-items: unset;
-                    width: 100%;
-                    padding: 0 1rem;
-
-    
-                    .patch_forward_1_container{
-                        display: flex;
-                        width: 100%;
-                        height: 100px;
-    
-                        .patch_forward_img_container{
-                            width: 50%;
-                            max-width: 200px;
-                            background-color: violet;
-                            img{
-                                height: 100%;
-                                width: 100%;
-                                object-fit: cover;
-                            }
-                        }
-    
-                        .patch_forward_info_content{
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: center;
-                            margin-left: 1rem;
-                            padding: 1rem;
-                            h2{
-                                display: inline-block;
-                                font-family: $font_alatsi;
-                                color: $color_main_bright;
-                                font-weight: unset;
-                                font-size: $font_16_size;
-                            }
-                            p{
-                                font-family: $font_alata;
-                                color: $color_grey;
-                                font-weight: unset;
-                                font-size: $font_14_size;
-                            }
-                        }
-                        
-                        
-                        
-                    }
-    
-                    span{
-                        display: block;
-                        margin: 1.5rem 0rem;
-                        width: 100%;
-                        height: 1px;
-                        opacity: .3;
-                        background: $color_gradiant_white_line_3;
-                    }
-                    
-                }
-            }
-        }
-    }
-}

@@ -256,7 +256,7 @@ function Navigation_mobile(): ReactElement {
                 <motion.div className="nav_items_container" >
                     <div onClick={() => {nav.setNavState(false)}}>
                         <ul>
-                            <Nav_item label="Home" icon={HomeIcon} link="/home"/>
+                            <Nav_item label="Home" icon={HomeIcon} link="/"/>
                             <Nav_item label="News" icon={NewsIcon} link="/news"/>
                             <Nav_item label="Packs" icon={PacksIcon} link="/packs"/>
                             <Nav_item label="Search" icon={SearchIcon} link="/search"/>

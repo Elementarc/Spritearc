@@ -1,12 +1,138 @@
 @font-face {
     font-family: "Alatsi";
-    font-weight: unset;
     src: url("/fonts/Alatsi-Regular.ttf");
 }
 @font-face {
     font-family: "Alata";
-    font-weight: unset;
     src: url("/fonts/Alata-Regular.ttf");
+}
+$mobile_breakpoint: 1024px;
+$desktop_breakpoint: 1920px;
+
+$color_white: #ffffff;
+
+//Font-family
+$font_alatsi: 'Alatsi';
+$font_alata: 'Alata';
+//Font-sizes
+$font_h1_desktop: 2.375rem;
+$font_h1_mobile: 2rem;
+
+$font_h2_desktop: 1.125rem;
+$font_h2_mobile: 1rem;
+
+$font_h4_desktop: 1rem;
+$font_h4_mobile: 0.875rem;
+
+$font_p_desktop: 1.125rem;
+$font_p_mobile: 1rem;
+$font_p_line_height: 1.9rem;
+
+//Color
+$color_bright_grey: #D3D3D3;
+
+//Section Lines
+$next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
+//Mixins
+@mixin breakpoint($point) {
+    @if $point == desktop {
+        @media screen and (max-width: 1920px) { @content; }
+    }
+    @else if $point == mobile {
+        @media screen and (max-width: 1024px) { @content; }
+    }
+}
+
+@mixin next_section_line {
+    width: 100%;
+    height: 1px;
+    opacity: .5;
+    background: rgb(255,255,255);
+    background: $next_section_line_gradiant;
+}
+@mixin p {
+    font-family: $font_alata;
+    font-weight: unset;
+    line-height: $font_p_line_height;
+    color: $color_bright_grey;
+    
+
+    @include breakpoint(desktop) {
+        font-size: $font_p_desktop;
+        
+    }
+
+    @include breakpoint(mobile) {
+        font-size: $font_p_mobile;
+        padding: 0 1rem;
+    }
+}
+
+//Dates / authors
+@mixin h4() {
+    font-family: $font_alatsi;
+    font-weight: unset;
+    color: $color_dark_grey;
+    
+
+    @include breakpoint(desktop) {
+        font-size: $font_h4_desktop;
+    }
+
+    @include breakpoint(mobile) {
+        font-size: $font_h4_mobile;
+        padding: 0 1rem;
+    }
+}
+
+//
+@mixin h3() {
+    font-family: $font_alatsi;
+    font-weight: unset;
+    color: $color_main_bright;
+    padding: 0 1rem;
+
+    @include breakpoint(desktop) {
+        font-size: $font_h2_desktop;
+    }
+
+    @include breakpoint(mobile) {
+        font-size: $font_h2_mobile;
+    }
+}
+
+//Sub Title.
+@mixin h2() {
+    font-family: $font_alatsi;
+    font-weight: unset;
+    color: $color_main_bright;
+    
+
+    @include breakpoint(desktop) {
+        font-size: $font_h2_desktop;
+    }
+
+    @include breakpoint(mobile) {
+        padding: 0 1rem;
+        font-size: $font_h2_mobile;
+    }
+}
+//Big Titles
+@mixin h1 () {
+    font-family: $font_alatsi;
+    font-weight: unset;
+    color: $color_white;
+    
+
+    @include breakpoint(desktop) {
+        font-size: $font_h1_desktop;
+    }
+
+    @include breakpoint(mobile) {
+        font-size: $font_h1_mobile;
+        padding: 0 1rem;
+    }
+    
 }
 
 //Colors
@@ -18,10 +144,10 @@ $color_bright_blue_1: #192b49;
 $color_main: #F7C35E;
 $color_main_bright: #FFE0A3;
 
-$color_white: #ffffff;
+
 $color_dark_grey: #808080;
 $color_grey: #C4C4C4;
-$color_bright_grey: #D3D3D3;
+
 
 
 $color_gradiant_main: linear-gradient(180deg, $color_bright_blue 0%, $color_dark_blue_1 100%);
@@ -41,9 +167,11 @@ $font_14_size: 0.875rem;
 $font_12_size: 0.75rem;
 $font_line_height_text_p: 1.9rem;
 
-//fontFamily
-$font_alatsi: 'Alatsi';
-$font_alata: 'Alata';
+
 
 //Shadow
 $shadow_25: rgba(0, 0, 0, 0.25);
+
+@media (max-width: 1024px) {
+    $font_18_size: 3.125rem;
+}

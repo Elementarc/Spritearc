@@ -1,5 +1,6 @@
 import { ReactElement } from "react";
 import Footer from "../components/footer";
+
 export default function Home(): ReactElement {
   return (
     <div className="home_container">

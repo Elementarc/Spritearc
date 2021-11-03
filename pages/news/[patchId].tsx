@@ -25,7 +25,7 @@ export default function Patch(props: any) {
 					<div className="patch_main_content" id="patch_main_content">
 						<h2>{patchnote.info.update}</h2>
 						<h1>{patchnote.info.title}</h1>
-						<h3>{distance} ago</h3>
+						<h4>{distance} ago</h4>
 						<Markdown options={{forceBlock: true}} >{patchnote.content}</Markdown>
 						
 						<button className="patch_goback_button" onClick={() => {Router.back()}}>Go Back</button>
