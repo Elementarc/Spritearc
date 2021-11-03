@@ -23,8 +23,8 @@
                 top: 0;
                 height: 100%;
                 width: 100%;
-                background: $color_dark_blue;
-                background: radial-gradient(circle, rgba(3,12,24,0.227328431372549) 0%, rgba(3,12,24,1) 88%);
+                background: $color_background_dark;
+                background: radial-gradient(circle, #05102000 0%, #051020 88%);
             }
         }
         .header_content_container{
@@ -79,7 +79,7 @@
         align-items: center;
         width: 100%;
         height: 100%;
-        background-color: $color_dark_blue;
+        background-color: $color_background_dark;
         
         
         .news_all_patch_container {
@@ -108,8 +108,8 @@
                 user-select: none;
                 &:hover{
                     cursor: pointer;
-                    box-shadow: 1px 3px 6px 0px $shadow_25;
-                    background: $color_bright_blue;
+                    box-shadow: 1px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                    background: $color_main_blue_hover;
                 }
                 
                 .patch_preview_image_container{
@@ -175,8 +175,6 @@
                 }
             } 
         }
-        
-        
     }
 }
 

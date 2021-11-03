@@ -37,9 +37,11 @@ function Navigation_desktop(): ReactElement {
     const App: AppContext = useContext(appContext)
     const Nav: NavContext = App.nav
     const navContainerAnimation = useAnimation()
+
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
         const getNavContentContainer = document.getElementById("nav_content") as HTMLDivElement
+        const getNavigation = document.getElementById("nav_container") as HTMLDivElement
         //Animations For Navigation(DESKTOP)
         function animateNavDesktop(navState: boolean): void{
             getNavContentContainer.style.overflowX = "hidden"
@@ -56,14 +58,17 @@ function Navigation_desktop(): ReactElement {
                 document.body.style.overflow = ""
                 getContentBlur.style.pointerEvents = "none"
                 getContentBlur.style.opacity = "0"
+
             } else {
                 navContainerAnimation.start({
                     width: "380px",
                     transition: {duration: 0.25},
+                    
                 })
                 document.body.style.overflow = "hidden"
                 getContentBlur.style.pointerEvents = "all"
                 getContentBlur.style.opacity = "0.8"
+
             }
         }
 
@@ -148,6 +153,7 @@ function Navigation_desktop(): ReactElement {
                     </AnimatePresence>
                 </motion.div>
 
+
                 <div className="nav_items_container" >
                     <div onClick={() => {Nav.setNavState(false)}}>
                         <ul>
@@ -191,7 +197,6 @@ function Navigation_mobile(): ReactElement {
             if(navState === false) {
                 getNavScrollContainer.style.overflowX = "hidden"
                 getNavScrollContainer.style.overflowY = "hidden"
-
                 navContainerAnimation.start({
                     width: "",
                     height: "",
@@ -202,7 +207,7 @@ function Navigation_mobile(): ReactElement {
                 getNavScrollContainer.style.overflowX = "hidden"
                 getNavScrollContainer.style.overflowY = "scroll"
                 document.body.style.overflow = "hidden"
-
+                
                 navContainerAnimation.start({
                     width: "",
                     height: `100%`,

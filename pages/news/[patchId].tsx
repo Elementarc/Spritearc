@@ -43,7 +43,7 @@ export default function Patch(props: any) {
 					<div className="patch_main_content" id="patch_main_content">
 						<h2>{patchnote.info.update}</h2>
 						<h1>{patchnote.info.title}</h1>
-						<h4>{distance} ago</h4>
+						<h4 style={{marginBottom: ".7rem"}}>{distance} ago</h4>
 						<Markdown options={{forceBlock: true}} >{patchnote.content}</Markdown>
 						
 						<div className="patch_go_back">
@@ -72,6 +72,7 @@ function Forward_container(): ReactElement {
   
 	  </div>
 	);
+
 }
 //Creating a Forward item. Used by Forward_container
 function Forward_item(props: any) {

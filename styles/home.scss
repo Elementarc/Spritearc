@@ -38,13 +38,8 @@
                 font-weight: unset;
             }
             p{
-                margin-top: 1rem;
-                font-weight: unset;
-                line-height: $font_line_height_text_p;
-                color: $color_bright_grey;
-                font-size: $font_18_size;
+                @include p;
                 width: 50%;
-                font-family: $font_alata;
             }
             button{
                 margin-top: 1.5rem;
@@ -103,13 +98,8 @@
                 font-weight: unset;
             }
             p{
-                margin-top: 1rem;
-                font-weight: unset;
-                line-height: $font_line_height_text_p;
-                color: $color_bright_grey;
-                font-size: $font_18_size;
-                width: 60%;
-                font-family: $font_alata;
+                @include p;
+                width: 50%;
             }
             button{
                 margin-top: 2rem;
@@ -120,7 +110,7 @@
                 padding: .70rem 2.3rem;
                 background-color: $color_main;
                 transition: 0.1s ease-in-out;
-                color: $color_dark_blue;
+                color: $color_background_dark;
                 &:hover{
                     cursor: pointer;
                     background-color: $color_main_bright;

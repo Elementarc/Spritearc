@@ -18,9 +18,12 @@ $color_grey: #C4C4C4;
 $color_bright_grey: #D3D3D3;
 $color_white: #ffffff;
 
-$color_background_dark: #030C18;
+$color_background_dark: #051020;
+$color_background_dark_hover: #09192f;
 $color_main_blue: #111F35;
 $color_main_blue_hover: #192b49;
+
+$color_error: #F75E5E;
 //Font-family
 $font_alatsi: 'Alatsi';
 $font_alata: 'Alata';
@@ -43,8 +46,11 @@ $font_h4_mobile: 0.875rem;
 
 $font_p_desktop: 1.125rem;
 $font_p_mobile: 1rem;
-$font_p_line_height: 1.9rem;
-//Section Lines
+$font_p_line_height: 2rem;
+//Gradiants
+$gradiant_footer: linear-gradient(180deg, $color_main_blue 0%, $color_background_dark 100%);
+$gradiant_nav: linear-gradient(180deg, $color_main_blue 60%, $color_background_dark 100%);
+$gradiant_nav_mobile: linear-gradient(180deg, $color_main_blue 60%, $color_background_dark_hover 100%);
 $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
 
 
@@ -175,22 +181,6 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     }
     
 }
-
-//Colors
-$color_dark_blue: #030C18;
-$color_dark_blue_1: #081427;
-$color_bright_blue: #111F35;
-$color_bright_blue_1: #192b49;
-
-
-
-
-
-$color_gradiant_main: linear-gradient(180deg, $color_bright_blue 0%, $color_dark_blue_1 100%);
-$color_gradiant_white_line_3: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
-
-
-$color_error: #F75E5E;
 //Fontsizes
 $font_48_size: 3rem;
 $font_38_size: 2.375rem;
@@ -201,13 +191,3 @@ $font_18_size: 1.125rem;
 $font_16_size: 1rem;
 $font_14_size: 0.875rem;
 $font_12_size: 0.75rem;
-$font_line_height_text_p: 1.9rem;
-
-
-
-//Shadow
-$shadow_25: rgba(0, 0, 0, 0.25);
-
-@media (max-width: 1024px) {
-    $font_18_size: 3.125rem;
-}

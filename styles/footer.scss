@@ -5,9 +5,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: #111F35;
-    background: $color_gradiant_main;
     width: 100%;
+    overflow: hidden;
+    background: $color_main_blue;
+    background: $gradiant_footer;
     h1{
         font-size: $font_38_size;
         font-family: $font_alatsi;

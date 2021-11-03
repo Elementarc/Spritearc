@@ -10,12 +10,12 @@ html,
 body {
   &::-webkit-scrollbar{
     width: 10px;
-    background-color: $color_dark_blue;
+    background-color: $color_background_dark;
   }
   &::-webkit-scrollbar-thumb{
-    background-color: $color_bright_blue;
+    background-color: $color_main_blue;
     &:hover{
-      background-color: $color_bright_blue_1;
+      background-color: $color_main_blue_hover;
     }
   }
 }

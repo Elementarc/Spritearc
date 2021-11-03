@@ -31,6 +31,7 @@ export default  function News(props: any): ReactElement {
 			return 1
 		}
 	})
+	
 	const lastPage = Math.ceil(patchnoteList.length / maxPages)
 	//JSX Elements of Initial Patchnotes that will be rendered
 	const JSXInitialPatchnotes: ReactElement<Patchnote>[] = (() => {
@@ -62,7 +63,7 @@ export default  function News(props: any): ReactElement {
 			setExtraPatchnotes(jsxPatchnotes.slice(maxPages, maxPages * CurrentPage));
 		}
 		create_extra_patchnotes()
-	}, [CurrentPage, setExtraPatchnotes, maxPages])
+	}, [CurrentPage, setExtraPatchnotes])
 
 	//Button Load More. Checking if button should be displayed
 	useEffect(() => {
