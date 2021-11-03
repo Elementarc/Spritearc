@@ -9,17 +9,34 @@
 $mobile_breakpoint: 1024px;
 $desktop_breakpoint: 1920px;
 
+//Colors
+$color_main: #F7C35E;
+$color_main_bright: #FFE0A3;
+
+$color_dark_grey: #808080;
+$color_grey: #C4C4C4;
+$color_bright_grey: #D3D3D3;
 $color_white: #ffffff;
 
+$color_background_dark: #030C18;
+$color_main_blue: #111F35;
+$color_main_blue_hover: #192b49;
 //Font-family
 $font_alatsi: 'Alatsi';
 $font_alata: 'Alata';
 //Font-sizes
-$font_h1_desktop: 2.375rem;
-$font_h1_mobile: 2rem;
+$font_h1_desktop: 2.25rem;
+$font_h1_desktop_small: 1.75rem;
+$font_h1_mobile: 1.8rem;
+$font_h1_mobile_small: 1.5rem;
 
 $font_h2_desktop: 1.125rem;
+$font_h2_desktop_small: 1rem;
 $font_h2_mobile: 1rem;
+$font_h2_mobile_small: 0.875rem;
+
+$font_h3_desktop: 1.75rem;
+$font_h3_mobile: 1.5rem;
 
 $font_h4_desktop: 1rem;
 $font_h4_mobile: 0.875rem;
@@ -27,22 +44,22 @@ $font_h4_mobile: 0.875rem;
 $font_p_desktop: 1.125rem;
 $font_p_mobile: 1rem;
 $font_p_line_height: 1.9rem;
-
-//Color
-$color_bright_grey: #D3D3D3;
-
 //Section Lines
 $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
-//Mixins
+
+
+//BreakPoints
 @mixin breakpoint($point) {
     @if $point == desktop {
         @media screen and (max-width: 1920px) { @content; }
     }
     @else if $point == mobile {
         @media screen and (max-width: 1024px) { @content; }
+    } @else if $point == middle_screen {
+        @media screen and (max-width: 1450px) { @content; }
     }
 }
-
+//For Next lines
 @mixin next_section_line {
     width: 100%;
     height: 1px;
@@ -50,6 +67,27 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     background: rgb(255,255,255);
     background: $next_section_line_gradiant;
 }
+//Texts
+@mixin a {
+    font-family: $font_alatsi;
+    font-weight: unset;
+    color: $color_main;
+    
+    &:hover{
+        cursor: pointer;
+        color: $color_main_bright;
+    }
+    @include breakpoint(desktop) {
+        font-size: $font_p_desktop;
+        
+    }
+
+    @include breakpoint(mobile) {
+        font-size: $font_p_mobile;
+        padding: 0 1rem;
+    }
+}
+//Texts
 @mixin p {
     font-family: $font_alata;
     font-weight: unset;
@@ -67,7 +105,6 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
         padding: 0 1rem;
     }
 }
-
 //Dates / authors
 @mixin h4() {
     font-family: $font_alatsi;
@@ -84,53 +121,57 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
         padding: 0 1rem;
     }
 }
-
-//
-@mixin h3() {
-    font-family: $font_alatsi;
-    font-weight: unset;
-    color: $color_main_bright;
-    padding: 0 1rem;
-
-    @include breakpoint(desktop) {
-        font-size: $font_h2_desktop;
-    }
-
-    @include breakpoint(mobile) {
-        font-size: $font_h2_mobile;
-    }
-}
-
-//Sub Title.
-@mixin h2() {
+//Sub header.
+@mixin h2($size: normal) {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_main_bright;
     
-
+    
     @include breakpoint(desktop) {
-        font-size: $font_h2_desktop;
+        @if $size == normal {
+            font-size: $font_h2_desktop;
+        } @else if $size == small {
+            font-size: $font_h2_desktop_small;
+        }
     }
 
     @include breakpoint(mobile) {
         padding: 0 1rem;
-        font-size: $font_h2_mobile;
+        @if $size == normal {
+            font-size: $font_h2_mobile;
+        } @else if $size == small {
+            font-size: $font_h2_mobile_small;
+        }
+       
     }
 }
-//Big Titles
-@mixin h1 () {
+//Headers
+@mixin h1 ($size: normal) {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_white;
     
 
     @include breakpoint(desktop) {
-        font-size: $font_h1_desktop;
+        
+        @include breakpoint(desktop) {
+            @if $size == normal {
+                font-size: $font_h1_desktop;
+            } @else if $size == small {
+                font-size: $font_h1_desktop_small;
+            }
+        }
     }
 
     @include breakpoint(mobile) {
-        font-size: $font_h1_mobile;
         padding: 0 1rem;
+
+        @if $size == normal {
+            font-size: $font_h1_mobile;
+        } @else if $size == small {
+            font-size: $font_h1_mobile_small;
+        }
     }
     
 }
@@ -141,12 +182,7 @@ $color_dark_blue_1: #081427;
 $color_bright_blue: #111F35;
 $color_bright_blue_1: #192b49;
 
-$color_main: #F7C35E;
-$color_main_bright: #FFE0A3;
 
-
-$color_dark_grey: #808080;
-$color_grey: #C4C4C4;
 
 
 

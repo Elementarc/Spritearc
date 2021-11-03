@@ -13,6 +13,7 @@ function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
 }
 
+
 const maxPages = 4
 //News Component
 export default  function News(props: any): ReactElement {
@@ -61,7 +62,7 @@ export default  function News(props: any): ReactElement {
 			setExtraPatchnotes(jsxPatchnotes.slice(maxPages, maxPages * CurrentPage));
 		}
 		create_extra_patchnotes()
-	}, [CurrentPage])
+	}, [CurrentPage, setExtraPatchnotes, maxPages])
 
 	//Button Load More. Checking if button should be displayed
 	useEffect(() => {
@@ -95,9 +96,9 @@ export default  function News(props: any): ReactElement {
 	//Parallax effect for backgroundImage
 	const { scrollY } = useViewportScroll()
 	useEffect(() => {
-		const getBackgroundImagContainer = document.getElementById("news_background_image_container") as HTMLDivElement
+		const getBackgroundImage = document.getElementById("news_background_image") as HTMLDivElement
 		function parallax() {
-			getBackgroundImagContainer.style.transform = `translateY(-${scrollY.get() / 3.5}px)`
+			getBackgroundImage.style.transform = `translateY(${scrollY.get() / 2}px)`
 		}
 
 		window.addEventListener("scroll", parallax)
@@ -105,7 +106,7 @@ export default  function News(props: any): ReactElement {
 		return(() => {
 			window.removeEventListener("scroll", parallax)
 		})
-	}, [])
+	}, [scrollY])
 
 	return (
 		<>
@@ -119,9 +120,7 @@ export default  function News(props: any): ReactElement {
 				<div className="news_header_container">
 
 					<div className="news_background_container">
-						<motion.div className="news_background_image_container" id="news_background_image_container">
-							<Image quality="100%" priority={true} src={Eclipse} layout="fixed" alt="A Background image for header. Represent a cool planet." className="news_background_image" id="news_background_image"/>
-						</motion.div>
+						<Image quality="100%" priority={true} src={Eclipse} layout="fill" alt="A pixelart image that displays a universe" className="news_background_image" id="news_background_image"/>
 						<div className="news_background_blur" />
 					</div>
 
@@ -139,12 +138,12 @@ export default  function News(props: any): ReactElement {
 					<div className="news_all_patch_container">
 						{JSXInitialPatchnotes}
 						{ExtraPatchnotes}
+
+						<div className="news_load_more_button_container" id="news_load_more_button_container">
+							<button onClick={increment_page} id="increment_page_button">Load More</button>
+						</div>
 					</div>
 					
-
-					<div className="news_load_more_button_container" id="news_load_more_button_container">
-						<button onClick={increment_page} id="increment_page_button">Load More</button>
-					</div>
 				</div>
 				
 				<Footer />
@@ -153,12 +152,18 @@ export default  function News(props: any): ReactElement {
 	);
 }
 
+
 //Component to create a Patch template
 function Patchnote_template(props: any): ReactElement{
 	const patchnote: Patchnote = props.patchnote
 	const date = new Date(patchnote.info.date)
-	const distance = formatDistanceStrict(date, new Date())
+	const [Distance, setDistance] = useState<null | string>(null)
 	
+	useEffect(() => {
+		const distance = formatDistanceStrict(date, new Date())
+		setDistance(distance)
+
+	}, [setDistance])
 
 	return(
 		<>
@@ -169,7 +174,7 @@ function Patchnote_template(props: any): ReactElement{
 				<div className="patch_information">
 					<h2>{patchnote.info.update}</h2>
 					<h1>{patchnote.info.title}</h1>
-					<h4>{distance} ago</h4>
+					<h4>{Distance} ago</h4>
 				</div>
 			</div>
 		</>

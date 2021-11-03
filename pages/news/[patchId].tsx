@@ -1,22 +1,40 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement , useEffect} from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next'
+import Link from "next/link"
 import Footer from '../../components/footer';
+import { useViewportScroll } from 'framer-motion';
 import { Patchnote } from '../../types';
 import Image from "next/image"
 import Router from "next/router"
 import {formatDistanceStrict} from "date-fns"
 import Markdown from 'markdown-to-jsx';
 
+
 //Frontend
 export default function Patch(props: any) {
   	const patchnote: Patchnote = JSON.parse(props.patchnote)
 	const distance = formatDistanceStrict(new Date(patchnote.info.date), new Date())
-	
+
+	//Parallax effect for backgroundImage
+	const { scrollY } = useViewportScroll()
+	useEffect(() => {
+		const getPatchImageContainer = document.getElementById("patch_background_image") as HTMLDivElement
+		function parallax() {
+			getPatchImageContainer.style.transform = `translateY(${scrollY.get() / 2}px)`
+		}
+
+		window.addEventListener("scroll", parallax)
+
+		return(() => {
+			window.removeEventListener("scroll", parallax)
+		})
+	}, [scrollY])
+
 	return (
 		<div className="patch_container">
 			
-			<div className="patch_preview_container">
-				<Image quality="100%" priority={true} src={`/images/${patchnote.info.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="background_image"/>
+			<div className="patch_header_container">
+				<Image quality="100%" priority={true} src={`/images/${patchnote.info.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="patch_background_image" id="patch_background_image"/>
 				<div className="patch_preview_blur"></div>
 			</div>
 
@@ -28,7 +46,12 @@ export default function Patch(props: any) {
 						<h4>{distance} ago</h4>
 						<Markdown options={{forceBlock: true}} >{patchnote.content}</Markdown>
 						
-						<button className="patch_goback_button" onClick={() => {Router.back()}}>Go Back</button>
+						<div className="patch_go_back">
+							<Link href="/news" scroll={false}>
+								<a>Go back</a>
+							</Link>
+						</div>
+						
 					</div>
 				</div>
 
@@ -53,13 +76,11 @@ function Forward_container(): ReactElement {
 //Creating a Forward item. Used by Forward_container
 function Forward_item(props: any) {
 return (
-
-	<div className="patch_forward_content_container">
-
-		<div className="patch_forward_1_container">
+	<>
+		<div className="patch_forward_content_container">
 
 			<div className="patch_forward_img_container">
-				<Image layout="fill" src={props.img} alt="" />
+				<Image className="patch_forward_image" layout="fill" src={props.img} alt="" />
 			</div>
 			
 			<div className="patch_forward_info_content">
@@ -69,8 +90,7 @@ return (
 			
 		</div>
 		<span />
-
-	</div>
+	</>
 
 );
 }
