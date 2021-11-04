@@ -1,9 +1,10 @@
 @import "./variables.module.scss";
 
 .patch_container{
-    grid-column: 1/1;
-    grid-row: 1/1;
+    position: relative;
     height: auto;
+    z-index: 1;
+    background-color: $color_background_dark;
     .patch_header_container{
         position: relative;
         width: 100%;
@@ -172,6 +173,10 @@
             }
         }
         
+    }
+
+    .nav_shadow{
+        @include nav_shadow;
     }
 }
 

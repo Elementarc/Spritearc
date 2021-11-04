@@ -2,6 +2,7 @@ import React, { ReactElement , useEffect} from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Link from "next/link"
 import Footer from '../../components/footer';
+import { Nav_shadow } from "../../components/navigation";
 import { useViewportScroll } from 'framer-motion';
 import { Patchnote } from '../../types';
 import Image from "next/image"
@@ -31,35 +32,38 @@ export default function Patch(props: any) {
 	}, [scrollY])
 
 	return (
-		<div className="patch_container">
-			
-			<div className="patch_header_container">
-				<Image quality="100%" priority={true} src={`/images/${patchnote.info.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="patch_background_image" id="patch_background_image"/>
-				<div className="patch_preview_blur"></div>
-			</div>
-
-			<div className="patch_content_container">
-				<div className="patch_main_content_container">
-					<div className="patch_main_content" id="patch_main_content">
-						<h2>{patchnote.info.update}</h2>
-						<h1>{patchnote.info.title}</h1>
-						<h4 style={{marginBottom: ".7rem"}}>{distance} ago</h4>
-						<Markdown options={{forceBlock: true}} >{patchnote.content}</Markdown>
-						
-						<div className="patch_go_back">
-							<Link href="/news" scroll={false}>
-								<a>Go back</a>
-							</Link>
-						</div>
-						
-					</div>
+		<>
+			<div className="patch_container">
+				
+				<div className="patch_header_container">
+					<Image quality="100%" priority={true} src={`/images/${patchnote.info.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="patch_background_image" id="patch_background_image"/>
+					<div className="patch_preview_blur"></div>
 				</div>
 
-				<Forward_container/>
-			</div>
+				<div className="patch_content_container">
+					<div className="patch_main_content_container">
+						<div className="patch_main_content" id="patch_main_content">
+							<h2>{patchnote.info.update}</h2>
+							<h1>{patchnote.info.title}</h1>
+							<h4 style={{marginBottom: ".7rem"}}>{distance} ago</h4>
+							<Markdown options={{forceBlock: true}} >{patchnote.content}</Markdown>
+							
+							<div className="patch_go_back">
+								<Link href="/news" scroll={false}>
+									<a>Go back</a>
+								</Link>
+							</div>
+							
+						</div>
+					</div>
 
+					<Forward_container/>
+				</div>
+				
+				<Nav_shadow/>
+			</div>
 			<Footer/>
-	</div>
+	</>
 	);
 }
 //Container That Renders all Forward_items

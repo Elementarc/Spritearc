@@ -336,4 +336,11 @@ function Nav_item(props: NavItem) {
     )
 }
 
+export function Nav_shadow(): ReactElement {
+
+    return(
+        <div className="nav_shadow"/>
+    )
+}
+
 

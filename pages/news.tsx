@@ -4,6 +4,7 @@ import Image from "next/image"
 import Eclipse from "../public/images/eclipse.jpg"
 import Router from "next/router"
 import Footer from '../components/footer';
+import { Nav_shadow } from "../components/navigation";
 import { useEffect } from 'react';
 import { GetStaticProps} from 'next'
 import { Patchnote } from '../types';
@@ -111,11 +112,6 @@ export default  function News(props: any): ReactElement {
 
 	return (
 		<>
-			<Head>
-				<title>Pixel News</title>
-				<meta name="description" content="You can see the patchnotes of our application"/>
-			</Head>
-
 			<div className="news_container" id="news_container">
 
 				<div className="news_header_container">
@@ -147,8 +143,10 @@ export default  function News(props: any): ReactElement {
 					
 				</div>
 				
-				<Footer />
+				<Nav_shadow/>
 			</div>
+			
+			<Footer />
 		</>
 	);
 }

@@ -1,9 +1,10 @@
 @import "./variables.module.scss";
 
 .news_container{
-    grid-row: 1/1;
-    grid-column: 1/1;
+    position: relative;
     height: auto;
+    z-index: 1;
+    background-color: $color_background_dark;
     .news_header_container{
         position: relative;
         .news_background_container{
@@ -175,6 +176,10 @@
                 }
             } 
         }
+    }
+
+    .nav_shadow{
+        @include nav_shadow;
     }
 }
 

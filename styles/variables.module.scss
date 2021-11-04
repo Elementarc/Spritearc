@@ -48,14 +48,14 @@ $font_h5_desktop: 0.875rem;
 $font_h5_mobile: 0.75rem;
 
 $font_button_desktop: 1.125rem;
-$font_button_desktop: 1rem;
+$font_button_mobile: 1rem;
 
 $font_p_desktop: 1.125rem;
 $font_p_mobile: 1rem;
 $font_p_line_height: 2rem;
 //Gradiants
-$gradiant_footer: linear-gradient(180deg, $color_main_blue 0%, $color_background_dark 100%);
-$gradiant_nav: linear-gradient(180deg, $color_main_blue 60%, $color_background_dark 100%);
+$gradiant_main: linear-gradient(180deg, $color_main_blue 70%, $color_background_dark 100%);
+$gradiant_sections: linear-gradient(180deg, #05102000 -100%, $color_background_dark 100%);
 $gradiant_nav_mobile: linear-gradient(180deg, $color_main_blue 60%, $color_background_dark_hover 100%);
 $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
 
@@ -63,7 +63,7 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
 //BreakPoints
 @mixin breakpoint($point) {
     @if $point == desktop {
-        @media screen and (max-width: 1920px) { @content; }
+        @media screen and (max-width: 2560px) { @content; }
     }
     @else if $point == mobile {
         @media screen and (max-width: 1024px) { @content; }
@@ -81,15 +81,19 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
 }
 @mixin button {
     font-family: "Alatsi";
-    font-size: $font_button_desktop;
     color: $color_background_dark;
     background-color: $color_main;
-    padding: .8rem 2.6rem;
+    
     &:hover{
         background-color: $color_main_bright;
         cursor: pointer;
     }
+    @include breakpoint(desktop) {
+        font-size: $font_button_desktop;
+        padding: .8rem 2.6rem;
+    }
     @include breakpoint(mobile) {
+        font-size: $font_button_mobile;
         padding: .6rem 2.6rem;
     }
 }
@@ -175,6 +179,7 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
         } @else if $size == small {
             font-size: $font_h2_desktop_small;
         }
+
     }
 
     @include breakpoint(mobile) {
@@ -196,12 +201,10 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
 
     @include breakpoint(desktop) {
         
-        @include breakpoint(desktop) {
-            @if $size == normal {
-                font-size: $font_h1_desktop;
-            } @else if $size == small {
-                font-size: $font_h1_desktop_small;
-            }
+        @if $size == normal {
+            font-size: $font_h1_desktop;
+        } @else if $size == small {
+            font-size: $font_h1_desktop_small;
         }
     }
 
@@ -216,4 +219,12 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     }
     
 }
-//Fontsizes
+
+@mixin nav_shadow {
+    position: absolute;
+    top: -4px;
+    height: 100%;
+    width: 1px;
+    left: -2px;
+    box-shadow: 0px 0px 6px 3px rgba(0, 0, 0, 0.20);
+}

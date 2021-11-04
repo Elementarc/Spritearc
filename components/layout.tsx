@@ -1,9 +1,10 @@
 
 import React, {useState, useEffect} from 'react';
 import {AppContext} from "../types"
-import Navigation from './navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
+//Components
+import Navigation from './navigation';
 export const appContext: any = React.createContext(null)
 
 export default function Layout( { children }: any) {
