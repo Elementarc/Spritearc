@@ -44,6 +44,12 @@ $font_h3_mobile: 1.5rem;
 $font_h4_desktop: 1rem;
 $font_h4_mobile: 0.875rem;
 
+$font_h5_desktop: 0.875rem;
+$font_h5_mobile: 0.75rem;
+
+$font_button_desktop: 1.125rem;
+$font_button_desktop: 1rem;
+
 $font_p_desktop: 1.125rem;
 $font_p_mobile: 1rem;
 $font_p_line_height: 2rem;
@@ -73,7 +79,21 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     background: rgb(255,255,255);
     background: $next_section_line_gradiant;
 }
-//Texts
+@mixin button {
+    font-family: "Alatsi";
+    font-size: $font_button_desktop;
+    color: $color_background_dark;
+    background-color: $color_main;
+    padding: .8rem 2.6rem;
+    &:hover{
+        background-color: $color_main_bright;
+        cursor: pointer;
+    }
+    @include breakpoint(mobile) {
+        padding: .6rem 2.6rem;
+    }
+}
+//Links
 @mixin a {
     font-family: $font_alatsi;
     font-weight: unset;
@@ -108,6 +128,21 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
 
     @include breakpoint(mobile) {
         font-size: $font_p_mobile;
+        padding: 0 1rem;
+    }
+}
+@mixin h5() {
+    font-family: $font_alatsi;
+    font-weight: unset;
+    color: $color_dark_grey;
+    opacity: .3;
+
+    @include breakpoint(desktop) {
+        font-size: $font_h5_desktop;
+    }
+
+    @include breakpoint(mobile) {
+        font-size: $font_h5_mobile;
         padding: 0 1rem;
     }
 }
@@ -182,12 +217,3 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     
 }
 //Fontsizes
-$font_48_size: 3rem;
-$font_38_size: 2.375rem;
-$font_32_size: 2rem;
-$font_28_size: 1.75rem;
-$font_24_size: 1.5rem;
-$font_18_size: 1.125rem;
-$font_16_size: 1rem;
-$font_14_size: 0.875rem;
-$font_12_size: 0.75rem;

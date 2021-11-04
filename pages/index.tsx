@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import Link from "next/dist/client/link";
 import Footer from "../components/footer";
 
 export default function Home(): ReactElement {
@@ -10,7 +11,9 @@ export default function Home(): ReactElement {
                 <h2>News</h2>
                 <h1>Our Recent Updates</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque. Sed scelerisque sit faucibus imperdiet. Leo senectus diam volutpat arcu.</p>
-                <button>Learn more</button>
+                <Link href="/news" scroll={false}>
+                    <a>Learn more</a>
+                </Link>
             </div>
 
             <div className="news_section_background_blur" />
@@ -20,7 +23,9 @@ export default function Home(): ReactElement {
             <div className="signup_section_content">
                 <h1>Create Account</h1>
                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque. Sed scelerisque sit faucibus imperdiet. Leo senectus diam volutpat arcu.</p>
-                <button>Create Account</button>
+                <Link href="/news" scroll={false}>
+                    <button>Create Account</button>
+                </Link>
             </div>
 
             <div className="signup_section_background_blur" />

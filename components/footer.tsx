@@ -15,7 +15,7 @@ export default function Footer(): ReactElement {
             <a href="#">Contact</a>
             <a href="#">Cookies</a>
         </div>
-        <p>©2021 By Hamit Kiziltas. ALL RIGHTS RESERVED. All trademarks referenced herein are the properties of their respective owners.</p>
+        <h5>©2021 By Hamit Kiziltas. ALL RIGHTS RESERVED. All trademarks referenced herein are the properties of their respective owners.</h5>
     </footer>
   );
 }

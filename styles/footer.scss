@@ -10,10 +10,7 @@
     background: $color_main_blue;
     background: $gradiant_footer;
     h1{
-        font-size: $font_38_size;
-        font-family: $font_alatsi;
-        color: $color_bright_grey;
-        font-weight: 500;
+        @include h1;
         margin-top: 3rem;
     }
     
@@ -34,7 +31,7 @@
     .legal_container{
         margin-bottom: 0rem;
         a{
-            font-size: $font_14_size;
+            font-size: 14px;
             font-family: $font_alatsi;
             color: $color_dark_grey;
             text-decoration: none;
@@ -47,53 +44,9 @@
         }
     }
 
-    p{
-        color: $color_bright_grey;
-        opacity: 0.3;
-        font-weight: 500;
+    h5{
+        @include h5;
         margin: 2rem 0 1.4rem;
-        font-size: $font_14_size;
-        font-family: $font_alata;
         text-align: center;
-    }
-}
-
-
-@media (max-width: 1024px) {
-    .footer_container{
-        h1{
-            font-size: $font_32_size;
-        }
-
-        .socials_container{
-            a{
-                height: 28px;
-                width: 28px;
-            }
-        }
-        .legal_container{
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            a{
-                font-size: $font_12_size;
-                font-family: $font_alatsi;
-                color: $color_dark_grey;
-                text-decoration: none;
-                margin: 0rem 5%;
-                
-                font-weight: 500;
-                &:hover{
-                    
-                    color: $color_bright_grey
-                }
-            }
-        }
-    
-        p{
-            margin: 2rem 0 1.4rem;
-            padding: 0 1rem;
-            font-size: $font_12_size;
-        }
     }
 }
