@@ -1,7 +1,6 @@
 import React, { ReactElement, useEffect } from 'react';
 //SVG COMPONENTS (ICONS)
-import TwitterLogo from "../public/logos/Twitter.svg"
-
+import NavIcon from "../public/icons/NavIcon.svg"
 export default function Footer(): ReactElement {
 
     useEffect(() => {
@@ -27,7 +26,7 @@ export default function Footer(): ReactElement {
         <div className="footer_container" id="footer_container">
             <h1>Pixepalast</h1>
             <div className="socials_container">
-                <Socials link="https://twitter.com/home" icon={TwitterLogo} alt="Twitter Logo"/>
+                <Socials link="https://twitter.com/home" icon={NavIcon} alt="Twitter Logo"/>
             </div>
             <div className="legal_container">
                 <a href="#">Terms of Service</a>

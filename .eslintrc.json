@@ -1,3 +1,4 @@
+//Eslint Config
 {
   "extends": "next/core-web-vitals"
 }

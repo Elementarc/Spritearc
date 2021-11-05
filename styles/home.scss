@@ -56,7 +56,7 @@
             width: 100%;
             height: 100%;
             background: rgba(3, 12, 24, 0.5);
-            background: linear-gradient(120deg, $color_background_dark 10%, rgba(3,12,24,0) 150%);
+            background: linear-gradient(120deg, $color_background_dark 10%, rgba(3,12,24,0) 85%);
         }
     }
     //display: grid; For some reason removes home elements from the document flow from the app_content flow and enables to add z indexes?
@@ -110,7 +110,7 @@
             width: 100%;
             height: 100%;
             background: rgba(3, 12, 24, 0.5);
-            background: linear-gradient(240deg, $color_background_dark 10%, rgba(3,12,24,0) 150%);
+            background: linear-gradient(240deg, $color_background_dark 10%, rgba(3,12,24,0) 85%);
         }
     }
 
@@ -159,7 +159,7 @@
             width: 100%;
             height: 100%;
             background: rgba(3, 12, 24, 0.5);
-            background: radial-gradient(circle, rgba(3,12,24,0) -100%, $color_background_dark 96%);
+            background: radial-gradient(circle, rgba(3,12,24,0) -100%, $color_background_dark 95%);
         }
     }
     
