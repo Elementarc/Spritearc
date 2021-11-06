@@ -315,7 +315,6 @@ function Nav_item(props: NavItem) {
                 
                 if(navItems[i].id === `/${pathname[1]}`) {
                     navItems[i].classList.add(`nav_li_item_target`)
-                    navItems[i].classList.remove(`nav_li_item_none_target`)
                 } else {
                     navItems[i].classList.remove(`nav_li_item_target`)
                 }

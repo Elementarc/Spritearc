@@ -61,6 +61,16 @@
                 &:hover{
                     cursor: pointer;
                     background-color: rgba(255, 255, 255, 0.1);
+
+                    .nav_item{
+                        .icon_svg{
+                            fill: $color_white;
+                        }
+                        p{
+                            color: $color_white;
+                        }
+                    }
+                    
                 }
                 .nav_item{
                     position: relative;
@@ -96,30 +106,17 @@
                     }
                 }
             }
-            .nav_li_item_none_target{
-                .nav_item{
-                    p{
-                        color: $color_grey;
-                        
-                    } 
-                    .icon_svg{
-                        fill: $color_grey;
-                    }
-        
-                }
-                &:hover{
-                    .nav_item{
-                        p{
-                            color: $color_white;
-                        }
-                        .icon_svg{
-                            fill: $color_white;
-                        }
-        
-                    }
-                }
-            }
             .nav_li_item_target{
+                &:hover {
+                    .nav_item{
+                        .icon_svg{
+                            fill: $color_main;
+                        }
+                        p{
+                            color: $color_main;
+                        }
+                    }
+                }
                 span{
                     position: absolute;
                     top: 0;

@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useCallback} from 'react';
+import React, { ReactElement, useState, useCallback, useMemo} from 'react';
 import Head from "next/head"
 import Image from "next/image"
 import Eclipse from "../public/images/eclipse.jpg"
@@ -19,7 +19,10 @@ const maxPages = 4
 //News Component
 export default  function News(props: any): ReactElement {
 	//All Patchnotes
-	const patchnoteList: Patchnote[] = JSON.parse(props.patchnoteList)
+	const patchnoteList: Patchnote[]  = useMemo(() => {
+		return JSON.parse(props.patchnoteList)
+	}, [props.patchnoteList])
+
 	const [CurrentPage, setPage] = useState(() => {
 		if(process.browser) {
 			const page = sessionStorage.getItem("news_page")
@@ -64,7 +67,7 @@ export default  function News(props: any): ReactElement {
 			setExtraPatchnotes(jsxPatchnotes.slice(maxPages, maxPages * CurrentPage));
 		}
 		create_extra_patchnotes()
-	}, [CurrentPage, setExtraPatchnotes])
+	}, [CurrentPage, setExtraPatchnotes, patchnoteList])
 
 	//Button Load More. Checking if button should be displayed
 	useEffect(() => {
@@ -155,14 +158,18 @@ export default  function News(props: any): ReactElement {
 //Component to create a Patch template
 function Patchnote_template(props: any): ReactElement{
 	const patchnote: Patchnote = props.patchnote
-	const date = new Date(patchnote.info.date)
+
+	const date = useMemo(() => {
+		return new Date(patchnote.info.date)
+	}, [patchnote.info.date])
+
 	const [Distance, setDistance] = useState<null | string>(null)
 	
 	useEffect(() => {
 		const distance = formatDistanceStrict(date, new Date())
 		setDistance(distance)
 
-	}, [setDistance])
+	}, [setDistance, date])
 
 	return(
 		<>
