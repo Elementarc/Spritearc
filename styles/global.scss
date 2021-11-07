@@ -5,10 +5,12 @@
 @import "./navigation.scss";
 @import "./news.scss";
 @import "./patch.scss";
+@import "./packs.scss";
 
 html,
 body {
   font-size: 16px;
+  background-color: #020B16;
   &::-webkit-scrollbar{
     width: 10px;
     background-color: $color_background_dark;

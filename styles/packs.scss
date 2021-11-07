@@ -1,0 +1,29 @@
+@import "./variables.module.scss";
+
+.packs_container{
+    position: relative;
+    height: auto;
+    z-index: 1;
+    background-color: $color_background_dark;
+
+    .pack_previews_container{
+        width: 100%;
+        display: grid;
+        padding: 1rem;
+        column-gap: 1rem;
+        row-gap: 1rem;
+        grid-template-columns: 1fr 1fr 1fr 1fr;
+        grid-template-rows: auto;
+        @include breakpoint(laptop) {
+            grid-template-columns: 1fr 1fr 1fr;
+        }
+        @include breakpoint(mobile) {
+            grid-template-columns: 1fr;
+            padding: unset;
+        }
+    }
+}
+
+.pack_preview_container {
+    @include pack_preview;
+}

@@ -19,14 +19,14 @@ function navigateTo(path: string): void {
 }
 export default function Navigation(): ReactElement {
     const appVars: AppContext = useContext(appContext)
-    const isDesktop = appVars.isDesktop
+    const isDesktop = appVars.isMobile
 
     return(
         <>
-            {isDesktop === true &&
+            {isDesktop === false &&
                 <Navigation_desktop key="Navigation_desktop"/>
             }
-            {isDesktop === false &&
+            {isDesktop === true &&
                <Navigation_mobile key="Navigation_mobile"/>
             }
         </>
@@ -104,7 +104,7 @@ function Navigation_desktop(): ReactElement {
         //Creating Observer for AppContentContainer and setting maxHeight for navContainer. maxHeight will always be appContent Height.
         const resizeObserver = new ResizeObserver((entries) => {
             for(const entry of entries){
-                if(entry.contentRect.height < 1080) {
+                if(entry.contentRect.height < 768) {
                    
                     getNavContentContainer.style.maxHeight = `1080px`
                 } else {
@@ -115,7 +115,7 @@ function Navigation_desktop(): ReactElement {
             
         })
 
-        if(App.isDesktop === true) {
+        if(App.isMobile === false) {
             resizeObserver.observe(getAppContentContainer)
         } else {
             resizeObserver.unobserve(getAppContentContainer)
@@ -131,7 +131,7 @@ function Navigation_desktop(): ReactElement {
             resizeObserver.unobserve(getAppContentContainer)
             window.removeEventListener("resize", setNavMaxHeight)
         })
-    }, [App.isDesktop])
+    }, [App.isMobile])
 
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">

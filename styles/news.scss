@@ -96,6 +96,11 @@
             width: 100%;
             height: auto;
 
+            @include breakpoint(laptop) {
+                row-gap: 2rem;
+                padding: 0 4.5%;
+                column-gap: 2rem;
+            }
             @include breakpoint(mobile) {
                 grid-template-columns: 1fr;
                 row-gap: 3rem;

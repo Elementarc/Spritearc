@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { GetStaticProps} from 'next'
 import { Patchnote } from '../types';
 import { formatDistanceStrict } from "date-fns"
-import { motion, useViewportScroll} from 'framer-motion';
+import {useViewportScroll} from 'framer-motion';
 function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
 }
@@ -127,7 +127,7 @@ export default  function News(props: any): ReactElement {
 					<div className="header_content_container">
 						<h2>Recent Updates</h2>
 						<h1>Everything New About PixelPalast</h1>
-						<p>We will release occasional updates for PixelPalast. If you want to stay tuned you should come here and visit sometimes.</p>
+						<p>We will occasionally release updates for PixelPalast. Here you can find our newest upcoming features that you might be interested in. Take a look!</p>
 						<span />
 					</div>
 					
@@ -162,9 +162,9 @@ function Patchnote_template(props: any): ReactElement{
 	const date = useMemo(() => {
 		return new Date(patchnote.info.date)
 	}, [patchnote.info.date])
-
-	const [Distance, setDistance] = useState<null | string>(null)
+	const [Distance, setDistance] = useState<string>(date.toString())
 	
+	//Setting distance of dates for patchnote template.
 	useEffect(() => {
 		const distance = formatDistanceStrict(date, new Date())
 		setDistance(distance)

@@ -36,7 +36,7 @@
         margin: 0rem 6rem;
         column-gap: 6rem;
         margin-top: 2.1rem;
-        @include breakpoint(middle_screen) {
+        @include breakpoint(laptop) {
             grid-template-columns: 1fr;
             grid-template-rows: auto;
         }
@@ -117,7 +117,7 @@
             margin-bottom: 4rem;
             width: 100%;
             
-            @include breakpoint(middle_screen) {
+            @include breakpoint(laptop) {
                 align-items: flex-start;
             }
             @include breakpoint(mobile) {

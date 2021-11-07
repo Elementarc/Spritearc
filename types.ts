@@ -11,20 +11,30 @@ export interface NavContext {
 }
 
 export interface AppContext {
-    isDesktop: boolean | undefined,
+    isMobile: boolean | undefined,
     nav: NavContext
 }
 
+//Patchnote Interface
 export interface Patchnote {
     id: string
     info: PatchnoteInfo
     content: string
 }
-
+//PatchnoteInfo Interface
 export interface PatchnoteInfo {
     title: string,
     update: string,
     date: Date,
     image: string,
     author: string
+}
+
+//PackPreview Interface
+export interface PackPreview {
+    _id: string,
+    title: string,
+    subTitle: string,
+    image: string,
+    date: Date,
 }
