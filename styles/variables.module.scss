@@ -51,8 +51,8 @@ $font_h4_mobile: 0.875rem;
 $font_h5_desktop: 0.875rem;
 $font_h5_mobile: 0.75rem;
 
-$font_button_desktop: 1.125rem;
-$font_button_mobile: 1rem;
+$font_button_desktop: 1rem;
+$font_button_mobile: 0.875rem;
 
 //For Normal P Tags. Normal Text
 $font_p_desktop: 1.125rem;
@@ -87,18 +87,15 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     font-family: "Alatsi";
     color: $color_background_dark;
     background-color: $color_main;
-    
+    font-size: 1rem;
+    padding: .8rem 4rem;
     &:hover{
         background-color: $color_main_bright;
         cursor: pointer;
     }
-    @include breakpoint(desktop) {
-        font-size: $font_button_desktop;
-        padding: .8rem 2.6rem;
-    }
+    
     @include breakpoint(mobile) {
-        font-size: $font_button_mobile;
-        padding: .6rem 2.6rem;
+        font-size: 0.875rem;
     }
 }
 //Links
@@ -114,20 +111,38 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
 
     @include breakpoint(mobile) {
         font-size: $font_p_mobile;
-        padding: 0 1rem;
     }
 }
 //Texts
-@mixin p {
+@mixin p($size) {
     font-family: $font_alata;
     font-weight: unset;
-    line-height: $font_p_line_height;
+    line-height: 2rem;
     color: $color_bright_grey;
     font-size: $font_p_desktop;
 
+    @if($size == big) {
+        font-size: 1.125rem;
+    }
+    @if($size == medium) {
+        font-size: 1rem;
+    }
+    @if($size == small) {
+        font-size: .875rem;
+    }
+
     @include breakpoint(mobile) {
+        line-height: 1.9rem;
         font-size: $font_p_mobile;
-        padding: 0 1rem;
+        @if($size == big) {
+            font-size: 1rem;
+        }
+        @if($size == medium) {
+            font-size: .875rem;
+        }
+        @if($size == small) {
+            font-size: .75rem;
+        }
     }
 }
 //Fine Print
@@ -140,7 +155,6 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
 
     @include breakpoint(mobile) {
         font-size: $font_h5_mobile;
-        padding: 0 1rem;
     }
 }
 //Dates / authors
@@ -152,7 +166,6 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
 
     @include breakpoint(mobile) {
         font-size: $font_h4_mobile;
-        padding: 0 1rem;
     }
 }
 //For Titles Like a Pack preview Title.
@@ -185,7 +198,6 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     
     
     @include breakpoint(mobile) {
-        padding: 0 1rem;
         @if($size == big) {
             font-size: 1rem;
         }
@@ -195,7 +207,6 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
         @if($size == small) {
             font-size: .750rem;
         }
-       
     }
 }
 //Headers
@@ -215,7 +226,6 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     }
 
     @include breakpoint(mobile) {
-        padding: 0 1rem;
 
         @if($size == big) {
             font-size: 1.8rem;

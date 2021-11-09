@@ -3,34 +3,18 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import Link from "next/link"
 import Footer from '../../components/footer';
 import { Nav_shadow } from "../../components/navigation";
-import { useViewportScroll } from 'framer-motion';
 import { Patchnote } from '../../types';
 import Image from "next/image"
-import Router from "next/router"
 import {formatDistanceStrict} from "date-fns"
 import Markdown from 'markdown-to-jsx';
+import { createParallaxByElementId } from '../../lib/parallax';
 
 
 //Frontend
 export default function Patch(props: any) {
   	const patchnote: Patchnote = JSON.parse(props.patchnote)
 	const distance = formatDistanceStrict(new Date(patchnote.info.date), new Date())
-
-	//Parallax effect for backgroundImage
-	const { scrollY } = useViewportScroll()
-	useEffect(() => {
-		const getPatchImageContainer = document.getElementById("patch_background_image") as HTMLDivElement
-		function parallax() {
-			getPatchImageContainer.style.transform = `translateY(${scrollY.get() / 2}px)`
-		}
-
-		window.addEventListener("scroll", parallax)
-
-		return(() => {
-			window.removeEventListener("scroll", parallax)
-		})
-	}, [scrollY])
-
+	createParallaxByElementId("patch_background_image")
 	return (
 		<>
 			<div className="patch_container">

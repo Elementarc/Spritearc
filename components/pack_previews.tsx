@@ -1,58 +1,10 @@
 import React, {ReactElement, useState, useEffect} from 'react';
 import Link from 'next/dist/client/link';
-import { Pack , RecentPacksResponse} from '../types';
+import { Pack } from '../types';
 import Image from 'next/dist/client/image';
 
 
-export function Recent_packs(props: {recentPacksResponse: RecentPacksResponse}) {
-	//Packs Response from server.
-	const recentPacks: Pack[] = props.recentPacksResponse.packs
-	const lastPage = props.recentPacksResponse.lastPage
-
-	//JSX RecentPacks that will be rendered
-	const [RecentPacks, setRecentPacks] = useState(() => {
-		let jsxRecentPacks: ReactElement<Pack>[] = []
-		for(let pack of recentPacks) {
-			jsxRecentPacks.push(<Pack_preview key={pack._id} pack={pack}/>)
-		}
-		return jsxRecentPacks
-	})
-	const [Page, setPage] = useState(1)
-	
-	//Fetches more RecentPacks from Server to then set setRecentPack that displays it.
-	useEffect(() => {
-		async function getRecentPacksFromServer() {
-			//Fetch call for recentpacks with page query. 
-			const recentPacksRes: RecentPacksResponse = await (await fetch(`http://localhost:3000/api/getRecentPacks?page=${Page}`)).json()
-			//Creating a jsxArray of Pack_preview components.
-			let jsxRecentPacks: ReactElement<Pack>[] = []
-			for(let pack of recentPacksRes.packs) {
-				jsxRecentPacks.push(<Pack_preview key={pack._id} pack={pack}/>)
-			}
-			//Setting RecentPacks to new JsxRecentPacks that is gonna be displayed.
-			setRecentPacks(jsxRecentPacks)
-		}
-		getRecentPacksFromServer()
-	}, [Page, setRecentPacks])
-	
-	return (
-		<div className="recent_packs_container">
-			
-			<div className="recent_packs_info_container">
-				<h1>– Recent Packs</h1>
-				<Link href="#" scroll={false}><a>View all</a></Link>
-			</div>
-
-			<div className="packs_container">
-				{RecentPacks}
-			</div>
-
-			<Packs_navigator page={Page} setPage={setPage} lastPage={lastPage}/>
-		</div>
-	);
-}
-
-export default function Packs_navigator(props: {page: number, setPage: any, lastPage: number}) {
+export function Packs_navigator(props: {page: number, setPage: any, lastPage: number}) {
 	const page = props.page
 	const setPage = props.setPage
 	const lastPage = props.lastPage
@@ -103,7 +55,7 @@ export default function Packs_navigator(props: {page: number, setPage: any, last
 	);
 }
 //Component that represents 1 Pack preview. Takes a Pack obj as a property.
-export function Pack_preview(props: {pack: Pack}) {
+export default function Pack_preview(props: {pack: Pack}) {
     const pack: Pack = props.pack
 	return (
         <Link href={`/pack?id=${pack._id}`}>

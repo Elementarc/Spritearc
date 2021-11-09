@@ -50,7 +50,7 @@
                 @include h1(big);
             }
             p{
-                @include p;
+                @include p(big);
                 margin-top: 1rem;
                 width: 50%;
                 
@@ -137,6 +137,7 @@
                     justify-content: center;
                     margin: 1.4rem 2rem 1.5rem 2rem;
                     font-family: $font_alatsi;
+                    padding: 0 1rem;
                     @include breakpoint(mobile) {
                         margin: 1rem 0 0 0rem;
                         padding-bottom: 1.2rem

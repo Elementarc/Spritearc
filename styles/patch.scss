@@ -48,6 +48,7 @@
 
         .patch_main_content{
             width: 100%;
+            padding: 0 1rem;
             //Small Header
             h2{
                 @include h2(big);
@@ -66,7 +67,7 @@
             }
             //Default Text
             p{
-                @include p;
+                @include p(big);
                 margin-bottom: 1rem;
                 margin-top: .5rem;
             }
@@ -75,7 +76,7 @@
                 margin-bottom: 1rem;
                 line-height: $font_p_line_height;
                 li{
-                    @include p;
+                    @include p(big);
                 }
             }
             img{
@@ -102,7 +103,6 @@
                     
                     @include breakpoint(mobile) {
                         padding: 0;
-                        padding-left: 1rem;
                     }
                 }
             }
@@ -151,14 +151,14 @@
                     justify-content: center;
                     padding: 2rem 1rem;
                     @include breakpoint(mobile) {
-                        padding: 2rem 0rem;
+                        padding: 2rem 1rem;
                     }
                     h2{
                         @include h2(medium);
                         user-select: none;
                     }
                     p{
-                        @include p;
+                        @include p(medium);
                         user-select: none;
                     }
                 }

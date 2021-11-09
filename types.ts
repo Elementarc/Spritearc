@@ -41,14 +41,10 @@ export interface Pack {
     socials: string[]
     date: string,
     tags: string[],
+    downloads: number,
     rating: PackRating
 }
 export interface PackRating {
     userRatings: {user: string, rating: number}[] | [],
     avgRating: number
-}
-
-export interface RecentPacksResponse {
-    packs: Pack[],
-    lastPage: number,
 }

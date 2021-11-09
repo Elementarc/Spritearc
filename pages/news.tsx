@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useCallback, useMemo} from 'react';
+import React, { ReactElement, useState, useMemo} from 'react';
 import Head from "next/head"
 import Image from "next/image"
 import Eclipse from "../public/images/eclipse.jpg"
@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { GetStaticProps} from 'next'
 import { Patchnote } from '../types';
 import { formatDistanceStrict } from "date-fns"
-import {useViewportScroll} from 'framer-motion';
+import { createParallaxByElementId } from '../lib/parallax';
 function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
 }
@@ -93,21 +93,8 @@ export default  function News(props: any): ReactElement {
 		}
 	}
 	
-	//Parallax effect for backgroundImage
-	const { scrollY } = useViewportScroll()
-	useEffect(() => {
-		const getBackgroundImage = document.getElementById("news_background_image") as HTMLDivElement
-		function parallax() {
-			getBackgroundImage.style.transform = `translateY(${scrollY.get() / 2}px)`
-		}
-
-		window.addEventListener("scroll", parallax)
-
-		return(() => {
-			window.removeEventListener("scroll", parallax)
-		})
-	}, [scrollY])
-
+	//Creating Parallax for img
+	createParallaxByElementId("news_background_image")
 	return (
 		<>
 			<div className="news_container" id="news_container">

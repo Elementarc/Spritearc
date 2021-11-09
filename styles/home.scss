@@ -41,7 +41,7 @@
 
             }
             p{
-                @include p;
+                @include p(big);
                 margin-top: .5rem;
                 width: 50%;
                 @include breakpoint(mobile) {
@@ -98,7 +98,7 @@
 
             }
             p{
-                @include p;
+                @include p(big);
                 margin-top: .5rem;
                 width: 50%;
                 @include breakpoint(mobile) {
@@ -148,7 +148,7 @@
 
             }
             p{
-                @include p;
+                @include p(big);
                 margin-top: .5rem;
                 width: 50%;
                 @include breakpoint(mobile) {
