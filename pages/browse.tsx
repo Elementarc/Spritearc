@@ -5,16 +5,20 @@ import Pack_preview from '../components/pack_previews';
 import Link from 'next/dist/client/link';
 import Image from "next/image"
 import { createParallaxByElementId } from '../lib/parallax';
-
+import Footer from '../components/footer';
 export default function Browse(props: any) {
 	const recent_packs: Pack[] = props.recent_packs
 	
 	return (
-		<div className="browse_container">
-			<Title_section pack={recent_packs[0]}/>
-			<Packs_section packs={recent_packs} header="Recent Packs"/>
-			<Packs_section packs={recent_packs} header="Most Popular"/>
-		</div>
+		<>
+			<div className="browse_container">
+				<Title_section pack={recent_packs[0]}/>
+				<Packs_section packs={recent_packs} header="Recent Packs"/>
+				<Packs_section packs={recent_packs} header="Most Popular"/>
+				
+			</div>
+			<Footer/>
+		</>
 	);
 }
 

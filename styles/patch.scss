@@ -59,7 +59,7 @@
             }
             //Date
             h4{
-                @include h4;
+                @include h4(big);
             }
             //List Header
             h3{

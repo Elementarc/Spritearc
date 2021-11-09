@@ -2,7 +2,7 @@ import React, { ReactElement, useEffect } from 'react';
 import Image from "next/image"
 //SVG COMPONENTS (ICONS)
 import Twitter from "../public/logos/twitter.png"
-
+import Link from 'next/dist/client/link';
 
 export default function Footer(): ReactElement {
 
@@ -35,10 +35,10 @@ export default function Footer(): ReactElement {
             </div>
 
             <div className="legal_container">
-                <a href="#">Terms of Service</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Contact</a>
-                <a href="#">Cookies</a>
+                <Link href="#" scroll={false}><a>Terms of Service</a></Link>
+                <Link href="#" scroll={false}><a>Privacy Policy</a></Link>
+                <Link href="#" scroll={false}><a>Contact</a></Link>
+                <Link href="#" scroll={false}><a>Cookies</a></Link>
             </div>
 
             <h5>©2021 By Hamit Kiziltas. ALL RIGHTS RESERVED. All trademarks referenced herein are the properties of their respective owners.</h5>

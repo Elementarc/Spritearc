@@ -30,14 +30,24 @@
 
     
     .legal_container{
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: 1fr;
+        width: 28%;
         margin-bottom: 0rem;
+        @include breakpoint(laptop) {
+            width: 55%;
+        }
+        @include breakpoint(mobile) {
+            width: 90%;
+        }
         a{
-            font-size: 14px;
-            font-family: $font_alatsi;
-            color: $color_dark_grey;
-            text-decoration: none;
-            margin: 0rem 1.2rem;
-            font-weight: 500;
+            @include h4(medium);
+            @include breakpoint(mobile) {
+                @include h4(small)
+            }
+            grid-row: 1/1;
+            justify-self: center;
             &:hover{
                 
                 color: $color_bright_grey

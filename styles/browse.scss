@@ -74,10 +74,7 @@
         
     }
     .packs_container {
-        padding: 1.5rem 1rem;
-        @include breakpoint(mobile) {
-            padding: .6rem 1rem;
-        }
+        padding: .7rem 1rem;
         .info_container{
             display: grid;
             grid-template-columns: 1fr 1fr;

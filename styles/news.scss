@@ -151,7 +151,7 @@
                         user-select: none;
                     }
                     h4{
-                        @include h4;
+                        @include h4(big);
                         margin-top: .5rem;
                         user-select: none;
                     }

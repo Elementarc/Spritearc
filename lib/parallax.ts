@@ -6,9 +6,9 @@ export function createParallaxByElementId(id: string) {
     //Parallax effect for backgroundImage
     const { scrollY } = useViewportScroll()
     useEffect(() => {
-        const getPatchImageContainer = document.getElementById(id) as HTMLDivElement
+        const element = document.getElementById(id) as HTMLDivElement
         function parallax() {
-            getPatchImageContainer.style.transform = `translateY(${scrollY.get() / 2}px)`
+            element.style.transform = `translateY(${scrollY.get() / 2}px)`
         }
 
         window.addEventListener("scroll", parallax)
