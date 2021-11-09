@@ -33,10 +33,10 @@
                 padding-left: 4rem;
             }
             h2 {
-                @include h2;
+                @include h2(big);
             }
             h1{
-                @include h1;
+                @include h1(big);
                 margin-top: -.4rem
 
             }
@@ -90,10 +90,10 @@
                 padding-right: 4rem;
             }
             h2 {
-                @include h2;
+                @include h2(big);
             }
             h1{
-                @include h1;
+                @include h1(big);
                 margin-top: -.4rem
 
             }
@@ -140,10 +140,10 @@
             font-family: $font_alatsi;
             text-align: center;
             h2 {
-                @include h2;
+                @include h2(big);
             }
             h1{
-                @include h1;
+                @include h1(big);
                 margin-top: -.4rem
 
             }

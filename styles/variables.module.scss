@@ -29,19 +29,22 @@ $color_error: #F75E5E;
 $font_alatsi: 'Alatsi';
 $font_alata: 'Alata';
 //Font-sizes
+//H1 For Big Headers.
 $font_h1_desktop: 2.25rem;
 $font_h1_desktop_small: 1.75rem;
 $font_h1_mobile: 1.8rem;
 $font_h1_mobile_small: 1.5rem;
-
+//H2 For SubHeaders. Mostly tells something about the header.
 $font_h2_desktop: 1.125rem;
 $font_h2_desktop_small: 1rem;
 $font_h2_mobile: 1rem;
 $font_h2_mobile_small: 0.875rem;
 
-$font_h3_desktop: 1.75rem;
-$font_h3_mobile: 1.5rem;
+//H3 Are for smaller Titles. Like Pack Titles.
+$font_h3_desktop: 1.5rem;
+$font_h3_mobile: 1.25rem;
 
+//H4 Are made for Dates / 
 $font_h4_desktop: 1rem;
 $font_h4_mobile: 0.875rem;
 
@@ -51,6 +54,7 @@ $font_h5_mobile: 0.75rem;
 $font_button_desktop: 1.125rem;
 $font_button_mobile: 1rem;
 
+//For Normal P Tags. Normal Text
 $font_p_desktop: 1.125rem;
 $font_p_mobile: 1rem;
 $font_p_line_height: 2rem;
@@ -102,14 +106,10 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_main;
-    
+    font-size: $font_p_desktop;
     &:hover{
         cursor: pointer;
         color: $color_main_bright;
-    }
-    @include breakpoint(desktop) {
-        font-size: $font_p_desktop;
-        
     }
 
     @include breakpoint(mobile) {
@@ -123,27 +123,20 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     font-weight: unset;
     line-height: $font_p_line_height;
     color: $color_bright_grey;
-    
-
-    @include breakpoint(desktop) {
-        font-size: $font_p_desktop;
-        
-    }
+    font-size: $font_p_desktop;
 
     @include breakpoint(mobile) {
         font-size: $font_p_mobile;
         padding: 0 1rem;
     }
 }
+//Fine Print
 @mixin h5() {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_dark_grey;
     opacity: .3;
-
-    @include breakpoint(desktop) {
-        font-size: $font_h5_desktop;
-    }
+    font-size: $font_h5_desktop;
 
     @include breakpoint(mobile) {
         font-size: $font_h5_mobile;
@@ -155,141 +148,86 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_dark_grey;
-    
-
-    @include breakpoint(desktop) {
-        font-size: $font_h4_desktop;
-    }
+    font-size: $font_h4_desktop;
 
     @include breakpoint(mobile) {
         font-size: $font_h4_mobile;
         padding: 0 1rem;
     }
 }
+//For Titles Like a Pack preview Title.
+@mixin h3() {
+    font-family: $font_alatsi;
+    font-weight: unset;
+    color: $color_white;
+    padding: 0 1rem;
+    font-size: $font_h3_desktop;
+
+    @include breakpoint(mobile) {
+        font-size: $font_h3_mobile;
+    }
+}
 //Sub header.
-@mixin h2($size: normal) {
+@mixin h2($size) {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_main_bright;
-    
-    
-    @include breakpoint(desktop) {
-        @if $size == normal {
-            font-size: $font_h2_desktop;
-        } @else if $size == small {
-            font-size: $font_h2_desktop_small;
-        }
 
+    @if($size == big) {
+        font-size: 1.125rem;
     }
-
+    @if($size == medium) {
+        font-size: 1rem;
+    }
+    @if($size == small) {
+        font-size: .875rem;
+    }
+    
+    
     @include breakpoint(mobile) {
         padding: 0 1rem;
-        @if $size == normal {
-            font-size: $font_h2_mobile;
-        } @else if $size == small {
-            font-size: $font_h2_mobile_small;
+        @if($size == big) {
+            font-size: 1rem;
+        }
+        @if($size == medium) {
+            font-size: .875rem;
+        }
+        @if($size == small) {
+            font-size: .750rem;
         }
        
     }
 }
 //Headers
-@mixin h1 ($size: normal) {
+@mixin h1 ($size) {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_white;
-    
 
-    @include breakpoint(desktop) {
-        
-        @if $size == normal {
-            font-size: $font_h1_desktop;
-        } @else if $size == small {
-            font-size: $font_h1_desktop_small;
-        }
+    @if($size == big) {
+        font-size: 2.25rem;
+    }
+    @if($size == medium) {
+        font-size: 1.75rem;
+    }
+    @if($size == small) {
+        font-size: 1.375rem;
     }
 
     @include breakpoint(mobile) {
         padding: 0 1rem;
 
-        @if $size == normal {
-            font-size: $font_h1_mobile;
-        } @else if $size == small {
-            font-size: $font_h1_mobile_small;
+        @if($size == big) {
+            font-size: 1.8rem;
+        }
+        @if($size == medium) {
+            font-size: 1.35rem;
+        }
+        @if($size == small) {
+            font-size: 1.275rem;
         }
     }
     
-}
-@mixin pack_preview {
-    position: relative;
-    height: 232px;
-    width: 100%;
-    box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.30);
-    &:hover{
-        cursor: pointer;
-        .background_container{
-            .background_blur_hover{
-                opacity: 1;
-            }
-        }
-    }
-
-    .content_container {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-end;
-        z-index: 1;
-        width: 100%;
-        height: 100%;
-        padding-left: 2rem;
-        padding-bottom: 1.7rem;
-        @include breakpoint(mobile) {
-            padding-left: 1.5rem;
-            padding-bottom: 1.3rem;
-        }
-        h1{
-            @include h1(small);
-
-            @include breakpoint(mobile) {
-                padding-left: unset;
-            }
-        }
-        h2{
-            @include h2;
-
-            @include breakpoint(mobile) {
-                padding-left: unset;
-            }
-        }
-    }
-    .background_container {
-        position: absolute;
-        z-index: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        
-        .background_image{
-            object-fit: cover;
-            object-position: center;
-        }
-        .background_blur{
-            position: absolute;
-            background: linear-gradient(238.43deg, rgba(17, 31, 53, 0) 5%, $color_background_dark 100%);
-            width: 100%;
-            height: 100%;
-            
-        }
-        .background_blur_hover{
-            transition: 0.1s ease-in-out;
-            position: absolute;
-            opacity: 0;
-            background: linear-gradient(228.01deg, rgba(17, 31, 53, 0) 25.37%, #051020 81.58%);
-            width: 100%;
-            height: 100%;
-            border: 2px solid $color_main_bright;
-        }
-    }
 }
 @mixin nav_shadow {
     position: absolute;

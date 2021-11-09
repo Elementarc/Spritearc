@@ -104,12 +104,13 @@ function Navigation_desktop(): ReactElement {
         //Creating Observer for AppContentContainer and setting maxHeight for navContainer. maxHeight will always be appContent Height.
         const resizeObserver = new ResizeObserver((entries) => {
             for(const entry of entries){
-                if(entry.contentRect.height < 768) {
-                   
-                    getNavContentContainer.style.maxHeight = `1080px`
-                } else {
+                //If App Content is bigger 
+                if(entry.contentRect.height > 1080) {
                     getAppContentContainer.style.height = ``
                     getNavContentContainer.style.maxHeight = `${entry.contentRect.height}px`
+                    
+                } else {
+                    getNavContentContainer.style.maxHeight = `1080px`
                 }
             }
             
@@ -159,7 +160,7 @@ function Navigation_desktop(): ReactElement {
                         <ul>
                             <Nav_item label="Home" icon={HomeIcon} link="/"/>
                             <Nav_item label="News" icon={NewsIcon} link="/news" query="?page=1"/>
-                            <Nav_item label="Packs" icon={PacksIcon} link="/packs"/>
+                            <Nav_item label="Packs" icon={PacksIcon} link="/browse"/>
                             <Nav_item label="Search" icon={SearchIcon} link="/search"/>
                         </ul>
                     </div>

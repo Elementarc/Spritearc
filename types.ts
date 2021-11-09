@@ -31,10 +31,24 @@ export interface PatchnoteInfo {
 }
 
 //PackPreview Interface
-export interface PackPreview {
+export interface Pack {
     _id: string,
+    author: string,
+    previewImage: string,
     title: string,
     subTitle: string,
-    image: string,
-    date: Date,
+    description: string,
+    socials: string[]
+    date: string,
+    tags: string[],
+    rating: PackRating
+}
+export interface PackRating {
+    userRatings: {user: string, rating: number}[] | [],
+    avgRating: number
+}
+
+export interface RecentPacksResponse {
+    packs: Pack[],
+    lastPage: number,
 }

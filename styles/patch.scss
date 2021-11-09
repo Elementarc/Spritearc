@@ -50,13 +50,11 @@
             width: 100%;
             //Small Header
             h2{
-                @include h2;
-                
-                
+                @include h2(big);
             }
             //Header
             h1{
-                @include h1;
+                @include h1(big);
             }
             //Date
             h4{
@@ -156,7 +154,7 @@
                         padding: 2rem 0rem;
                     }
                     h2{
-                        @include h2;
+                        @include h2(medium);
                         user-select: none;
                     }
                     p{

@@ -15,10 +15,10 @@ function navigateTo(path: string): void {
 }
 
 
-const maxPages = 4
+const maxPages = 1
 //News Component
 export default  function News(props: any): ReactElement {
-	//All Patchnotes
+	//All Patchnotes from server
 	const patchnoteList: Patchnote[]  = useMemo(() => {
 		return JSON.parse(props.patchnoteList)
 	}, [props.patchnoteList])
@@ -37,7 +37,7 @@ export default  function News(props: any): ReactElement {
 	})
 	
 	const lastPage = Math.ceil(patchnoteList.length / maxPages)
-	//JSX Elements of Initial Patchnotes that will be rendered
+	//JSX Elements of initial patchnotes that will be rendered.
 	const JSXInitialPatchnotes: ReactElement<Patchnote>[] = (() => {
 
 		const jsxPatchnotes = patchnoteList.map((patchnote) => {
@@ -50,47 +50,42 @@ export default  function News(props: any): ReactElement {
 		return jsxPatchnotes.slice(0, maxPages)
 	})();
 	
-	//JSX Elements That renders More Patchnotes based on Page state
+	//JSX that contains extra patchnotes. Starts as an empty array.
 	const [ExtraPatchnotes, setExtraPatchnotes] = useState<ReactElement[]>([])
 	
-	//Creating extra patchnotes whenever currentpage gets increased
+	//Setting Extra patchnotes on
 	useEffect(() => {
+		//Setting a sessionItem when Page gets increased.
 		sessionStorage.setItem("news_page", `${CurrentPage}`)
-		function create_extra_patchnotes() {
-			const jsxPatchnotes = patchnoteList.map((patchnote) => {
+		//JSX That contains Patchnote_template components.
+		const jsxPatchnotes = patchnoteList.map((patchnote) => {
 	
-				return (
-					<Patchnote_template key={patchnote.id} patchnote={patchnote} />
-				)
-			})
-	
-			setExtraPatchnotes(jsxPatchnotes.slice(maxPages, maxPages * CurrentPage));
-		}
-		create_extra_patchnotes()
+			return (
+				<Patchnote_template key={patchnote.id} patchnote={patchnote} />
+			)
+		})
+		//
+		setExtraPatchnotes(jsxPatchnotes.slice(maxPages, maxPages * CurrentPage));
 	}, [CurrentPage, setExtraPatchnotes, patchnoteList])
 
-	//Button Load More. Checking if button should be displayed
+	//Checking if Button Load more should be displayed or not.
 	useEffect(() => {
 		const getIncrementButton = document.getElementById("increment_page_button") as HTMLDivElement
 
-		function showButton(page: number | undefined) {
-			if(page) {
-				//Showing button when not reached last page
-				if(page < lastPage) {
-					getIncrementButton.style.opacity = ""
-					getIncrementButton.style.pointerEvents = ""
-					
-				} else {
-					getIncrementButton.style.opacity = "0"
-					getIncrementButton.style.pointerEvents = "none"
-				}
-			} 
-		}
-
-		showButton(CurrentPage)
+		if(CurrentPage) {
+			//Showing button when CurrentPage is smaller then LastPage
+			if(CurrentPage < lastPage) {
+				getIncrementButton.style.opacity = ""
+				getIncrementButton.style.pointerEvents = ""
+				
+			} else {
+				getIncrementButton.style.opacity = "0"
+				getIncrementButton.style.pointerEvents = "none"
+			}
+		} 
 	}, [CurrentPage, lastPage])
 	
-	//Adding + 1 to page query
+	//Function to increase CurrentPage.
 	function increment_page() {
 		
 		if(CurrentPage < lastPage) {
@@ -156,7 +151,7 @@ export default  function News(props: any): ReactElement {
 
 
 //Component to create a Patch template
-function Patchnote_template(props: any): ReactElement{
+function Patchnote_template(props: {patchnote: Patchnote}): ReactElement{
 	const patchnote: Patchnote = props.patchnote
 
 	const date = useMemo(() => {

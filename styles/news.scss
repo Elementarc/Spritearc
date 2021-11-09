@@ -44,10 +44,10 @@
             }
             
             h2 {
-                @include h2;
+                @include h2(big);
             }
             h1{
-                @include h1;
+                @include h1(big);
             }
             p{
                 @include p;
@@ -142,11 +142,11 @@
                         padding-bottom: 1.2rem
                     }
                     h2{
-                        @include h2(small);
+                        @include h2(medium);
                         user-select: none;
                     }
                     h1{
-                        @include h1(small);
+                        @include h1(medium);
                         user-select: none;
                     }
                     h4{
