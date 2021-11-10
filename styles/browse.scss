@@ -25,7 +25,7 @@
                 justify-content: center;
                 z-index: 1;
                 @include breakpoint(mobile) {
-                    padding: 0 1.5rem
+                    padding: 0 1rem
                 }
                 h2{
                     @include h2(big);
@@ -44,7 +44,7 @@
                     }
                     @include breakpoint(mobile){
                         @include p(medium);
-                        width: 90%
+                        width: 100%
                     }
                 }
                 button {
@@ -74,7 +74,7 @@
         
     }
     .packs_container {
-        padding: .7rem 1rem;
+        padding: .5rem 1rem 1rem 1rem;
         .info_container{
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -83,7 +83,7 @@
                 @include h1(small);
             }
             a{
-                @include a;
+                @include a(big);
                 align-self: center;
                 justify-self: end;
             }
@@ -113,7 +113,7 @@
     justify-content: center;
     align-items: center;
     button{
-        @include a;
+        @include a(big);
         color: $color_main;
         background-color: unset;
         padding: unset;

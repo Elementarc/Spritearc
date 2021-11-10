@@ -6,6 +6,7 @@ import Link from 'next/dist/client/link';
 import Image from "next/image"
 import { createParallaxByElementId } from '../lib/parallax';
 import Footer from '../components/footer';
+
 export default function Browse(props: any) {
 	const recent_packs: Pack[] = props.recent_packs
 	

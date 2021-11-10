@@ -264,7 +264,7 @@ function Navigation_mobile(): ReactElement {
                         <ul>
                             <Nav_item label="Home" icon={HomeIcon} link="/"/>
                             <Nav_item label="News" icon={NewsIcon} link="/news"/>
-                            <Nav_item label="Packs" icon={PacksIcon} link="/packs"/>
+                            <Nav_item label="Packs" icon={PacksIcon} link="/browse"/>
                             <Nav_item label="Search" icon={SearchIcon} link="/search"/>
                         </ul>
                     </div>

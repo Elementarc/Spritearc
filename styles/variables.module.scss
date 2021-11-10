@@ -98,19 +98,37 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
         font-size: 0.875rem;
     }
 }
-//Links
-@mixin a {
+//Main Links
+@mixin a($size) {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_main;
-    font-size: $font_p_desktop;
+    font-size: 1.125rem;
     &:hover{
         cursor: pointer;
         color: $color_main_bright;
     }
+    @if($size == big) {
+        font-size: 1.125rem;
+    }
+    @if($size == medium) {
+        font-size: 1rem;
+    }
+    @if($size == small) {
+        font-size: .875rem;
+    }
+   
 
     @include breakpoint(mobile) {
-        font-size: $font_p_mobile;
+        @if($size == big) {
+            font-size: 0.875rem;
+        }
+        @if($size == medium) {
+            font-size: .75rem;
+        }
+        @if($size == small) {
+            font-size: .625rem;
+        }
     }
 }
 //Texts
@@ -174,6 +192,17 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
         font-size: .75rem;
     }
 
+    @include breakpoint(mobile) {
+        @if($size == big) {
+            font-size: .875rem;
+        }
+        @if($size == medium) {
+            font-size: .75rem;
+        }
+        @if($size == small) {
+            font-size: .625rem;
+        }
+    }
 }
 //For Titles Like a Pack preview Title.
 @mixin h3() {
@@ -238,10 +267,10 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
             font-size: 1.8rem;
         }
         @if($size == medium) {
-            font-size: 1.35rem;
+            font-size: 1.45rem;
         }
         @if($size == small) {
-            font-size: 1.275rem;
+            font-size: 1.25rem;
         }
     }
     

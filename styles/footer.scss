@@ -43,9 +43,6 @@
         }
         a{
             @include h4(medium);
-            @include breakpoint(mobile) {
-                @include h4(small)
-            }
             grid-row: 1/1;
             justify-self: center;
             &:hover{
