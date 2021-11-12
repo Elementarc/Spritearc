@@ -7,7 +7,7 @@ import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
 import Div100vh from 'react-div-100vh'
 import Svg from "../public/images/BackgroundFull.svg"
-import { useParallax } from '../lib/custom_hooks';
+import { useGradient, useParallax } from '../lib/custom_hooks';
 
 export default function Pack_handler(props: {pack: Pack}) {
     const pack = props.pack
@@ -52,10 +52,10 @@ export function Full_pack(props: {pack: Pack}) {
 }
 export function Pack_info(props: {pack: Pack}) {
     const pack = props.pack
-
+    useGradient("info_background")
     return (
         <div className="info_container" id="info_container">
-            
+            <div className="info_background" id="info_background"></div>
             <div className="content">
                 <h1>{pack.title}</h1>
                 <h4>Presented by {pack.author}</h4>

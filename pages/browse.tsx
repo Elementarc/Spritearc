@@ -4,7 +4,7 @@ import { GetServerSideProps } from 'next'
 import Pack_preview from '../components/pack_previews';
 import Link from 'next/dist/client/link';
 import Image from "next/image"
-import { useParallax } from '../lib/useParallax';
+import { useParallax } from '../lib/custom_hooks';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
 

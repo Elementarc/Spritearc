@@ -8,7 +8,6 @@
     align-items: center;
     width: 100%;
     overflow: hidden;
-    background: $color_main_blue;
     h1{
         @include h1(big);
         margin-top: 3rem;
@@ -59,12 +58,9 @@
     }
     .footer_background{
         pointer-events: none;
-        position: fixed;
+        position: absolute;
         z-index: -1;
-        top: 0;
-        width: 100vw;
-        height: 100vh;
-        background: $color_main_blue;
-        background: $gradiant_main;
+        bottom: 0;
+        width: 100%;
     }
 }

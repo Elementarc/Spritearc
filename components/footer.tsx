@@ -6,7 +6,27 @@ import Link from 'next/dist/client/link';
 import { useGradient } from '../lib/custom_hooks';
 
 export default function Footer(): ReactElement {
+    //Setting the background of the footer to App width and height.
+    useEffect(() => {
+        const getApp = document.getElementById("app_content_container") as HTMLDivElement
+        const footer_background = document.getElementById("footer_background") as HTMLDivElement
 
+        const resizeObserver = new ResizeObserver((entries) => {
+            for(const entry of entries){
+                
+                footer_background.style.maxWidth = `${entry.contentRect.width}px`
+                footer_background.style.maxHeight = `${entry.contentRect.height}px`
+            }
+            
+        })
+
+        resizeObserver.observe(getApp)
+        return(() => {
+            resizeObserver.unobserve(getApp)
+        })
+    }, [])
+    
+    useGradient("footer_background")
     return (
         <div className="footer_container" id="footer_container">
             <h1>Pixepalast</h1>

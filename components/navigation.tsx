@@ -13,6 +13,7 @@ import SignInIcon from "../public/icons/SignInIcon.svg"
 //Context
 import { appContext } from "../components/layout";
 import Router, { useRouter } from "next/router";
+import { useGradient } from "../lib/custom_hooks";
 
 function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
@@ -134,13 +135,12 @@ function Navigation_desktop(): ReactElement {
         })
     }, [App.isMobile])
 
-
-    
+    useGradient("nav_background")
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
-
+            
             <motion.div animate={navContainerAnimation} className="nav_content" id="nav_content">
-
+                <div id="nav_background"></div>
                 <motion.div className="nav_button_container" id="nav_button_container">
                     <AnimatePresence exitBeforeEnter>
                         {Nav.navState === true &&
