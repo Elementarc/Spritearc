@@ -50,8 +50,9 @@
                 @include h1(big);
             }
             p{
-                @include p(big);
+                @include p;
                 margin-top: 1rem;
+                padding: 0 1rem;
                 width: 50%;
                 
 
@@ -151,8 +152,8 @@
                         user-select: none;
                     }
                     h4{
-                        @include h4(big);
-                        margin-top: .5rem;
+                        @include h4(medium);
+                        margin-top: .4rem;
                         user-select: none;
                     }
                     

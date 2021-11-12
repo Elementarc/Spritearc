@@ -13,6 +13,7 @@ import SignInIcon from "../public/icons/SignInIcon.svg"
 //Context
 import { appContext } from "../components/layout";
 import Router, { useRouter } from "next/router";
+import { useGradient } from "../lib/custom_hooks";
 
 function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
@@ -94,7 +95,7 @@ function Navigation_desktop(): ReactElement {
         })
 
     }, [Nav.setNavState])
-
+    
     //Observes AppContentHeight to set maxHeight of Navigation. So app Does not Stretch all the way down to screenHeight
     useEffect(() => {
         const getAppContentContainer = document.getElementById("app_content_container") as HTMLDivElement
@@ -134,6 +135,8 @@ function Navigation_desktop(): ReactElement {
         })
     }, [App.isMobile])
 
+
+    
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
 

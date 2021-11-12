@@ -1,0 +1,98 @@
+@import "./variables.module.scss";
+
+
+.pack_container{
+    position: relative;
+    height: auto;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr minmax(300px, 23%);
+    height: 1000px;
+
+    .sprite_container{
+        background: $color_background_dark;
+        .preview_container{
+            position: relative;
+            height: 400px;
+            img{
+                object-fit: cover;
+                object-position: center;
+            }
+            .blur{
+                position: absolute;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(180deg, #05102000 0%, $color_background_dark 100%);;
+            }
+        }
+    }
+    
+    
+    .info_container{
+        position: sticky;
+        top: 0;
+        align-self: start;
+        
+        .content{
+            overflow-x: hidden;
+            overflow-y: scroll;
+            padding: 3rem 1rem 3rem 3rem;
+            &::-webkit-scrollbar{
+                width: 0
+            }
+            scrollbar-width: none;
+            h1{
+                @include h1(big);
+            }
+            h4{
+                @include h4(big);
+            }
+            p{
+                @include p(big);
+                margin-top: 1rem
+            }
+            button{
+                @include button;
+                margin-top: 2rem;
+            }
+
+        }
+        
+    }
+    
+}
+.search_for_pack_container{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 800px;
+    z-index: 1;
+    background-color: $color_background_dark;
+    h1{
+        @include h1(big);
+    }
+    .input_container{
+        margin-top: 2rem;
+        position: relative;
+        width: 50%;
+        text-align: center;
+        input{
+            @include input;
+        }
+        span {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            @include next_section_line;
+        }
+    }
+    button {
+        @include button;
+        margin-top: 3rem;
+    }
+    
+}
+

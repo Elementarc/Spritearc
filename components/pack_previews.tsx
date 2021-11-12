@@ -58,7 +58,7 @@ export function Packs_navigator(props: {page: number, setPage: any, lastPage: nu
 export default function Pack_preview(props: {pack: Pack}) {
     const pack: Pack = props.pack
 	return (
-        <Link href={`/pack?id=${pack._id}`}>
+        <Link href={`/pack?id=${pack._id}`} scroll={false}>
             <div className="pack_preview_container">
 
                 <div className="content_container">

@@ -1,6 +1,6 @@
 
 import React, {useState, useEffect} from 'react';
-import {AppContext} from "../types"
+import {AppContext, Pack} from "../types"
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 //Components
@@ -57,3 +57,4 @@ export default function Layout( { children }: any) {
         </appContext.Provider>
     );
 }
+

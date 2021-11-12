@@ -4,8 +4,9 @@ import { GetServerSideProps } from 'next'
 import Pack_preview from '../components/pack_previews';
 import Link from 'next/dist/client/link';
 import Image from "next/image"
-import { createParallaxByElementId } from '../lib/parallax';
+import { useParallax } from '../lib/useParallax';
 import Footer from '../components/footer';
+import { Nav_shadow } from '../components/navigation';
 
 export default function Browse(props: any) {
 	const recent_packs: Pack[] = props.recent_packs
@@ -15,17 +16,17 @@ export default function Browse(props: any) {
 			<div className="browse_container">
 				<Title_section pack={recent_packs[0]}/>
 				<Packs_section packs={recent_packs} header="Recent Packs"/>
-				<Packs_section packs={recent_packs} header="Most Popular"/>
-				
+				<Nav_shadow/>
 			</div>
 			<Footer/>
 		</>
 	);
 }
 
+
 export function Title_section(props: {pack: Pack,}) {
 	const pack = props.pack
-	createParallaxByElementId("title_pack_background_image")
+	useParallax("title_pack_background_image")
 	return (
 		<div className="title_pack_container">
 

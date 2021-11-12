@@ -51,15 +51,15 @@
             padding: 0 1rem;
             //Small Header
             h2{
-                @include h2(big);
+                @include h2(medium);
             }
             //Header
             h1{
-                @include h1(big);
+                @include h1(medium);
             }
             //Date
             h4{
-                @include h4(big);
+                @include h4(medium);
             }
             //List Header
             h3{
@@ -67,16 +67,16 @@
             }
             //Default Text
             p{
-                @include p(big);
+                @include p;
                 margin-bottom: 1rem;
                 margin-top: .5rem;
             }
             ul{
-                margin-left: 3.5rem;
+                margin-left: 3rem;
                 margin-bottom: 1rem;
                 line-height: $font_p_line_height;
                 li{
-                    @include p(big);
+                    @include p;
                 }
             }
             img{

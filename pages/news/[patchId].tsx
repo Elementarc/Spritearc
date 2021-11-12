@@ -7,14 +7,14 @@ import { Patchnote } from '../../types';
 import Image from "next/image"
 import {formatDistanceStrict} from "date-fns"
 import Markdown from 'markdown-to-jsx';
-import { createParallaxByElementId } from '../../lib/parallax';
+import { useParallax } from '../../lib/useParallax';
 
 
 //Frontend
 export default function Patch(props: any) {
   	const patchnote: Patchnote = JSON.parse(props.patchnote)
 	const distance = formatDistanceStrict(new Date(patchnote.info.date), new Date())
-	createParallaxByElementId("patch_background_image")
+	useParallax("patch_background_image")
 	return (
 		<>
 			<div className="patch_container">

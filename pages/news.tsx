@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { GetStaticProps} from 'next'
 import { Patchnote } from '../types';
 import { formatDistanceStrict } from "date-fns"
-import { createParallaxByElementId } from '../lib/parallax';
+import { useParallax } from '../lib/useParallax';
 function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
 }
@@ -94,7 +94,7 @@ export default  function News(props: any): ReactElement {
 	}
 	
 	//Creating Parallax for img
-	createParallaxByElementId("news_background_image")
+	useParallax("news_background_image")
 	return (
 		<>
 			<div className="news_container" id="news_container">
