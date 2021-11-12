@@ -7,7 +7,8 @@ import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
 import Div100vh from 'react-div-100vh'
 import Svg from "../public/images/BackgroundFull.svg"
-import { useParallax } from '../lib/useParallax';
+import { useParallax } from '../lib/custom_hooks';
+
 export default function Pack_handler(props: {pack: Pack}) {
     const pack = props.pack
 

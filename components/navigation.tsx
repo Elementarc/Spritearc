@@ -13,7 +13,6 @@ import SignInIcon from "../public/icons/SignInIcon.svg"
 //Context
 import { appContext } from "../components/layout";
 import Router, { useRouter } from "next/router";
-import { useGradient } from "../lib/custom_hooks";
 
 function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})

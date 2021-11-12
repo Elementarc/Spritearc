@@ -7,7 +7,7 @@ import { Patchnote } from '../../types';
 import Image from "next/image"
 import {formatDistanceStrict} from "date-fns"
 import Markdown from 'markdown-to-jsx';
-import { useParallax } from '../../lib/useParallax';
+import { useParallax } from '../../lib/custom_hooks';
 
 
 //Frontend

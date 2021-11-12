@@ -9,7 +9,7 @@ import { useEffect } from 'react';
 import { GetStaticProps} from 'next'
 import { Patchnote } from '../types';
 import { formatDistanceStrict } from "date-fns"
-import { useParallax } from '../lib/useParallax';
+import { useParallax } from '../lib/custom_hooks';
 function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
 }
