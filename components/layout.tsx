@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 //Components
 import Navigation from './navigation';
+import Footer from './footer';
 export const appContext: any = React.createContext(null)
 
 export default function Layout( { children }: any) {

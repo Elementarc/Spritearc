@@ -3,8 +3,7 @@ import Image from "next/image"
 //SVG COMPONENTS (ICONS)
 import Twitter from "../public/logos/twitter.png"
 import Link from 'next/dist/client/link';
-import { useGradient } from '../lib/custom_hooks';
-
+import Background_gradient from './gradient_background';
 export default function Footer(): ReactElement {
     //Setting the background of the footer to App width and height.
     useEffect(() => {
@@ -26,9 +25,10 @@ export default function Footer(): ReactElement {
         })
     }, [])
     
-    useGradient("footer_background")
+    
     return (
         <div className="footer_container" id="footer_container">
+            <Background_gradient id="footer_background"/>
             <h1>Pixepalast</h1>
 
             <div className="socials_container">
