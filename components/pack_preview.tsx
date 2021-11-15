@@ -1,4 +1,4 @@
-import React, {ReactElement, useState, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import Link from 'next/dist/client/link';
 import { Pack } from '../types';
 import Image from 'next/dist/client/image';

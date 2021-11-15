@@ -6,8 +6,8 @@
     height: auto;
     z-index: 1;
     display: grid;
-    grid-template-columns: 1fr;
-
+    grid-template-columns: 1fr minmax(400px, .3fr);
+    min-height: 1200px;
     .sprite_container{
         background: $color_background_dark;
         .preview_container{
@@ -29,18 +29,33 @@
     
     
     .info_container{
-        position: relative;
+        position: sticky;
         top: 0;
         align-self: start;
-        overflow: hidden;
+        background: black;
+        .svg_close{
+            position: absolute;
+            height: 230px;
+            left: -60px;
+            width: 60px;
+            top: 0;
+            z-index: 0;
+           
+            path{
+                fill: $color_main_blue;
+            }
+        }
         .content{
+            position: relative;
             overflow-x: hidden;
             overflow-y: scroll;
-            padding: 3rem 1rem 3rem 3rem;
+            padding: 5.4rem 1rem 3rem 3rem;
+            z-index: 1;
             &::-webkit-scrollbar{
                 width: 0
             }
             scrollbar-width: none;
+            
             h1{
                 @include h1(big);
             }

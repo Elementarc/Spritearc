@@ -1,7 +1,7 @@
-import React, {ReactElement, useState, useEffect} from 'react';
+import React, {ReactElement, useState} from 'react';
 import { Pack  } from "../types"
 import { GetServerSideProps } from 'next'
-import Pack_preview from '../components/pack_previews';
+import Pack_preview from '../components/pack_preview';
 import Link from 'next/dist/client/link';
 import Image from "next/image"
 import { useParallax } from '../lib/custom_hooks';

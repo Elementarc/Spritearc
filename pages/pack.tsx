@@ -5,9 +5,9 @@ import {Pack} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
-import Div100vh from 'react-div-100vh'
 import Svg from "../public/images/BackgroundFull.svg"
-import { useParallax } from '../lib/custom_hooks';
+import { useGradient, useParallax } from '../lib/custom_hooks';
+import Background_gradient from '../components/gradient_background';
 
 export default function Pack_handler(props: {pack: Pack}) {
     const pack = props.pack
@@ -28,42 +28,36 @@ export default function Pack_handler(props: {pack: Pack}) {
 export function Full_pack(props: {pack: Pack}) {
     const pack = props.pack
     useParallax("pack_preview_image")
-
     
     return (
         <>
             <div className="pack_container">
-
-                <div className="sprite_container">
-                    <div className="preview_container">
-                        <div className="image_container">
-                            <Image priority={true} src={props.pack.previewImage} layout="fill"  id="pack_preview_image"/>
-                            <div className="blur"/>
-                        </div>
-                    </div>
-                    <Nav_shadow/>
-                </div>
-
+                
+               
                 <Pack_info pack={pack}/>
+                <Footer/>
             </div>
-            <Footer/>
         </>
     );
 }
 export function Pack_info(props: {pack: Pack}) {
     const pack = props.pack
+    
     return (
         <div className="info_container" id="info_container">
-            <div className="info_background" id="info_background"></div>
-            <div className="content">
+            <Svg className="svg_close"/>
+            
+            <div className="content" id="pack_info_content" style={{}}>
                 <h1>{pack.title}</h1>
                 <h4>Presented by {pack.author}</h4>
                 <p>{pack.description}</p>
                 <p>{pack.description}</p>
                 <p>{pack.description}</p>
+                <p>{pack.description}</p>
                 <button>Download Pack</button>
             </div>
-            
+
+            <Background_gradient id="pack_info_background"/>
         </div>
     );
 }
