@@ -7,7 +7,7 @@ import NavIcon from "../public/icons/NavIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
 import HomeIcon from "../public/icons/HomeIcon.svg"
 import NewsIcon from "../public/icons/NewsIcon.svg"
-import PacksIcon from "../public/icons/PacksIcon.svg"
+import BrowseIcon from "../public/icons/PacksIcon.svg"
 import SearchIcon from "../public/icons/SearchIcon.svg"
 import SignInIcon from "../public/icons/SignInIcon.svg"
 //Context
@@ -36,146 +36,89 @@ export default function Navigation(): ReactElement {
 function Navigation_desktop(): ReactElement {
     const App: AppContext = useContext(appContext)
     const Nav: NavContext = App.nav
-    const navContainerAnimation = useAnimation()
+    const nav_content_container_animations = useAnimation()
 
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
-        const getNavContentContainer = document.getElementById("nav_content") as HTMLDivElement
-        const getNavigation = document.getElementById("nav_container") as HTMLDivElement
         //Animations For Navigation(DESKTOP)
         function animateNavDesktop(navState: boolean): void{
-            getNavContentContainer.style.overflowX = "hidden"
-            getNavContentContainer.style.overflowY = "scroll"
-            getNavContentContainer.scrollTop = 0
-            const getContentBlur = document.getElementById("app_content_blur") as HTMLDivElement
-            
             //Scrolling To Top Of Navigation When Switching to between Desktop & Mobile Version
             if(navState === false) {
-                navContainerAnimation.start({
+                nav_content_container_animations.start({
                     width: "",
                     transition: {duration: 0.25},
                 })
                 document.body.style.overflow = ""
-                getContentBlur.style.pointerEvents = "none"
-                getContentBlur.style.opacity = "0"
-
             } else {
-                navContainerAnimation.start({
+                nav_content_container_animations.start({
                     width: "380px",
                     transition: {duration: 0.25},
                     
                 })
                 document.body.style.overflow = "hidden"
-                getContentBlur.style.pointerEvents = "all"
-                getContentBlur.style.opacity = "0.8"
-
             }
         }
 
         animateNavDesktop(Nav.navState)
         
-    }, [Nav.navState, navContainerAnimation]);
+    }, [Nav.navState, nav_content_container_animations]);
 
-    //Setting NavHeight to device Window inner heigth
     useEffect(() => {
-        Nav.setNavState(false)
-        const NavContent = document.getElementById("nav_content") as HTMLDivElement
-
-        function resize() {
-            
-            NavContent.style.height = `${window.innerHeight}px`
+        const nav_items_container = document.getElementById("nav_items_container") as HTMLDivElement
+        const get_page = document.getElementById("app_content_container") as HTMLDivElement
+        console.log(nav_items_container.offsetTop)
+        function setMaxHeight() {
+            nav_items_container.style.height = `${window.innerHeight - nav_items_container.offsetTop}px`
+            nav_items_container.style.maxHeight = `${get_page.offsetHeight - nav_items_container.offsetTop}px`
         }
-        resize()
-
-        window.addEventListener("resize", resize)
-
+        setMaxHeight()
+        window.addEventListener("resize", setMaxHeight)
         return(() => {
-            window.removeEventListener("resize", resize)
+            window.removeEventListener("resize", setMaxHeight)
         })
-
-    }, [Nav.setNavState])
-    
-    //Observes AppContentHeight to set maxHeight of Navigation. So app Does not Stretch all the way down to screenHeight
-    useEffect(() => {
-        const getAppContentContainer = document.getElementById("app_content_container") as HTMLDivElement
-        const getNavContentContainer = document.getElementById("nav_content") as HTMLDivElement
-        
-        
-        //Creating Observer for AppContentContainer and setting maxHeight for navContainer. maxHeight will always be appContent Height.
-        const resizeObserver = new ResizeObserver((entries) => {
-            for(const entry of entries){
-                //If App Content is bigger 
-                if(entry.contentRect.height > 1080) {
-                    getAppContentContainer.style.height = ``
-                    getNavContentContainer.style.maxHeight = `${entry.contentRect.height}px`
-                    
-                } else {
-                    getNavContentContainer.style.maxHeight = `1080px`
-                }
-            }
-            
-        })
-
-        if(App.isMobile === false) {
-            resizeObserver.observe(getAppContentContainer)
-        } else {
-            resizeObserver.unobserve(getAppContentContainer)
-        }
-        
-        function setNavMaxHeight() {
-            
-            getNavContentContainer.style.maxHeight = `${getAppContentContainer.offsetHeight}px`
-        }
-        window.addEventListener("resize", setNavMaxHeight)
-
-        return(() => {
-            resizeObserver.unobserve(getAppContentContainer)
-            window.removeEventListener("resize", setNavMaxHeight)
-        })
-    }, [App.isMobile])
-
-    
+    }, [])
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
-            <motion.div animate={navContainerAnimation} className="nav_content" id="nav_content">
+            <motion.div animate={nav_content_container_animations} className="content_container" id="content_container">
+                <Background_gradient id="nav_background" page_id="app_content_container"/>
 
-                <motion.div className="nav_button_container" id="nav_button_container">
-                    <AnimatePresence exitBeforeEnter>
-                        {Nav.navState === true &&
-                            <motion.div key="menu" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.1}}}>
-                                <CloseIcon onClick={() => Nav.setNavState(!Nav.navState)} className="nav_svg"/>
-                            </motion.div>
-                        } 
-                        {Nav.navState === false &&
-                            <motion.div key="close" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.1}}}>
-                                <NavIcon onClick={() => Nav.setNavState(!Nav.navState)} className="nav_svg" />
-                            </motion.div>
-                        }
-                    </AnimatePresence>
-                </motion.div>
+                
 
+                <div className="content" id="nav_content">
 
-                <div className="nav_items_container" >
-                    <div onClick={() => {Nav.setNavState(false)}}>
+                    <motion.div className="nav_button_container" id="nav_button_container">
+                        <AnimatePresence exitBeforeEnter>
+                            {Nav.navState === true &&
+                                <motion.div key="menu" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.1}}}>
+                                    <CloseIcon onClick={() => Nav.setNavState(!Nav.navState)} className="nav_svg"/>
+                                </motion.div>
+                            } 
+                            {Nav.navState === false &&
+                                <motion.div key="close" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.1}}}>
+                                    <NavIcon onClick={() => Nav.setNavState(!Nav.navState)} className="nav_svg" />
+                                </motion.div>
+                            }
+                        </AnimatePresence>
+                    </motion.div>
+
+                    <div className="items_container" id="nav_items_container">
                         <ul>
-                            <Nav_item label="Home" icon={HomeIcon} link="/"/>
-                            <Nav_item label="News" icon={NewsIcon} link="/news" query="?page=1"/>
-                            <Nav_item label="Packs" icon={PacksIcon} link="/browse"/>
-                            <Nav_item label="Search" icon={SearchIcon} link="/search"/>
-                        </ul>
-                    </div>
+                            <div className="main_section">
+                                <Nav_item icon={HomeIcon} label="Home" link="/" />
+                                <Nav_item icon={NewsIcon} label="News" link="/news"/>
+                                <Nav_item icon={BrowseIcon} label="Browse" link="/browse"/>
+                                <Nav_item icon={SearchIcon} label="Search" link="/search"/>
+                            </div>
+                            
 
-                    <div className="nav_sign_in" id="nav_button_container">
-                        <div onClick={() => {Nav.setNavState(false)}}>
-                            <ul>
-                                <Nav_item label="Sign In" icon={SignInIcon} link="/login"/>
-                            </ul>
-                        </div>
+                            <div className="bottom_section">
+                                <Nav_item icon={SignInIcon} label="Sign in" link="/login"/>
+                            </div>
+                        </ul>
                     </div>
                 </div>
 
             </motion.div>
-
         </motion.nav>
     )
 }
@@ -264,7 +207,7 @@ function Navigation_mobile(): ReactElement {
                         <ul>
                             <Nav_item label="Home" icon={HomeIcon} link="/"/>
                             <Nav_item label="News" icon={NewsIcon} link="/news"/>
-                            <Nav_item label="Packs" icon={PacksIcon} link="/browse"/>
+                            <Nav_item label="Packs" icon={BrowseIcon} link="/browse"/>
                             <Nav_item label="Search" icon={SearchIcon} link="/search"/>
                         </ul>
                     </div>

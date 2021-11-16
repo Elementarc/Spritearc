@@ -1,8 +1,8 @@
 import React, {useEffect} from 'react';
 
 //To work properly the components parent needs to be at the top of the page.
-export default function Background_gradient(props: {background_id: string, page_id: string}) {
-    const id = props.background_id
+export default function Background_gradient(props: {id: string, page_id: string}) {
+    const id = props.id
     const page_id = props.page_id
     
     //Setting gradiant of Specific HTML Element by id. Lining Up all gradients to fit to eachother.
@@ -30,7 +30,7 @@ export default function Background_gradient(props: {background_id: string, page_
             
             background_element.style.height = `${window.innerHeight}px`
             background_element.style.maxHeight = `${page_height}px`
-            background_element.style.top = `${-top}px`
+            background_element.style.transform = `translateY(${-top}px)`
         }
 
         //Observing App_container to always redo Gradient when main app_content changes

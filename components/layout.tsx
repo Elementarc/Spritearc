@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 //Components
 import Navigation from './navigation';
+import app from 'next/app';
 export const appContext: any = React.createContext(null)
 
 export default function Layout( { children }: any) {
@@ -41,6 +42,17 @@ export default function Layout( { children }: any) {
         })
     }, []);
     
+    //Toggles app_content_blur whenever navstate toggles.
+    useEffect(() => {
+        const app_content_blur = document.getElementById("app_content_blur") as HTMLDivElement
+        if(NavState === false) {
+            app_content_blur.style.opacity = "0"
+            app_content_blur.style.pointerEvents = "none"
+        } else {
+            app_content_blur.style.opacity = ".7"
+            app_content_blur.style.pointerEvents = "all"
+        }
+    }, [NavState])
     return (
         <appContext.Provider value={appContextObj}>
             <div className="app_container" id="app_container">
