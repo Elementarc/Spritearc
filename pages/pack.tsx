@@ -6,7 +6,7 @@ import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
 import Svg from "../public/images/BackgroundFull.svg"
-import { useGradient, useParallax } from '../lib/custom_hooks';
+import { useParallax } from '../lib/custom_hooks';
 import Background_gradient from '../components/gradient_background';
 
 export default function Pack_handler(props: {pack: Pack}) {
@@ -27,40 +27,22 @@ export default function Pack_handler(props: {pack: Pack}) {
 //Renders the full Pack
 export function Full_pack(props: {pack: Pack}) {
     const pack = props.pack
-    useParallax("pack_preview_image")
     
     return (
         <>
-            <div className="pack_container">
+            <div className="pack_page">
                 
-               
-                <Pack_info pack={pack}/>
+                <div className="content">
+
+                    <Nav_shadow/>
+                </div>
+                
                 <Footer/>
             </div>
         </>
     );
 }
-export function Pack_info(props: {pack: Pack}) {
-    const pack = props.pack
-    
-    return (
-        <div className="info_container" id="info_container">
-            <Svg className="svg_close"/>
-            
-            <div className="content" id="pack_info_content" style={{}}>
-                <h1>{pack.title}</h1>
-                <h4>Presented by {pack.author}</h4>
-                <p>{pack.description}</p>
-                <p>{pack.description}</p>
-                <p>{pack.description}</p>
-                <p>{pack.description}</p>
-                <button>Download Pack</button>
-            </div>
 
-            <Background_gradient id="pack_info_background"/>
-        </div>
-    );
-}
 
 
 //Component shown when Page does not have a query. // There is no Pack

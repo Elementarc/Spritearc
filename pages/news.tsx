@@ -97,41 +97,43 @@ export default  function News(props: any): ReactElement {
 	useParallax("news_background_image")
 	return (
 		<>
-			<div className="news_container" id="news_container">
+			<div className="news_page">
 
-				<div className="news_header_container">
+				<div className="content">
 
-					<div className="news_background_container">
-						<Image quality="100%" priority={true} src={Eclipse} layout="fill" alt="A pixelart image that displays a universe" className="news_background_image" id="news_background_image"/>
-						<div className="news_background_blur" />
-					</div>
-
-					<div className="header_content_container">
-						<h2>Recent Updates</h2>
-						<h1>Everything New About PixelPalast</h1>
-						<p>We will occasionally release updates for PixelPalast. Here you can find our newest upcoming features that you might be interested in. Take a look!</p>
-						<span />
-					</div>
-					
-				</div>
-				
-				<div className="news_content_container">
-
-					<div className="news_all_patch_container">
-						{JSXInitialPatchnotes}
-						{ExtraPatchnotes}
-
-						<div className="news_load_more_button_container" id="news_load_more_button_container">
-							<button onClick={increment_page} id="increment_page_button">Load More</button>
+					<div className="header_container">
+						<div className="background">
+							<Image quality="100%" priority={true} src={Eclipse} layout="fill" alt="A pixelart image that displays a universe" className="background_image" id="news_background_image"/>
+							<div className="background_blur" />
 						</div>
+
+						<div className="content">
+							<h2>Recent Updates</h2>
+							<h1>Everything New About PixelPalast</h1>
+							<p>We will occasionally release updates for PixelPalast. Here you can find our newest upcoming features that you might be interested in. Take a look!</p>
+							<span />
+						</div>
+
 					</div>
-					
+
+					<div className="content_container">
+
+						<div className="news_all_patch_container">
+							{JSXInitialPatchnotes}
+							{ExtraPatchnotes}
+
+							<div className="news_load_more_button_container" id="news_load_more_button_container">
+								<button onClick={increment_page} id="increment_page_button">Load More</button>
+							</div>
+						</div>
+
+					</div>
+
+					<Nav_shadow/>
+
 				</div>
-				
-				<Nav_shadow/>
+				<Footer />
 			</div>
-			
-			<Footer />
 		</>
 	);
 }

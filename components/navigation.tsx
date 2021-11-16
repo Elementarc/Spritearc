@@ -138,7 +138,6 @@ function Navigation_desktop(): ReactElement {
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
             <motion.div animate={navContainerAnimation} className="nav_content" id="nav_content">
-                <Background_gradient id="nav_content_background" />
 
                 <motion.div className="nav_button_container" id="nav_button_container">
                     <AnimatePresence exitBeforeEnter>

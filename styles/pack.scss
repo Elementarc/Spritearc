@@ -1,81 +1,14 @@
 @import "./variables.module.scss";
 
 
-.pack_container{
+.pack_page{
     position: relative;
     height: auto;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: 1fr minmax(400px, .3fr);
-    min-height: 1200px;
-    .sprite_container{
-        background: $color_background_dark;
-        .preview_container{
-            position: relative;
-            height: 400px;
-            img{
-                object-fit: cover;
-                object-position: center;
-            }
-            .blur{
-                position: absolute;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: linear-gradient(180deg, #05102000 0%, $color_background_dark 100%);;
-            }
-        }
+    .content {
+        min-height: 1000px;
     }
-    
-    
-    .info_container{
-        position: sticky;
-        top: 0;
-        align-self: start;
-        background: black;
-        .svg_close{
-            position: absolute;
-            height: 230px;
-            left: -60px;
-            width: 60px;
-            top: 0;
-            z-index: 0;
-           
-            path{
-                fill: $color_main_blue;
-            }
-        }
-        .content{
-            position: relative;
-            overflow-x: hidden;
-            overflow-y: scroll;
-            padding: 5.4rem 1rem 3rem 3rem;
-            z-index: 1;
-            &::-webkit-scrollbar{
-                width: 0
-            }
-            scrollbar-width: none;
-            
-            h1{
-                @include h1(big);
-            }
-            h4{
-                @include h4(big);
-            }
-            p{
-                @include p(big);
-                margin-top: 1rem
-            }
-            button{
-                @include button;
-                margin-top: 2rem;
-            }
-
-        }
-        
-    }
-    
 }
+
 .search_for_pack_container{
     position: relative;
     display: flex;

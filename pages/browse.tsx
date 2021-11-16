@@ -13,12 +13,16 @@ export default function Browse(props: any) {
 	
 	return (
 		<>
-			<div className="browse_container">
-				<Title_section pack={recent_packs[0]}/>
-				<Packs_section packs={recent_packs} header="Recent Packs"/>
-				<Nav_shadow/>
+			<div className="browse_page">
+
+				<div className="content">
+					<Title_section pack={recent_packs[0]}/>
+					<Packs_section packs={recent_packs} header="Recent Packs"/>
+					<Nav_shadow/>
+				</div>
+
+				<Footer/>
 			</div>
-			<Footer/>
 		</>
 	);
 }
@@ -63,7 +67,7 @@ export function Packs_section(props: {packs: Pack[], header: string}) {
 	return (
 		<div className="packs_container">
 			
-			<div className="info_container">
+			<div className="info">
 				<h1>– {props.header}</h1>
 				<Link href="#" scroll={false}><a>View all</a></Link>
 			</div>
