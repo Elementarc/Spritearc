@@ -20,7 +20,8 @@ export default function Layout( { children }: any) {
         nav:  {
             navState: NavState,
             setNavState: setNavState,
-        }
+        },
+        app_content_container: () => {return document.getElementById("app_content_container") as HTMLDivElement}
     }
     //Checks if Application IsDesktop or not
     useEffect(() => {

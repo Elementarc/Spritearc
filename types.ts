@@ -12,7 +12,8 @@ export interface NavContext {
 
 export interface AppContext {
     isMobile: boolean | undefined,
-    nav: NavContext
+    nav: NavContext,
+    app_content_container: () => HTMLElement
 }
 
 //Patchnote Interface

@@ -37,7 +37,7 @@ function Navigation_desktop(): ReactElement {
     const App: AppContext = useContext(appContext)
     const Nav: NavContext = App.nav
     const nav_content_container_animations = useAnimation()
-
+    
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
         //Animations For Navigation(DESKTOP)
@@ -63,20 +63,34 @@ function Navigation_desktop(): ReactElement {
         
     }, [Nav.navState, nav_content_container_animations]);
 
+    //Setting height of nav_items_container to window innerheight. so scrolling through nav_items works properly. Also adding Observer to observer app_component!
     useEffect(() => {
+        //Page Content Container
+        const app_content_container = App.app_content_container()
         const nav_items_container = document.getElementById("nav_items_container") as HTMLDivElement
-        const get_page = document.getElementById("app_content_container") as HTMLDivElement
-        console.log(nav_items_container.offsetTop)
-        function setMaxHeight() {
-            nav_items_container.style.height = `${window.innerHeight - nav_items_container.offsetTop}px`
-            nav_items_container.style.maxHeight = `${get_page.offsetHeight - nav_items_container.offsetTop}px`
-        }
-        setMaxHeight()
-        window.addEventListener("resize", setMaxHeight)
-        return(() => {
-            window.removeEventListener("resize", setMaxHeight)
+
+        const observer = new ResizeObserver((entries) => {
+            
+            for(let entry of entries) {
+                nav_items_container.style.height = `${window.innerHeight - nav_items_container.offsetTop}px`
+                nav_items_container.style.maxHeight = `${entry.contentRect.height - nav_items_container.offsetTop}px`
+            }
         })
-    }, [])
+        
+        function setHeight() {
+            nav_items_container.style.height = `${window.innerHeight - nav_items_container.offsetTop}px`
+            nav_items_container.style.maxHeight = `${app_content_container.offsetHeight - nav_items_container.offsetTop}px`
+        }
+        setHeight()
+        observer.observe(app_content_container)
+        window.addEventListener("resize", setHeight)
+        return(() => {
+            setHeight()
+            observer.unobserve(app_content_container)
+            window.removeEventListener("resize", setHeight)
+        })
+    }, [App.app_content_container])
+
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
             <motion.div animate={nav_content_container_animations} className="content_container" id="content_container">
