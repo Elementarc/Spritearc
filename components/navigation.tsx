@@ -84,19 +84,35 @@ function Navigation_desktop(): ReactElement {
         setHeight()
         observer.observe(app_content_container)
         window.addEventListener("resize", setHeight)
+
         return(() => {
-            setHeight()
             observer.unobserve(app_content_container)
             window.removeEventListener("resize", setHeight)
         })
     }, [App.app_content_container])
 
+    useEffect(() => {
+        const nav_button_container = document.getElementById("nav_button_container") as HTMLDivElement
+        const items_container = document.getElementById("nav_items_container") as HTMLDivElement
+
+        function set_shadow() {
+            nav_button_container.style.transition = "0.2s ease-in-out"
+            if(items_container.scrollTop > 0) {
+                console.log(items_container.scrollTop)
+                
+                nav_button_container.style.boxShadow = "0px 3px 6px 3px rgba(0, 0, 0, 0.3)"
+            } else {
+                
+                nav_button_container.style.boxShadow = "0px 3px 6px 3px rgba(0, 0, 0, 0)"
+            }
+        }
+
+        items_container.addEventListener("scroll" , set_shadow)
+    }, [])
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
             <motion.div animate={nav_content_container_animations} className="content_container" id="content_container">
                 <Background_gradient id="nav_background" page_id="app_content_container"/>
-
-                
 
                 <div className="content" id="nav_content">
 

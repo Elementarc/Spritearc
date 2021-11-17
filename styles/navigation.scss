@@ -13,9 +13,7 @@
         
 
         .content{
-            
-            
-            
+            overflow: hidden;
             .nav_button_container{
                 position: relative;
                 display: flex;
@@ -24,6 +22,7 @@
                 -webkit-user-select: none;      
                 -moz-user-select: none; 
                 -ms-user-select: none;
+                              
                 .nav_svg{
                     -webkit-tap-highlight-color: rgba(0,0,0,0);
                     -webkit-tap-highlight-color: transparent;
@@ -43,7 +42,7 @@
                 &::-webkit-scrollbar{
                     width: 0px;
                 }
-                
+                scrollbar-width: none;
                 ul {
                     display: grid;
                     height: 100%;
