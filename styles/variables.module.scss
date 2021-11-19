@@ -70,9 +70,11 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
         @media screen and (max-width: 2560px) { @content; }
     }
     @else if $point == mobile {
-        @media screen and (max-width: 768px) { @content; }
+        @media screen and (max-width: 864px) { @content; }
     } @else if $point == laptop {
         @media screen and (max-width: 1366px) { @content; }
+    } @else {
+        @media screen and (max-width: $point) { @content; }
     }
 }
 //For Next lines
@@ -113,17 +115,19 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     }
 }
 //Main Links
-@mixin a($size: big) {
+@mixin a($size: default) {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_main;
-    font-size: 1.125rem;
     &:hover{
         cursor: pointer;
         color: $color_main_bright;
     }
-    @if($size == big) {
+    @if($size == default) {
         font-size: 1.125rem;
+    }
+    @if($size == medium) {
+        font-size: 1rem;
     }
     
    
@@ -140,13 +144,12 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     font-weight: unset;
     line-height: 2rem;
     color: $color_bright_grey;
-    font-size: $font_p_desktop;
 
     @if($size == default) {
         font-size: 1.125rem;
     }
     @if($size == medium) {
-        font-size: 0.938rem;
+        font-size: 1rem;
     }
     
 
@@ -174,13 +177,12 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     }
 }
 //Dates / authors / Legals
-@mixin h4($size) {
+@mixin h4($size: default) {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_dark_grey;
-    font-size: 1rem;
 
-    @if($size == big) {
+    @if($size == default) {
         font-size: 1rem;
     }
     @if($size == medium) {
@@ -191,7 +193,7 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     }
 
     @include breakpoint(mobile) {
-        @if($size == big) {
+        @if($size == default) {
             font-size: .875rem;
         }
         @if($size == medium) {

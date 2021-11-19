@@ -40,18 +40,21 @@ function Navigation_desktop(): ReactElement {
     
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
+        
         //Animations For Navigation(DESKTOP)
         function animateNavDesktop(navState: boolean): void{
             //Scrolling To Top Of Navigation When Switching to between Desktop & Mobile Version
             if(navState === false) {
                 nav_content_container_animations.start({
                     width: "",
+                    boxShadow: "",
                     transition: {duration: 0.25},
                 })
                 document.body.style.overflow = ""
             } else {
                 nav_content_container_animations.start({
                     width: "380px",
+                    boxShadow: "0px 3px 6px 0px rgba(0,0,0, .5)",
                     transition: {duration: 0.25},
                     
                 })
@@ -91,6 +94,7 @@ function Navigation_desktop(): ReactElement {
         })
     }, [App.app_content_container])
 
+    //Setting shadow below NavButton when Nav_items are scrolled for better ux
     useEffect(() => {
         const nav_button_container = document.getElementById("nav_button_container") as HTMLDivElement
         const items_container = document.getElementById("nav_items_container") as HTMLDivElement
@@ -100,15 +104,16 @@ function Navigation_desktop(): ReactElement {
             if(items_container.scrollTop > 0) {
                 console.log(items_container.scrollTop)
                 
-                nav_button_container.style.boxShadow = "0px 3px 6px 3px rgba(0, 0, 0, 0.3)"
+                nav_button_container.style.boxShadow = "0px 3px 4px 0px rgba(0, 0, 0, 0.3)"
             } else {
                 
-                nav_button_container.style.boxShadow = "0px 3px 6px 3px rgba(0, 0, 0, 0)"
+                nav_button_container.style.boxShadow = "0px 3px 4px 0px rgba(0, 0, 0, 0)"
             }
         }
 
         items_container.addEventListener("scroll" , set_shadow)
     }, [])
+
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
             <motion.div animate={nav_content_container_animations} className="content_container" id="content_container">
@@ -142,7 +147,7 @@ function Navigation_desktop(): ReactElement {
                             
 
                             <div className="bottom_section">
-                                <Nav_item icon={SignInIcon} label="Sign in" link="/login"/>
+                                <Nav_item  icon={SignInIcon} label="Sign in" link="/login"/>
                             </div>
                         </ul>
                     </div>
@@ -259,13 +264,13 @@ function Navigation_mobile(): ReactElement {
 //NavItem Component
 function Nav_item(props: NavItem) {
     const App: AppContext = useContext(appContext)
-    const nav = App.nav
+    const Nav = App.nav
     const Router = useRouter()
     
     const navItemLabelAnimation = useAnimation()
     //Showing Labels of navItems when toggling navState
     useEffect(() => {
-        if(nav.navState === true) {
+        if(Nav.navState === true) {
             navItemLabelAnimation.start({
                 transition: {duration: 0.2},
                 opacity: 1,
@@ -276,7 +281,7 @@ function Nav_item(props: NavItem) {
                 opacity: 0,
             })
         }
-    }, [nav.navState, navItemLabelAnimation]);
+    }, [Nav.navState, navItemLabelAnimation]);
 
     //Adding removing classes/styles to target Nav_item or none target Nav_item
     useEffect(() => {
@@ -299,7 +304,7 @@ function Nav_item(props: NavItem) {
 
     const Icon = props.icon
     return(
-        <motion.li onClick={() => {navigateTo(`${props.link}`)}} className="nav_li_item" id={`${props.link.toLowerCase()}`} >
+        <motion.li onClick={() => {navigateTo(`${props.link}`); Nav.setNavState(false)}} className="nav_li_item" id={`${props.link.toLowerCase()}`} >
             <div className="nav_item">
                 <Icon className="icon_svg"/>
                 <motion.p animate={navItemLabelAnimation} >{props.label}</motion.p>

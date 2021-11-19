@@ -11,11 +11,13 @@ export default function Background_gradient(props: {id: string, page_id: string}
         const background_element = document.getElementById(id) as HTMLDivElement
         //Page Element to get page.offsetheight
         const page_container = document.getElementById(page_id) as HTMLDivElement
-        
+        background_element.style.top ="0"
+
         //Setting background height and bottom position correctly.
         function set_background_gradient() {
             //Background properties
             background_element.style.position ="absolute"
+            
             background_element.style.pointerEvents = "none"
             background_element.style.zIndex = "-1"
             background_element.style.width = "100%"

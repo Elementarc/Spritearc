@@ -29,7 +29,7 @@ export default function Layout( { children }: any) {
         function checkApplicationWidth(){
             const deviceWidth = window.innerWidth
 
-            if(deviceWidth > 768){
+            if(deviceWidth > 864){
                 setIsMobile(false)
             } else {
                 setIsMobile(true)
@@ -50,7 +50,7 @@ export default function Layout( { children }: any) {
             app_content_blur.style.opacity = "0"
             app_content_blur.style.pointerEvents = "none"
         } else {
-            app_content_blur.style.opacity = ".7"
+            app_content_blur.style.opacity = ".8"
             app_content_blur.style.pointerEvents = "all"
         }
     }, [NavState])

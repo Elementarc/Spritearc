@@ -23,7 +23,7 @@
                 }
             }
             p{
-                @include p;
+                @include p(medium);
                 margin-top: .5rem;
                 width: 50%;
                 @include breakpoint(mobile) {
@@ -32,7 +32,7 @@
                 } 
             }
             a {
-                @include a;
+                @include a(medium);
                 margin-top: 1rem;
                 
             }
@@ -145,4 +145,5 @@
         }
     }
     
+    //Footer
 }

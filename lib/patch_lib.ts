@@ -4,6 +4,7 @@ import matter from 'gray-matter';
 import { PatchnoteInfo} from "../types";
 import compareDesc from "date-fns/compareDesc";
 
+
 //Directory of patches
 const directoryOfPatches: string = path.join(process.cwd(), "patches")
 
@@ -91,7 +92,6 @@ export class PatchHandler {
 
             return sortedPatchnotes
         }
-        
         
     }
 
@@ -186,7 +186,6 @@ export class Patchnote {
         }
     }
 }
-
 
 const patchHandler = new PatchHandler()
 export default patchHandler

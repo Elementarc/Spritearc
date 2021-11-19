@@ -43,7 +43,12 @@ export interface Pack {
     date: string,
     tags: string[],
     downloads: number,
+    content: PackContent[]
     rating: PackRating
+}
+export interface PackContent {
+    section_name: string,
+    section_assets: string[]
 }
 export interface PackRating {
     userRatings: {user: string, rating: number}[] | [],

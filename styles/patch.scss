@@ -67,7 +67,7 @@
             }
             //Default Text
             p{
-                @include p;
+                @include p(medium);
                 margin-bottom: 1rem;
                 margin-top: .5rem;
             }
@@ -76,7 +76,7 @@
                 margin-bottom: 1rem;
                 line-height: $font_p_line_height;
                 li{
-                    @include p;
+                    @include p(medium);
                 }
             }
             img{
@@ -134,7 +134,8 @@
                     width: 200px;
                     height: 100%;
                     @include breakpoint(mobile) {
-                        width: 100%;
+                        width: 80%;
+                        height: 100%;
                     }
                     .patch_forward_image{
                         width: 100%;
@@ -151,7 +152,7 @@
                     justify-content: center;
                     padding: 2rem 1rem;
                     @include breakpoint(mobile) {
-                        padding: 2rem 1rem;
+                        padding: 1.3rem 1rem;
                     }
                     h2{
                         @include h2(medium);
