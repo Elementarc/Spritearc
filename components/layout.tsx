@@ -29,7 +29,7 @@ export default function Layout( { children }: any) {
         function checkApplicationWidth(){
             const deviceWidth = window.innerWidth
 
-            if(deviceWidth > 864){
+            if(deviceWidth > 768){
                 setIsMobile(false)
             } else {
                 setIsMobile(true)

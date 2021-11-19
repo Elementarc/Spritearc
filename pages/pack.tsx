@@ -69,7 +69,7 @@ export default function Full_pack(props: {pack: Pack}) {
     );
 }
 
-
+//Component that creates a section with assets
 export function Pack_content_section(props: {pack: Pack}) {
     const pack = props.pack
     const section_jsx = []
@@ -91,6 +91,7 @@ export function Pack_content_section(props: {pack: Pack}) {
     );
 }
 
+//Component that creates assets from pack.
 export function Pack_asset(props: {assets: string[]}) {
     const assets = props.assets
     const assets_jsx = []
@@ -98,11 +99,11 @@ export function Pack_asset(props: {assets: string[]}) {
     for(let i = 0; i < assets.length; i++) {
         assets_jsx.push(
             <div key={`${assets[i]}_${i}`} className="asset">
-                <Image  quality="100%" priority={true} layout="fill" src={`${assets[i]}`} alt="A Theme image to represent that Patchnote."  className="patch_preview_image"/>
+                <Image  quality="100%" layout="fill" src={`${assets[i]}`} alt="A Theme image to represent that Patchnote."  className="patch_preview_image"/>
             </div>
         )
     }
-    console.log(assets_jsx.length)
+    
     return (
         <div className="assets_grid_container">
             {assets_jsx}

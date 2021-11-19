@@ -6,6 +6,7 @@
     height: 232px;
     width: 100%;
     box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.30);
+    transition: 0.1s ease-in-out;
     @include breakpoint(mobile) {
         height: 200px;
     }
@@ -13,12 +14,14 @@
         cursor: pointer;
         
         .background_container{
+            .background_image {
+                transform: scale(1.1);
+            }
             .background_image_hover{
                 position: absolute;
                 width: 100%;
                 z-index: 1;
                 height: 100%;
-                
                 opacity: 1;
             }
             .background_blur_hover{
@@ -62,6 +65,7 @@
         height: 100%;
         
         .background_image{
+            transition: 0.2s ease-in-out;
             object-fit: cover;
             object-position: center;
         }
@@ -73,7 +77,7 @@
             height: 100%;
         }
         .background_blur_hover{
-            transition: 0.1s ease-in-out;
+            transition: 0.2s ease-in-out;
             position: absolute;
             bottom: 0;
             left: 0;
