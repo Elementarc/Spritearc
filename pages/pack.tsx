@@ -10,24 +10,36 @@ import { useParallax } from '../lib/custom_hooks';
 import Background_gradient from '../components/gradient_background';
 import { appContext } from "../components/layout";
 import { AppContext } from '../types';
-
+import ArrowIcon from "../public/icons/ArrowIcon.svg"
+import app from 'next/app';
 //Renders the full Pack
 export default function Full_pack(props: {pack: Pack}) {
+    const App: AppContext = useContext(appContext)
+
     const pack = {
         _id: "1",
-        author: "Arclipse",
+        user: {
+            _id: "123",
+            username: "Arclipse",
+            user_since: "20.04.2015",
+            about: "Pixelart artist",
+            profile_image: "/image1",
+            released_packs: []
+        },
         title: "Lost Sanctuary",
-        subTitle: "A new Story has begun",
-        previewImage: "/packs/pack_1/SampleA.png",
+        sub_title: "A new Story has begun",
+        preview_image: "/packs/pack_1/SampleA.png",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque. Sed scelerisque sit faucibus imperdiet. Leo senectus diam volutpat arcu. Consequat libero, scelerisque sed pretium sit semper.",
         socials: ["Twitter", "Insta"],
         date: "20.05.2015",
         rating: {
-            "userRatings": [{
-                "user": "arclipse",
-                "rating": 5
-            }],
-            "avgRating": 5
+            user_ratings: [
+                {
+                    user: "arclipse",
+                    rating: 5
+                }
+            ],
+            avg_rating: 5
         },
         tags: ["Lol", "rpg"],
         content: [
@@ -43,6 +55,28 @@ export default function Full_pack(props: {pack: Pack}) {
         downloads: 1
     }
     useParallax("patch_preview_image")
+    //Toggling arrow svg when scrollY > 0
+    useEffect(() => {
+        
+        //Function that toggles the arrow. Getting called whenever scrolling is happening.
+        function toggle_arrow() {
+            const arrow_down = document.getElementById("arrow_down") as HTMLDivElement
+            if(window.scrollY > 0 ) {
+                arrow_down.style.opacity = "0"
+            } else {
+                arrow_down.style.opacity = "1"
+            }
+        }
+
+        if(App.isMobile === false) {
+            window.addEventListener("scroll", toggle_arrow)
+        }
+        
+        return(() => {
+            window.removeEventListener("scroll", toggle_arrow)
+        })
+    }, [App.isMobile])
+
     return (
         <>
             <div className="pack_page" id="pack_page">
@@ -51,12 +85,64 @@ export default function Full_pack(props: {pack: Pack}) {
                         
                     <div className="preview_container" >
                         <div className="background">
-                            <Image quality="100%" priority={true} layout="fill" src={`${pack.previewImage}`} alt="An image that represents one asset of this pack."  className="patch_preview_image" id="patch_preview_image"/>
+                            <Image quality="100%" priority={true} layout="fill" src={`${pack.preview_image}`} alt="An image that represents one asset of this pack."  className="patch_preview_image" id="patch_preview_image"/>
                             <div className="background_blur" />
                         </div>
-                    </div>
 
-                    <div className="content_container">
+                        <div className="pack_info">
+                            <div className="header">
+                                <h2>{pack.sub_title}</h2>
+
+                                <H1_with_deco/>
+                                <h4>
+                                    {`Presented & Designed by `}
+                                    <Link href="/test">{pack.user.username}</Link>
+                                </h4>
+
+                                <p>{pack.description}</p>
+
+                                <button>Download Pack</button>
+
+                            </div>
+                        </div>
+
+                        <div className="stats_container"> 
+                            <div className="stats">
+                                <span className="top_line"/>
+
+                                <div className="stat_item rating_container">
+                                    <h4>Rating: </h4>
+                                    <p>202222</p>
+                                </div>
+
+                                <div className="stat_item tags_container">
+                                    <h4>Tags: </h4>
+                                    <p>RPG, Jump and run, lolsssasdsadasd</p>
+                                </div>
+
+                                <div className="stat_item download_container">
+                                    <h4>Downloads: </h4>
+                                    <p>152</p>
+                                </div>
+
+                                <div className="stat_item date_container">
+                                    <h4>Released: </h4>
+                                    <p>20.01.2018</p>
+                                </div>
+
+                                <span className="bottom_line"/>
+                            </div>
+                        </div>
+
+                        { App.isMobile === false &&
+                            <div className="arrow_container">
+                                <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
+                            </div>
+                        }
+
+                    </div>
+                    
+                    <div className="asset_sections_container">
                         <Pack_content_section pack={pack}/>
                     </div>
 
@@ -67,6 +153,24 @@ export default function Full_pack(props: {pack: Pack}) {
             </div>
         </>
     );
+}
+
+export function H1_with_deco() {
+  return (
+    <div className="h1_with_deco">
+        <div className="left_container">
+            <span className="left_line"/>
+            <div className="left_icon"/>
+        </div>
+        
+        <h1>This is a test made by arclipse</h1>
+
+        <div className="right_container">
+            <div className="right_icon"/>
+            <span className="right_line"/>
+        </div>
+    </div>
+  );
 }
 
 //Component that creates a section with assets

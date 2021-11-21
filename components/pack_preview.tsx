@@ -63,11 +63,11 @@ export default function Pack_preview(props: {pack: Pack}) {
 
                 <div className="content_container">
                     <h1>{pack.title}</h1>
-                    <h2>{pack.subTitle}</h2>
+                    <h2>{pack.sub_title}</h2>
                 </div>
                 
                 <div className="background_container">
-                    <Image priority={true} src={pack.previewImage} layout="fill" className="background_image"/>
+                    <Image priority={true} src={pack.preview_image} layout="fill" className="background_image"/>
                     
                     <div className="background_blur" />
                     <div className="background_blur_hover" />

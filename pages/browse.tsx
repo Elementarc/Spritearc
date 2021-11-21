@@ -10,7 +10,6 @@ import { Nav_shadow } from '../components/navigation';
 
 export default function Browse(props: any) {
 	const recent_packs: Pack[] = props.recent_packs
-	
 	return (
 		<>
 			<div className="browse_page">
@@ -26,7 +25,6 @@ export default function Browse(props: any) {
 		</>
 	);
 }
-
 
 export function Title_section(props: {pack: Pack,}) {
 	const pack = props.pack
@@ -44,7 +42,7 @@ export function Title_section(props: {pack: Pack,}) {
 				</div>
 
 				<div className="background_container">
-					<Image src={pack.previewImage} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+					<Image src={pack.preview_image} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
 					<div className="background_blur" />
 				</div>
 			</div>

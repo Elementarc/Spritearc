@@ -36,10 +36,10 @@ export default function Footer(): ReactElement {
             </div>
 
             <div className="legal_container">
-                <Link href="#" scroll={false}><a>Terms of Service</a></Link>
-                <Link href="#" scroll={false}><a>Privacy Policy</a></Link>
-                <Link href="#" scroll={false}><a>Contact</a></Link>
-                <Link href="#" scroll={false}><a>Cookies</a></Link>
+                <Link href="/pack" scroll={false}><a>Terms of Service</a></Link>
+                <Link href="/pack" scroll={false}><a>Privacy Policy</a></Link>
+                <Link href="/pack" scroll={false}><a>Contact</a></Link>
+                <Link href="/pack" scroll={false}><a>Cookies</a></Link>
             </div>
 
             <h5>©2021 By Hamit Kiziltas. ALL RIGHTS RESERVED. All trademarks referenced herein are the properties of their respective owners.</h5>

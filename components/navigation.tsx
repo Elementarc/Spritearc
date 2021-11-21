@@ -47,7 +47,7 @@ function Navigation_desktop(): ReactElement {
             if(navState === false) {
                 nav_content_container_animations.start({
                     width: "",
-                    boxShadow: "",
+                    boxShadow: "0px 3px 6px 0px rgba(0,0,0, 0)",
                     transition: {duration: 0.25},
                 })
                 document.body.style.overflow = ""

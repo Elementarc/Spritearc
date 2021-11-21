@@ -73,8 +73,6 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
         @media screen and (max-width: 768px) { @content; }
     } @else if $point == laptop {
         @media screen and (max-width: 1366px) { @content; }
-    } @else {
-        @media screen and (max-width: $point) { @content; }
     }
 }
 //For Next lines
@@ -90,7 +88,7 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     color: $color_background_dark;
     background-color: $color_main;
     font-size: 1.125rem;
-    padding: .65rem 3.8rem;
+    padding: .75rem 3.8rem;
     &:hover{
         background-color: $color_main_bright;
         cursor: pointer;

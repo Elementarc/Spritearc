@@ -34,10 +34,10 @@ export interface PatchnoteInfo {
 //PackPreview Interface
 export interface Pack {
     _id: string,
-    author: string,
-    previewImage: string,
+    user: User,
+    preview_image: string,
     title: string,
-    subTitle: string,
+    sub_title: string,
     description: string,
     socials: string[]
     date: string,
@@ -51,6 +51,15 @@ export interface PackContent {
     section_assets: string[]
 }
 export interface PackRating {
-    userRatings: {user: string, rating: number}[] | [],
-    avgRating: number
+    user_ratings: {user: string, rating: number}[] | [],
+    avg_rating: number
+}
+
+interface User{
+    _id: string,
+    username: string,
+    user_since: string,
+    about: string,
+    profile_image: string,
+    released_packs: Pack[] | []
 }
