@@ -1,59 +1,19 @@
 import { GetServerSideProps } from 'next';
-import React, {ReactElement, useEffect, useState, useContext} from 'react';
+import React, {ReactElement, useEffect, useContext} from 'react';
 import Footer from '../components/footer';
-import {Pack, PackContent} from "../types"
+import {Pack} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
-import Svg from "../public/images/BackgroundFull.svg"
 import { useParallax } from '../lib/custom_hooks';
-import Background_gradient from '../components/gradient_background';
 import { appContext } from "../components/layout";
 import { AppContext } from '../types';
 import ArrowIcon from "../public/icons/ArrowIcon.svg"
-import app from 'next/app';
 //Renders the full Pack
 export default function Full_pack(props: {pack: Pack}) {
     const App: AppContext = useContext(appContext)
-
-    const pack = {
-        _id: "1",
-        user: {
-            _id: "123",
-            username: "Arclipse",
-            user_since: "20.04.2015",
-            about: "Pixelart artist",
-            profile_image: "/image1",
-            released_packs: []
-        },
-        title: "Lost Sanctuary",
-        sub_title: "A new Story has begun",
-        preview_image: "/packs/pack_1/SampleA.png",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque. Sed scelerisque sit faucibus imperdiet. Leo senectus diam volutpat arcu. Consequat libero, scelerisque sed pretium sit semper.",
-        socials: ["Twitter", "Insta"],
-        date: "20.05.2015",
-        rating: {
-            user_ratings: [
-                {
-                    user: "arclipse",
-                    rating: 5
-                }
-            ],
-            avg_rating: 5
-        },
-        tags: ["Lol", "rpg"],
-        content: [
-            {
-                section_name: "Characters",
-                section_assets: ["/image1", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2"]
-            },
-            {
-                section_name: "Backgrounds",
-                section_assets: ["/image1", "/image2"]
-            },
-        ],
-        downloads: 1
-    }
+    const pack = props.pack
+    
     useParallax("patch_preview_image")
     //Toggling arrow svg when scrollY > 0
     useEffect(() => {
@@ -93,7 +53,8 @@ export default function Full_pack(props: {pack: Pack}) {
                             <div className="header">
                                 <h2>{pack.sub_title}</h2>
 
-                                <H1_with_deco/>
+                                <H1_with_deco title={pack.title}/>
+
                                 <h4>
                                     {`Presented & Designed by `}
                                     <Link href="/test">{pack.user.username}</Link>
@@ -112,22 +73,22 @@ export default function Full_pack(props: {pack: Pack}) {
 
                                 <div className="stat_item rating_container">
                                     <h4>Rating: </h4>
-                                    <p>202222</p>
+                                    <p>{pack.rating.avg_rating}</p>
                                 </div>
 
                                 <div className="stat_item tags_container">
                                     <h4>Tags: </h4>
-                                    <p>RPG, Jump and run, lolsssasdsadasd</p>
+                                    <p>{pack.tags.join(", ")}</p>
                                 </div>
 
                                 <div className="stat_item download_container">
                                     <h4>Downloads: </h4>
-                                    <p>152</p>
+                                    <p>{pack.downloads}</p>
                                 </div>
 
                                 <div className="stat_item date_container">
                                     <h4>Released: </h4>
-                                    <p>20.01.2018</p>
+                                    <p>{pack.date}</p>
                                 </div>
 
                                 <span className="bottom_line"/>
@@ -155,7 +116,8 @@ export default function Full_pack(props: {pack: Pack}) {
     );
 }
 
-export function H1_with_deco() {
+//Component that creates a Pack H1 Element with extras
+export function H1_with_deco(props: {title: string}): ReactElement {
   return (
     <div className="h1_with_deco">
         <div className="left_container">
@@ -163,7 +125,7 @@ export function H1_with_deco() {
             <div className="left_icon"/>
         </div>
         
-        <h1>This is a test made by arclipse</h1>
+        <h1>{props.title}</h1>
 
         <div className="right_container">
             <div className="right_icon"/>
@@ -174,7 +136,7 @@ export function H1_with_deco() {
 }
 
 //Component that creates a section with assets
-export function Pack_content_section(props: {pack: Pack}) {
+export function Pack_content_section(props: {pack: Pack}): ReactElement {
     const pack = props.pack
     const section_jsx = []
     //Looping through content to create a section for each content
@@ -196,7 +158,7 @@ export function Pack_content_section(props: {pack: Pack}) {
 }
 
 //Component that creates assets from pack.
-export function Pack_asset(props: {assets: string[]}) {
+export function Pack_asset(props: {assets: string[]}): ReactElement {
     const assets = props.assets
     const assets_jsx = []
     
@@ -216,3 +178,72 @@ export function Pack_asset(props: {assets: string[]}) {
 }
 
 
+export const getServerSideProps: GetServerSideProps = async(context) => {
+    if(typeof context.query.id === "string") {
+        const response = await fetch(`http://localhost:3000/api/get_pack?id=${context.query.id}`)
+        if(response.status === 200) {
+            const pack = await response.json()
+            
+            return{
+                props: {
+                    pack
+                }
+            }
+        } else {
+            return {
+                redirect: {
+                    destination: `/browse`,
+                    permanent: false,
+                }
+            }
+        }
+
+
+    } else {
+        return {
+            redirect: {
+                destination: `/browse`,
+                permanent: false,
+            }
+        }
+    }
+} 
+
+const packssss = {
+    _id: "1",
+    user: {
+        _id: "123",
+        username: "Arclipse",
+        user_since: "20.04.2015",
+        about: "Pixelart artist",
+        profile_image: "/image1",
+        released_packs: []
+    },
+    title: "Lost Sanctuary",
+    sub_title: "A new Story has begun",
+    preview_image: "/packs/pack_1/SampleA.png",
+    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque. Sed scelerisque sit faucibus imperdiet. Leo senectus diam volutpat arcu. Consequat libero, scelerisque sed pretium sit semper.",
+    socials: ["Twitter", "Insta"],
+    date: "20.05.2015",
+    rating: {
+        user_ratings: [
+            {
+                user: "arclipse",
+                rating: 5
+            }
+        ],
+        avg_rating: 5
+    },
+    tags: ["Lol", "rpg"],
+    content: [
+        {
+            section_name: "Characters",
+            section_assets: ["/image1", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2"]
+        },
+        {
+            section_name: "Backgrounds",
+            section_assets: ["/image1", "/image2"]
+        },
+    ],
+    downloads: 1
+}

@@ -7,7 +7,7 @@ import Image from "next/image"
 import { useParallax } from '../lib/custom_hooks';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
-
+import { useRouter } from 'next/router';
 export default function Browse(props: any) {
 	const recent_packs: Pack[] = props.recent_packs
 	return (
@@ -28,6 +28,7 @@ export default function Browse(props: any) {
 
 export function Title_section(props: {pack: Pack,}) {
 	const pack = props.pack
+	const Router = useRouter()
 	useParallax("title_pack_background_image")
 	return (
 		<div className="title_pack_container">
@@ -38,7 +39,7 @@ export function Title_section(props: {pack: Pack,}) {
 					<h2>A New Story</h2>
 					<h1>Nature Of Life</h1>
 					<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut.</p>
-					<button>View Pack</button>
+					<button onClick={() => {Router.push(`/pack?id=${pack._id}`, `/pack?id=${pack._id}` , {scroll: false})}}>View Pack</button>
 				</div>
 
 				<div className="background_container">

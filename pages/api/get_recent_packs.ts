@@ -16,7 +16,7 @@ export default async function get_recent_packs(req: NextApiRequest, res: NextApi
             //Returning 12 Packs Ordered by Date.
             const recent_packs = await db.collection("packs").find({}).sort({date: -1}).limit(12).toArray() as Pack[]
             res.setHeader("Content-type", "application/json")
-            res.send(JSON.stringify(recent_packs))
+            res.status(200).send(JSON.stringify(recent_packs))
 
         } catch (err) {
             console.log(err)
