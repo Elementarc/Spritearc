@@ -131,8 +131,11 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
    
 
     @include breakpoint(mobile) {
-        @if($size == big) {
+        @if($size == default) {
             font-size: 0.938rem;
+        }
+        @if($size == medium) {
+            font-size: .875rem;
         }
     }
 }
@@ -153,7 +156,6 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
 
     @include breakpoint(mobile) {
         line-height: 1.9rem;
-        font-size: $font_p_mobile;
         @if($size == big) {
             font-size: 0.938rem;
         }

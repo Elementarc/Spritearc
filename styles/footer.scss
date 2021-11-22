@@ -13,21 +13,6 @@
         margin-top: 3rem;
     }
     
-    .socials_container{
-        display: flex;
-        margin: 5rem 0rem 5rem 0rem;
-        a{
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 32px;
-            width: 32px;
-            margin: 0 1rem;
-        }
-    }
-
-    
     .legal_container{
         display: grid;
         grid-template-columns: auto;
@@ -50,11 +35,25 @@
             }
         }
     }
-
+    .socials_container{
+        display: flex;
+        margin: 5rem 0rem 5rem 0rem;
+    }
     h5{
         @include h5;
         margin: 2rem 0 1.4rem;
         text-align: center;
     }
     
+}
+
+
+.social_item{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 32px;
+    width: 32px;
+    margin: 0 1rem;
 }

@@ -1,5 +1,5 @@
 import React, {ReactElement, useState} from 'react';
-import { Pack  } from "../types"
+import { PackInfo } from "../types"
 import { GetServerSideProps } from 'next'
 import Pack_preview from '../components/pack_preview';
 import Link from 'next/dist/client/link';
@@ -8,8 +8,9 @@ import { useParallax } from '../lib/custom_hooks';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
 import { useRouter } from 'next/router';
+
 export default function Browse(props: any) {
-	const recent_packs: Pack[] = props.recent_packs
+	const recent_packs: PackInfo[] = props.recent_packs
 	return (
 		<>
 			<div className="browse_page">
@@ -26,7 +27,7 @@ export default function Browse(props: any) {
 	);
 }
 
-export function Title_section(props: {pack: Pack,}) {
+export function Title_section(props: {pack: PackInfo,}) {
 	const pack = props.pack
 	const Router = useRouter()
 	useParallax("title_pack_background_image")
@@ -51,12 +52,12 @@ export function Title_section(props: {pack: Pack,}) {
 		</div>
 	);
 }
-export function Packs_section(props: {packs: Pack[], header: string}) {
+export function Packs_section(props: {packs: PackInfo[], header: string}) {
 	//Packs Response from server.
-	const packs: Pack[] = props.packs
+	const packs: PackInfo[] = props.packs
 	//JSX RecentPacks that will be rendered
 	const [recent_packs_jsx, set_recent_packs_jsx] = useState(() => {
-		let jsx_recent_packs: ReactElement<Pack>[] = []
+		let jsx_recent_packs: ReactElement<PackInfo>[] = []
 		for(let pack of packs) {
 			jsx_recent_packs.push(<Pack_preview key={pack._id} pack={pack}/>)
 		}
@@ -79,8 +80,8 @@ export function Packs_section(props: {packs: Pack[], header: string}) {
 }
 
 export const getServerSideProps: GetServerSideProps = async(context) => {
-	const recent_packs: Pack[] = await (await fetch(`http://localhost:3000/api/get_recent_packs`)).json()
-	const title_pack: Pack = await (await fetch(`http://localhost:3000/api/get_title_pack`)).json()
+	const recent_packs: PackInfo[] = await (await fetch(`http://localhost:3000/api/get_recent_packs`)).json()
+	const title_pack: PackInfo = await (await fetch(`http://localhost:3000/api/get_title_pack`)).json()
 	return{
 		props: {
 			recent_packs,

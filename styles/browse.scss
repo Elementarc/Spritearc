@@ -33,17 +33,17 @@
                         padding: 0 1rem
                     }
                     h2{
-                        @include h2(big);
+                        @include h2(medium);
                         
                     }
                     h1{
-                        @include h1(big);
+                        @include h1(medium);
                         margin-top: -.2rem;
                         padding: unset;
                         
                     }
                     p{
-                        @include p;
+                        @include p(medium);
                         margin-top: .4rem;
                         width: 40%;
                         @include breakpoint(laptop){
@@ -57,6 +57,7 @@
                     button {
                         @include button;
                         margin-top: 1.5rem;
+                        font-size: 16px;
                         align-self: start;
                     }
                 }
@@ -93,7 +94,7 @@
                     @include h1(small);
                 }
                 a{
-                    @include a(small);
+                    @include a(medium);
                     align-self: center;
                     justify-self: end;
                 }

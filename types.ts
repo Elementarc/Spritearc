@@ -32,7 +32,7 @@ export interface PatchnoteInfo {
 }
 
 //PackPreview Interface
-export interface Pack {
+export interface PackInfo {
     _id: string,
     user: User,
     preview_image: string,
@@ -44,15 +44,11 @@ export interface Pack {
     tags: string[],
     downloads: number,
     content: PackContent[]
-    rating: PackRating
+    ratings: {user: string, rating: number}[] | []
 }
 export interface PackContent {
     section_name: string,
     section_assets: string[]
-}
-export interface PackRating {
-    user_ratings: {user: string, rating: number}[] | [],
-    avg_rating: number
 }
 
 interface User{
@@ -61,5 +57,5 @@ interface User{
     user_since: string,
     about: string,
     profile_image: string,
-    released_packs: Pack[] | []
+    released_packs: PackInfo[] | []
 }

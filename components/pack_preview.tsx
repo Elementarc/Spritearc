@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import Link from 'next/dist/client/link';
-import { Pack } from '../types';
+import { PackInfo } from '../types';
 import Image from 'next/dist/client/image';
 
 
@@ -55,8 +55,8 @@ export function Packs_navigator(props: {page: number, setPage: any, lastPage: nu
 	);
 }
 //Component that represents 1 Pack preview. Takes a Pack obj as a property.
-export default function Pack_preview(props: {pack: Pack}) {
-    const pack: Pack = props.pack
+export default function Pack_preview(props: {pack: PackInfo}) {
+    const pack: PackInfo = props.pack
 	return (
         <Link href={`/pack?id=${pack._id}`} scroll={false}>
             <div className="pack_preview_container">

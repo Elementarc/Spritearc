@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import React, {ReactElement, useEffect, useContext} from 'react';
-import Footer from '../components/footer';
-import {Pack} from "../types"
+import Footer, { Social_item } from '../components/footer';
+import {PackInfo} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
@@ -9,15 +9,19 @@ import { useParallax } from '../lib/custom_hooks';
 import { appContext } from "../components/layout";
 import { AppContext } from '../types';
 import ArrowIcon from "../public/icons/ArrowIcon.svg"
+import CloseIcon from "../public/icons/CloseIcon.svg"
+import StarEmpty from "../public/icons/StarEmptyIcon.svg"
+import StarHalf from "../public/icons/StarHalfIcon.svg"
+import Star from "../public/icons/StarIcon.svg"
+import { useRouter } from 'next/router';
 //Renders the full Pack
-export default function Full_pack(props: {pack: Pack}) {
+export default function Pack(props: {pack: PackInfo}) {
     const App: AppContext = useContext(appContext)
     const pack = props.pack
-    
+    const Router = useRouter()
     useParallax("patch_preview_image")
     //Toggling arrow svg when scrollY > 0
     useEffect(() => {
-        
         //Function that toggles the arrow. Getting called whenever scrolling is happening.
         function toggle_arrow() {
             const arrow_down = document.getElementById("arrow_down") as HTMLDivElement
@@ -28,78 +32,107 @@ export default function Full_pack(props: {pack: Pack}) {
             }
         }
 
-        if(App.isMobile === false) {
-            window.addEventListener("scroll", toggle_arrow)
-        }
+        window.addEventListener("scroll", toggle_arrow)
         
         return(() => {
             window.removeEventListener("scroll", toggle_arrow)
         })
-    }, [App.isMobile])
+    }, [])
 
     return (
         <>
             <div className="pack_page" id="pack_page">
+                { App.isMobile === false &&
+                    <div className="close_pack">
+                        <div onClick={() => {Router.push("/browse", "/browse", {scroll: false})}} className="close">
+                            <CloseIcon className="close_icon"/>
+                            <div className="hover_box">Close Pack</div>
+                        </div>
+                    </div>
+                }
                 
+
                 <div className="content" id="content">
                         
-                    <div className="preview_container" >
+                    <div className="preview_container" id="preview_container">
                         <div className="background">
                             <Image quality="100%" priority={true} layout="fill" src={`${pack.preview_image}`} alt="An image that represents one asset of this pack."  className="patch_preview_image" id="patch_preview_image"/>
                             <div className="background_blur" />
                         </div>
 
                         <div className="pack_info">
-                            <div className="header">
+                            <div className="header_container">
                                 <h2>{pack.sub_title}</h2>
 
                                 <H1_with_deco title={pack.title}/>
 
-                                <h4>
-                                    {`Presented & Designed by `}
-                                    <Link href="/test">{pack.user.username}</Link>
-                                </h4>
-
                                 <p>{pack.description}</p>
-
                                 <button>Download Pack</button>
-
                             </div>
-                        </div>
 
-                        <div className="stats_container"> 
-                            <div className="stats">
-                                <span className="top_line"/>
-
-                                <div className="stat_item rating_container">
-                                    <h4>Rating: </h4>
-                                    <p>{pack.rating.avg_rating}</p>
-                                </div>
-
-                                <div className="stat_item tags_container">
-                                    <h4>Tags: </h4>
-                                    <p>{pack.tags.join(", ")}</p>
-                                </div>
-
-                                <div className="stat_item download_container">
-                                    <h4>Downloads: </h4>
-                                    <p>{pack.downloads}</p>
-                                </div>
-
-                                <div className="stat_item date_container">
-                                    <h4>Released: </h4>
-                                    <p>{pack.date}</p>
-                                </div>
-
-                                <span className="bottom_line"/>
+                            <div className="user_container">
+                                <h4>
+                                    {`Created by `}
+                                    <Link href="/test" scroll={false}>{pack.user.username}</Link>
+                                </h4>
                             </div>
-                        </div>
 
-                        { App.isMobile === false &&
+                            <div className="stats_container"> 
+                                <span className="top_line" />
+
+                                <div className="grid_container">
+                                    
+                                    <div className="grid_item">
+
+                                        <div className="item_1">
+                                            <h4>Rating:</h4>
+                                        </div>
+
+
+                                        <div className="item_2">
+                                            <Rating_container ratings={pack.ratings}/>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid_item">
+
+                                        <div className="item_1">
+                                            <h4>Released:</h4>
+                                        </div>
+
+                                        <div className="item_2">{pack.date}</div>
+                                    </div>
+
+                                    <div className="grid_item">
+
+                                        <div className="item_1">
+                                            <h4>Downloads:</h4>
+                                        </div>
+
+                                        <div className="item_2">{pack.downloads}</div>
+                                    </div>
+
+                                    <div className="grid_item">
+
+                                        <div className="item_1">
+                                            <h4>Tags:</h4>
+                                        </div>
+
+                                        <div className="item_2">{pack.tags.join(", ").toUpperCase()}</div>
+                                    </div>
+                                </div>
+
+                                <span className="bottom_line" />
+                            </div>
+
                             <div className="arrow_container">
                                 <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
                             </div>
-                        }
+                        </div>
+
+                        
+
+                        
 
                     </div>
                     
@@ -116,27 +149,8 @@ export default function Full_pack(props: {pack: Pack}) {
     );
 }
 
-//Component that creates a Pack H1 Element with extras
-export function H1_with_deco(props: {title: string}): ReactElement {
-  return (
-    <div className="h1_with_deco">
-        <div className="left_container">
-            <span className="left_line"/>
-            <div className="left_icon"/>
-        </div>
-        
-        <h1>{props.title}</h1>
-
-        <div className="right_container">
-            <div className="right_icon"/>
-            <span className="right_line"/>
-        </div>
-    </div>
-  );
-}
-
 //Component that creates a section with assets
-export function Pack_content_section(props: {pack: Pack}): ReactElement {
+export function Pack_content_section(props: {pack: PackInfo}): ReactElement {
     const pack = props.pack
     const section_jsx = []
     //Looping through content to create a section for each content
@@ -156,7 +170,6 @@ export function Pack_content_section(props: {pack: Pack}): ReactElement {
         </div>
     );
 }
-
 //Component that creates assets from pack.
 export function Pack_asset(props: {assets: string[]}): ReactElement {
     const assets = props.assets
@@ -178,6 +191,62 @@ export function Pack_asset(props: {assets: string[]}): ReactElement {
 }
 
 
+export function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
+    const ratings: {user: string, rating: number}[] = props.ratings
+    let sum_ratings: number = 0
+
+    for(let item of ratings) {
+        sum_ratings = sum_ratings + item.rating
+    }
+    const avg_rating = sum_ratings / ratings.length
+
+    //Return a ReactElement array with stars. 
+    function create_stars(number: number) {
+        const max_stars = 5
+        const stars_jsx: any = []
+        const decimal = number % 1
+
+        for(let i = 0; i < Math.floor(number); i++) {
+            stars_jsx.push(<Star key={i}/>)
+        }
+        
+
+        if(decimal >= .5) {
+            stars_jsx.push(<StarHalf key={decimal}/>)
+        }
+
+        if(stars_jsx.length < max_stars) {
+            stars_jsx.push(<StarEmpty key="empty"/>)
+        }
+        return stars_jsx
+    }
+    const stars = create_stars(avg_rating)
+    return (
+        <div className="stars_container">
+            {stars}
+        </div>
+    );
+}
+
+//Component that creates a Pack H1 Element with extras
+export function H1_with_deco(props: {title: string}): ReactElement {
+    return (
+      <div className="h1_with_deco">
+          <div className="left_container">
+              <span className="left_line"/>
+              <div className="left_icon"/>
+          </div>
+          
+          <h1>{props.title}</h1>
+  
+          <div className="right_container">
+              <div className="right_icon"/>
+              <span className="right_line"/>
+          </div>
+      </div>
+    );
+}
+
 export const getServerSideProps: GetServerSideProps = async(context) => {
     if(typeof context.query.id === "string") {
         const response = await fetch(`http://localhost:3000/api/get_pack?id=${context.query.id}`)
@@ -197,7 +266,6 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
                 }
             }
         }
-
 
     } else {
         return {

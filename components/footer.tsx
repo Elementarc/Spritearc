@@ -4,6 +4,7 @@ import Image from "next/image"
 import Twitter from "../public/logos/twitter.png"
 import Link from 'next/dist/client/link';
 import Background_gradient from './gradient_background';
+
 export default function Footer(): ReactElement {
     //Setting the background of the footer to App width and height.
     useEffect(() => {
@@ -32,7 +33,7 @@ export default function Footer(): ReactElement {
             <h1>Pixepalast</h1>
 
             <div className="socials_container">
-                <Socials link="https://twitter.com/home" logo={Twitter} alt="Twitter Logo"/>
+                <Social_item link="https://twitter.com/home" logo={Twitter} alt="Twitter Logo"/>
             </div>
 
             <div className="legal_container">
@@ -49,9 +50,9 @@ export default function Footer(): ReactElement {
 }
 
 
-function Socials(props: any): ReactElement {
+export function Social_item(props: {link: string, logo: any, alt: string}): ReactElement {
     return(
-        <a href={props.link} rel="noreferrer" target="_blank">
+        <a href={props.link} rel="noreferrer" target="_blank" className="social_item">
             <Image src={props.logo} alt={props.alt} layout="fill" ></Image>
         </a>
     )
