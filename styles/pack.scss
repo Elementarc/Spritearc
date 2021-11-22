@@ -117,7 +117,7 @@
                     display: flex;
                     flex-direction: column;
                     width: 100%;
-                    margin: 6.5rem 0;
+                    margin: 7rem 0;
                     justify-content: center;
                     align-items: center;
                     @include breakpoint(mobile) {
@@ -141,24 +141,26 @@
                     justify-content: center;
                     align-items: center;
                     width: 100%;
-                    @include breakpoint(mobile) {
-                        margin-bottom: 4rem;
-                    }
                     .top_line {
                         @include next_section_line;
+                        width: 80%;
                         position: absolute;
                         top: 0;
+                        @include breakpoint(mobile) {
+                            width: 100%;
+                        }
                     }
                     .grid_container{
                         display: grid;
                         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-                        grid-template-rows: minmax(50px, 1fr);
                         margin: 2rem 0rem;
                         column-gap: 1rem;
                         row-gap: 1rem;
-                        width: 65%;
+                        width: 60%;
                         height: 100%;
-                        
+                        @include breakpoint(laptop) {
+                            width: 65%;
+                        }
                         @include breakpoint(mobile) {
                             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                             width: 90%;
@@ -172,11 +174,14 @@
                                 justify-self: start;
                                 h4{
                                     @include h4(big);
+                                    font-size: 16px;
+                                    @include breakpoint(mobile) {
+                                        font-size: 14px;
+                                    }
                                 }
                             }
                             .item_2{
-                                font-family: $font_alatsi;
-                                font-size: 16px;
+                                @include p(medium);
                                 color: white;
                                 align-self: center;
                                 justify-self: start;
@@ -185,6 +190,10 @@
                                         width: 35px;
                                         transform: translateY(2px) scale(1.2);
                                         fill: $color_main_bright;
+                                        @include breakpoint(mobile) {
+                                            width: 30px;
+                                            transform: translateY(1px) scale(1);
+                                        }
                                     }
                                 }
                                 
@@ -194,8 +203,12 @@
                     }
                     .bottom_line {
                         @include next_section_line;
+                        width: 80%;
                         position: absolute;
                         bottom: 0;
+                        @include breakpoint(mobile) {
+                            width: 100%;
+                        }
                     }
                 }
                 .rating_container{

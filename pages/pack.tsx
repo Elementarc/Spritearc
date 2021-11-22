@@ -14,6 +14,7 @@ import StarEmpty from "../public/icons/StarEmptyIcon.svg"
 import StarHalf from "../public/icons/StarHalfIcon.svg"
 import Star from "../public/icons/StarIcon.svg"
 import { useRouter } from 'next/router';
+
 //Renders the full Pack
 export default function Pack(props: {pack: PackInfo}) {
     const App: AppContext = useContext(appContext)
@@ -189,8 +190,7 @@ export function Pack_asset(props: {assets: string[]}): ReactElement {
         </div>
     );
 }
-
-
+//Component that renders Stars based on pack Rating.
 export function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
     const ratings: {user: string, rating: number}[] = props.ratings
     let sum_ratings: number = 0
@@ -199,7 +199,6 @@ export function Rating_container(props: {ratings: {user: string, rating: number}
         sum_ratings = sum_ratings + item.rating
     }
     const avg_rating = sum_ratings / ratings.length
-
     //Return a ReactElement array with stars. 
     function create_stars(number: number) {
         const max_stars = 5
@@ -216,8 +215,12 @@ export function Rating_container(props: {ratings: {user: string, rating: number}
         }
 
         if(stars_jsx.length < max_stars) {
-            stars_jsx.push(<StarEmpty key="empty"/>)
+            const left_over = max_stars - stars_jsx.length
+            for(let i = 0; i < left_over; i++) {
+                stars_jsx.push(<StarEmpty key={`empty_star_${i}`}/>)
+            }
         }
+        
         return stars_jsx
     }
     const stars = create_stars(avg_rating)
@@ -227,7 +230,6 @@ export function Rating_container(props: {ratings: {user: string, rating: number}
         </div>
     );
 }
-
 //Component that creates a Pack H1 Element with extras
 export function H1_with_deco(props: {title: string}): ReactElement {
     return (
@@ -246,6 +248,9 @@ export function H1_with_deco(props: {title: string}): ReactElement {
       </div>
     );
 }
+
+
+
 
 export const getServerSideProps: GetServerSideProps = async(context) => {
     if(typeof context.query.id === "string") {
