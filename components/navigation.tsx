@@ -102,7 +102,6 @@ function Navigation_desktop(): ReactElement {
         function set_shadow() {
             nav_button_container.style.transition = "0.2s ease-in-out"
             if(items_container.scrollTop > 0) {
-                console.log(items_container.scrollTop)
                 
                 nav_button_container.style.boxShadow = "0px 3px 4px 0px rgba(0, 0, 0, 0.3)"
             } else {

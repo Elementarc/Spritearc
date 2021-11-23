@@ -39,7 +39,6 @@ export interface PackInfo {
     title: string,
     sub_title: string,
     description: string,
-    socials: string[]
     date: string,
     tags: string[],
     downloads: number,
@@ -51,11 +50,12 @@ export interface PackContent {
     section_assets: string[]
 }
 
-interface User{
+export interface User{
     _id: string,
     username: string,
     user_since: string,
     about: string,
+    socials: string[]
     profile_image: string,
     released_packs: PackInfo[] | []
 }

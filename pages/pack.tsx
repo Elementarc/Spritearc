@@ -71,13 +71,6 @@ export default function Pack(props: {pack: PackInfo}) {
                                 <button>Download Pack</button>
                             </div>
 
-                            <div className="user_container">
-                                <h4>
-                                    {`Created by `}
-                                    <Link href="/test" scroll={false}>{pack.user.username}</Link>
-                                </h4>
-                            </div>
-
                             <div className="stats_container"> 
                                 <span className="top_line" />
 
@@ -120,6 +113,15 @@ export default function Pack(props: {pack: PackInfo}) {
                                         </div>
 
                                         <div className="item_2">{pack.tags.join(", ").toUpperCase()}</div>
+                                    </div>
+
+                                    <div className="grid_item">
+
+                                        <div className="item_1">
+                                            <h4>Creator:</h4>
+                                        </div>
+
+                                        <Link href={`/profile?username=${pack.user.username}`} scroll={false}>{pack.user.username}</Link>
                                     </div>
                                 </div>
 
@@ -220,7 +222,7 @@ export function Rating_container(props: {ratings: {user: string, rating: number}
                 stars_jsx.push(<StarEmpty key={`empty_star_${i}`}/>)
             }
         }
-        
+
         return stars_jsx
     }
     const stars = create_stars(avg_rating)

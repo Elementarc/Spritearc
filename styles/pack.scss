@@ -112,35 +112,16 @@
                         margin-top: 2.5rem;
                     }
                 }
-                .user_container{
-                    position: relative;
-                    display: flex;
-                    flex-direction: column;
-                    width: 100%;
-                    margin: 7rem 0;
-                    justify-content: center;
-                    align-items: center;
-                    @include breakpoint(mobile) {
-                        margin: 6rem 0;
-                    }
-                    h4{
-                        @include h4;
-                        
-                        a{
-                            @include a(medium);
-                            @include breakpoint(mobile) {
-                                font-size: 15px;
-                            }
-                        }
-                    }
-                    
-                }
                 .stats_container {
                     position: relative;
                     display: flex;
                     justify-content: center;
                     align-items: center;
                     width: 100%;
+                    margin-top: 12rem;
+                    @include breakpoint(mobile) {
+                        margin-bottom: 3rem
+                    }
                     .top_line {
                         @include next_section_line;
                         width: 80%;
@@ -163,7 +144,8 @@
                         }
                         @include breakpoint(mobile) {
                             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                            width: 90%;
+                            width: 100%;
+                            padding: 0 1rem;
                         }
                         .grid_item{
                             display: grid;
@@ -198,6 +180,11 @@
                                 }
                                 
                             }
+                            a{
+                                @include a(medium);
+                                align-self: center;
+                                justify-self: start;
+                            }
                         }
                         
                     }
@@ -229,6 +216,9 @@
                     justify-content: center;
                     margin-top: 3rem;
                     width: 100%;
+                    @include breakpoint(mobile) {
+                        display: none;
+                    }
                     .arrow_down{
                         animation: arrow_down .7s infinite alternate-reverse;
                         transition: 0.2s ease-in-out;
