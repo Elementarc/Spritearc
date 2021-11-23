@@ -7,12 +7,16 @@ export function useParallax(id: string) {
     const { scrollY } = useViewportScroll()
     useEffect(() => {
         const element = document.getElementById(id) as HTMLDivElement
+        
         function parallax() {
-            element.style.transform = `translateY(${scrollY.get() / 2}px)`
+            if(element) {
+                element.style.transform = `translateY(${scrollY.get() / 2}px)`
+            }
         }
 
         window.addEventListener("scroll", parallax)
-
+    
+            
         return(() => {
             window.removeEventListener("scroll", parallax)
         })

@@ -31,20 +31,20 @@ export default function Browse(props: {recent_packs: PackInfo[] | null, title_pa
 export function Title_section(props: {pack: PackInfo | null,}) {
 	const pack: PackInfo | null = props.pack
 	const Router = useRouter()
-
+	useParallax("title_pack_background_image")
+	
 	if(pack) {
-		useParallax("title_pack_background_image")
 		
 		return (
 			<div className="title_pack_container">
 	
 				<div className="title_pack_preview_container">
-	
+					
 					<div className="content_container">
 						<h2>A New Story</h2>
 						<h1>Nature Of Life</h1>
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut.</p>
-						<button onClick={() => {Router.push(`/pack?id=${pack._id}`, `/pack?id=${pack._id}` , {scroll: false})}}>View Pack</button>
+						<Link href={`/pack?id=${pack._id}`}>View Pack</Link>
 					</div>
 	
 					<div className="background_container">
@@ -63,19 +63,19 @@ export function Title_section(props: {pack: PackInfo | null,}) {
 export function Packs_section(props: {packs: PackInfo[] | null, header: string}) {
 	//Packs Response from server.
 	const packs: PackInfo[] | null = props.packs
-
+	//JSX RecentPacks that will be rendered
+	const [recent_packs_jsx, set_recent_packs_jsx] = useState(() => {
+		let jsx_recent_packs: ReactElement<PackInfo>[] = []
+		if(packs) {
+			for(let pack of packs) {
+				jsx_recent_packs.push(<Pack_preview key={pack._id} pack={pack}/>)
+			}
+		}
+		
+		return jsx_recent_packs
+	})
 	//If Recent_packs are available
 	if(packs) {
-		//JSX RecentPacks that will be rendered
-		const [recent_packs_jsx, set_recent_packs_jsx] = useState(() => {
-			let jsx_recent_packs: ReactElement<PackInfo>[] = []
-			
-				for(let pack of packs) {
-					jsx_recent_packs.push(<Pack_preview key={pack._id} pack={pack}/>)
-				}
-			
-			return jsx_recent_packs
-		})
 
 		return (
 			<div className="packs_container">
@@ -112,7 +112,8 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
 		const response_obj: {body: PackInfo | null} = await response_title_pack.json()
 		title_pack = response_obj.body
 	}
-	
+
+	const private_images = await fetch(`http://localhost:3000/api/get_private_image`)
 	return{
 		props: {
 			recent_packs,

@@ -12,8 +12,9 @@ export default async function get_pack(req: NextApiRequest, res: NextApiResponse
                 await client.connect();
                 const packs_collection = client.db("pixels").collection("packs")
                 const pack = await packs_collection.findOne({_id: new ObjectId(`${pack_id}`)})
-    
+                
                 if(pack) {
+                    
                     //Successfully found a pack and send to the server!
                     res.status(200).send(pack)
                 } else {
