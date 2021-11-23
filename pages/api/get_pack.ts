@@ -14,7 +14,6 @@ export default async function get_pack(req: NextApiRequest, res: NextApiResponse
                 const pack = await packs_collection.findOne({_id: new ObjectId(`${pack_id}`)})
                 
                 if(pack) {
-                    
                     //Successfully found a pack and send to the server!
                     res.status(200).send(pack)
                 } else {

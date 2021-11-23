@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { MongoClient } from 'mongodb'
-import { PackInfo } from "../../types"
+import { Pack_info } from "../../types"
 const url = 'mongodb://localhost:27017';
 const client = new MongoClient(url);
 
@@ -14,7 +14,7 @@ export default async function get_recent_packs(req: NextApiRequest, res: NextApi
             //Choosing db
             const db = client.db("pixels");
             //Returning 12 Packs Ordered by Date.
-            const recent_packs = await db.collection("packs").find({}).sort({date: -1}).limit(12).toArray() as PackInfo[]
+            const recent_packs = await db.collection("packs").find({}).sort({date: -1}).limit(12).toArray() as Pack_info[]
 
             res.setHeader("Content-type", "application/json")
             if(recent_packs.length > 0) {

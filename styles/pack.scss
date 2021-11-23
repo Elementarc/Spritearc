@@ -64,7 +64,6 @@
                 img{
                     object-fit: cover;
                     object-position: center;
-                    
                 }
                 .background_blur{
                     position: absolute;
@@ -255,11 +254,18 @@
                         transition: 0.2s ease-in-out;
                         &:hover{
                             cursor: pointer;
-                            transform: scale(1.05);
+                            img{
+                                transform: scale(0.85);
+                            }
                         }
                         img{
+                            transition: 0.1s ease-in-out;
+                            transform: scale(0.8);
                             object-fit: contain;
                             object-position: center;
+                            image-rendering: pixelated;
+                            image-rendering: -moz-crisp-edges;
+                            image-rendering: crisp-edges;
                         }
                     }
                 }

@@ -1,9 +1,8 @@
 import path from "path"
 import fs from "fs"
 import matter from 'gray-matter';
-import { PatchnoteInfo} from "../types";
+import { Patchnote_info} from "../types";
 import compareDesc from "date-fns/compareDesc";
-
 
 //Directory of patches
 const directoryOfPatches: string = path.join(process.cwd(), "patches")
@@ -108,7 +107,7 @@ export class PatchHandler {
 
 export class Patchnote {
     id: string
-    info: PatchnoteInfo
+    info: Patchnote_info
     content: string
     #patchDirectory: string
 
@@ -120,7 +119,7 @@ export class Patchnote {
         this.content = getContent(this.#patchDirectory, this.id)
         
         //Returning Patchinformations about a specific Patch
-        function getInfo(directory: string, id: string): PatchnoteInfo {
+        function getInfo(directory: string, id: string): Patchnote_info {
             const getPatchContent = fs.readFileSync(`${directory}/${id}.md`, "utf-8")
             const { birthtime } = fs.statSync(`${directory}/${id}.md`)
             //Getting md variables from patch
@@ -163,7 +162,7 @@ export class Patchnote {
                 }
             }
             
-            const fullPatchInfo: PatchnoteInfo = {
+            const fullPatchInfo: Patchnote_info = {
                 title: patchInfoTitleValidator(mdPatchInfo.title),
                 update:  patchInfoUpdateValidator(mdPatchInfo.update),
                 date: new Date(birthtime),

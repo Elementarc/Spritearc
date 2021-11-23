@@ -6,7 +6,7 @@ import Router from "next/router"
 import Footer from '../components/footer';
 import { Nav_shadow } from "../components/navigation";
 import { useEffect } from 'react';
-import { GetStaticProps , GetServerSideProps} from 'next'
+import { GetServerSideProps} from 'next'
 import { Patchnote } from '../types';
 import { formatDistanceStrict } from "date-fns"
 import { useParallax } from '../lib/custom_hooks';

@@ -1,13 +1,13 @@
 import { GetServerSideProps } from 'next';
 import React, {ReactElement, useEffect, useContext} from 'react';
 import Footer, { Social_item } from '../components/footer';
-import {PackInfo} from "../types"
+import {App_info, Pack_content, Pack_info} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
 import { useParallax } from '../lib/custom_hooks';
-import { appContext } from "../components/layout";
-import { AppContext } from '../types';
+import { APP_HANDLER, APP_INFO } from "../components/layout";
+import { App_handler } from '../types';
 import ArrowIcon from "../public/icons/ArrowIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
 import StarEmpty from "../public/icons/StarEmptyIcon.svg"
@@ -16,11 +16,13 @@ import Star from "../public/icons/StarIcon.svg"
 import { useRouter } from 'next/router';
 
 //Renders the full Pack
-export default function Pack(props: {pack: PackInfo}) {
-    const App: AppContext = useContext(appContext)
+export default function Pack(props: {pack: Pack_info}) {
+    const App: App_handler = useContext(APP_HANDLER)
+    const APP_INFO_CONTEXT: App_info = useContext(APP_INFO)
+    const app_path = `${APP_INFO_CONTEXT.sheme}${APP_INFO_CONTEXT.domain_name}:${APP_INFO_CONTEXT.port}`
     const pack = props.pack
     const Router = useRouter()
-    useParallax("patch_preview_image")
+    useParallax("title_pack_background_image")
     //Toggling arrow svg when scrollY > 0
     useEffect(() => {
         //Function that toggles the arrow. Getting called whenever scrolling is happening.
@@ -43,7 +45,7 @@ export default function Pack(props: {pack: PackInfo}) {
     return (
         <>
             <div className="pack_page" id="pack_page">
-                { App.isMobile === false &&
+                { App.is_mobile === false &&
                     <div className="close_pack">
                         <div onClick={() => {Router.push("/browse", "/browse", {scroll: false})}} className="close">
                             <CloseIcon className="close_icon"/>
@@ -57,7 +59,7 @@ export default function Pack(props: {pack: PackInfo}) {
                         
                     <div className="preview_container" id="preview_container">
                         <div className="background">
-                            <Image quality="100%" priority={true} layout="fill" src={`${pack.preview_image}`} alt="An image that represents one asset of this pack."  className="patch_preview_image" id="patch_preview_image"/>
+						    <Image src={`${app_path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
                             <div className="background_blur" />
                         </div>
 
@@ -153,7 +155,7 @@ export default function Pack(props: {pack: PackInfo}) {
 }
 
 //Component that creates a section with assets
-export function Pack_content_section(props: {pack: PackInfo}): ReactElement {
+export function Pack_content_section(props: {pack: Pack_info}): ReactElement {
     const pack = props.pack
     const section_jsx = []
     //Looping through content to create a section for each content
@@ -162,7 +164,7 @@ export function Pack_content_section(props: {pack: PackInfo}): ReactElement {
         section_jsx.push(
             <div key={`section_${i}`} className="section_container">
                 <h1>– {pack.content[i].section_name}</h1>
-                <Pack_asset assets={pack.content[i].section_assets} />
+                <Pack_asset pack_content={pack.content[i]} pack={pack}/>
             </div>
         )
     }
@@ -174,14 +176,20 @@ export function Pack_content_section(props: {pack: PackInfo}): ReactElement {
     );
 }
 //Component that creates assets from pack.
-export function Pack_asset(props: {assets: string[]}): ReactElement {
-    const assets = props.assets
+export function Pack_asset(props: {pack_content: Pack_content, pack: Pack_info}): ReactElement {
+    const pack = props.pack
+    const pack_content = props.pack_content
+    const assets = props.pack_content.section_assets
+
     const assets_jsx = []
+    const APP_INFO_CONTEXT: App_info = useContext(APP_INFO)
+    const app_path = `${APP_INFO_CONTEXT.sheme}${APP_INFO_CONTEXT.domain_name}:${APP_INFO_CONTEXT.port}`
+
     
     for(let i = 0; i < assets.length; i++) {
         assets_jsx.push(
             <div key={`${assets[i]}_${i}`} className="asset">
-                <Image  quality="100%" layout="fill" src={`${assets[i]}`} alt="A Theme image to represent that Patchnote."  className="patch_preview_image"/>
+                <Image src={`${app_path}/packs/${pack._id}/${pack_content.section_name}/${assets[i]}`}  quality="100%" layout="fill"  alt="A Theme image to represent that Patchnote."  className="patch_preview_image"/>
             </div>
         )
     }
@@ -250,7 +258,6 @@ export function H1_with_deco(props: {title: string}): ReactElement {
       </div>
     );
 }
-
 
 
 

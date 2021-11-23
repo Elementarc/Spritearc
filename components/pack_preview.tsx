@@ -1,7 +1,8 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import Link from 'next/dist/client/link';
-import { PackInfo } from '../types';
+import { App_info, Pack_info } from '../types';
 import Image from 'next/dist/client/image';
+import { APP_INFO } from './layout';
 
 
 export function Packs_navigator(props: {page: number, setPage: any, lastPage: number}) {
@@ -55,8 +56,10 @@ export function Packs_navigator(props: {page: number, setPage: any, lastPage: nu
 	);
 }
 //Component that represents 1 Pack preview. Takes a Pack obj as a property.
-export default function Pack_preview(props: {pack: PackInfo}) {
-    const pack: PackInfo = props.pack
+export default function Pack_preview(props: {pack: Pack_info}) {
+    const pack: Pack_info = props.pack
+	const APP_INFO_CONTEXT: App_info = useContext(APP_INFO)
+	const app_path = `${APP_INFO_CONTEXT.sheme}${APP_INFO_CONTEXT.domain_name}:${APP_INFO_CONTEXT.port}`
 	return (
         <Link href={`/pack?id=${pack._id}`} scroll={false}>
             <div className="pack_preview_container">
@@ -67,7 +70,7 @@ export default function Pack_preview(props: {pack: PackInfo}) {
                 </div>
                 
                 <div className="background_container">
-                    <Image priority={true} src={pack.preview_image} layout="fill" className="background_image"/>
+				<Image priority={true} src={`${app_path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" className="background_image"/>
                     
                     <div className="background_blur" />
                     <div className="background_blur_hover" />

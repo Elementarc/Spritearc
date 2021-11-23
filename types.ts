@@ -1,29 +1,29 @@
-export interface NavItem{
+export interface Nav_item{
     label: string
     icon: any
     link: string
     query?: string
 }
 
-export interface NavContext {
-    navState: boolean,
-    setNavState: React.Dispatch<React.SetStateAction<boolean>>
-}
-
-export interface AppContext {
-    isMobile: boolean | undefined,
-    nav: NavContext,
+export interface App_handler {
+    is_mobile: boolean | undefined,
+    nav: {nav_state: boolean, set_nav_state: React.Dispatch<React.SetStateAction<boolean>>},
     app_content_container: () => HTMLElement
 }
 
+export interface App_info {
+    sheme: string,
+    domain_name: string,
+    port: number,
+}
 //Patchnote Interface
 export interface Patchnote {
     id: string
-    info: PatchnoteInfo
+    info: Patchnote_info
     content: string
 }
 //PatchnoteInfo Interface
-export interface PatchnoteInfo {
+export interface Patchnote_info {
     title: string,
     update: string,
     date: Date,
@@ -32,8 +32,9 @@ export interface PatchnoteInfo {
 }
 
 //PackPreview Interface
-export interface PackInfo {
+export interface Pack_info {
     _id: string,
+    premium: boolean,
     user: User,
     preview_image: string,
     title: string,
@@ -42,10 +43,10 @@ export interface PackInfo {
     date: string,
     tags: string[],
     downloads: number,
-    content: PackContent[]
+    content: Pack_content[]
     ratings: {user: string, rating: number}[] | []
 }
-export interface PackContent {
+export interface Pack_content {
     section_name: string,
     section_assets: string[]
 }
@@ -57,5 +58,5 @@ export interface User{
     about: string,
     socials: string[]
     profile_image: string,
-    released_packs: PackInfo[] | []
+    released_packs: Pack_info[] | []
 }

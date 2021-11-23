@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { MongoClient } from 'mongodb'
-import { PackInfo } from "../../types"
 const db_url = 'mongodb://localhost:27017';
 const client = new MongoClient(db_url);
 
