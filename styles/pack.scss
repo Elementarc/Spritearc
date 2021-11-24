@@ -7,8 +7,8 @@
         position: fixed;
         z-index: 100;
         display: flex;
-        width: 100%;
-        height: 100%;
+        width: inherit;
+        height: inherit;
         pointer-events: none;
         .close{
             position: relative;
@@ -46,6 +46,39 @@
             .close_icon{
                 transform: scale(1.2);
                 fill: black;
+            }
+        }
+    }
+    .asset_fixed_container{
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 200;
+        background: rgba(0, 0, 0, 0.8);
+        .asset_fixed_image_container{
+            position: relative;
+            width: 550px;
+            height: 550px;
+            @include breakpoint(mobile) {
+                width: 280px;
+                height: 280px;
+            }
+            background: $color_main_blue;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            user-select: none;
+            -moz-user-select: none;
+            -khtml-user-select: none;
+            -webkit-user-select: none;
+            -o-user-select: none;
+            img{
+                object-fit: contain;
+                object-position: center;
+                transform: scale(.8);
             }
         }
     }
@@ -280,40 +313,7 @@
     }
 }
 
-.asset_fixed_container{
-    position: fixed;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 200;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.75);
-    .asset_fixed_image_container{
-        position: relative;
-        height: 650px;
-        width: 650px;
-        
-        @include breakpoint(mobile) {
-            width: 280px;
-            height: 280px;
-        }
-        background: $color_main_blue;
-        image-rendering: pixelated;
-        image-rendering: -moz-crisp-edges;
-        image-rendering: crisp-edges;
-        user-select: none;
-        -moz-user-select: none;
-        -khtml-user-select: none;
-        -webkit-user-select: none;
-        -o-user-select: none;
-        img{
-            object-fit: contain;
-            object-position: center;
-            transform: scale(.8);
-        }
-    }
-}
+
 .h1_with_deco{
     position: relative;
     display: grid;

@@ -59,28 +59,46 @@ export default function Pack_page(props: {pack: Pack_info}) {
         set_show_focus_img(true)
     }
 
+    //Setting max_height and max_width of fixed asset_fixed_image_container in page Component.
+    useEffect(() => {
+        const get_page = document.getElementById("pack_page") as HTMLDivElement
+        
+        function set_sizes() {
+            if(show_focus_img) {
+                const get_fixed_asset = document.getElementById("asset_fixed_container") as HTMLDivElement
+                get_fixed_asset.style.maxWidth = `${get_page.offsetWidth}px`
+                get_fixed_asset.style.maxHeight = `${get_page.offsetHeight}px`
+            }
+        }
+        
+        set_sizes()
+        window.addEventListener("resize", set_sizes)
+        return(() => {
+            window.removeEventListener("resize", set_sizes)
+        })
+    }, [show_focus_img])
+    
     return (
         <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
-            
-            <AnimatePresence exitBeforeEnter>
-                {show_focus_img &&
-
-                    <motion.div onClick={() => {set_focus_img_src("/"), set_show_focus_img(false)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="asset_fixed_container">
-                        
-                        <div className="asset_fixed_image_container">
-                            <Image src={focus_img_src} layout="fill" id="asset_fixed_image"></Image>
-                        </div>
-
-                    </motion.div>
-
-                }
-            </AnimatePresence>
-            
 
             <div className="pack_page" id="pack_page">
 
+                <AnimatePresence exitBeforeEnter>
+                    {show_focus_img &&
+
+                        <motion.div onClick={() => {set_focus_img_src("/"), set_show_focus_img(false)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="asset_fixed_container" id="asset_fixed_container">
+                            
+                            <div className="asset_fixed_image_container">
+                                <Image src={focus_img_src} layout="fill" id="asset_fixed_image"></Image>
+                            </div>
+
+                        </motion.div>
+
+                    }
+                </AnimatePresence>
+
                 { APP.is_mobile === false &&
-                    <div className="close_pack">
+                    <div className="close_pack" id="close_pack">
 
                         <div onClick={() => {Router.push("/browse", "/browse", {scroll: false})}} className="close">
                             <CloseIcon className="close_icon"/>
