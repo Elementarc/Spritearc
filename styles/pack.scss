@@ -45,7 +45,7 @@
             }
             .close_icon{
                 transform: scale(1.2);
-                fill: black;
+                fill: $color_background_dark;
             }
         }
     }
@@ -257,11 +257,11 @@
                                 .stars_container{
                                     svg{
                                         width: 35px;
-                                        transform: translateY(2px) scale(1.2);
+                                        transform: translateY(.2rem) translateX(-.2rem) scale(1.2);
                                         fill: $color_main_bright;
                                         @include breakpoint(mobile) {
                                             width: 30px;
-                                            transform: translateY(1px) scale(1);
+                                            transform: translateY(.2rem) translateX(-.25rem) scale(1);
                                         }
                                     }
                                 }
@@ -282,19 +282,6 @@
                         bottom: 0;
                         @include breakpoint(mobile) {
                             width: 100%;
-                        }
-                    }
-                }
-                .rating_container{
-                    .rating_stars{
-                        align-self: start;
-                        justify-self: start;
-                        margin-left: -.3rem;
-                        margin-top: -.3rem;
-                        svg{
-                            margin: 0 .3rem;
-                            transform: scale(1.2);
-                            fill: $color_main_bright;
                         }
                     }
                 }
