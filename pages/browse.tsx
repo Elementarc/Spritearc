@@ -7,7 +7,6 @@ import Image from "next/image"
 import { useParallax } from '../lib/custom_hooks';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
-import { APP_CONTEXT } from '../components/layout';
 
 export default function Browse(props: any) {
 	const recent_packs: Pack_info[] | null = props.recent_packs
@@ -30,7 +29,6 @@ export default function Browse(props: any) {
 }
 
 export function Title_section(props: {pack: Pack_info | null,}) {
-	const APP: App_context = useContext(APP_CONTEXT)
 	const pack: Pack_info | null = props.pack
 	
 
@@ -50,7 +48,7 @@ export function Title_section(props: {pack: Pack_info | null,}) {
 					</div>
 	
 					<div className="background_container">
-						<Image src={`${APP.path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						<Image src={`/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
 						<div className="background_blur" />
 					</div>
 				</div>

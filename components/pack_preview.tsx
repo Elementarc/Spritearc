@@ -74,7 +74,7 @@ export default function Pack_preview(props: {pack: Pack_info}) {
                 </div>
                 
                 <div className="background_container">
-					<Image priority={true} src={`${APP.path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" className="background_image"/>
+					<Image priority={true} src={`/packs/${pack._id}/${pack.preview_image}`} layout="fill" className="background_image"/>
                     <div className="background_blur" />
                     <div className="background_blur_hover" />
                 </div>

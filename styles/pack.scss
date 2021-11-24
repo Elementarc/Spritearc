@@ -56,15 +56,29 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        overflow: scroll;
+        &::-webkit-scrollbar {
+            width: 0;
+            scrollbar-width: none;
+        }
+        scrollbar-width: none;
         z-index: 200;
         background: rgba(0, 0, 0, 0.8);
+        @include breakpoint(mobile) {
+            align-items: unset;
+            justify-content: center;
+            padding-top: 2rem;
+        }
         .asset_fixed_image_container{
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: 550px;
             height: 550px;
             @include breakpoint(mobile) {
-                width: 280px;
-                height: 280px;
+                width: 260px;
+                height: 260px;
             }
             background: $color_main_blue;
             image-rendering: pixelated;
@@ -80,7 +94,48 @@
                 object-position: center;
                 transform: scale(.8);
             }
+
+            .close_asset{
+                @include a(medium);
+                font-size: 18px;
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                bottom: -5rem;
+                @include breakpoint(mobile) {
+                    font-size: 16px;
+                }
+                .close{
+                    position: relative;
+                    pointer-events: all;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 50px;
+                    width: 50px;
+                    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                    border-radius: 50%;
+                    background: $color_main;
+                    position: absolute;
+                    
+                    &:hover {
+                        cursor: pointer;
+                        background: $color_main_bright;
+                        .hover_box {
+                            opacity: 1;
+                            transform: scale(1);
+                        }
+                    }
+                    
+                    .close_icon{
+                        transform: scale(1.2);
+                        fill: black;
+                    }
+                }
+            }
         }
+        
     }
     .content {
         

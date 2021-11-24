@@ -70,7 +70,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
                 get_fixed_asset.style.maxHeight = `${get_page.offsetHeight}px`
             }
         }
-        
+
         set_sizes()
         window.addEventListener("resize", set_sizes)
         return(() => {
@@ -90,6 +90,14 @@ export default function Pack_page(props: {pack: Pack_info}) {
                             
                             <div className="asset_fixed_image_container">
                                 <Image src={focus_img_src} layout="fill" id="asset_fixed_image"></Image>
+
+                                <div className="close_asset" id="close_pack">
+
+                                    <div className="close">
+                                        <CloseIcon className="close_icon"/>
+                                    </div>
+
+                                </div>
                             </div>
 
                         </motion.div>
@@ -244,7 +252,7 @@ export function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
     for(let i = 0; i < pack_content.section_assets.length; i++) {
         assets_jsx.push(
             <div onClick={show_asset} key={`${pack_content.section_assets[i]}_${i}`} className="asset">
-                <Image src={`${APP.path}/packs/${pack._id}/${pack_content.section_name}/${pack_content.section_assets[i]}`}  quality="100%" layout="fill"  alt={`One asset from the pack '${pack.title}' that was created by '${pack.user.username}'.`}  className="patch_preview_image"/>
+                <Image src={`/packs/${pack._id}/${pack_content.section_name}/${pack_content.section_assets[i]}`}  quality="100%" layout="fill"  alt={`One asset from the pack '${pack.title}' that was created by '${pack.user.username}'.`}  className="patch_preview_image"/>
             </div>
         )
     }
