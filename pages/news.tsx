@@ -102,6 +102,7 @@ export default  function News(props: any): ReactElement {
 				<div className="content">
 
 					<div className="header_container">
+
 						<div className="background">
 							<Image quality="100%" priority={true} src={Eclipse} layout="fill" alt="A pixelart image that displays a universe" className="background_image" id="news_background_image"/>
 							<div className="background_blur" />
@@ -158,13 +159,16 @@ function Patchnote_template(props: {patchnote: Patchnote}): ReactElement{
 	return(
 		<>
 			<div key={`${patchnote.id}`} onClick={() => {navigateTo(`/news/${patchnote.id}`)}} className="patch_template_container">
+				
 				<div className="patch_preview_image_container">
 					<Image quality="100%" priority={true} layout="fill" src={`/images/${patchnote.info.image}`} alt="A Theme image to represent that Patchnote."  className="patch_preview_image"/>
 				</div>
+
 				<div className="patch_information">
 					<h2>{patchnote.info.update}</h2>
 					<h1>{patchnote.info.title}</h1>
 					<h4>{Distance} ago</h4>
+				
 				</div>
 			</div>
 		</>

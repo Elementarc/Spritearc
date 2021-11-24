@@ -1,8 +1,8 @@
 import React, {useContext, useEffect} from 'react';
 import Link from 'next/dist/client/link';
-import { App_info, Pack_info } from '../types';
+import { App_context, Pack_info } from '../types';
 import Image from 'next/dist/client/image';
-import { APP_INFO } from './layout';
+import { APP_CONTEXT } from './layout';
 
 
 export function Packs_navigator(props: {page: number, setPage: any, lastPage: number}) {
@@ -47,21 +47,25 @@ export function Packs_navigator(props: {page: number, setPage: any, lastPage: nu
 			setPage(page - 1)
 		}
 	}
+
 	return (
 		<div className="page_navigator_container">
+
 			<button onClick={decrease_page} className="prev_page" id="prev_page">Prev Page</button>
 			<input type="text" name="" id="Packs_navigator_page_input"/>
 			<button onClick={increase_page} className="next_page" id="next_page">Next Page</button>
+
 		</div>
 	);
 }
 //Component that represents 1 Pack preview. Takes a Pack obj as a property.
 export default function Pack_preview(props: {pack: Pack_info}) {
+	const APP: App_context = useContext(APP_CONTEXT)
     const pack: Pack_info = props.pack
-	const APP_INFO_CONTEXT: App_info = useContext(APP_INFO)
-	const app_path = `${APP_INFO_CONTEXT.sheme}${APP_INFO_CONTEXT.domain_name}:${APP_INFO_CONTEXT.port}`
+
 	return (
         <Link href={`/pack?id=${pack._id}`} scroll={false}>
+
             <div className="pack_preview_container">
 
                 <div className="content_container">
@@ -70,13 +74,13 @@ export default function Pack_preview(props: {pack: Pack_info}) {
                 </div>
                 
                 <div className="background_container">
-				<Image priority={true} src={`${app_path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" className="background_image"/>
-                    
+					<Image priority={true} src={`${APP.path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" className="background_image"/>
                     <div className="background_blur" />
                     <div className="background_blur_hover" />
                 </div>
 
             </div>
+
         </Link>
 	);
 }

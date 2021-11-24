@@ -1,33 +1,21 @@
 
 import React, {useState, useEffect} from 'react';
-import {App_handler, App_info, Pack_info} from "../types"
+import {App_context, Pack_info} from "../types"
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 //Components
 import Navigation from './navigation';
 
-export const APP_HANDLER: any = React.createContext(null)
-export const APP_INFO: any = React.createContext<App_info>({
-    sheme: "http://",
-    domain_name: "localhost",
-    port: 3000,
-})
-
+const APP_NAME = "PixelPalast"
+const SHEME= "http"
+const DOMAIN = "localhost"
+const PORT = 3000
+export const APP_CONTEXT: any = React.createContext(null)
 export default function Layout( { children }: any) {
-    const Router = useRouter()
     //Setting IsDesktop to tell other Components if App is mobileDevice or DesktopDevice
     const [is_mobile, set_is_mobile] = useState<undefined | boolean>(undefined)
     const [nav_state, set_nav_state] = useState(false);
-    //Context that gets Send to all childs
-    const APP: App_handler = {
-        is_mobile: is_mobile,
-        nav:  {
-            nav_state: nav_state,
-            set_nav_state: set_nav_state,
-        },
-        app_content_container: () => {return document.getElementById("app_content_container") as HTMLDivElement}
-    }
-
+    const Router = useRouter()
     //Checks if Application IsDesktop or not
     useEffect(() => {
         history.scrollRestoration = "manual"
@@ -58,10 +46,27 @@ export default function Layout( { children }: any) {
             app_content_blur.style.pointerEvents = "all"
         }
     }, [nav_state])
-    
+
+    //APP Context
+    const APP: App_context = {
+        app_name: APP_NAME,
+        sheme: SHEME,
+        domain: DOMAIN,
+        port: PORT,
+        path: `${SHEME}://${DOMAIN}:${PORT}`,
+        is_mobile: is_mobile,
+        nav:  {
+            nav_state: nav_state,
+            set_nav_state: set_nav_state,
+        },
+        app_content_container: () => {return document.getElementById("app_content_container") as HTMLDivElement}
+    }
+
     return (
-        <APP_HANDLER.Provider value={APP}>
+        <APP_CONTEXT.Provider value={APP}>
+
             <div className="app_container" id="app_container">
+
                 <Navigation/>
                 <div className="app_content_container" id="app_content_container">
                     <div onClick={() => {set_nav_state(false)}} className="app_content_blur" id="app_content_blur"/>
@@ -71,8 +76,10 @@ export default function Layout( { children }: any) {
                         </motion.main>
                     </AnimatePresence>
                 </div>
+                
             </div>
-        </APP_HANDLER.Provider>
+
+        </APP_CONTEXT.Provider>
     );
 }
 

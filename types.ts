@@ -5,17 +5,17 @@ export interface Nav_item{
     query?: string
 }
 
-export interface App_handler {
+export interface App_context {
+    app_name: string,
+    sheme: string,
+    domain: string,
+    port: 3000,
+    path: string,
     is_mobile: boolean | undefined,
     nav: {nav_state: boolean, set_nav_state: React.Dispatch<React.SetStateAction<boolean>>},
     app_content_container: () => HTMLElement
 }
 
-export interface App_info {
-    sheme: string,
-    domain_name: string,
-    port: number,
-}
 //Patchnote Interface
 export interface Patchnote {
     id: string

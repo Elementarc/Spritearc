@@ -1,5 +1,5 @@
 import React, {ReactElement, useState, useContext} from 'react';
-import { App_handler, App_info, Pack_info } from "../types"
+import { App_context, Pack_info } from "../types"
 import { GetServerSideProps } from 'next'
 import Pack_preview from '../components/pack_preview';
 import Link from 'next/dist/client/link';
@@ -7,7 +7,7 @@ import Image from "next/image"
 import { useParallax } from '../lib/custom_hooks';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
-import { APP_HANDLER , APP_INFO} from '../components/layout';
+import { APP_CONTEXT } from '../components/layout';
 
 export default function Browse(props: any) {
 	const recent_packs: Pack_info[] | null = props.recent_packs
@@ -16,6 +16,7 @@ export default function Browse(props: any) {
 	return (
 		<>
 			<div className="browse_page">
+
 				<div className="content">
 					<Title_section pack={title_pack}/>
 					<Packs_section packs={recent_packs} header="Recent Packs"/>
@@ -29,9 +30,9 @@ export default function Browse(props: any) {
 }
 
 export function Title_section(props: {pack: Pack_info | null,}) {
+	const APP: App_context = useContext(APP_CONTEXT)
 	const pack: Pack_info | null = props.pack
-	const APP_INFO_CONTEXT: App_info = useContext(APP_INFO)
-	const app_path = `${APP_INFO_CONTEXT.sheme}${APP_INFO_CONTEXT.domain_name}:${APP_INFO_CONTEXT.port}`
+	
 
 	useParallax("title_pack_background_image")
 	if(pack) {
@@ -49,7 +50,7 @@ export function Title_section(props: {pack: Pack_info | null,}) {
 					</div>
 	
 					<div className="background_container">
-						<Image src={`${app_path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						<Image src={`${APP.path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
 						<div className="background_blur" />
 					</div>
 				</div>
@@ -92,6 +93,7 @@ export function Packs_section(props: {packs: Pack_info[] | null, header: string}
 				<div className="previews_container">
 					{recent_packs_jsx}
 				</div>
+				
 			</div>
 		);
 	} else {

@@ -1,28 +1,31 @@
 import { GetServerSideProps } from 'next';
-import React, {ReactElement, useEffect, useContext} from 'react';
-import Footer, { Social_item } from '../components/footer';
-import {App_info, Pack_content, Pack_info} from "../types"
+import React, {ReactElement, useEffect, useContext, useState} from 'react';
+import Footer from '../components/footer';
+import {Pack_content, Pack_info} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
 import { useParallax } from '../lib/custom_hooks';
-import { APP_HANDLER, APP_INFO } from "../components/layout";
-import { App_handler } from '../types';
+import { APP_CONTEXT } from "../components/layout";
+import { App_context } from '../types';
 import ArrowIcon from "../public/icons/ArrowIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
 import StarEmpty from "../public/icons/StarEmptyIcon.svg"
 import StarHalf from "../public/icons/StarHalfIcon.svg"
 import Star from "../public/icons/StarIcon.svg"
 import { useRouter } from 'next/router';
+import { AnimatePresence , motion, useAnimation} from 'framer-motion';
 
+const PACK_PAGE_CONTEXT: any = React.createContext(null)
 //Renders the full Pack
-export default function Pack(props: {pack: Pack_info}) {
-    const App: App_handler = useContext(APP_HANDLER)
-    const APP_INFO_CONTEXT: App_info = useContext(APP_INFO)
-    const app_path = `${APP_INFO_CONTEXT.sheme}${APP_INFO_CONTEXT.domain_name}:${APP_INFO_CONTEXT.port}`
-    const pack = props.pack
+export default function Pack_page(props: {pack: Pack_info}) {
+    const APP: App_context = useContext(APP_CONTEXT)
     const Router = useRouter()
+    const pack = props.pack
+
+    //Creating parallax effect for Image
     useParallax("title_pack_background_image")
+
     //Toggling arrow svg when scrollY > 0
     useEffect(() => {
         //Function that toggles the arrow. Getting called whenever scrolling is happening.
@@ -41,25 +44,57 @@ export default function Pack(props: {pack: Pack_info}) {
             window.removeEventListener("scroll", toggle_arrow)
         })
     }, [])
+    
+    //State that saves currently clicked asset as a url string.
+    const [focus_img_src, set_focus_img_src] = useState("/")
+    //State that toggles focus of asset.
+    const [show_focus_img, set_show_focus_img] = useState(false)
+    //Function that sets img src + toggles show_focus_img to true.
+    function toggle_asset(e: any) {
+        if(e.target.src) {
+            set_focus_img_src(e.target.src)
+        } else {
+            set_focus_img_src("/")
+        }
+        set_show_focus_img(true)
+    }
 
     return (
-        <>
+        <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
+            
+            <AnimatePresence exitBeforeEnter>
+                {show_focus_img &&
+
+                    <motion.div onClick={() => {set_focus_img_src("/"), set_show_focus_img(false)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="asset_fixed_container">
+                        
+                        <div className="asset_fixed_image_container">
+                            <Image src={focus_img_src} layout="fill" id="asset_fixed_image"></Image>
+                        </div>
+
+                    </motion.div>
+
+                }
+            </AnimatePresence>
+            
+
             <div className="pack_page" id="pack_page">
-                { App.is_mobile === false &&
+
+                { APP.is_mobile === false &&
                     <div className="close_pack">
+
                         <div onClick={() => {Router.push("/browse", "/browse", {scroll: false})}} className="close">
                             <CloseIcon className="close_icon"/>
                             <div className="hover_box">Close Pack</div>
                         </div>
+
                     </div>
                 }
-                
 
                 <div className="content" id="content">
                         
                     <div className="preview_container" id="preview_container">
                         <div className="background">
-						    <Image src={`${app_path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						    <Image src={`${APP.path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
                             <div className="background_blur" />
                         </div>
 
@@ -135,28 +170,27 @@ export default function Pack(props: {pack: Pack_info}) {
                             </div>
                         </div>
 
-                        
-
-                        
-
                     </div>
                     
-                    <div className="asset_sections_container">
-                        <Pack_content_section pack={pack}/>
-                    </div>
+                    
+                    <Pack_sprite_sections/>
 
                     <Nav_shadow/>
                 </div>
                 
                 <Footer/>
+
             </div>
-        </>
+
+        </PACK_PAGE_CONTEXT.Provider>
     );
 }
 
 //Component that creates a section with assets
-export function Pack_content_section(props: {pack: Pack_info}): ReactElement {
-    const pack = props.pack
+export function Pack_sprite_sections(): ReactElement {
+    const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
+    const pack = PACK_PAGE.pack
+
     const section_jsx = []
     //Looping through content to create a section for each content
     for(let i = 0; i < pack.content.length; i++) {
@@ -164,32 +198,35 @@ export function Pack_content_section(props: {pack: Pack_info}): ReactElement {
         section_jsx.push(
             <div key={`section_${i}`} className="section_container">
                 <h1>– {pack.content[i].section_name}</h1>
-                <Pack_asset pack_content={pack.content[i]} pack={pack}/>
+                <Pack_asset pack_content={pack.content[i]}/>
             </div>
         )
     }
     
     return (
-        <div key="" className="section_container">
-            {section_jsx}
+        <div className="asset_sections_container">
+
+            <div key="" className="section_container">
+                {section_jsx}
+            </div>
+            
         </div>
     );
 }
 //Component that creates assets from pack.
-export function Pack_asset(props: {pack_content: Pack_content, pack: Pack_info}): ReactElement {
-    const pack = props.pack
+export function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
+    const APP: App_context = useContext(APP_CONTEXT)
+    const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
+    const pack = PACK_PAGE.pack as Pack_info
+    const show_asset = PACK_PAGE.toggle_asset as () => void
     const pack_content = props.pack_content
-    const assets = props.pack_content.section_assets
 
+    //Array of assets as jsx
     const assets_jsx = []
-    const APP_INFO_CONTEXT: App_info = useContext(APP_INFO)
-    const app_path = `${APP_INFO_CONTEXT.sheme}${APP_INFO_CONTEXT.domain_name}:${APP_INFO_CONTEXT.port}`
-
-    
-    for(let i = 0; i < assets.length; i++) {
+    for(let i = 0; i < pack_content.section_assets.length; i++) {
         assets_jsx.push(
-            <div key={`${assets[i]}_${i}`} className="asset">
-                <Image src={`${app_path}/packs/${pack._id}/${pack_content.section_name}/${assets[i]}`}  quality="100%" layout="fill"  alt="A Theme image to represent that Patchnote."  className="patch_preview_image"/>
+            <div onClick={show_asset} key={`${pack_content.section_assets[i]}_${i}`} className="asset">
+                <Image src={`${APP.path}/packs/${pack._id}/${pack_content.section_name}/${pack_content.section_assets[i]}`}  quality="100%" layout="fill"  alt={`One asset from the pack '${pack.title}' that was created by '${pack.user.username}'.`}  className="patch_preview_image"/>
             </div>
         )
     }
