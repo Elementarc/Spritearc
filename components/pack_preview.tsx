@@ -1,8 +1,7 @@
-import React, {useContext, useEffect} from 'react';
+import React, { useEffect} from 'react';
 import Link from 'next/dist/client/link';
-import { App_context, Pack_info } from '../types';
+import { Pack_info } from '../types';
 import Image from 'next/dist/client/image';
-import { APP_CONTEXT } from './layout';
 
 
 export function Packs_navigator(props: {page: number, setPage: any, lastPage: number}) {
@@ -34,7 +33,7 @@ export function Packs_navigator(props: {page: number, setPage: any, lastPage: nu
 			getNextButton.style.opacity = ""
 			getNextButton.style.pointerEvents = ""
 		}
-	}, [page])
+	}, [page, lastPage])
 
 	function increase_page() {
 		if(page < lastPage) {
@@ -60,7 +59,6 @@ export function Packs_navigator(props: {page: number, setPage: any, lastPage: nu
 }
 //Component that represents 1 Pack preview. Takes a Pack obj as a property.
 export default function Pack_preview(props: {pack: Pack_info}) {
-	const APP: App_context = useContext(APP_CONTEXT)
     const pack: Pack_info = props.pack
 
 	return (
@@ -74,7 +72,7 @@ export default function Pack_preview(props: {pack: Pack_info}) {
                 </div>
                 
                 <div className="background_container">
-					<Image priority={true} src={`/packs/${pack._id}/${pack.preview_image}`} layout="fill" className="background_image"/>
+					<Image priority={true} src={`/packs/${pack._id}/${pack.preview_image}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
                     <div className="background_blur" />
                     <div className="background_blur_hover" />
                 </div>

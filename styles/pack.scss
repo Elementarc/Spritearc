@@ -174,7 +174,7 @@
                 text-align: center;
                 padding-top: 14rem;
                 @include breakpoint(mobile) {
-                    padding-top: 8rem;
+                    padding-top: 8.5rem;
                 }
                 .header_container {
                     display: flex;
@@ -184,6 +184,9 @@
                     h2{
                         @include h2;
                         padding: 0 1rem;
+                        @include breakpoint(mobile) {
+                            @include h2(medium);
+                        }
                     }
                     .h1_with_deco{
                         position: relative;
@@ -202,6 +205,9 @@
                             @include h1;
                             margin-top: -.2rem;
                             padding: 0 1rem;
+                            @include breakpoint(mobile) {
+                                margin-top: unset;
+                            }
                         }
                         
                         .left_container {
@@ -259,11 +265,15 @@
                         }
                         @include breakpoint(mobile) {
                             width: 100%;
+                            margin-top: 1rem;
                         }
                     }
                     button {
                         @include button;
                         margin-top: 2.5rem;
+                        @include breakpoint(mobile) {
+                            margin-top: 2rem;
+                        }
                     }
                 }
                 .stats_container {
@@ -274,6 +284,7 @@
                     width: 100%;
                     margin-top: 12rem;
                     @include breakpoint(mobile) {
+                        margin-top: 8rem;
                         margin-bottom: 3rem
                     }
                     .top_line {

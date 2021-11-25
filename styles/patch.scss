@@ -52,6 +52,9 @@
             //Small Header
             h2{
                 @include h2(medium);
+                @include breakpoint(mobile) {
+                    @include h2(small);
+                }
             }
             //Header
             h1{
@@ -59,6 +62,7 @@
             }
             //Date
             h4{
+                margin-top: .5rem;
                 @include h4(medium);
             }
             //List Header

@@ -14,7 +14,7 @@ import StarEmpty from "../public/icons/StarEmptyIcon.svg"
 import StarHalf from "../public/icons/StarHalfIcon.svg"
 import Star from "../public/icons/StarIcon.svg"
 import { useRouter } from 'next/router';
-import { AnimatePresence , motion, useAnimation} from 'framer-motion';
+import { AnimatePresence , motion} from 'framer-motion';
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 //Renders the full Pack
@@ -62,10 +62,11 @@ export default function Pack_page(props: {pack: Pack_info}) {
     //Setting max_height and max_width of fixed asset_fixed_image_container in page Component.
     useEffect(() => {
         const get_page = document.getElementById("pack_page") as HTMLDivElement
-        
+        const get_fixed_asset = document.getElementById("asset_fixed_container") as HTMLDivElement
+
         function set_sizes() {
             if(show_focus_img) {
-                const get_fixed_asset = document.getElementById("asset_fixed_container") as HTMLDivElement
+                
                 get_fixed_asset.style.maxWidth = `${get_page.offsetWidth}px`
                 get_fixed_asset.style.maxHeight = `${get_page.offsetHeight}px`
             }
@@ -89,7 +90,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
                         <motion.div onClick={() => {set_focus_img_src("/"), set_show_focus_img(false)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="asset_fixed_container" id="asset_fixed_container">
                             
                             <div className="asset_fixed_image_container">
-                                <Image src={focus_img_src} layout="fill" id="asset_fixed_image"></Image>
+                                <Image src={focus_img_src} alt="Represents a bigger size of an clicked image" layout="fill" id="asset_fixed_image"></Image>
 
                                 <div className="close_asset" id="close_pack">
 
@@ -120,7 +121,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
                         
                     <div className="preview_container" id="preview_container">
                         <div className="background">
-						    <Image src={`/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						    <Image src={`/packs/${pack._id}/${pack.preview_image}`} alt="Preview Image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
                             <div className="background_blur" />
                         </div>
 
@@ -253,7 +254,6 @@ function Pack_sprite_sections(): ReactElement {
 }
 //Component that creates assets from pack.
 function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
-    const APP: App_context = useContext(APP_CONTEXT)
     const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
     const pack = PACK_PAGE.pack as Pack_info
     const show_asset = PACK_PAGE.toggle_asset as () => void
@@ -348,7 +348,7 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
     }
 } 
 
-const packssss = {
+/* const packssss = {
     _id: "1",
     user: {
         _id: "123",
@@ -385,4 +385,4 @@ const packssss = {
         },
     ],
     downloads: 1
-}
+} */

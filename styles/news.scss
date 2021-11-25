@@ -46,6 +46,9 @@
                 
                 h2 {
                     @include h2;
+                    @include breakpoint(mobile) {
+                        @include h2(medium);
+                    }
                 }
                 h1{
                     @include h1;
@@ -147,6 +150,9 @@
                         h2{
                             @include h2(medium);
                             user-select: none;
+                            @include breakpoint(mobile) {
+                                @include h2(small);
+                            }
                         }
                         h1{
                             @include h1(medium);

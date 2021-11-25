@@ -1,4 +1,4 @@
-import React, { ReactElement , useEffect} from 'react';
+import React, { ReactElement } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Link from "next/link"
 import Footer from '../../components/footer';

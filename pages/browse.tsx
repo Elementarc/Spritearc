@@ -1,5 +1,5 @@
-import React, {ReactElement, useState, useContext} from 'react';
-import { App_context, Pack_info } from "../types"
+import React, {ReactElement, useState} from 'react';
+import { Pack_info } from "../types"
 import { GetServerSideProps } from 'next'
 import Pack_preview from '../components/pack_preview';
 import Link from 'next/dist/client/link';
@@ -30,7 +30,6 @@ export default function Browse(props: any) {
 
 function Title_section(props: {pack: Pack_info | null,}) {
 	const pack: Pack_info | null = props.pack
-	
 
 	useParallax("title_pack_background_image")
 	if(pack) {
@@ -48,7 +47,7 @@ function Title_section(props: {pack: Pack_info | null,}) {
 					</div>
 	
 					<div className="background_container">
-						<Image src={`/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						<Image src={`/packs/${pack._id}/${pack.preview_image}`} alt="Preview image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
 						<div className="background_blur" />
 					</div>
 				</div>
@@ -102,7 +101,7 @@ function Packs_section(props: {packs: Pack_info[] | null, header: string}) {
 	
 }
 
-export const getServerSideProps: GetServerSideProps = async(context) => {
+export const getServerSideProps: GetServerSideProps = async() => {
 	const response_recent_pack = await fetch(`http://localhost:3000/api/get_recent_packs`)
 	let recent_packs: Pack_info[] | null = null
 	if(response_recent_pack.status === 200) {

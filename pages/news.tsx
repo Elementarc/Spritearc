@@ -1,5 +1,4 @@
 import React, { ReactElement, useState, useMemo} from 'react';
-import Head from "next/head"
 import Image from "next/image"
 import Eclipse from "../public/images/eclipse.jpg"
 import Router from "next/router"
@@ -15,7 +14,7 @@ function navigateTo(path: string): void {
 }
 
 
-const maxPages = 1
+const max_patches_per_page = 1
 //News Component
 export default  function News(props: any): ReactElement {
 	//All Patchnotes from server
@@ -36,7 +35,7 @@ export default  function News(props: any): ReactElement {
 		}
 	})
 	
-	const lastPage = Math.ceil(patchnoteList.length / maxPages)
+	const lastPage = Math.ceil(patchnoteList.length / max_patches_per_page)
 	//JSX Elements of initial patchnotes that will be rendered.
 	const JSXInitialPatchnotes: ReactElement<Patchnote>[] = (() => {
 
@@ -47,7 +46,7 @@ export default  function News(props: any): ReactElement {
 			)
 		});
 
-		return jsxPatchnotes.slice(0, maxPages)
+		return jsxPatchnotes.slice(0, max_patches_per_page)
 	})();
 	
 	//JSX that contains extra patchnotes. Starts as an empty array.
@@ -65,7 +64,7 @@ export default  function News(props: any): ReactElement {
 			)
 		})
 		//
-		setExtraPatchnotes(jsxPatchnotes.slice(maxPages, maxPages * CurrentPage));
+		setExtraPatchnotes(jsxPatchnotes.slice(max_patches_per_page, max_patches_per_page * CurrentPage));
 	}, [CurrentPage, setExtraPatchnotes, patchnoteList])
 
 	//Checking if Button Load more should be displayed or not.
@@ -178,7 +177,7 @@ function Patchnote_template(props: {patchnote: Patchnote}): ReactElement{
 
 //Serverside
 import patchHandler from "../lib/patch_lib"
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
 	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
 	
 	return {

@@ -29,7 +29,9 @@ export default function Footer(): ReactElement {
     
     return (
         <div className="footer_container" id="footer_container">
+            
             <Background_gradient id="footer_background" page_id="app_content_container"/>
+            
             <h1>Pixepalast</h1>
 
             <div className="socials_container">

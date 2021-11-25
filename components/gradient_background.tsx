@@ -25,8 +25,6 @@ export default function Background_gradient(props: {id: string, page_id: string}
             
             //Getting Full Height of page
             const page_height = page_container.offsetHeight
-            //Pixels available to the bottom of the page based on top position of screen
-            const screen_left_pixels_to_bottom = page_height - window.innerHeight - window.scrollY
             //Checking Offset of parent container. Needs to be on the main container height.
             const top = background_element.parentElement?.offsetTop as number - window.scrollY
             
@@ -35,16 +33,12 @@ export default function Background_gradient(props: {id: string, page_id: string}
             background_element.style.transform = `translateY(${-top}px)`
         }
 
-        //Observing App_container to always redo Gradient when main app_content changes
-        const observerObj = new ResizeObserver((entries) => {
-            set_background_gradient()
-        })
+        set_background_gradient()
         
-        observerObj.observe(page_container)
         window.addEventListener("scroll", set_background_gradient)
         window.addEventListener("resize", set_background_gradient)
         return(() => {
-            observerObj.unobserve(page_container)
+            
             window.removeEventListener("resize", set_background_gradient)
             window.removeEventListener("scroll", set_background_gradient)
         })
