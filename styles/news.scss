@@ -45,10 +45,10 @@
                 }
                 
                 h2 {
-                    @include h2(big);
+                    @include h2;
                 }
                 h1{
-                    @include h1(big);
+                    @include h1;
                 }
                 p{
                     @include p;

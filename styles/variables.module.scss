@@ -96,7 +96,7 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     
     @include breakpoint(mobile) {
         font-size: 0.875rem;
-        padding: .75rem 3.4rem;
+        padding: .8rem 3.4rem;
     }
 }
 @mixin input {
@@ -127,8 +127,10 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     @if($size == medium) {
         font-size: 1rem;
     }
+    @if($size == small) {
+        font-size: .875rem;
+    }
     
-   
 
     @include breakpoint(mobile) {
         @if($size == default) {
@@ -136,6 +138,9 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
         }
         @if($size == medium) {
             font-size: .875rem;
+        }
+        @if($size == small) {
+            font-size: .75rem;
         }
     }
 }
@@ -152,15 +157,21 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     @if($size == medium) {
         font-size: 1rem;
     }
+    @if($size == small) {
+        font-size: .875rem;
+    }
     
 
     @include breakpoint(mobile) {
         line-height: 1.9rem;
-        @if($size == big) {
+        @if($size == default) {
             font-size: 0.938rem;
         }
         @if($size == medium) {
             font-size: .875rem;
+        }
+        @if($size == small) {
+            font-size: .75rem;
         }
     }
 }
@@ -205,24 +216,40 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     }
 }
 //For Titles Like a Pack preview Title.
-@mixin h3() {
+@mixin h3($size: default) {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_white;
-    padding: 0 1rem;
-    font-size: $font_h3_desktop;
+
+    @if($size == default) {
+        font-size: 1.5rem;
+    }
+    @if($size == medium) {
+        font-size: 1.25rem;
+    }
+    @if($size == small) {
+        font-size: 1rem;
+    }
 
     @include breakpoint(mobile) {
-        font-size: $font_h3_mobile;
+        @if($size == default) {
+            font-size: 1.25rem;
+        }
+        @if($size == medium) {
+            font-size: 1rem;
+        }
+        @if($size == small) {
+            font-size: .75rem;
+        }
     }
 }
 //Sub header.
-@mixin h2($size) {
+@mixin h2($size: default) {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_main_bright;
 
-    @if($size == big) {
+    @if($size == default) {
         font-size: 1.125rem;
     }
     @if($size == medium) {
@@ -234,7 +261,7 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     
     
     @include breakpoint(mobile) {
-        @if($size == big) {
+        @if($size == default) {
             font-size: 1rem;
         }
         @if($size == medium) {
@@ -246,12 +273,12 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     }
 }
 //Headers
-@mixin h1 ($size) {
+@mixin h1 ($size: default) {
     font-family: $font_alatsi;
     font-weight: unset;
     color: $color_white;
 
-    @if($size == big) {
+    @if($size == default) {
         font-size: 2.25rem;
     }
     @if($size == medium) {
@@ -263,7 +290,7 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
 
     @include breakpoint(mobile) {
 
-        @if($size == big) {
+        @if($size == default) {
             font-size: 1.8rem;
         }
         @if($size == medium) {
@@ -275,6 +302,7 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     }
     
 }
+
 @mixin nav_shadow {
     position: absolute;
     top: -4px;

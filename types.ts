@@ -10,7 +10,6 @@ export interface App_context {
     sheme: string,
     domain: string,
     port: 3000,
-    path: string,
     is_mobile: boolean | undefined,
     nav: {nav_state: boolean, set_nav_state: React.Dispatch<React.SetStateAction<boolean>>},
     app_content_container: () => HTMLElement

@@ -33,11 +33,11 @@
                         padding: 0 1rem
                     }
                     h2{
-                        @include h2(medium);
+                        @include h2;
                         
                     }
                     h1{
-                        @include h1(medium);
+                        @include h1;
                         margin-top: -.2rem;
                         padding: unset;
                         
@@ -50,14 +50,13 @@
                             width: 70%
                         }
                         @include breakpoint(mobile){
-                            @include p(medium);
+                            @include p;
                             width: 100%
                         }
                     }
                     a {
                         @include button;
-                        margin-top: 1.5rem;
-                        font-size: 16px;
+                        margin-top: 1.6rem;
                         align-self: start;
                     }
                 }

@@ -28,7 +28,7 @@ export default function Browse(props: any) {
 	);
 }
 
-export function Title_section(props: {pack: Pack_info | null,}) {
+function Title_section(props: {pack: Pack_info | null,}) {
 	const pack: Pack_info | null = props.pack
 	
 
@@ -61,7 +61,7 @@ export function Title_section(props: {pack: Pack_info | null,}) {
 	
 }
 
-export function Packs_section(props: {packs: Pack_info[] | null, header: string}) {
+function Packs_section(props: {packs: Pack_info[] | null, header: string}) {
 	//Packs Response from server.
 	const packs: Pack_info[] | null = props.packs
 	//JSX RecentPacks that will be rendered

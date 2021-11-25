@@ -53,7 +53,6 @@ export default function Layout( { children }: any) {
         sheme: SHEME,
         domain: DOMAIN,
         port: PORT,
-        path: `${SHEME}://${DOMAIN}:${PORT}`,
         is_mobile: is_mobile,
         nav:  {
             nav_state: nav_state,

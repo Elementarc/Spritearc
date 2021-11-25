@@ -19,13 +19,17 @@ import { AnimatePresence , motion, useAnimation} from 'framer-motion';
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 //Renders the full Pack
 export default function Pack_page(props: {pack: Pack_info}) {
+    //State that saves currently clicked asset as a url string.
+    const [focus_img_src, set_focus_img_src] = useState("/")
+    //State that toggles focus of asset.
+    const [show_focus_img, set_show_focus_img] = useState(false)
+
     const APP: App_context = useContext(APP_CONTEXT)
     const Router = useRouter()
     const pack = props.pack
 
     //Creating parallax effect for Image
     useParallax("title_pack_background_image")
-
     //Toggling arrow svg when scrollY > 0
     useEffect(() => {
         //Function that toggles the arrow. Getting called whenever scrolling is happening.
@@ -45,10 +49,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
         })
     }, [])
     
-    //State that saves currently clicked asset as a url string.
-    const [focus_img_src, set_focus_img_src] = useState("/")
-    //State that toggles focus of asset.
-    const [show_focus_img, set_show_focus_img] = useState(false)
+    
     //Function that sets img src + toggles show_focus_img to true.
     function toggle_asset(e: any) {
         if(e.target.src) {
@@ -58,7 +59,6 @@ export default function Pack_page(props: {pack: Pack_info}) {
         }
         set_show_focus_img(true)
     }
-
     //Setting max_height and max_width of fixed asset_fixed_image_container in page Component.
     useEffect(() => {
         const get_page = document.getElementById("pack_page") as HTMLDivElement
@@ -120,7 +120,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
                         
                     <div className="preview_container" id="preview_container">
                         <div className="background">
-						    <Image src={`${APP.path}/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						    <Image src={`/packs/${pack._id}/${pack.preview_image}`} layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
                             <div className="background_blur" />
                         </div>
 
@@ -128,7 +128,19 @@ export default function Pack_page(props: {pack: Pack_info}) {
                             <div className="header_container">
                                 <h2>{pack.sub_title}</h2>
 
-                                <H1_with_deco title={pack.title}/>
+                                <div className="h1_with_deco">
+                                    <div className="left_container">
+                                        <span className="left_line"/>
+                                        <div className="left_icon"/>
+                                    </div>
+                                    
+                                    <h1>{pack.title}</h1>
+                            
+                                    <div className="right_container">
+                                        <div className="right_icon"/>
+                                        <span className="right_line"/>
+                                    </div>
+                                </div>
 
                                 <p>{pack.description}</p>
                                 <button>Download Pack</button>
@@ -213,7 +225,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
 }
 
 //Component that creates a section with assets
-export function Pack_sprite_sections(): ReactElement {
+function Pack_sprite_sections(): ReactElement {
     const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
     const pack = PACK_PAGE.pack
 
@@ -240,7 +252,7 @@ export function Pack_sprite_sections(): ReactElement {
     );
 }
 //Component that creates assets from pack.
-export function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
+function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
     const APP: App_context = useContext(APP_CONTEXT)
     const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
     const pack = PACK_PAGE.pack as Pack_info
@@ -264,7 +276,7 @@ export function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
     );
 }
 //Component that renders Stars based on pack Rating.
-export function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
+function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
     const ratings: {user: string, rating: number}[] = props.ratings
     let sum_ratings: number = 0
 
@@ -301,24 +313,6 @@ export function Rating_container(props: {ratings: {user: string, rating: number}
         <div className="stars_container">
             {stars}
         </div>
-    );
-}
-//Component that creates a Pack H1 Element with extras
-export function H1_with_deco(props: {title: string}): ReactElement {
-    return (
-      <div className="h1_with_deco">
-          <div className="left_container">
-              <span className="left_line"/>
-              <div className="left_icon"/>
-          </div>
-          
-          <h1>{props.title}</h1>
-  
-          <div className="right_container">
-              <div className="right_icon"/>
-              <span className="right_line"/>
-          </div>
-      </div>
     );
 }
 

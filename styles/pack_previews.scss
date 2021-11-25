@@ -51,7 +51,7 @@
 
         }
         h2{
-            @include h2(medium);
+            @include h2(small);
             @include breakpoint(mobile) {
                 padding-left: unset;
             }

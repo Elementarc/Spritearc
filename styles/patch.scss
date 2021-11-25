@@ -63,7 +63,7 @@
             }
             //List Header
             h3{
-                @include h1(small)
+                @include h3();
             }
             //Default Text
             p{
@@ -73,6 +73,7 @@
             }
             ul{
                 margin-left: 3rem;
+                margin-top: .2rem;
                 margin-bottom: 1rem;
                 line-height: $font_p_line_height;
                 li{

@@ -30,6 +30,9 @@
                     @include p(medium);
                     width: 100%;
                 } 
+                @include breakpoint(laptop) {
+                    width: 70%;
+                }
             }
             a {
                 @include a(medium);
@@ -61,7 +64,7 @@
                     padding-left: unset;
                 }
                 @include breakpoint(laptop) {
-                    padding: 0rem 1rem;
+                    padding: 0rem 4rem;
                 }
             }
             .section_one_background_blur{
