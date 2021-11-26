@@ -122,16 +122,19 @@ function Navigation_desktop(): ReactElement {
                     <motion.div className="nav_button_container" id="nav_button_container">
 
                         <AnimatePresence exitBeforeEnter>
+                            
                             {NAV.nav_state === true &&
                                 <motion.div key="menu" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.1}}}>
                                     <CloseIcon onClick={() => NAV.set_nav_state(!NAV.nav_state)} className="nav_svg"/>
                                 </motion.div>
-                            } 
+                            }
+
                             {NAV.nav_state === false &&
                                 <motion.div key="close" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.1}}}>
                                     <NavIcon onClick={() => NAV.set_nav_state(!NAV.nav_state)} className="nav_svg" />
                                 </motion.div>
                             }
+                            
                         </AnimatePresence>
 
                     </motion.div>

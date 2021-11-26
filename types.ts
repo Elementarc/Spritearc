@@ -59,3 +59,14 @@ export interface User{
     profile_image: string,
     released_packs: Pack_info[] | []
 }
+
+//User
+
+export interface SignUp {
+    username: string | null,
+    email: string | null,
+    password: string | null,
+    password_repeat: string | null,
+    legal: boolean,
+    occasional_emails: boolean,
+}

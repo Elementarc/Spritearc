@@ -15,7 +15,7 @@ import StarHalf from "../public/icons/StarHalfIcon.svg"
 import Star from "../public/icons/StarIcon.svg"
 import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
-
+import H1_with_deco from '../components/h1_with_deco';
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 //Renders the full Pack
 export default function Pack_page(props: {pack: Pack_info}) {
@@ -129,19 +129,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
                             <div className="header_container">
                                 <h2>{pack.sub_title}</h2>
 
-                                <div className="h1_with_deco">
-                                    <div className="left_container">
-                                        <span className="left_line"/>
-                                        <div className="left_icon"/>
-                                    </div>
-                                    
-                                    <h1>{pack.title}</h1>
-                            
-                                    <div className="right_container">
-                                        <div className="right_icon"/>
-                                        <span className="right_line"/>
-                                    </div>
-                                </div>
+                                <H1_with_deco title={pack.title}/>
 
                                 <p>{pack.description}</p>
                                 <button>Download Pack</button>
@@ -315,6 +303,9 @@ function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
         </div>
     );
 }
+
+
+
 
 
 
