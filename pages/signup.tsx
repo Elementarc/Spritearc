@@ -1,4 +1,4 @@
-import { AnimatePresence, motion} from "framer-motion";
+import { AnimatePresence, motion, AnimateSharedLayout} from "framer-motion";
 import React, { useState, useEffect, useContext } from "react";
 import Footer from "../components/footer";
 import Link from "next/dist/client/link";
@@ -69,35 +69,33 @@ export default function Sign_up_page() {
     return (
         <SIGNUP_CONTEXT.Provider value={PAGE_CONTEXT}>
             <div className="login_page">
+                
+                    <Div100vh className="content">
 
-                <Div100vh className="content">
+                        <div className="steps">
+                            <AnimatePresence exitBeforeEnter>
 
-                    <div className="steps">
-                        <AnimatePresence exitBeforeEnter>
+                                {current_step === 1 &&
+                                    <Step_1 key="step_1"/>
+                                } : {current_step === 2 &&
+                                    <Step_2 key="step_2"/>
+                                } : 
 
-                            {current_step === 1 &&
-                                <Step_1 key="step_1"/>
-                            } : {current_step === 2 &&
-                                <Step_2 key="step_2"/>
-                            } : 
+                            </AnimatePresence>
 
-                        </AnimatePresence>
+                            <Step_displayer />
 
-                        <Step_displayer />
-
-                        <div className="forward_container">
-                            <span className="bottom_section_line" />
-                            <div>
-                                <p>{"Already a member? "}<Link href="/signin">Sign In</Link></p>
+                            <div className="forward_container">
+                                <span className="bottom_section_line" />
+                                <div>
+                                    <p>{"Already a member? "}<Link href="/signin">Sign In</Link></p>
+                                </div>
+                                
                             </div>
-                            
                         </div>
-                    </div>
-
-                    
-                    
-                </Div100vh>
-
+                        
+                    </Div100vh>
+                
                 <Footer />
             </div>
         </SIGNUP_CONTEXT.Provider>
@@ -116,28 +114,21 @@ export function Step_1() {
 
             try {
 
-                
                 timer = setTimeout(async() => {
 
                     if(username.length === 0) {
 
-                        PAGE_CONTEXT.update_signup_informations("username", null)
-
-                        set_error_message("Please enter a username.")
+                        set_error_message(true, "Please enter a username.")
                         resolve(false)
 
                     } else if(username.length < 3) {
 
-                        PAGE_CONTEXT.update_signup_informations("username", null)
-
-                        set_error_message("Username is to short. Min. 3 characters.")
+                        set_error_message(true, "Username is to short. Min. 3 characters.")
                         resolve(false)
 
                     } else if(username.length > 16) {
 
-                        PAGE_CONTEXT.update_signup_informations("username", null)
-
-                        set_error_message("Username is to long. Max. 16 characters.")
+                        set_error_message(true, "Username is to long. Max. 16 characters.")
                         resolve(false)
 
                     } else {
@@ -148,9 +139,7 @@ export function Step_1() {
                         //Checking if username has a special character at the beginning or end.
                         if(beginning_regex.test(username) === true || end_regex.test(username) === true) {
 
-                            PAGE_CONTEXT.update_signup_informations("username", null)
-
-                            set_error_message("You can't use special characters at the beginning or end of your username.")
+                            set_error_message(true, "You can't use special characters at the beginning or end of your username.")
                             resolve(false)
 
                         } else {
@@ -159,9 +148,7 @@ export function Step_1() {
                             //Checking if username contains 2 special characters after eachother
                             if(look_double_special_characters_regex.test(username)) {
 
-                                PAGE_CONTEXT.update_signup_informations("username", null)
-
-                                set_error_message("Username cannot contain 2 special characters after each other.")
+                                set_error_message(true, "Username cannot contain 2 special characters after each other.")
                                 resolve(false)
 
                             } else {
@@ -174,26 +161,22 @@ export function Step_1() {
         
                                     //If username is available update signup_obj state.
                                     if(username_available) {
-
-                                        PAGE_CONTEXT.update_signup_informations("username", username)
-
-                                        set_error_message("")
+                                        set_error_message(false, "")
                                         resolve(true)
+                                        
         
                                     } else {
 
-                                        PAGE_CONTEXT.update_signup_informations("username", null)
-
-                                        set_error_message("Username is already taken.")
+                                        set_error_message(true, "Username is already taken.")
                                         resolve(false)
         
-                                    } 
+                                    }
+
                                 } else {
 
-                                    PAGE_CONTEXT.update_signup_informations("username", null)
-
-                                    set_error_message("Special characters that are allowed: . _")
+                                    set_error_message(true, "Special characters that are allowed: . _")
                                     resolve(false)
+
                                 }
             
 
@@ -214,48 +197,65 @@ export function Step_1() {
     }
     
     //Gets username from input. Setting signup_obj to null if validating fails.
-    async function get_username_by_event(e: any) {
+    async function get_input_value(e: any) {
         clearTimeout(timer)
         const username_available = await validate_username(e.target.value)
-        error_styles(username_available)
-    }
 
-    //Increasing page when signup_obj.username is not null.
-    async function next_page() {
-        const get_input = document.getElementById("username_input") as HTMLInputElement
-        const username_available = await validate_username(get_input.value)
-        error_styles(username_available)
-        if(username_available && PAGE_CONTEXT.current_step < 3) {
-            clearTimeout(timer)
-            PAGE_CONTEXT.set_step(PAGE_CONTEXT.current_step + 1)
-        }
-    }
-
-    //Setting styles for errors. Takes in boolean
-    function error_styles(error: boolean) {
-        const input = document.getElementById("username_input") as HTMLInputElement
-        const h1 = document.getElementById("h1_with_deco") as HTMLDivElement
-
-        if(error) {
-            input.style.borderBottomColor = ""
-            h1.style.color = ""
+        if(username_available) {
+            PAGE_CONTEXT.update_signup_informations("username", e.target.value as string)
         } else {
-            input.style.borderBottomColor = "#F75E5E"
-            h1.style.color = "#F75E5E"
+            PAGE_CONTEXT.update_signup_informations("username", null)
         }
         
     }
 
+    //Increasing page when signup_obj.username is not null.
+    async function next_page() {
+        
+        const get_input = document.getElementById("username_input") as HTMLInputElement
+        const username_available = await validate_username(get_input.value)
+        clearTimeout(timer)
+        if(username_available && PAGE_CONTEXT.current_step === 1) {
+            
+            PAGE_CONTEXT.set_step(PAGE_CONTEXT.current_step + 1)
+        }
+    }
+
     //Function that sets error_message
-    function set_error_message(message: string = "") {
+    function set_error_message(error: boolean, message: string) {
         const get_error_message = document.getElementById("input_error_message") as HTMLParagraphElement
-        get_error_message.innerHTML = message
+        
+        const input = document.getElementById("username_input") as HTMLInputElement
+        const h1 = document.getElementById("h1_with_deco") as HTMLDivElement
+
+        
+        if(get_error_message) {
+            if(error) {
+
+                input.style.borderBottomColor = "#F75E5E"
+                h1.style.color = "#F75E5E"
+                get_error_message.innerHTML = `${message}`
+                
+    
+            } else {
+    
+                input.style.borderBottomColor = ""
+                h1.style.color = ""
+                get_error_message.innerHTML = ``
+                
+            }
+        } else {
+            return
+        }
+        
+
+        
     }
 
     //Setting styles for button based on Signup_obj.username
     useEffect(() => {
         const button = document.getElementById("step_button") as HTMLButtonElement
-        
+
         if(PAGE_CONTEXT.signup_obj.username) {
             button.classList.add("active_button")
             button.classList.remove("disabled_button")
@@ -285,7 +285,7 @@ export function Step_1() {
                         
             <H1_with_deco title="Enter a username"/>
                 
-            <input onBlur={get_username_by_event} onKeyUp={get_username_by_event} type="text" placeholder={"Username"} id="username_input"></input>
+            <input onBlur={get_input_value} onKeyUp={get_input_value} type="text" placeholder={"Username"} id="username_input"></input>
             <p className="input_error_message" id="input_error_message"></p>
 
             <div className="button_container">
@@ -318,6 +318,8 @@ export function Step_2() {
             <H1_with_deco title="Enter an E-mail"/>
                 
             <input type="text" placeholder={"E-Mail"} id="username_input"></input>
+            <input type="text" placeholder={"E-Mail"} id="username_input"></input>
+            <input type="text" placeholder={"E-Mail"} id="username_input"></input>
             <p className="input_error_message"></p>
 
             <div className="button_container">
@@ -333,11 +335,58 @@ export function Step_2() {
 
 
 export function Step_displayer() {
-  return (
-    <div className="step_displayer_container">
+    const PAGE_CONTEXT: PageContext = useContext(SIGNUP_CONTEXT)
 
-    </div>
-  );
+    function move_to_step(e: any) {
+        
+        
+    }
+    //Setting styles for steps whenever current page changes
+    useEffect(() => {
+        const get_steps = Array.from(document.getElementsByClassName("step") as HTMLCollection)
+
+        for(let i = 0; i < get_steps.length; i++) {
+
+            if((i+1) === PAGE_CONTEXT.current_step) {
+                get_steps[i].classList.add("step_focus")
+                get_steps[i].classList.remove("step_done")
+                get_steps[i].classList.remove("step_inactive")
+            } else {
+
+                if(i < PAGE_CONTEXT.current_step) {
+                    get_steps[i].classList.add("step_done")
+                    get_steps[i].classList.remove("step_inactive")
+                    get_steps[i].classList.remove("step_focus")
+                } else {
+                    get_steps[i].classList.add("step_inactive")
+                    get_steps[i].classList.remove("step_done")
+                    get_steps[i].classList.remove("step_focus")
+                }
+            }
+        }
+
+    }, [PAGE_CONTEXT.current_step])
+
+    return (
+        <div className="step_displayer_container">
+                
+            <div className="step step_inactive" id="step_1">
+                <p>Step 1</p>
+            </div>
+
+            <span />
+
+            <div className="step step_inactive" id="step_2">
+                <p>Step 2</p>
+            </div>
+
+            <span />
+
+            <div className="step step_inactive" id="step_3">
+                <p>Step 3</p>
+            </div>
+        </div>
+    );
 }
 
 
