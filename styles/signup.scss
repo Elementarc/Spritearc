@@ -6,54 +6,89 @@
         width: 100%;
         min-height: 800px;
         max-height: 1200px;
-        .step_container{
+
+        .steps {
             display: flex;
-            width: 100%;
-            height: 100%;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            .h1_with_deco{
-                @include h1_with_deco;
-                width: 80%;
-                margin-bottom: 5rem;
+            height: 100%;
+
+            .step_container{
+                display: flex;
+                width: 100%;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                .h1_with_deco{
+                    @include h1_with_deco;
+                    width: 80%;
+                    margin-bottom: 5rem;
+                }
+    
+                input {
+                    @include p;
+                    background: unset;
+                    border-bottom: 1px solid $color_grey;
+                    margin-bottom: .5rem;
+                    width: 30%;
+                    color: white;
+                    outline: none;
+                    text-align: center;
+                    
+                    &::placeholder {
+                        color: $color_dark_grey;
+                    }
+                }
+                .input_error_message{
+                    @include p(medium);
+                    margin-bottom: 1.5rem;
+                    color: #F75E5E;
+                }
+                .button_container{
+                    display: flex;
+                    margin-top: 3rem;
+                    grid-template-columns: 1fr 1fr;
+                    column-gap: 4rem;
+                    .active_button{
+                        @include button;
+                    }
+                    .disabled_button {
+                        @include button(disabled);
+                    }
+                    .prev_button{
+                        @include button(sub_button);
+                    }
+                }
+                
             }
 
-            input {
-                @include p;
-                background: unset;
-                border-bottom: 1px solid $color_grey;
-                margin-bottom: .5rem;
-                width: 30%;
-                color: white;
-                outline: none;
-                text-align: center;
-                
-                &::placeholder {
-                    color: $color_dark_grey;
-                }
-            }
-            .input_error_message{
-                @include p(medium);
-                margin-bottom: 1.5rem;
-                color: #F75E5E;
-            }
-            .button_container{
+            .forward_container {
+                position: relative;
                 display: flex;
-                margin-top: 3rem;
-                grid-template-columns: 1fr 1fr;
-                column-gap: 4rem;
-                .active_button{
-                    @include button;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                margin-top: 8rem;
+                width: 100%;
+                height: 10px;
+                span {
+                    position: absolute;
+                    top: 0;
+                    @include next_section_line;
+                    width: 80%;
                 }
-                .disabled_button {
-                    @include button(disabled);
+                p {
+                    margin-top: 8rem;
+                    @include p(medium);
+                    a {
+                        @include a(medium);
+                    }
                 }
-                .prev_button{
-                    @include button(sub_button);
-                }
+                
             }
             
         }
+        
     }
 }

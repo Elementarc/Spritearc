@@ -1,6 +1,7 @@
 import { AnimatePresence, motion} from "framer-motion";
 import React, { useState, useEffect, useContext } from "react";
 import Footer from "../components/footer";
+import Link from "next/dist/client/link";
 import { SignUp } from "../types";
 import H1_with_deco from '../components/h1_with_deco';
 import Div100vh from 'react-div-100vh'
@@ -71,7 +72,7 @@ export default function Sign_up_page() {
 
                 <Div100vh className="content">
 
-                    <div className="step_container">
+                    <div className="steps">
                         <AnimatePresence exitBeforeEnter>
 
                             {current_step === 1 &&
@@ -79,16 +80,21 @@ export default function Sign_up_page() {
                             } : {current_step === 2 &&
                                 <Step_2 key="step_2"/>
                             } : 
-                            
 
                         </AnimatePresence>
+
+                        <Step_displayer />
+
+                        <div className="forward_container">
+                            <span className="bottom_section_line" />
+                            <div>
+                                <p>{"Already a member? "}<Link href="/signin">Sign In</Link></p>
+                            </div>
+                            
+                        </div>
                     </div>
 
-                    <Step_displayer />
-
-                    <div className="forward_container">
-
-                    </div>
+                    
                     
                 </Div100vh>
 
@@ -110,37 +116,41 @@ export function Step_1() {
 
             try {
 
-                clearTimeout(timer)
+                
                 timer = setTimeout(async() => {
-                    const get_error_message = document.getElementById("input_error_message") as HTMLParagraphElement
 
                     if(username.length === 0) {
 
-                        get_error_message.innerHTML = "Please enter a username."
                         PAGE_CONTEXT.update_signup_informations("username", null)
+
+                        set_error_message("Please enter a username.")
                         resolve(false)
 
                     } else if(username.length < 3) {
 
-                        get_error_message.innerHTML = "Username is to short. Min. 3 characters."
                         PAGE_CONTEXT.update_signup_informations("username", null)
+
+                        set_error_message("Username is to short. Min. 3 characters.")
                         resolve(false)
 
                     } else if(username.length > 16) {
 
-                        get_error_message.innerHTML = "Username is to long. Max. 16 characters."
                         PAGE_CONTEXT.update_signup_informations("username", null)
+
+                        set_error_message("Username is to long. Max. 16 characters.")
                         resolve(false)
 
                     } else {
+
                         const beginning_regex = new RegExp(/^[\.\_]+/)
                         const end_regex = new RegExp(/[\.\_]+$/)
 
                         //Checking if username has a special character at the beginning or end.
                         if(beginning_regex.test(username) === true || end_regex.test(username) === true) {
 
-                            get_error_message.innerHTML = "You can't use special characters at the beginning or end of your username."
                             PAGE_CONTEXT.update_signup_informations("username", null)
+
+                            set_error_message("You can't use special characters at the beginning or end of your username.")
                             resolve(false)
 
                         } else {
@@ -149,8 +159,9 @@ export function Step_1() {
                             //Checking if username contains 2 special characters after eachother
                             if(look_double_special_characters_regex.test(username)) {
 
-                                get_error_message.innerHTML = "Username cannot contain 2 special characters after each other."
                                 PAGE_CONTEXT.update_signup_informations("username", null)
+
+                                set_error_message("Username cannot contain 2 special characters after each other.")
                                 resolve(false)
 
                             } else {
@@ -163,22 +174,25 @@ export function Step_1() {
         
                                     //If username is available update signup_obj state.
                                     if(username_available) {
-        
-                                        //Username available
-                                        get_error_message.innerHTML = ""
+
                                         PAGE_CONTEXT.update_signup_informations("username", username)
+
+                                        set_error_message("")
                                         resolve(true)
         
                                     } else {
-        
-                                        get_error_message.innerHTML = "Username is already taken."
+
                                         PAGE_CONTEXT.update_signup_informations("username", null)
+
+                                        set_error_message("Username is already taken.")
                                         resolve(false)
         
                                     } 
                                 } else {
-                                    get_error_message.innerHTML = "You can't use that username."
+
                                     PAGE_CONTEXT.update_signup_informations("username", null)
+
+                                    set_error_message("Special characters that are allowed: . _")
                                     resolve(false)
                                 }
             
@@ -200,21 +214,24 @@ export function Step_1() {
     }
     
     //Gets username from input. Setting signup_obj to null if validating fails.
-    async function get_username(e: any) {
-        error_styles(await validate_username(e.target.value))
+    async function get_username_by_event(e: any) {
+        clearTimeout(timer)
+        const username_available = await validate_username(e.target.value)
+        error_styles(username_available)
     }
 
     //Increasing page when signup_obj.username is not null.
     async function next_page() {
         const get_input = document.getElementById("username_input") as HTMLInputElement
         const username_available = await validate_username(get_input.value)
-        
+        error_styles(username_available)
         if(username_available && PAGE_CONTEXT.current_step < 3) {
             clearTimeout(timer)
             PAGE_CONTEXT.set_step(PAGE_CONTEXT.current_step + 1)
         }
     }
 
+    //Setting styles for errors. Takes in boolean
     function error_styles(error: boolean) {
         const input = document.getElementById("username_input") as HTMLInputElement
         const h1 = document.getElementById("h1_with_deco") as HTMLDivElement
@@ -229,6 +246,13 @@ export function Step_1() {
         
     }
 
+    //Function that sets error_message
+    function set_error_message(message: string = "") {
+        const get_error_message = document.getElementById("input_error_message") as HTMLParagraphElement
+        get_error_message.innerHTML = message
+    }
+
+    //Setting styles for button based on Signup_obj.username
     useEffect(() => {
         const button = document.getElementById("step_button") as HTMLButtonElement
         
@@ -240,7 +264,11 @@ export function Step_1() {
             button.classList.add("disabled_button")
         }
         
-    }, [PAGE_CONTEXT.signup_obj])
+        return(() => {
+            clearTimeout(timer)
+        })
+
+    }, [PAGE_CONTEXT.signup_obj.username])
 
     //Clearing timer
     useEffect(() => {
@@ -257,7 +285,7 @@ export function Step_1() {
                         
             <H1_with_deco title="Enter a username"/>
                 
-            <input onBlur={get_username} onKeyUp={get_username} type="text" placeholder={"Username"} id="username_input"></input>
+            <input onBlur={get_username_by_event} onKeyUp={get_username_by_event} type="text" placeholder={"Username"} id="username_input"></input>
             <p className="input_error_message" id="input_error_message"></p>
 
             <div className="button_container">
