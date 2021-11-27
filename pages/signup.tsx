@@ -56,18 +56,6 @@ export default function Sign_up_page() {
         
     }
     
-    function increase_step() {
-        if(current_step < 3) {
-            set_step(current_step + 1)
-        }
-    }
-
-    function decrease_step() {
-        if(current_step > 1) {
-            set_step(current_step - 1)
-        }
-    }
-
     const PAGE_CONTEXT: PageContext = { 
         signup_obj,
         current_step,
@@ -113,8 +101,7 @@ export default function Sign_up_page() {
 
 export function Step_1() {
     const PAGE_CONTEXT: PageContext = useContext(SIGNUP_CONTEXT)
-    const username_regex = new RegExp(/^[a-zA-Z1-9\_\-\.]{3,16}$/)
-
+    const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
     //Getting username of input field on every keyUp and focusout
     let timer: NodeJS.Timer
     //Validating username 
@@ -126,43 +113,85 @@ export function Step_1() {
                 clearTimeout(timer)
                 timer = setTimeout(async() => {
                     const get_error_message = document.getElementById("input_error_message") as HTMLParagraphElement
+
                     if(username.length === 0) {
-                        get_error_message.innerHTML = ""
+
+                        get_error_message.innerHTML = "Please enter a username."
                         PAGE_CONTEXT.update_signup_informations("username", null)
                         resolve(false)
+
                     } else if(username.length < 3) {
+
                         get_error_message.innerHTML = "Username is to short. Min. 3 characters."
                         PAGE_CONTEXT.update_signup_informations("username", null)
                         resolve(false)
+
                     } else if(username.length > 16) {
+
                         get_error_message.innerHTML = "Username is to long. Max. 16 characters."
                         PAGE_CONTEXT.update_signup_informations("username", null)
                         resolve(false)
 
                     } else {
+                        const beginning_regex = new RegExp(/^[\.\_]+/)
+                        const end_regex = new RegExp(/[\.\_]+$/)
 
-                        if(username_regex.test(username) === true){
-                            const response = await fetch(`http://localhost:3000/api/signup/validate_username?username=${username}`)
-                            const username_available = (await response.json()).available
-                            if(username_available) {
-                                //Username available
-                                get_error_message.innerHTML = ""
-                                PAGE_CONTEXT.update_signup_informations("username", username)
-                                resolve(true)
-                            } else {
-                                get_error_message.innerHTML = "Username is already taken."
+                        //Checking if username has a special character at the beginning or end.
+                        if(beginning_regex.test(username) === true || end_regex.test(username) === true) {
+
+                            get_error_message.innerHTML = "You can't use special characters at the beginning or end of your username."
+                            PAGE_CONTEXT.update_signup_informations("username", null)
+                            resolve(false)
+
+                        } else {
+                            const look_double_special_characters_regex = new RegExp(/(?<=[\.\_])[\.\_]/)
+
+                            //Checking if username contains 2 special characters after eachother
+                            if(look_double_special_characters_regex.test(username)) {
+
+                                get_error_message.innerHTML = "Username cannot contain 2 special characters after each other."
                                 PAGE_CONTEXT.update_signup_informations("username", null)
                                 resolve(false)
-                            }  
-    
-                        } else {
-                            get_error_message.innerHTML = "Special characters that are allowed [. _ ,]"
-                            PAGE_CONTEXT.update_signup_informations("username", null)
+
+                            } else {
+
+                                //Finally checking if username passes the test. It should pass the test at this point of code. Else is just incase i forgot something.
+                                if(username_regex.test(username) === true){
+                                    //Checking if a username already exists with.
+                                    const response = await fetch(`http://localhost:3000/api/signup/validate_username?username=${username}`)
+                                    const username_available = (await response.json()).available
+        
+                                    //If username is available update signup_obj state.
+                                    if(username_available) {
+        
+                                        //Username available
+                                        get_error_message.innerHTML = ""
+                                        PAGE_CONTEXT.update_signup_informations("username", username)
+                                        resolve(true)
+        
+                                    } else {
+        
+                                        get_error_message.innerHTML = "Username is already taken."
+                                        PAGE_CONTEXT.update_signup_informations("username", null)
+                                        resolve(false)
+        
+                                    } 
+                                } else {
+                                    get_error_message.innerHTML = "You can't use that username."
+                                    PAGE_CONTEXT.update_signup_informations("username", null)
+                                    resolve(false)
+                                }
+            
+
+                            }
+                            
                         }
+                            
                     }
                 }, 250)
-
+                
             } catch ( err ) {
+
                 console.log(err)
                 resolve(false)
             }
@@ -172,24 +201,37 @@ export function Step_1() {
     
     //Gets username from input. Setting signup_obj to null if validating fails.
     async function get_username(e: any) {
-        await validate_username(e.target.value)
+        error_styles(await validate_username(e.target.value))
     }
 
     //Increasing page when signup_obj.username is not null.
     async function next_page() {
-        clearTimeout(timer)
         const get_input = document.getElementById("username_input") as HTMLInputElement
         const username_available = await validate_username(get_input.value)
         
         if(username_available && PAGE_CONTEXT.current_step < 3) {
-            
+            clearTimeout(timer)
             PAGE_CONTEXT.set_step(PAGE_CONTEXT.current_step + 1)
         }
     }
 
+    function error_styles(error: boolean) {
+        const input = document.getElementById("username_input") as HTMLInputElement
+        const h1 = document.getElementById("h1_with_deco") as HTMLDivElement
+
+        if(error) {
+            input.style.borderBottomColor = ""
+            h1.style.color = ""
+        } else {
+            input.style.borderBottomColor = "#F75E5E"
+            h1.style.color = "#F75E5E"
+        }
+        
+    }
+
     useEffect(() => {
         const button = document.getElementById("step_button") as HTMLButtonElement
-
+        
         if(PAGE_CONTEXT.signup_obj.username) {
             button.classList.add("active_button")
             button.classList.remove("disabled_button")
@@ -219,7 +261,6 @@ export function Step_1() {
             <p className="input_error_message" id="input_error_message"></p>
 
             <div className="button_container">
-                
                 <button className="active_button" id="step_button" onClick={next_page}>Next Step</button>
             </div>
             

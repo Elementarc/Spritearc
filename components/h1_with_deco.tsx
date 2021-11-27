@@ -7,7 +7,7 @@ export default function H1_with_deco(props: {title: string}) {
                 <div className="left_icon"/>
             </div>
             
-            <h1>{title}</h1>
+            <h1 id="h1_with_deco">{title}</h1>
     
             <div className="right_container">
                 <div className="right_icon"/>
