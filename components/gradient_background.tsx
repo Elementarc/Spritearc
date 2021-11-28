@@ -33,12 +33,14 @@ export default function Background_gradient(props: {id: string, page_id: string}
             background_element.style.transform = `translateY(${-top}px)`
         }
 
-        set_background_gradient()
-        
+        const observer = new ResizeObserver(() => {
+            set_background_gradient()
+        })
+        observer.observe(page_container)
         window.addEventListener("scroll", set_background_gradient)
         window.addEventListener("resize", set_background_gradient)
         return(() => {
-            
+            observer.unobserve(page_container)
             window.removeEventListener("resize", set_background_gradient)
             window.removeEventListener("scroll", set_background_gradient)
         })

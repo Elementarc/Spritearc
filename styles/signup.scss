@@ -3,27 +3,37 @@
 .login_page {
     height: auto;
     .content {
+        position: relative;
         width: 100%;
-        min-height: 800px;
-        max-height: 1200px;
-
+        height: 100vh;
+        min-height: 900px;
+        max-height: 1000px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        @include breakpoint(mobile) {
+            
+            max-height: 750px;
+        }
         .steps {
+            position: relative;
             display: flex;
+            width: 100%;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100%;
-
             .step_container{
                 display: flex;
                 width: 100%;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
+                
                 .h1_with_deco{
                     @include h1_with_deco;
+                    text-align: center;
                     width: 80%;
-                    margin-bottom: 5rem;
+                    margin-bottom: 5rem
                 }
     
                 input {
@@ -35,21 +45,89 @@
                     color: white;
                     outline: none;
                     text-align: center;
-                    
+                    @include breakpoint(laptop) {
+                        width: 60%;
+                    }
+                    @include breakpoint(mobile) {
+                        width: 90%;
+                    }
                     &::placeholder {
                         color: $color_dark_grey;
                     }
                 }
                 .input_error_message{
-                    @include p(medium);
                     margin-bottom: 1.5rem;
+                    @include p(medium);
                     color: #F75E5E;
                 }
+                
+                .legal_container {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    align-items: center;
+                    justify-items: center;
+                    width: 100%;
+                    padding: 0 1rem;
+                    margin-top: 1rem;
+                    user-select: none;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    
+                    .check_box_container{
+                        display: grid;
+                        grid-template-columns: 15px 1fr;
+                        column-gap: 1rem;
+                        align-items: start;
+                        justify-items: start;
+                        margin-top: .5rem;
+                        
+                        .check_box {
+                            margin-top: .55rem;
+                            position: relative;
+                            align-self: start;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            height: 15px;
+                            width: 15px;
+                            border: 1px solid white;
+                            margin-right: 1rem;
+                            &:hover {
+                                cursor: pointer;
+                            }
+                            @include breakpoint(mobile) {
+                                margin-top: .4rem;
+                            }
+                            svg{
+                                position: absolute;
+                                transform: scale(1.4);
+                                fill: $color_main;
+                            }
+                        }
+                        p {
+                            align-self: start;
+                            @include p(medium);
+                            
+                            a {
+                                @include a(medium);
+                            }
+                        }
+                    }
+                }
+                
+                
+
                 .button_container{
                     display: flex;
+                    justify-content: center;
                     margin-top: 3rem;
                     grid-template-columns: 1fr 1fr;
-                    column-gap: 4rem;
+                    column-gap: 1rem;
+                    
+                    @include breakpoint(mobile) {
+                        padding: 0 1rem;
+                    }
                     .active_button{
                         @include button;
                     }
@@ -60,73 +138,72 @@
                         @include button(sub_button);
                     }
                 }
-                
             }
-
+    
             .step_displayer_container {
                 display: flex;
                 justify-content: center;
                 column-gap: .3rem;
-                margin-top: 9rem;
-                .step_done {
+                margin-top: 10rem;
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                
+                .step {
                     position: relative;
-                    opacity: .6;
                     display: grid;
                     width: 14px;
                     height: 14px;
-                    background: $color_main;
                     
                     p {
+                        position: absolute;
                         @include p(small);
+                        
                         font-family: $font_alatsi;
                         color: $color_main;
+                        padding: .1rem 0;
                         align-self: center;
                         justify-self: center;
                         position: absolute;
                         align-self: center;
                         width: 50px;
                         text-align: center;
-                        top: -2.2rem;
+                        top: -2.25rem;
+                    }
+                }
+                .step_done {
+                    background: $color_main;
+                    opacity: .6;
+                    &:hover {
+                        cursor: pointer;
+                        background: $color_main_bright;
+                        p { 
+                            color: $color_main_bright;
+                        }
+                    }
+                    p {
+                        color: $color_main;
                     }
                 }
                 .step_focus {
-                    position: relative;
-                    display: grid;
-                    width: 14px;
-                    height: 14px;
                     background: $color_main;
-                    
+                    &:hover {
+                        background: $color_main_bright;
+                        cursor: pointer;
+                        p { 
+                            color: $color_main_bright;
+                        }
+                    }
                     p {
-                        @include p(small);
-                        font-family: $font_alatsi;
                         color: $color_main;
-                        align-self: center;
-                        justify-self: center;
-                        position: absolute;
-                        align-self: center;
-                        width: 50px;
-                        text-align: center;
-                        top: -2.2rem;
                     }
                 }
                 .step_inactive {
-                    position: relative;
-                    display: grid;
-                    width: 14px;
-                    height: 14px;
                     background: $color_dark_grey;
                     
                     p {
-                        @include p(small);
-                        font-family: $font_alatsi;
                         color: $color_dark_grey;
-                        align-self: center;
-                        justify-self: center;
-                        position: absolute;
-                        align-self: center;
-                        width: 50px;
-                        text-align: center;
-                        top: -2.2rem;
                     }
                 }
 
@@ -149,7 +226,7 @@
                 align-items: center;
                 margin-top: 3rem;
                 width: 100%;
-                height: 10px;
+                
                 span {
                     position: absolute;
                     top: 0;
@@ -157,7 +234,7 @@
                     width: 80%;
                 }
                 p {
-                    margin-top: 8rem;
+                    margin-top: 2rem;
                     @include p(medium);
                     a {
                         @include a(medium);
@@ -165,8 +242,8 @@
                 }
                 
             }
-
         }
+
         
     }
 }

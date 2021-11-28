@@ -85,7 +85,10 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
 }
 @mixin button($type: default) {
     font-family: "Alatsi";
-                
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     @if($type == default) {
         opacity: 1;
         color: $color_background_dark;
