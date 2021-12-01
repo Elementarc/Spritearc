@@ -18,6 +18,7 @@ export interface App_context {
 
 export interface Notification {
     toggle: boolean,
+    success: boolean,
     title: string | null, 
     message: string | null, 
     button_label: string | null,

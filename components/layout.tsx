@@ -6,8 +6,6 @@ import App_notification from './app_notification';
 import { useRouter } from 'next/router';
 //Components
 import Navigation from './navigation';
-import Page_notification from './page_notification';
-import Page_overlay_fixed from './page_overlay_fixed';
 
 const APP_NAME = "PixelPalast"
 const SHEME= "http"
@@ -18,14 +16,20 @@ export const APP_CONTEXT: any = React.createContext(null)
 export default function Layout( { children }: any) {
     //Setting IsDesktop to tell other Components if App is mobileDevice or DesktopDevice
     const [is_mobile, set_is_mobile] = useState<undefined | boolean>(undefined)
+    //Toggling navigation.
     const [nav_state, set_nav_state] = useState(false);
+    //Notification obj that triggers an Application notification
     const [notification, set_notification] = useState<Notification>({
         toggle: false,
+        success: false,
         title: null,
         message: null,
         button_label: null,
         callb: () => {}
     })
+    function create_notification(notification: Notification) {
+        set_notification(notification)
+    }
     const Router = useRouter()
     
     //Checks if Application IsDesktop or not
@@ -59,10 +63,7 @@ export default function Layout( { children }: any) {
             app_content_blur.style.pointerEvents = "all"
         }
     }, [nav_state])
-
-    function create_notification(notification: Notification) {
-        set_notification(notification)
-    }
+    
     //APP Context
     const APP: App_context = {
         app_name: APP_NAME,

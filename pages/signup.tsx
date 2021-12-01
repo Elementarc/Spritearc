@@ -25,7 +25,6 @@ interface SignupContext {
 }
 
 export default function Sign_up_page() {
-    
     const router = useRouter()
     //Obj will be send to server to create account for user.
     const [signup_obj, set_signup_obj] = useState<SignUp>({
@@ -80,7 +79,7 @@ export default function Sign_up_page() {
             occasional_emails: false,
         })
         set_step(1)
-        router.push("/login", "/login", {scroll: false})
+        //router.push("/login", "/login", {scroll: false})
     }
 
     //Function that sets error_message
@@ -154,10 +153,8 @@ export default function Sign_up_page() {
 export function Step_1() {
     //Page context
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
-
     //Function that creates an error message takes in error: boolean, message: string, the paragraph element that will be inserted the message, and the input field that needs to be styled
     const set_error_message = PAGE_CONTEXT.set_error_message
-
     let timer: NodeJS.Timer
 
     //Validating username 
@@ -329,7 +326,6 @@ export function Step_1() {
 export function Step_2() {
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
     const set_error_message = PAGE_CONTEXT.set_error_message
-    
     let timer: NodeJS.Timer
 
     //Function that validates email also sends a call to backend to verifiy if email already exist
@@ -493,11 +489,11 @@ export function Step_3() {
                 body: JSON.stringify({signup_obj: PAGE_CONTEXT.signup_obj})
             })
             const {successful} = await response_stream.json()
-                APP.create_notification({toggle: true, title: "Success!", message: "We send you an email. Please check your email to verify your account! You will be redirected to our login page.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}})
+               
             if(successful) {
-                
+                APP.create_notification({toggle: true, success: false, title: "Success!", message: "We send you an email. Please check your email to verify your account! You will be redirected to our login page.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}})
             } else {
-                
+                APP.create_notification({toggle: true, success: false, title: "Something went wrong!", message: "We are sorry that you have to experience this. Please restart your registration.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}})
             }
 
             PAGE_CONTEXT.set_signup_obj({username: null, email: null, password: null, legal: false, occasional_emails: false})
@@ -636,14 +632,15 @@ export function Step_displayer() {
                     get_steps[current_step].classList.remove("step_focus")
                     get_steps[current_step].classList.remove("step_inactive")
 
-                } else if(PAGE_CONTEXT.signup_obj.email && current_step === 2) {
+
+                } else if(PAGE_CONTEXT.signup_obj.username && PAGE_CONTEXT.signup_obj.email && current_step === 2) {
 
                     get_steps[current_step].classList.add("step_done")
                     get_steps[current_step].classList.remove("step_focus")
                     get_steps[current_step].classList.remove("step_inactive")
                     
                 } else {
-
+                    
                     get_steps[current_step].classList.add("step_inactive")
                     get_steps[current_step].classList.remove("step_done")
                     get_steps[current_step].classList.remove("step_focus")
