@@ -2,11 +2,12 @@ import { AnimatePresence, motion, AnimateSharedLayout} from "framer-motion";
 import React, { useState, useEffect, useContext } from "react";
 import Footer from "../components/footer";
 import Link from "next/dist/client/link";
-import { App_context, SignUp, Notification } from "../types";
+import { App_context, SignUp } from "../types";
 import H1_with_deco from '../components/h1_with_deco';
 import DoneIcon from "../public/icons/DoneIcon.svg"
 import { useRouter } from "next/router";
 import { APP_CONTEXT } from "../components/layout";
+
 const SIGNUP_CONTEXT: any = React.createContext(null)
 
 const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
@@ -28,9 +29,9 @@ export default function Sign_up_page() {
     const router = useRouter()
     //Obj will be send to server to create account for user.
     const [signup_obj, set_signup_obj] = useState<SignUp>({
-        username: "test",
-        email: "test@gmail.co",
-        password: "hurrensohn1",
+        username: null,
+        email: null,
+        password: null,
         legal: true,
         occasional_emails: false,
     })
@@ -272,8 +273,10 @@ export function Step_1() {
 
         
         if(username_available && PAGE_CONTEXT.current_step === 1) {
-            
+            PAGE_CONTEXT.update_signup_informations("username", get_input.value as string)
             PAGE_CONTEXT.set_step(PAGE_CONTEXT.current_step + 1)
+        } else {
+            PAGE_CONTEXT.update_signup_informations("username", null)
         }
     }
 
@@ -384,7 +387,7 @@ export function Step_2() {
         const email_available = await validate_email(get_input.value)
         
         if(PAGE_CONTEXT.signup_obj.email && email_available) {
-            
+            PAGE_CONTEXT.update_signup_informations("email", get_input.value as string)
             PAGE_CONTEXT.set_step(PAGE_CONTEXT.current_step + 1)
         }
     }
@@ -444,7 +447,6 @@ export function Step_3() {
 
         const input_error_message_password = document.getElementById("input_error_message_password") as HTMLParagraphElement
 
-
         
         if(password_regex.test(password.value)) {
             PAGE_CONTEXT.set_error_message(false, "", input_error_message_password, password)
@@ -491,7 +493,10 @@ export function Step_3() {
             const {successful} = await response_stream.json()
                
             if(successful) {
-                APP.create_notification({toggle: true, success: false, title: "Success!", message: "We send you an email. Please check your email to verify your account! You will be redirected to our login page.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}})
+
+
+                
+                APP.create_notification({toggle: true, success: true, title: "Success!", message: "We send you an email. Please check your email to verify your account! You will be redirected to our login page.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}})
             } else {
                 APP.create_notification({toggle: true, success: false, title: "Something went wrong!", message: "We are sorry that you have to experience this. Please restart your registration.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}})
             }
@@ -661,7 +666,7 @@ export function Step_displayer() {
 
         
 
-    }, [PAGE_CONTEXT.signup_obj.username, PAGE_CONTEXT.signup_obj.email, PAGE_CONTEXT.signup_obj.password, PAGE_CONTEXT.current_step])
+    }, [PAGE_CONTEXT.current_step, PAGE_CONTEXT.signup_obj])
 
     return (
         <div className="step_displayer_container">

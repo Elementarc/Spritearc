@@ -71,11 +71,20 @@ export interface User{
 }
 
 //User
-
 export interface SignUp {
     username: string | null,
     email: string | null,
     password: string | null,
     legal: boolean,
     occasional_emails: boolean,
+}
+
+export interface ServerSignUp extends SignUp {
+    hashed_password: string,
+    salt: string,
+    date: Date,
+    about: string,
+    socials: string[],
+    profile_image: string,
+    released_packs: Pack_info[]
 }
