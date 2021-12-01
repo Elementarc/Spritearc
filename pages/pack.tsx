@@ -17,6 +17,8 @@ import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../components/h1_with_deco';
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
+
+
 //Renders the full Pack
 export default function Pack_page(props: {pack: Pack_info}) {
     //State that saves currently clicked asset as a url string.

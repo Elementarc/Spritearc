@@ -11,6 +11,7 @@ const client = new MongoClient("mongodb://localhost:27017")
 
 
 export default async function signup(req: NextApiRequest, res: NextApiResponse) {
+    
     //Function that validates an email.
     async function validate_email(email: string | string[] | null) {
         if(typeof email !== "string") return false
@@ -109,7 +110,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             }
             
         } 
-        //Validating whole signup request.
+        //Validating whole signup request. To Create account
         else if(req.query.route === "create_account") {
             const { username, email, password, legal, occasional_emails } =  req.body.signup_obj as SignUp
             //Checking if signup object properties exist.
