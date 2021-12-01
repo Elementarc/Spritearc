@@ -12,7 +12,16 @@ export interface App_context {
     port: 3000,
     is_mobile: boolean | undefined,
     nav: {nav_state: boolean, set_nav_state: React.Dispatch<React.SetStateAction<boolean>>},
-    app_content_container: () => HTMLElement
+    app_content_container: () => HTMLElement,
+    create_notification: (notification_obj: Notification) => void,
+}
+
+export interface Notification {
+    toggle: boolean,
+    title: string | null, 
+    message: string | null, 
+    button_label: string | null,
+    callb?: () => void
 }
 
 //Patchnote Interface
@@ -66,7 +75,6 @@ export interface SignUp {
     username: string | null,
     email: string | null,
     password: string | null,
-    password_repeat: string | null,
     legal: boolean,
     occasional_emails: boolean,
 }

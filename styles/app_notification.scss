@@ -1,0 +1,47 @@
+.app_overlay_fixed{
+    position: fixed;
+    top: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.75);
+    @include breakpoint(mobile) {
+        align-items: center;
+    }
+
+    .notification_container {
+        position: relative;
+        background: $color_main_blue;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-width: 450px;
+        max-width: 650px;
+        text-align: center;
+        @include breakpoint(mobile) {
+            min-width: unset;
+            width: 90%;
+        }
+        h1 {
+            @include h1(medium);
+            color: $color_main_bright;
+            margin-top: 2rem;
+            padding: 0 1rem;
+        }
+    
+        p {
+            @include p;
+            margin-top: 1rem;
+            padding: 0 1rem;
+        }
+    
+        button {
+            @include button;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+    }
+}
