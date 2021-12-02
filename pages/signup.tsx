@@ -30,10 +30,10 @@ interface SignupContext {
 export default function Sign_up_page() {
     //Obj will be send to server to create account for user.
     const [signup_obj, set_signup_obj] = useState<SignUp>({
-        username: "Arco",
-        email: "Testo@gmail.com",
+        username: null,
+        email: null,
         password: null,
-        legal: true,
+        legal: false,
         occasional_emails: false,
     })
 
@@ -293,6 +293,7 @@ export default function Sign_up_page() {
 }
 
 export function Step_1() {
+    const APP: App_context = useContext(APP_CONTEXT)
     //Page context
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
     let timer: any
@@ -344,7 +345,6 @@ export function Step_1() {
     //Clearing timer and setting default value of input field
     useEffect(() => {
         const get_input = document.getElementById("input") as HTMLInputElement
-        get_input.focus()
         get_input.value = PAGE_CONTEXT.signup_obj.username ? PAGE_CONTEXT.signup_obj.username : `${get_input.value}`
 
         return () => {
@@ -360,7 +360,8 @@ export function Step_1() {
         const input = document.getElementById("input") as HTMLInputElement
         const button = document.getElementById("step_button") as HTMLButtonElement
 
-        input.focus()
+        if(APP.is_mobile === false) input.focus()
+        
         
         function enter(e: any) {
             if(e.keyCode === 13) button.click()
@@ -373,7 +374,7 @@ export function Step_1() {
             
             window.removeEventListener("keypress", enter)
         })
-    }, [timer])
+    }, [timer, APP.is_mobile])
 
     return (
         <motion.div className="step_container" initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .3, delay: 0.2}}} exit={{opacity: 0, y: 50, transition: {duration: 0.2,  type: "tween"}}}>
@@ -393,6 +394,7 @@ export function Step_1() {
 }
 
 export function Step_2() {
+    const APP: App_context = useContext(APP_CONTEXT)
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
     let timer: any
    
@@ -452,7 +454,7 @@ export function Step_2() {
         const input = document.getElementById("input") as HTMLInputElement
         const button = document.getElementById("step_button") as HTMLButtonElement
 
-        input.focus()
+        if(!APP.is_mobile) input.focus()
         
         function enter(e: any) {
             if(e.keyCode === 13) button.click()
@@ -465,7 +467,7 @@ export function Step_2() {
             
             window.removeEventListener("keypress", enter)
         })
-    }, [timer])
+    }, [timer, APP.is_mobile])
 
     return (
         <motion.div className="step_container" initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .3, delay: 0.2}}} exit={{opacity: 0, y: 50, transition: {duration: 0.2,  type: "tween"}}}>
@@ -593,7 +595,8 @@ export function Step_3() {
         const input_password = document.getElementById("input_password") as HTMLInputElement
         const button = document.getElementById("step_button") as HTMLButtonElement
 
-        input_password.focus()
+        if(!APP.is_mobile) input_password.focus()
+        
         
         function enter(e: any) {
             if(e.keyCode === 13) button.click()
@@ -606,7 +609,7 @@ export function Step_3() {
             
             window.removeEventListener("keypress", enter)
         })
-    }, [])
+    }, [APP.is_mobile])
 
     return (
         <motion.div className="step_container" initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .3, delay: 0.2}}} exit={{opacity: 0, y: 50, transition: {duration: 0.2,  type: "tween"}}}>
