@@ -15,7 +15,7 @@ export default function Browse(props: any) {
 	return (
 		<>
 			<div className="browse_page">
-
+				
 				<div className="content">
 					<Title_section pack={title_pack}/>
 					<Packs_section packs={recent_packs} header="Recent Packs"/>

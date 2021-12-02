@@ -37,8 +37,8 @@ export default function App_notification(props: {notification: Notification}) {
 
     //Button function
     function button_func() {
-        console.log("test")
         callb()
+        
         APP.create_notification({
             toggle: false,
             success: false,

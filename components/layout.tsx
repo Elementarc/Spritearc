@@ -79,10 +79,12 @@ export default function Layout( { children }: any) {
         create_notification
     }
     
+    //Function that will be triggert everytime a page unmounts
     function on_unmount() {
         document.documentElement.style.scrollBehavior = "unset"
         window.scrollTo(0, 0)
     }
+    
     return (
         <APP_CONTEXT.Provider value={APP}>
 

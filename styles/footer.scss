@@ -8,6 +8,7 @@
     align-items: center;
     width: 100%;
     overflow: hidden;
+    
     h1{
         @include h1(big);
         margin-top: 3rem;
@@ -46,7 +47,15 @@
     }
     
 }
-
+.background {
+    position: fixed;
+    background: linear-gradient(180deg, $color_main_blue 70%, $color_background_dark 100%);
+    z-index: 0;
+    max-height: 2350px;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+}
 
 .social_item{
     position: relative;

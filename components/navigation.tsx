@@ -115,7 +115,7 @@ function Navigation_desktop(): ReactElement {
         <motion.nav className="nav_container_desktop" id="nav_container">
             <motion.div animate={nav_content_container_animations} className="content_container" id="content_container">
 
-                <Background_gradient id="nav_background" page_id="app_content_container"/>
+                {/*<Background_gradient id="nav_background" page_id="app_content_container"/>*/}
 
                 <div className="content" id="nav_content">
 

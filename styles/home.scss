@@ -6,6 +6,9 @@
     background-color: $color_background_dark;
 
     .content{
+        position: relative;
+        z-index: 1;
+        background: $color_background_dark;
         //All Sections
         section{
             height: 650px;

@@ -349,7 +349,7 @@ export function Step_1() {
 
         return () => {
             
-            window.scrollTo(0,0)
+            
             clearTimeout(timer)
             document.body.style.scrollBehavior = "unset"
         };
@@ -359,8 +359,8 @@ export function Step_1() {
     useEffect(() => {
         const input = document.getElementById("input") as HTMLInputElement
         const button = document.getElementById("step_button") as HTMLButtonElement
-
-        if(APP.is_mobile === false) input.focus()
+        
+        if(!APP.is_mobile) input.focus()
         
         
         function enter(e: any) {
@@ -371,7 +371,6 @@ export function Step_1() {
         return(() => {
             clearTimeout(timer)
             window.scrollTo(0,0)
-            
             window.removeEventListener("keypress", enter)
         })
     }, [timer, APP.is_mobile])
@@ -604,7 +603,6 @@ export function Step_3() {
 
         window.addEventListener("keypress", enter)
         return(() => {
-            
             window.scrollTo(0,0)
             
             window.removeEventListener("keypress", enter)

@@ -4,10 +4,11 @@
     position: relative;
     height: auto;
     z-index: 1;
-    background-color: $color_background_dark;
-
+    
     .content{
-
+        position: relative;
+        z-index: 1;
+        background: $color_background_dark;
         .title_pack_container {
             margin-bottom: 1.5rem;
             @include breakpoint(mobile) {

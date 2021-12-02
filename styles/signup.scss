@@ -11,7 +11,9 @@
         justify-content: center;
         align-items: center;
         min-height: 100vh;
+        z-index: 1;
         height: auto;
+        background: $color_background_dark;
         .steps {
             position: relative;
             display: flex;
