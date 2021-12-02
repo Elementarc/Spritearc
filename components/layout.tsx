@@ -79,6 +79,10 @@ export default function Layout( { children }: any) {
         create_notification
     }
     
+    function on_unmount() {
+        document.documentElement.style.scrollBehavior = "unset"
+        window.scrollTo(0, 0)
+    }
     return (
         <APP_CONTEXT.Provider value={APP}>
 
@@ -90,7 +94,7 @@ export default function Layout( { children }: any) {
 
                     <div onClick={() => {set_nav_state(false)}} className="app_content_blur" id="app_content_blur"/>
 
-                    <AnimatePresence exitBeforeEnter onExitComplete={() => window.scrollTo(0, 0)}>
+                    <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
                         <motion.main key={Router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
                             {children}
                         </motion.main>

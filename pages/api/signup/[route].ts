@@ -114,10 +114,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
         else if(req.query.route === "create_account") {
             const { username, email, password, legal, occasional_emails } =  req.body.signup_obj as SignUp
             //Checking if signup object properties exist.
-            if(!username) return res.status(400).end()
-            if(!email) return res.status(400).end()
-            if(!password) return res.status(400).end()
-            if(!legal) return res.status(400).end()
+            if(!username || !email || !password || !legal) return res.status(400).end()
             
             //Validating userinputs. Also making call to backend to check if it already exists.
             const email_available = await validate_email(email)
@@ -125,11 +122,9 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             const password_valid = password_regex.test(password)
             
             //Validating inputs
-            if(!email_available) return res.status(400).end()
-            if(!username_available) return res.status(400).end()
-            if(!password_valid) return res.status(400).end()
+            if(!email_available || !username_available || !password_valid) return res.status(400).end()
+           
             //Passed all tests
-
 
             //Creating salt to hash password
             let salt = ""
