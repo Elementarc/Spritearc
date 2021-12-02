@@ -30,8 +30,8 @@ interface SignupContext {
 export default function Sign_up_page() {
     //Obj will be send to server to create account for user.
     const [signup_obj, set_signup_obj] = useState<SignUp>({
-        username: null,
-        email: null,
+        username: "Arco",
+        email: "Testo@gmail.com",
         password: null,
         legal: true,
         occasional_emails: false,
@@ -521,7 +521,7 @@ export function Step_3() {
             PAGE_CONTEXT.set_error_message(false, "", input_error_message_password_repeat, password_repeat)
             return true
         } else {
-
+            PAGE_CONTEXT.update_signup_informations("password", null)
             PAGE_CONTEXT.set_error_message(true, "Passwords do not match.", input_error_message_password_repeat, password_repeat)
             return false
         }
@@ -530,7 +530,7 @@ export function Step_3() {
 
     //Function that validates signup_obj if successful sends create account call to server.
     async function signup() {
-
+        
         if(PAGE_CONTEXT.signup_obj.username && PAGE_CONTEXT.signup_obj.email && PAGE_CONTEXT.signup_obj.password && PAGE_CONTEXT.signup_obj.legal) {
             
             const response_stream = await fetch("/api/signup/create_account", {
@@ -665,7 +665,6 @@ export function Step_displayer() {
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
 
     async function set_page(page: number) {
-        
         if(page === 1) {
 
             
@@ -675,12 +674,12 @@ export function Step_displayer() {
 
         } else if(page === 2) {
 
-            if(!PAGE_CONTEXT.signup_obj.username) return
+            if(!PAGE_CONTEXT.signup_obj.username) {PAGE_CONTEXT.update_signup_informations("username", null); PAGE_CONTEXT.set_step(1); return}
             PAGE_CONTEXT.set_step(2)
 
         } else if(page === 3) {
-
-            if(!PAGE_CONTEXT.signup_obj.email) return
+            if(!PAGE_CONTEXT.signup_obj.username) {PAGE_CONTEXT.update_signup_informations("username", null); PAGE_CONTEXT.set_step(1); return}
+            if(!PAGE_CONTEXT.signup_obj.email) {PAGE_CONTEXT.update_signup_informations("email", null); PAGE_CONTEXT.set_step(2); return}
             
             PAGE_CONTEXT.set_step(3)
             
