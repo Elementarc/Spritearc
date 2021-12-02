@@ -10,11 +10,15 @@
         background: $color_background_dark;
         .header_container{
             position: relative;
+            width: 100%;
+            height: 100%;
+            
             .background{
                 position: absolute;
                 width: 100%;
                 height: 100%;
                 z-index: 0;
+                background: $color_background_dark;
                 overflow: hidden;
                 .background_image{
                     object-position: center;
@@ -31,7 +35,7 @@
                     background: radial-gradient(circle, #05102000 0%, #051020 88%);
                 }
             }
-            .content{
+            .patch_list{
                 position: relative;
                 color: $color_bright_grey;
                 font-family: $font_alatsi;

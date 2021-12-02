@@ -1,12 +1,12 @@
-import { AnimatePresence, motion, AnimateSharedLayout} from "framer-motion";
+import { AnimatePresence, motion} from "framer-motion";
 import React, { useState, useEffect, useContext } from "react";
 import Footer from "../components/footer";
 import Link from "next/dist/client/link";
 import { App_context, SignUp } from "../types";
 import H1_with_deco from '../components/h1_with_deco';
 import DoneIcon from "../public/icons/DoneIcon.svg"
-import { useRouter } from "next/router";
 import { APP_CONTEXT } from "../components/layout";
+import { Nav_shadow } from "../components/navigation";
 
 const SIGNUP_CONTEXT: any = React.createContext(null)
 
@@ -20,10 +20,14 @@ interface SignupContext {
     current_step: number,
     reset_signup: () => void,
     set_signup_obj: React.Dispatch<React.SetStateAction<SignUp>>
+    // eslint-disable-next-line no-unused-vars
     set_error_message: (error: boolean, message: string, element: HTMLParagraphElement, input_element: HTMLInputElement) => void,
     set_step: React.Dispatch<React.SetStateAction<number>>,
+    // eslint-disable-next-line no-unused-vars
     validate_email: (email: string) => Promise<boolean>,
+    // eslint-disable-next-line no-unused-vars
     validate_username: (username: string) => Promise<boolean>,
+    // eslint-disable-next-line no-unused-vars
     update_signup_informations: (specific_key: string, value: string | null | boolean) => void,
 }
 
@@ -87,8 +91,8 @@ export default function Sign_up_page() {
     }
 
     //Function that sets an error message error_message. also takes in the input element that it needs to style.
-    function set_error_message(error: boolean, message: string, error_element: HTMLParagraphElement, input_element: HTMLInputElement) {
-        const error_element_p = error_element
+    function set_error_message(error: boolean, message: string, element: HTMLParagraphElement, input_element: HTMLInputElement) {
+        const error_element_p = element
         
         const input = input_element
         const h1 = document.getElementById("h1_with_deco") as HTMLDivElement
@@ -254,12 +258,13 @@ export default function Sign_up_page() {
         };
     }, [])
 
+    
     return (
         <SIGNUP_CONTEXT.Provider value={PAGE_CONTEXT}>
             <div className="login_page" id="login_page">
                 
                 <div className="content">
-
+                    <Nav_shadow/>
                     <div className="steps">
                         <AnimatePresence exitBeforeEnter>
 
@@ -347,12 +352,6 @@ export function Step_1() {
         const get_input = document.getElementById("input") as HTMLInputElement
         get_input.value = PAGE_CONTEXT.signup_obj.username ? PAGE_CONTEXT.signup_obj.username : `${get_input.value}`
 
-        return () => {
-            
-            
-            clearTimeout(timer)
-            document.body.style.scrollBehavior = "unset"
-        };
     }, [PAGE_CONTEXT.signup_obj.username])
     
     //Setting default value of input field also focusing on imput on mount plus clearing timers on umount. Also adding enter key to go to next page.
@@ -376,7 +375,7 @@ export function Step_1() {
     }, [timer, APP.is_mobile])
 
     return (
-        <motion.div className="step_container" initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .3, delay: 0.2}}} exit={{opacity: 0, y: 50, transition: {duration: 0.2,  type: "tween"}}}>
+        <motion.div className="step_container" id="step_container" initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .3, delay: 0.2}}} exit={{opacity: 0, y: 50, transition: {duration: 0.2,  type: "tween"}}}>
                         
             <H1_with_deco title="Please enter an username"/>
                 

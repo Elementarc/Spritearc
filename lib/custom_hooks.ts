@@ -8,7 +8,8 @@ export function useParallax(id: string) {
         
         function parallax() {
             if(element) {
-                element.style.transform = `translateY(${window.scrollY / 2}px)`
+                //element.style.transform = `translateY(${window.scrollY / 2}px)`
+                element.style.objectPosition = `50% calc(50% + ${window.scrollY / 2}px)`
             }
         }
 

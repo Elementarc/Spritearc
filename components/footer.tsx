@@ -5,10 +5,29 @@ import Twitter from "../public/logos/twitter.png"
 import Link from 'next/dist/client/link';
 
 export default function Footer(): ReactElement {
-    
+
+    //Setting background max-width and height
+    useEffect(() => {
+        const background = document.getElementById("background") as HTMLDivElement
+        const footer = document.getElementById("footer_container") as HTMLDivElement
+       
+        const observer = new ResizeObserver((entries) => {
+
+            for(let entry of entries) {
+                background.style.maxHeight = `${footer.offsetTop + footer.offsetHeight}px`
+                background.style.maxWidth = `${entry.contentRect.width}px`
+            }
+        }) 
+
+        observer.observe(footer)
+        return(() => {
+            observer.unobserve(footer)
+        })
+    }, [])
+
     return (
         <>
-            <div className="background" />
+            <div className="background" id="background"/>
             <div className="footer_container" id="footer_container">
                 
                 {/*<Background_gradient id="footer_background" page_id="app_content_container"/>*/}

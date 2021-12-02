@@ -107,7 +107,7 @@ export default  function News(props: any): ReactElement {
 							<div className="background_blur" />
 						</div>
 
-						<div className="content">
+						<div className="patch_list">
 							<h2>Recent Updates</h2>
 							<h1>Everything New About PixelPalast</h1>
 							<p>We will occasionally release updates for PixelPalast. Here you can find our newest upcoming features that you might be interested in. Take a look!</p>

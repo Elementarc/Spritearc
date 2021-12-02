@@ -64,7 +64,8 @@ function Packs_section(props: {packs: Pack_info[] | null, header: string}) {
 	//Packs Response from server.
 	const packs: Pack_info[] | null = props.packs
 	//JSX RecentPacks that will be rendered
-	const [recent_packs_jsx, set_recent_packs_jsx] = useState(() => {
+	
+	function return_jsx_packs() {
 		let jsx_recent_packs: ReactElement<Pack_info>[] = []
 		if(packs) {
 			for(let pack of packs) {
@@ -73,7 +74,8 @@ function Packs_section(props: {packs: Pack_info[] | null, header: string}) {
 		}
 		
 		return jsx_recent_packs
-	})
+	}
+	
 
 	
 	//If Recent_packs are available
@@ -88,7 +90,7 @@ function Packs_section(props: {packs: Pack_info[] | null, header: string}) {
 				</div>
 	
 				<div className="previews_container">
-					{recent_packs_jsx}
+					{return_jsx_packs()}
 				</div>
 				
 			</div>

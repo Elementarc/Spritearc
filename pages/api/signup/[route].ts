@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {MongoClient, ObjectId} from "mongodb"
-import { ServerSignUp, SignUp } from "../../../types";
+import {MongoClient} from "mongodb"
+import { SignUp } from "../../../types";
 import { SHA256 } from "crypto-js";
 const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
 const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
