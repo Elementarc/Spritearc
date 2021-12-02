@@ -316,7 +316,7 @@ export function Step_1() {
             } else {
                 PAGE_CONTEXT.update_signup_informations("username", null)
             }
-        }, 200);
+        }, 150);
         
     }
 
@@ -379,7 +379,7 @@ export function Step_1() {
                         
             <H1_with_deco title="Please enter an username"/>
                 
-            <input onBlur={get_input_value} onKeyUp={get_input_value} type="text" placeholder={"Username"} id="input"></input>
+            <input onKeyUp={get_input_value} type="text" placeholder={"Username"} id="input"></input>
             <p className="input_error_message" id="input_error_message"></p>
 
             <div className="button_container">
@@ -408,7 +408,7 @@ export function Step_2() {
             } else {
                 PAGE_CONTEXT.update_signup_informations("email", null)
             }
-        }, 200);
+        }, 150);
         
     }
 
@@ -472,7 +472,7 @@ export function Step_2() {
                         
             <H1_with_deco title="Please enter your email"/>
                 
-            <input onBlur={get_input_value} onKeyUp={get_input_value} type="text" placeholder={"Example@domain.com"} id="input"></input>
+            <input onKeyUp={get_input_value} type="text" placeholder={"Example@domain.com"} id="input"></input>
             <p className="input_error_message" id="input_error_message"></p>
 
             <div className="button_container">
@@ -613,9 +613,9 @@ export function Step_3() {
                         
             <H1_with_deco title="Please create a password"/>
                 
-            <input onBlur={validate_password} onKeyUp={validate_password} type="password" placeholder={"Password"} id="input_password" />
+            <input onKeyUp={validate_password} type="password" placeholder={"Password"} id="input_password" />
             <p className="input_error_message" id="input_error_message_password"></p>
-            <input onBlur={validate_password_repeat} onKeyUp={validate_password_repeat} type="password" placeholder={"Password-repeat"} id="input_password_repeat" />
+            <input onKeyUp={validate_password_repeat} type="password" placeholder={"Password-repeat"} id="input_password_repeat" />
             <p className="input_error_message" id="input_error_message_password_repeat"></p>
             
             <div className="legal_container">
