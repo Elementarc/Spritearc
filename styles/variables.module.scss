@@ -84,6 +84,7 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
     background: $next_section_line_gradiant;
 }
 @mixin button($type: default) {
+    position: relative;
     font-family: "Alatsi";
     user-select: none;
     -webkit-user-select: none;

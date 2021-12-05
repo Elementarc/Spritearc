@@ -1,7 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {Db, MongoClient, ObjectId} from "mongodb"
+import {MongoClient} from "mongodb"
 import { SignUp } from "../../../types";
-import CryptoJS,{ SHA256 } from "crypto-js";
+import { SHA256 } from "crypto-js";
+const nodemailer = require("nodemailer")
 const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
 const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
 const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,32}$/)
@@ -147,7 +148,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                 const users_collection = client.db("pixels").collection("users")
                 
                 //Creating a new user instance for user.
-                users_collection.insertOne({
+                await users_collection.insertOne({
                     username: username,
                     email: email,
                     password: hashed_password,
@@ -165,18 +166,61 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                 
                 const user = await users_collection.findOne({username: username})
                 if(! user) throw new Error("Could not find username in database")
+                //User exists in database
+
                 const user_id =  user._id.toString()
 
                 const account_verification_token_collection = client.db("pixels").collection("account_verification_tokens")
-                account_verification_token_collection.createIndex({"date": 1}, {expireAfterSeconds: 600})
-                
+                account_verification_token_collection.createIndex({date: 1}, {expireAfterSeconds: 86400})
+                const token = SHA256(user_id).toString()
+                //Creating token in db to verify account
                 account_verification_token_collection.insertOne({
                     date: new Date(),
-                    token: SHA256(user_id).toString(),
+                    token: token,
                     user_id: user_id,
                 })
+
+                function send_verification_main(): Promise<boolean> {
+                    return new Promise(async(resolve) =>{
+                        try {
+                        
+                            //Creating email transporter
+                            const transporter = nodemailer.createTransport({
+                                host: 'smtp.ethereal.email',
+                                port: 587,
+                                auth: {
+                                    user: 'shana.huel83@ethereal.email',
+                                    pass: 'RemGdUTYTdPt4PgpXd'
+                                }
+                            });
+
+                            await transporter.sendMail({
+                                from: 'Arctale.work@gmail.com', // sender address
+                                to: `arctale.gaming@gmail.com`, // list of receivers
+                                subject: "E-mail confirmation", // Subject line
+                                text: `Hey please confirm your email address by clicking on this link: http://localhost:3000/verify_account?token=${token}`, // plain text body
+                            }, (err: any, info: any) => {
+                                if(err) throw err
+                                resolve(true)
+                            });
+                            
+                        } catch ( err ) {
+
+                            console.log(err)
+                            resolve(false)
+
+                        }
+                        
+                    })
+                }
+                const success = await send_verification_main()
                 
-                res.status(200).send({successful: true})
+
+                if(success) {
+                    res.status(200).send({successful: true})
+                } else {
+                    res.status(500).end()
+                }
             } catch ( err ) {
                 console.log(err)
                 res.status(500).end()

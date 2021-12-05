@@ -8,6 +8,8 @@ import DoneIcon from "../public/icons/DoneIcon.svg"
 import { APP_CONTEXT } from "../components/layout";
 import { Nav_shadow } from "../components/navigation";
 import {NOTIFICATION_ACTIONS} from "../components/layout"
+import Loading_handler from "../components/Loading";
+import router from "next/router";
 
 const SIGNUP_CONTEXT: any = React.createContext(null)
 
@@ -44,10 +46,10 @@ export default function Sign_up_page() {
         legal: true,
         occasional_emails: false,
     })
-
     //Used to navigate between steps.
     const [current_step, set_step] = useState(1)
 
+    
     //Constants for whole page.
     const PAGE_CONTEXT: SignupContext = { 
         signup_obj,
@@ -130,7 +132,6 @@ export default function Sign_up_page() {
             try {
                 const error_element = document.getElementById("input_error_message") as HTMLParagraphElement
                 const input_element = document.getElementById("input") as HTMLInputElement
-                
                 if(email_regex.test(email) === true) {
                     const response = await fetch(`/api/signup/validate_email`, {
                         method: "POST",
@@ -168,7 +169,7 @@ export default function Sign_up_page() {
             try {
                 const error_element = document.getElementById("input_error_message") as HTMLParagraphElement
                 const input_element = document.getElementById("input") as HTMLInputElement
-
+                
                 if(username.length === 0) {
 
                     set_error_message(true, "Please enter a username.", error_element, input_element)
@@ -217,7 +218,7 @@ export default function Sign_up_page() {
                                     body: JSON.stringify({username: username})
                                 })
                                 const username_available = (await response.json()).available
-    
+                                
                                 //If username is available update signup_obj state.
                                 if(username_available) {
                                     set_error_message(false, "", error_element, input_element)
@@ -287,7 +288,7 @@ export default function Sign_up_page() {
                         <div className="forward_container">
 
                             <span className="bottom_section_line" />
-                            <div>
+                            <div className="items">
                                 <p>{"Already a member? "}<Link href="/login" scroll={false}>Sign In</Link></p>
                             </div>
                             
@@ -307,20 +308,21 @@ export function Step_1() {
     //Page context
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
     let timer: any
-    
     //Gets username from input. Setting signup_obj to null if validating fails.
     async function get_input_value(e: any) {
-       
+        
         clearTimeout(timer)
         timer = setTimeout(async () => {
+            
             const username_available = await PAGE_CONTEXT.validate_username(e.target.value)
-        
+            
 
             if(username_available) {
                 PAGE_CONTEXT.update_signup_informations("username", e.target.value as string)
             } else {
                 PAGE_CONTEXT.update_signup_informations("username", null)
             }
+            
         }, 150);
         
     }
@@ -388,7 +390,11 @@ export function Step_1() {
             <p className="input_error_message" id="input_error_message"></p>
 
             <div className="button_container">
-                <button className="active_button" id="step_button" onClick={next_page}>Next Step</button>
+                <button className="active_button" id="step_button" onClick={next_page}>
+                    
+                    Next step
+                
+                </button>
             </div>
             
             
@@ -492,6 +498,7 @@ export function Step_2() {
 export function Step_3() {
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
     const APP: App_context = useContext(APP_CONTEXT)
+    const [loading, set_loading] = useState(false)
 
     //Validating passwort also calling validate_password_repeat.
     function validate_password() {
@@ -535,7 +542,7 @@ export function Step_3() {
 
     //Function that validates signup_obj if successful sends create account call to server.
     async function signup() {
-        
+        set_loading(true)
         if(PAGE_CONTEXT.signup_obj.username && PAGE_CONTEXT.signup_obj.email && PAGE_CONTEXT.signup_obj.password && PAGE_CONTEXT.signup_obj.legal) {
             
             const response_stream = await fetch("/api/signup/send_verification", {
@@ -553,8 +560,8 @@ export function Step_3() {
                
             if(successful) {
                 console.log("success!")
-                APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please verify your email!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
-                
+                APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please verify your email!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup(); router.push("/login", "/login", {scroll: false})}}})
+                set_loading(false)
             } else {
                 console.log("Somethign went wrong!")
                 APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
@@ -668,7 +675,7 @@ export function Step_3() {
 
 
             <div className="button_container">
-                <button onClick={signup} className="disabled_button" id="step_button" >Create Account</button>
+                <button onClick={signup} className="disabled_button" id="step_button" >{<Loading_handler button_label="Create Account" init_loading={loading}/>}</button>
             </div>
             
             

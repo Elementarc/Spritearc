@@ -45,7 +45,10 @@
                     @include h1_with_deco;
                     text-align: center;
                     width: 80%;
-                    margin-bottom: 5rem
+                    margin-bottom: 5rem;
+                    @include breakpoint(mobile) {
+                        margin-bottom: 3rem;
+                    }
                 }
     
                 input {
@@ -172,11 +175,13 @@
                     display: grid;
                     width: 14px;
                     height: 14px;
-                    
+                    @include breakpoint(mobile) {
+                        width: 10px;
+                        height: 10px;
+                    }
                     p {
                         position: absolute;
                         @include p(small);
-                        
                         font-family: $font_alatsi;
                         color: $color_main;
                         padding: .1rem 0;
@@ -250,11 +255,20 @@
                     @include next_section_line;
                     width: 80%;
                 }
-                p {
+                .items {
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                     margin-top: 2rem;
-                    @include p(medium);
-                    a {
-                        @include a(medium);
+                    text-align: center;
+                    
+                    p {
+                        margin-top: .4rem;
+                        @include p(medium);
+                        a {
+                            @include a(medium);
+                        }
                     }
                 }
                 

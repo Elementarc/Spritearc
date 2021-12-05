@@ -40,13 +40,13 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
 
     if(!token) return redirect
     if(typeof token !== "string") return redirect
-    //Token exists and is of the type string.
+    //Token exists and its of the type string.
 
     try {
         
         await client.connect()
         const token_collection = client.db("pixels").collection("account_verification_tokens")
-        token_collection.createIndex({date: 1}, {expireAfterSeconds: 86400})
+        
         const found_token = await token_collection.findOne({token: token})
 
         if(!found_token) return redirect
@@ -76,7 +76,10 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
         //Token is not expired
         const user_collection = client.db("pixels").collection("users")
 
-        //verifieng user
+        const user_found = await user_collection.find({_id: new ObjectId(found_token.user_id)}).toArray()
+        if(user_found.length === 0) return redirect
+
+        //user found & verifieng user
         user_collection.updateOne({_id: new ObjectId(found_token.user_id)}, {$set: {verified: true}}, async(err, mres) => {
             if( err ) throw err;
             

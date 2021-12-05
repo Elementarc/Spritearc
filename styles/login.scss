@@ -14,7 +14,7 @@
             width: 100%;
             justify-content: center;
             align-items: center;
-            padding: 0 3rem;
+            padding: 0 1rem;
             @include breakpoint(mobile) {
                 justify-content: start;
                 margin-top: 3rem;
@@ -23,7 +23,10 @@
             }
             .h1_with_deco{
                 @include h1_with_deco;
-                margin-bottom: 2rem
+                margin-bottom: 2rem;
+                @include breakpoint(mobile) {
+                    margin-bottom: 1rem
+                }
             }
             input {
                 @include input();
@@ -32,7 +35,8 @@
                 margin-top: 2rem;
                 width: 30%;
                 @include breakpoint(mobile) {
-                    width: 90%;
+                    width: 100%;
+                    
                 }
             }
             button {
@@ -48,6 +52,7 @@
                 align-items: center;
                 margin-top: 6rem;
                 width: 100%;
+                
                 span {
                     position: absolute;
                     top: 0;
@@ -62,6 +67,7 @@
                     justify-content: center;
                     align-items: center;
                     margin-top: 2rem;
+                    text-align: center;
                     
                     p {
                         margin-top: .4rem;

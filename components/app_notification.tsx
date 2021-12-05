@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {motion} from "framer-motion";
 import { App_context, Dispatch_notification } from '../types';
 import { APP_CONTEXT } from './layout';
@@ -45,6 +45,7 @@ export default function App_notification(props: {notification: Dispatch_notifica
                     
                     <h1>{notification.title}</h1>
                     <p>{notification.message}</p>
+                    
                     <button onClick={button_func}>{notification.button_label}</button>
                 
                 </motion.div>
@@ -53,3 +54,5 @@ export default function App_notification(props: {notification: Dispatch_notifica
         </>
     );
 }
+
+
