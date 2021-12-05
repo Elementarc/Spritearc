@@ -1,16 +1,12 @@
 import React, {useContext, useEffect} from 'react';
-import {AnimatePresence, motion} from "framer-motion";
-import { App_context, Notification } from '../types';
+import {motion} from "framer-motion";
+import { App_context, Dispatch_notification } from '../types';
 import { APP_CONTEXT } from './layout';
+import { NOTIFICATION_ACTIONS } from "../components/layout"
 
-export default function App_notification(props: {notification: Notification}) {
+export default function App_notification(props: {notification: Dispatch_notification}) {
     const APP: App_context = useContext(APP_CONTEXT)
-    const success = props.notification.success
-    const toggle = props.notification.toggle
-    const title = props.notification.title 
-    const message = props.notification.message
-    const button_label = props.notification.button_label
-    const callb = props.notification.callb ? props.notification.callb : () => {}
+    const notification = props.notification
     
     //Setting maxWidth and maxHeight of fixed container to page container
     useEffect(() => {
@@ -19,7 +15,7 @@ export default function App_notification(props: {notification: Notification}) {
 
         const observer = new ResizeObserver(() => {
             
-            if(app_fixed_container && app_content_container && props.notification) {
+            if(app_fixed_container && app_content_container && notification) {
                 
                 app_fixed_container.style.maxHeight = `${app_content_container.offsetHeight}px`
                 app_fixed_container.style.maxWidth = `${app_content_container.offsetWidth}px`
@@ -33,41 +29,27 @@ export default function App_notification(props: {notification: Notification}) {
             observer.unobserve(app_content_container)
         })
 
-    }, [props.notification])
+    }, [notification])
 
     //Button function
     function button_func() {
-        callb()
-        
-        APP.create_notification({
-            toggle: false,
-            success: false,
-            title: null,
-            message: null,
-            button_label: null,
-            callb: () => {}
-        })
+        notification.callb ? notification.callb() : () => {}
+        APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.CLOSE})
     }
 
     return (
         <>
-            <AnimatePresence exitBeforeEnter>
-                {toggle &&
-
-                    <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className="app_overlay_fixed" id="app_overlay_fixed">
+            <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className="app_overlay_fixed" id="app_overlay_fixed">
+            
+                <motion.div initial={{scale: .8}} animate={{scale: 1}} exit={{scale: .8}} className={`notification_container ${notification.success? "notification_success_container" : "notification_error_container"}`}>
                     
-                        <motion.div initial={{scale: .8}} animate={{scale: 1}} exit={{scale: .8}} className={`${success? "notification_success_container" : "notification_error_container"}`}>
-                            
-                            <h1>{title}</h1>
-                            <p>{message}</p>
-                            <button onClick={button_func}>{button_label}</button>
-                        
-                        </motion.div>
-                    </motion.div>
-
-                }
-            </AnimatePresence>
-
+                    <h1>{notification.title}</h1>
+                    <p>{notification.message}</p>
+                    <button onClick={button_func}>{notification.button_label}</button>
+                
+                </motion.div>
+                
+            </motion.div>
         </>
     );
 }

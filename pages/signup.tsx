@@ -1,5 +1,5 @@
 import { AnimatePresence, motion} from "framer-motion";
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useReducer, ReducerAction, ReducerState} from "react";
 import Footer from "../components/footer";
 import Link from "next/dist/client/link";
 import { App_context, SignUp } from "../types";
@@ -7,6 +7,7 @@ import H1_with_deco from '../components/h1_with_deco';
 import DoneIcon from "../public/icons/DoneIcon.svg"
 import { APP_CONTEXT } from "../components/layout";
 import { Nav_shadow } from "../components/navigation";
+import {NOTIFICATION_ACTIONS} from "../components/layout"
 
 const SIGNUP_CONTEXT: any = React.createContext(null)
 
@@ -31,13 +32,16 @@ interface SignupContext {
     update_signup_informations: (specific_key: string, value: string | null | boolean) => void,
 }
 
+
+
+
 export default function Sign_up_page() {
     //Obj will be send to server to create account for user.
     const [signup_obj, set_signup_obj] = useState<SignUp>({
-        username: null,
-        email: null,
-        password: null,
-        legal: false,
+        username: "King",
+        email: "King@gmail.com",
+        password: "Hurrensohn1",
+        legal: true,
         occasional_emails: false,
     })
 
@@ -281,9 +285,10 @@ export default function Sign_up_page() {
                         <Step_displayer />
 
                         <div className="forward_container">
+
                             <span className="bottom_section_line" />
                             <div>
-                                <p>{"Already a member? "}<Link href="/signin">Sign In</Link></p>
+                                <p>{"Already a member? "}<Link href="/login" scroll={false}>Sign In</Link></p>
                             </div>
                             
                         </div>
@@ -533,22 +538,32 @@ export function Step_3() {
         
         if(PAGE_CONTEXT.signup_obj.username && PAGE_CONTEXT.signup_obj.email && PAGE_CONTEXT.signup_obj.password && PAGE_CONTEXT.signup_obj.legal) {
             
-            const response_stream = await fetch("/api/signup/create_account", {
+            const response_stream = await fetch("/api/signup/send_verification", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({signup_obj: PAGE_CONTEXT.signup_obj})
             })
+            
+            if(response_stream.status !== 200) return APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+            
+            //Status is 200
             const {successful} = await response_stream.json()
                
             if(successful) {
-                APP.create_notification({toggle: true, success: true, title: "Success!", message: "We send you an email. Please check your email to verify your account! You will be redirected to our login page.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}})
+                console.log("success!")
+                APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please verify your email!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+                
             } else {
-                APP.create_notification({toggle: true, success: false, title: "Something went wrong!", message: "We are sorry that you have to experience this. Please restart your registration.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}})
+                console.log("Somethign went wrong!")
+                APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+
             }
 
             PAGE_CONTEXT.set_signup_obj({username: null, email: null, password: null, legal: false, occasional_emails: false})
+        } else {
+            APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
         }
     }
 

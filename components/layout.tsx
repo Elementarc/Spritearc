@@ -1,40 +1,116 @@
 
-import React, {useState, useEffect} from 'react';
-import {App_context, Notification} from "../types"
+import React, {useState, useEffect, useReducer} from 'react';
+import {App_context, Dispatch_notification, Notification, Notification_actions} from "../types"
 import { AnimatePresence, motion } from 'framer-motion';
 import App_notification from './app_notification';
 import { useRouter } from 'next/router';
-//Components
 import Navigation from './navigation';
 
-const APP_NAME = "PixelPalast"
-const SHEME= "http"
-const DOMAIN = "localhost"
-const PORT = 3000
+export const NOTIFICATION_ACTIONS: Notification_actions = {
+    SUCCESS: "SUCCESS",
+    ERROR: "ERROR",
+    CLOSE: "CLOSE",
+}
 
-export const APP_CONTEXT: any = React.createContext(null)
-export default function Layout( { children }: any) {
+const init_notification_obj: Notification = {
+    title: null,
+    message: null,
+    button_label: null,
+    callb: () => {}
+}
+
+//Reducer function to handle notification state
+function app_notification_reducer(state: Dispatch_notification, action: {type: string, payload?: Notification}): any {
+    const { type, payload } = action
+
+    if(!type) return state
+
+    switch ( type ) {
+
+        case NOTIFICATION_ACTIONS.SUCCESS : {
+
+            if(!payload) return state
+
+            return state = {
+                toggle: true,
+                success: true,
+                title: payload.title,
+                message: payload.message,
+                button_label: payload.button_label,
+                callb: payload.callb
+            }
+            
+        }
+
+        case NOTIFICATION_ACTIONS.ERROR : {
+
+            if(!payload) return state
+
+            return state = {
+                toggle: true,
+                success: false,
+                title: payload.title,
+                message: payload.message,
+                button_label: payload.button_label,
+                callb: payload.callb
+            }
+
+        }
+
+        case NOTIFICATION_ACTIONS.CLOSE : {
+
+            return state = {
+                toggle: false,
+                success: false,
+                title: null,
+                message: null,
+                button_label: null,
+                callb: () => {}
+            }
+
+        }
+
+        default : {
+
+            return state = {
+                toggle: false,
+                success: false,
+                title: null,
+                message: null,
+                button_label: null,
+                callb: () => {}
+            }
+            
+        }
+
+    }
+}
+
+export default function Layout( { children }: any ) {
+    //App notification reducer. Used to create app_notifications.
+    const [app_notification, dispatch_app_notification] = useReducer(app_notification_reducer, init_notification_obj)
+
     //Setting IsDesktop to tell other Components if App is mobileDevice or DesktopDevice
     const [is_mobile, set_is_mobile] = useState<undefined | boolean>(undefined)
+
     //Toggling navigation.
     const [nav_state, set_nav_state] = useState(false);
-    //Notification obj that triggers an Application notification
-    const [notification, set_notification] = useState<Notification>({
-        toggle: false,
-        success: false,
-        title: null,
-        message: null,
-        button_label: null,
-        callb: () => {}
-    })
-    function create_notification(notification: Notification) {
-        set_notification(notification)
-    }
+    
     const Router = useRouter()
+    
+    
+    //Function that will be triggert everytime a page unmounts
+    function on_unmount() {
+        document.documentElement.style.scrollBehavior = "unset"
+        window.scrollTo(0, 0)
+    }
+
+    
     
     //Checks if Application IsDesktop or not
     useEffect(() => {
         history.scrollRestoration = "manual"
+
         function checkApplicationWidth(){
             const deviceWidth = window.innerWidth
 
@@ -44,6 +120,7 @@ export default function Layout( { children }: any) {
                 set_is_mobile(true)
             }
         }
+
         checkApplicationWidth()
         
         window.addEventListener("resize", checkApplicationWidth)
@@ -63,28 +140,18 @@ export default function Layout( { children }: any) {
             app_content_blur.style.pointerEvents = "all"
         }
     }, [nav_state])
-    
+
     //APP Context
     const APP: App_context = {
-        app_name: APP_NAME,
-        sheme: SHEME,
-        domain: DOMAIN,
-        port: PORT,
         is_mobile: is_mobile,
         nav:  {
             nav_state: nav_state,
             set_nav_state: set_nav_state,
         },
-        app_content_container: () => {return document.getElementById("app_content_container") as HTMLDivElement},
-        create_notification
+        dispatch_app_notification,
+        app_content_element: () => {return document.getElementById("app_content_container") as HTMLDivElement},
     }
-    
-    //Function that will be triggert everytime a page unmounts
-    function on_unmount() {
-        document.documentElement.style.scrollBehavior = "unset"
-        window.scrollTo(0, 0)
-    }
-    
+
     return (
         <APP_CONTEXT.Provider value={APP}>
 
@@ -102,7 +169,13 @@ export default function Layout( { children }: any) {
                         </motion.main>
                     </AnimatePresence>
 
-                    <App_notification notification={notification}/>
+
+                    <AnimatePresence exitBeforeEnter>
+                        {app_notification.toggle &&
+                            <App_notification notification={app_notification}/>
+                        }
+                    </AnimatePresence>
+                    
                 </div>
                 
                 
@@ -112,3 +185,4 @@ export default function Layout( { children }: any) {
     );
 }
 
+export const APP_CONTEXT: any = React.createContext(null)

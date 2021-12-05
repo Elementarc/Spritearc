@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {MongoClient} from "mongodb"
+import {Db, MongoClient, ObjectId} from "mongodb"
 import { SignUp } from "../../../types";
-import { SHA256 } from "crypto-js";
+import CryptoJS,{ SHA256 } from "crypto-js";
 const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
 const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
 const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,32}$/)
@@ -77,7 +77,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
         }
     }
 
-    //Request method
+    //POST Method
     if(req.method === "POST") {
         if(typeof req.query.route !== "string") return res.status(400).end()
 
@@ -110,8 +110,9 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             }
             
         } 
-        //Validating whole signup request. To Create account
-        else if(req.query.route === "create_account") {
+        //Validating whole signup request. Sending verification to email.
+        else if(req.query.route === "send_verification") {
+            //Verification send with signup page.
             const { username, email, password, legal, occasional_emails } =  req.body.signup_obj as SignUp
             //Checking if signup object properties exist.
             if(!username || !email || !password || !legal) return res.status(400).end()
@@ -128,32 +129,60 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
 
             //Creating salt to hash password
             let salt = ""
+            const ascii_string= "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
             for(let i = 0; i < 32; i ++) {
-                const random_number = Math.floor(Math.random() * 88) + 33
+                const random_number = Math.floor(Math.random() * ascii_string.length - 1)
                 
-                salt += String.fromCharCode(random_number)
+                salt += ascii_string.charAt(random_number)
             }
             
             const hashed_password = SHA256(password + salt).toString()
 
-            //Connecting to database
-            await client.connect()
-            const collection = client.db("pixels").collection("users")
 
-            //Creating a new user instance for user.
-            collection.insertOne({
-                username: username,
-                email: email,
-                hashed_password: hashed_password,
-                salt: salt,
-                date: new Date(),
-                about: "",
-                socials: [],
-                profile_image: "image.png",
-                released_packs: [],
-                occasional_emails: occasional_emails,
-            })
-            res.send({successful: true})
+            //Connecting to database
+            try {
+
+                await client.connect()
+            
+                const users_collection = client.db("pixels").collection("users")
+                
+                //Creating a new user instance for user.
+                users_collection.insertOne({
+                    username: username,
+                    email: email,
+                    password: hashed_password,
+                    salt: salt,
+                    verified: false,
+                    about: "",
+                    profile_image: "image.png",
+                    followers: [],
+                    socials: [],
+                    released_packs: [],
+                    date: new Date(),
+                    occasional_emails: occasional_emails,
+                    
+                })
+                
+                const user = await users_collection.findOne({username: username})
+                if(! user) throw new Error("Could not find username in database")
+                const user_id =  user._id.toString()
+
+                const account_verification_token_collection = client.db("pixels").collection("account_verification_tokens")
+                account_verification_token_collection.createIndex({"date": 1}, {expireAfterSeconds: 600})
+                
+                account_verification_token_collection.insertOne({
+                    date: new Date(),
+                    token: SHA256(user_id).toString(),
+                    user_id: user_id,
+                })
+                
+                res.status(200).send({successful: true})
+            } catch ( err ) {
+                console.log(err)
+                res.status(500).end()
+            }
+            
+
         } 
         //Could'nt find correct route.
         else {
@@ -161,9 +190,9 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             res.status(400).end()
         }
         
-        
-    } else {
-        //Request is not a POST Request
+    } 
+    else {
+        //Wrong mehtod
         res.status(400).end()
     }
     

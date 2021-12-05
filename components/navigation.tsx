@@ -67,7 +67,7 @@ function Navigation_desktop(): ReactElement {
     //Setting height of nav_items_container to window innerheight. so scrolling through nav_items works properly. Also adding Observer to observer app_component!
     useEffect(() => {
         //Page Content Container
-        const app_content_container = APP.app_content_container()
+        const app_content_container = APP.app_content_element()
         const nav_items_container = document.getElementById("nav_items_container") as HTMLDivElement
 
         const observer = new ResizeObserver((entries) => {
@@ -90,7 +90,7 @@ function Navigation_desktop(): ReactElement {
             observer.unobserve(app_content_container)
             window.removeEventListener("resize", setHeight)
         })
-    }, [APP.app_content_container])
+    }, [APP.app_content_element])
 
     //Setting shadow below NavButton when Nav_items are scrolled for better ux
     useEffect(() => {

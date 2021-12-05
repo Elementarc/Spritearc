@@ -11,8 +11,7 @@
     @include breakpoint(mobile) {
         align-items: center;
     }
-
-    .notification_success_container {
+    .notification_container {
         position: relative;
         background: $color_main_blue;
         display: flex;
@@ -20,7 +19,7 @@
         justify-content: center;
         align-items: center;
         min-width: 450px;
-        max-width: 650px;
+        max-width: 550px;
         text-align: center;
         @include breakpoint(mobile) {
             min-width: unset;
@@ -45,38 +44,29 @@
             margin-bottom: 2rem;
         }
     }
-    .notification_error_container {
-        position: relative;
-        background: $color_main_blue;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        min-width: 450px;
-        max-width: 650px;
-        text-align: center;
-        @include breakpoint(mobile) {
-            min-width: unset;
-            width: 90%;
-        }
+    .notification_success_container {
+        
         h1 {
-            @include h1(medium);
-            color: $color_error;
-            margin-top: 2rem;
-            padding: 0 1rem;
+            color: $color_main_bright;
         }
     
         p {
-            @include p;
-            color: $color_error;
-            margin-top: 1rem;
-            padding: 0 1rem;
+            color: $color_bright_grey;
         }
     
         button {
             @include button;
-            margin-top: 2rem;
-            margin-bottom: 2rem;
         }
+    }
+    .notification_error_container {
+        
+        h1 {
+            color: $color_error;
+        }
+    
+        p {
+            color: $color_bright_grey;
+        }
+    
     }
 }

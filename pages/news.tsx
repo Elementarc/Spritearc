@@ -14,7 +14,7 @@ function navigateTo(path: string): void {
 }
 
 
-const max_patches_per_page = 1
+const max_patches_per_page = 2
 //News Component
 export default  function News(props: any): ReactElement {
 	//All Patchnotes from server
@@ -173,7 +173,6 @@ function Patchnote_template(props: {patchnote: Patchnote}): ReactElement{
 		</>
 	)
 }
-
 
 //Serverside
 import patchHandler from "../lib/patch_lib"

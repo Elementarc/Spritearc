@@ -1,3 +1,17 @@
+
+//APP contants
+export interface App_context {
+    dispatch_app_notification: React.Dispatch<{
+        type: string;
+        payload?: Notification;
+    }>
+    is_mobile: boolean | undefined,
+    nav: {nav_state: boolean, set_nav_state: React.Dispatch<React.SetStateAction<boolean>>},
+    app_content_element: () => HTMLElement,
+    
+}
+
+//Navigation
 export interface Nav_item{
     label: string
     icon: any
@@ -5,33 +19,29 @@ export interface Nav_item{
     query?: string
 }
 
-export interface App_context {
-    app_name: string,
-    sheme: string,
-    domain: string,
-    port: 3000,
-    is_mobile: boolean | undefined,
-    nav: {nav_state: boolean, set_nav_state: React.Dispatch<React.SetStateAction<boolean>>},
-    app_content_container: () => HTMLElement,
-    create_notification: (notification_obj: Notification) => void,
-}
-
+//App Notification types
 export interface Notification {
-    toggle: boolean,
-    success: boolean,
     title: string | null, 
     message: string | null, 
     button_label: string | null,
     callb?: () => void
 }
+export interface Dispatch_notification extends Notification {
+    toggle: boolean,
+    success: boolean
+}
+export interface Notification_actions {
+    SUCCESS: string,
+    ERROR: string,
+    CLOSE: string,
+}
 
-//Patchnote Interface
+//Patchnote types
 export interface Patchnote {
     id: string
     info: Patchnote_info
     content: string
 }
-//PatchnoteInfo Interface
 export interface Patchnote_info {
     title: string,
     update: string,
@@ -40,7 +50,7 @@ export interface Patchnote_info {
     author: string
 }
 
-//PackPreview Interface
+//PackPreview types
 export interface Pack_info {
     _id: string,
     premium: boolean,
@@ -60,6 +70,7 @@ export interface Pack_content {
     section_assets: string[]
 }
 
+//User
 export interface User{
     _id: string,
     username: string,
@@ -70,7 +81,7 @@ export interface User{
     released_packs: Pack_info[] | []
 }
 
-//User
+//Signup
 export interface SignUp {
     username: string | null,
     email: string | null,
@@ -78,7 +89,6 @@ export interface SignUp {
     legal: boolean,
     occasional_emails: boolean,
 }
-
 export interface ServerSignUp extends SignUp {
     hashed_password: string,
     salt: string,
