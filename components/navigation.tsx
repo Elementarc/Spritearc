@@ -13,18 +13,19 @@ import SignInIcon from "../public/icons/SignInIcon.svg"
 //Context
 import { APP_CONTEXT } from "../components/layout";
 import { useRouter } from "next/router";
-import Background_gradient from "./gradient_background";
+import { Auth_context } from "../context/auth_context_provider";
+import { Device_context } from "../context/device_context_provider";
 
 
 export default function Navigation(): ReactElement {
-    const APP: App_context = useContext(APP_CONTEXT)
-
+    const Device = useContext(Device_context)
+    
     return(
         <>
-            {APP.is_mobile === false &&
+            {Device.is_mobile === false &&
                 <Navigation_desktop key="Navigation_desktop"/>
             }
-            {APP.is_mobile === true &&
+            {Device.is_mobile === true &&
                <Navigation_mobile key="Navigation_mobile"/>
             }
         </>

@@ -94,6 +94,8 @@ export default  function News(props: any): ReactElement {
 	
 	//Creating Parallax for img
 	useParallax("news_background_image")
+	
+	
 	return (
 		<>
 			<div className="news_page">
@@ -106,10 +108,10 @@ export default  function News(props: any): ReactElement {
 							<Image quality="100%" priority={true} src={Eclipse} layout="fill" alt="A pixelart image that displays a universe" className="background_image" id="news_background_image"/>
 							<div className="background_blur" />
 						</div>
-
+						
 						<div className="patch_list">
 							<h2>Recent Updates</h2>
-							<h1>Everything New About PixelPalast</h1>
+							<h1>Everything New About {process.env.NEXT_PUBLIC_APP_NAME}</h1>
 							<p>We will occasionally release updates for PixelPalast. Here you can find our newest upcoming features that you might be interested in. Take a look!</p>
 							<span />
 						</div>
@@ -176,9 +178,10 @@ function Patchnote_template(props: {patchnote: Patchnote}): ReactElement{
 
 //Serverside
 import patchHandler from "../lib/patch_lib"
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
 	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
 	
+	console.log(context.resolvedUrl)
 	return {
 		props: {
 			patchnoteList: JSON.stringify(patchnoteList)

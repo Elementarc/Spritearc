@@ -2,7 +2,8 @@ import '../styles/global.scss'
 import type { AppProps } from 'next/app'
 import Layout from '../components/layout'
 import Head from 'next/dist/shared/lib/head'
-function MyApp({ Component, pageProps }: AppProps) {
+
+export default function MyApp({ Component, pageProps }: AppProps) {
   
   return(
     <>
@@ -16,5 +17,3 @@ function MyApp({ Component, pageProps }: AppProps) {
     </>
   )
 }
-
-export default MyApp

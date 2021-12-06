@@ -1,13 +1,13 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
+import { AnimatePresence } from 'framer-motion';
+import { App_notification_context } from '../context/app_notification_provider';
 import {motion} from "framer-motion";
-import { App_context, Dispatch_notification } from '../types';
-import { APP_CONTEXT } from './layout';
 import { NOTIFICATION_ACTIONS } from "../components/layout"
 
-export default function App_notification(props: {notification: Dispatch_notification}) {
-    const APP: App_context = useContext(APP_CONTEXT)
-    const notification = props.notification
-    
+export default function App_notification() {
+    const App_notification: any = useContext(App_notification_context)
+    const notification = App_notification.app_notification
+     
     //Setting maxWidth and maxHeight of fixed container to page container
     useEffect(() => {
         const app_fixed_container = document.getElementById("app_overlay_fixed") as HTMLDivElement
@@ -34,24 +34,28 @@ export default function App_notification(props: {notification: Dispatch_notifica
     //Button function
     function button_func() {
         notification.callb ? notification.callb() : () => {}
-        APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.CLOSE})
+        App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.CLOSE})
     }
 
     return (
-        <>
-            <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className="app_overlay_fixed" id="app_overlay_fixed">
-            
-                <motion.div initial={{scale: .8}} animate={{scale: 1}} exit={{scale: .8}} className={`notification_container ${notification.success? "notification_success_container" : "notification_error_container"}`}>
-                    
-                    <h1>{notification.title}</h1>
-                    <p>{notification.message}</p>
-                    
-                    <button onClick={button_func}>{notification.button_label}</button>
+        <AnimatePresence exitBeforeEnter>
+            {notification.toggle &&
+
+                <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className="app_overlay_fixed" id="app_overlay_fixed">
                 
+                    <motion.div initial={{scale: .8}} animate={{scale: 1}} exit={{scale: .8}} className={`notification_container ${notification.success? "notification_success_container" : "notification_error_container"}`}>
+                        
+                        <h1>{notification.title}</h1>
+                        <p>{notification.message}</p>
+                        
+                        <button onClick={button_func}>{notification.button_label}</button>
+                    
+                    </motion.div>
+                    
                 </motion.div>
-                
-            </motion.div>
-        </>
+            }
+            
+        </AnimatePresence>
     );
 }
 

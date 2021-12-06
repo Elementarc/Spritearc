@@ -1,22 +1,21 @@
 import React, {useContext, useEffect, useCallback} from 'react';
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router';
-import { APP_CONTEXT } from '../components/layout';
-import { App_context } from '../types';
-import { NOTIFICATION_ACTIONS } from '../components/layout';
+import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_provider';
 import { MongoClient } from 'mongodb';
 import { ObjectId } from 'mongodb';
 
+
 export default function Verify_account(props: any) {
-    const APP: App_context = useContext(APP_CONTEXT)
+    const App_notification: any = useContext(App_notification_context)
     const router = useRouter()
 
     useEffect(() => {
         
         if(props.success) {
-            APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully verified!", message: "Thank you for verifying your account! We will now redirect you to our login page.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully verified!", message: "Thank you for verifying your account! We will now redirect you to our login page.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
         } else {
-            APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Token has been expired!", message: "Your token has been expired. Please login to resend you a verification email.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Token has been expired!", message: "Your token has been expired. Please login to resend you a verification email.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
         }
         
     }, [])

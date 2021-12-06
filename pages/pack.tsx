@@ -16,6 +16,7 @@ import Star from "../public/icons/StarIcon.svg"
 import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../components/h1_with_deco';
+import { Device_context } from '../context/device_context_provider';
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 
@@ -26,7 +27,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
     //State that toggles focus of asset.
     const [show_focus_img, set_show_focus_img] = useState(false)
 
-    const APP: App_context = useContext(APP_CONTEXT)
+    const Device = useContext(Device_context)
     const Router = useRouter()
     const pack = props.pack
 
@@ -108,7 +109,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
                     }
                 </AnimatePresence>
 
-                { APP.is_mobile === false &&
+                { Device.is_mobile === false &&
                     <div className="close_pack" id="close_pack">
 
                         <div onClick={() => {Router.push("/browse", "/browse", {scroll: false})}} className="close">

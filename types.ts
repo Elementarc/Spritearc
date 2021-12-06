@@ -1,11 +1,6 @@
 
 //APP contants
 export interface App_context {
-    dispatch_app_notification: React.Dispatch<{
-        type: string;
-        payload?: Notification;
-    }>
-    is_mobile: boolean | undefined,
     nav: {nav_state: boolean, set_nav_state: React.Dispatch<React.SetStateAction<boolean>>},
     app_content_element: () => HTMLElement,
     
@@ -72,13 +67,19 @@ export interface Pack_content {
 
 //User
 export interface User{
-    _id: string,
     username: string,
-    user_since: string,
-    about: string,
-    socials: string[]
-    profile_image: string,
-    released_packs: Pack_info[] | []
+    email: string,
+    password: string,
+    salt: string,
+    verified: boolean,
+    description: string,
+    picture: string,
+    notifications: [],
+    following: [],
+    followers: [],
+    released_packs: [],
+    created_at: Date,
+    occasional_emails: boolean,
 }
 
 //Signup

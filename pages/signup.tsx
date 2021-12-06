@@ -7,9 +7,11 @@ import H1_with_deco from '../components/h1_with_deco';
 import DoneIcon from "../public/icons/DoneIcon.svg"
 import { APP_CONTEXT } from "../components/layout";
 import { Nav_shadow } from "../components/navigation";
-import {NOTIFICATION_ACTIONS} from "../components/layout"
+import {NOTIFICATION_ACTIONS} from "../context/app_notification_provider"
 import Loading_handler from "../components/Loading";
 import router from "next/router";
+import { Device_context } from "../context/device_context_provider";
+import { App_notification_context } from "../context/app_notification_provider";
 
 const SIGNUP_CONTEXT: any = React.createContext(null)
 
@@ -304,7 +306,7 @@ export default function Sign_up_page() {
 }
 
 export function Step_1() {
-    const APP: App_context = useContext(APP_CONTEXT)
+    const Device = useContext(Device_context)
     //Page context
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
     let timer: any
@@ -366,7 +368,7 @@ export function Step_1() {
         const input = document.getElementById("input") as HTMLInputElement
         const button = document.getElementById("step_button") as HTMLButtonElement
         
-        if(!APP.is_mobile) input.focus()
+        if(!Device.is_mobile) input.focus()
         
         
         function enter(e: any) {
@@ -379,7 +381,7 @@ export function Step_1() {
             window.scrollTo(0,0)
             window.removeEventListener("keypress", enter)
         })
-    }, [timer, APP.is_mobile])
+    }, [timer, Device.is_mobile])
 
     return (
         <motion.div className="step_container" id="step_container" initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .3, delay: 0.2}}} exit={{opacity: 0, y: 50, transition: {duration: 0.2,  type: "tween"}}}>
@@ -403,7 +405,7 @@ export function Step_1() {
 }
 
 export function Step_2() {
-    const APP: App_context = useContext(APP_CONTEXT)
+    const Device = useContext(Device_context)
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
     let timer: any
    
@@ -463,7 +465,7 @@ export function Step_2() {
         const input = document.getElementById("input") as HTMLInputElement
         const button = document.getElementById("step_button") as HTMLButtonElement
 
-        if(!APP.is_mobile) input.focus()
+        if(!Device.is_mobile) input.focus()
         
         function enter(e: any) {
             if(e.keyCode === 13) button.click()
@@ -476,7 +478,7 @@ export function Step_2() {
             
             window.removeEventListener("keypress", enter)
         })
-    }, [timer, APP.is_mobile])
+    }, [timer, Device.is_mobile])
 
     return (
         <motion.div className="step_container" initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .3, delay: 0.2}}} exit={{opacity: 0, y: 50, transition: {duration: 0.2,  type: "tween"}}}>
@@ -497,7 +499,8 @@ export function Step_2() {
 
 export function Step_3() {
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
-    const APP: App_context = useContext(APP_CONTEXT)
+    const Device = useContext(Device_context)
+    const App_notification: any = useContext(App_notification_context)
     const [loading, set_loading] = useState(false)
 
     //Validating passwort also calling validate_password_repeat.
@@ -553,24 +556,25 @@ export function Step_3() {
                 body: JSON.stringify({signup_obj: PAGE_CONTEXT.signup_obj})
             })
             
-            if(response_stream.status !== 200) return APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+            if(response_stream.status !== 200) return App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
             
             //Status is 200
             const {successful} = await response_stream.json()
                
             if(successful) {
-                console.log("success!")
-                APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please verify your email!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup(); router.push("/login", "/login", {scroll: false})}}})
+                
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup(); router.push("/login", "/login", {scroll: false})}}})
                 set_loading(false)
             } else {
-                console.log("Somethign went wrong!")
-                APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
-
+                
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+                set_loading(false)
             }
 
             PAGE_CONTEXT.set_signup_obj({username: null, email: null, password: null, legal: false, occasional_emails: false})
         } else {
-            APP.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+            set_loading(false)
         }
     }
 
@@ -615,7 +619,7 @@ export function Step_3() {
         const input_password = document.getElementById("input_password") as HTMLInputElement
         const button = document.getElementById("step_button") as HTMLButtonElement
 
-        if(!APP.is_mobile) input_password.focus()
+        if(!Device.is_mobile) input_password.focus()
         
         
         function enter(e: any) {
@@ -628,7 +632,7 @@ export function Step_3() {
             
             window.removeEventListener("keypress", enter)
         })
-    }, [APP.is_mobile])
+    }, [Device.is_mobile])
 
     return (
         <motion.div className="step_container" initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .3, delay: 0.2}}} exit={{opacity: 0, y: 50, transition: {duration: 0.2,  type: "tween"}}}>

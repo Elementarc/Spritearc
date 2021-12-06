@@ -154,14 +154,14 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                     password: hashed_password,
                     salt: salt,
                     verified: false,
-                    about: "",
-                    profile_image: "image.png",
-                    followers: [],
-                    socials: [],
-                    released_packs: [],
-                    date: new Date(),
+                    description: "",
+                    picture: "image.png",
+                    created_at: new Date(),
                     occasional_emails: occasional_emails,
-                    
+                    notifications: [],
+                    following: [],
+                    followers: [],
+                    released_packs: [],
                 })
                 
                 const user = await users_collection.findOne({username: username})
@@ -173,6 +173,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                 const account_verification_token_collection = client.db("pixels").collection("account_verification_tokens")
                 account_verification_token_collection.createIndex({date: 1}, {expireAfterSeconds: 86400})
                 const token = SHA256(user_id).toString()
+
                 //Creating token in db to verify account
                 account_verification_token_collection.insertOne({
                     date: new Date(),
@@ -193,12 +194,12 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                                     pass: 'RemGdUTYTdPt4PgpXd'
                                 }
                             });
-
+                            
                             await transporter.sendMail({
                                 from: 'Arctale.work@gmail.com', // sender address
                                 to: `arctale.gaming@gmail.com`, // list of receivers
                                 subject: "E-mail confirmation", // Subject line
-                                text: `Hey please confirm your email address by clicking on this link: http://localhost:3000/verify_account?token=${token}`, // plain text body
+                                text: `Hey please confirm your email address by clicking on this link: ${process.env.FULL_DOMAIN}/verify_account?token=${token}`, // plain text body
                             }, (err: any, info: any) => {
                                 if(err) throw err
                                 resolve(true)
@@ -221,6 +222,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                 } else {
                     res.status(500).end()
                 }
+
             } catch ( err ) {
                 console.log(err)
                 res.status(500).end()
