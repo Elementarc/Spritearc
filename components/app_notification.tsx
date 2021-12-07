@@ -1,8 +1,8 @@
 import React, {useContext, useEffect} from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { App_notification_context } from '../context/app_notification_provider';
+import { App_notification_context } from '../context/app_notification_context_provider';
 import {motion} from "framer-motion";
-import { NOTIFICATION_ACTIONS } from "../components/layout"
+import { NOTIFICATION_ACTIONS } from "../context/app_notification_context_provider"
 
 export default function App_notification() {
     const App_notification: any = useContext(App_notification_context)

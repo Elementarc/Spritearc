@@ -6,7 +6,7 @@ import { GetServerSideProps } from 'next'
 import { Auth_context } from '../context/auth_context_provider';
 
 export default function Login_page() {
-
+    
     async function login() {
         const email_input = document.getElementById("email_input") as HTMLInputElement
         const password_input = document.getElementById("password_input") as HTMLInputElement
@@ -80,7 +80,6 @@ export default function Login_page() {
 
 export const getServerSideProps: GetServerSideProps = async(context) => {
     const cookie = context.req.headers.cookie
-    console.log(cookie)
 
     if(cookie) return {redirect: {destination: "/", permanent: false}}
     

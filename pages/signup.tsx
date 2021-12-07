@@ -1,17 +1,16 @@
 import { AnimatePresence, motion} from "framer-motion";
-import React, { useState, useEffect, useContext, useReducer, ReducerAction, ReducerState} from "react";
+import React, { useState, useEffect, useContext} from "react";
 import Footer from "../components/footer";
 import Link from "next/dist/client/link";
-import { App_context, SignUp } from "../types";
+import { SignUp } from "../types";
 import H1_with_deco from '../components/h1_with_deco';
 import DoneIcon from "../public/icons/DoneIcon.svg"
-import { APP_CONTEXT } from "../components/layout";
 import { Nav_shadow } from "../components/navigation";
-import {NOTIFICATION_ACTIONS} from "../context/app_notification_provider"
+import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider"
 import Loading_handler from "../components/Loading";
 import router from "next/router";
 import { Device_context } from "../context/device_context_provider";
-import { App_notification_context } from "../context/app_notification_provider";
+import { App_notification_context } from "../context/app_notification_context_provider";
 
 const SIGNUP_CONTEXT: any = React.createContext(null)
 

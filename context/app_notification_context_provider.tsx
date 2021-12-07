@@ -1,8 +1,9 @@
 import React, {useReducer} from "react";
-import {Dispatch_notification, Notification, Notification_actions} from "../types"
+import {App_notification, App_dispatch_notification, App_notification_actions, App_notification_context_type} from "../types"
 export const App_notification_context: any = React.createContext(null)
 
-export const NOTIFICATION_ACTIONS: Notification_actions = {
+
+export const NOTIFICATION_ACTIONS: App_notification_actions = {
     SUCCESS: "SUCCESS",
     ERROR: "ERROR",
     CLOSE: "CLOSE",
@@ -10,7 +11,7 @@ export const NOTIFICATION_ACTIONS: Notification_actions = {
 
 
 //Reducer function to handle notification state
-function app_notification_reducer(state: Dispatch_notification, action: {type: string, payload?: Notification}): any {
+function app_notification_reducer(state: App_notification, action: {type: string, payload?: App_dispatch_notification}): any {
     const { type, payload } = action
 
     if(!type) return state
@@ -75,17 +76,18 @@ function app_notification_reducer(state: Dispatch_notification, action: {type: s
 
     }
 }
-const init_notification_obj: Notification = {
+const init_notification_obj: App_dispatch_notification = {
     title: null,
     message: null,
     button_label: null,
     callb: () => {}
 }
+
 export default function App_notification_context_provider({children}: any) {
     //App notification reducer. Used to create app_notifications.
     const [app_notification, dispatch_app_notification] = useReducer(app_notification_reducer, init_notification_obj)
 
-    const app_notification_obj = {
+    const app_notification_obj: App_notification_context_type = {
         app_notification,
         dispatch_app_notification
     }

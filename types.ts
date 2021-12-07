@@ -1,12 +1,20 @@
 
-//APP contants
+//APP context_types
+export interface App_navigation_context_type {
+    nav_state: boolean,
+    set_nav_state: React.Dispatch<React.SetStateAction<boolean>>
+}
+export interface App_notification_context_type {
+    app_notification: App_notification,
+    dispatch_app_notification: React.Dispatch<{type: string,payload?: App_dispatch_notification | undefined}>
+}
+
 export interface App_context {
-    nav: {nav_state: boolean, set_nav_state: React.Dispatch<React.SetStateAction<boolean>>},
     app_content_element: () => HTMLElement,
     
 }
 
-//Navigation
+//Navigation item
 export interface Nav_item{
     label: string
     icon: any
@@ -15,17 +23,17 @@ export interface Nav_item{
 }
 
 //App Notification types
-export interface Notification {
+export interface App_dispatch_notification {
     title: string | null, 
     message: string | null, 
     button_label: string | null,
     callb?: () => void
 }
-export interface Dispatch_notification extends Notification {
+export interface App_notification extends App_dispatch_notification {
     toggle: boolean,
     success: boolean
 }
-export interface Notification_actions {
+export interface App_notification_actions {
     SUCCESS: string,
     ERROR: string,
     CLOSE: string,
