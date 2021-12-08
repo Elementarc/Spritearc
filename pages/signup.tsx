@@ -134,22 +134,27 @@ export default function Sign_up_page() {
                 const error_element = document.getElementById("input_error_message") as HTMLParagraphElement
                 const input_element = document.getElementById("input") as HTMLInputElement
                 if(email_regex.test(email) === true) {
-                    const response = await fetch(`/api/signup/validate_email`, {
+                    const response = await fetch(`/api/user/signup/validate_email`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
                         },
                         body: JSON.stringify({email: email})
                     })
-                    const email_available = await response.json()
+                    
 
-                    if(email_available.available) {
+                    if(response.status === 200) {
+
                         set_error_message(false, "", error_element, input_element)
                         resolve(true)
+                        
                     } else {
+
                         set_error_message(true, "Email is already in use.", error_element, input_element)
                         resolve(false)
+                        
                     }
+                    
                     
                 } else {
                     set_error_message(true, "Please enter a valid Email.", error_element, input_element)
@@ -211,26 +216,20 @@ export default function Sign_up_page() {
                             //Finally checking if username passes the test. It should pass the test at this point of code. Else is just incase i forgot something.
                             if(username_regex.test(username) === true){
                                 //Checking if a username already exists with.
-                                const response = await fetch(`/api/signup/validate_username`, {
+                                const response = await fetch(`/api/user/signup/validate_username`, {
                                     method: "POST",
                                     headers: {
                                         "Content-Type": "application/json"
                                     },
                                     body: JSON.stringify({username: username})
                                 })
-                                const username_available = (await response.json()).available
-                                
-                                //If username is available update signup_obj state.
-                                if(username_available) {
+
+                                if(response.status === 200) {
                                     set_error_message(false, "", error_element, input_element)
                                     resolve(true)
-                                    
-    
                                 } else {
-
                                     set_error_message(true, "Username is already taken.", error_element, input_element)
                                     resolve(false)
-    
                                 }
 
                             } else {
@@ -547,30 +546,23 @@ export function Step_3() {
         set_loading(true)
         if(PAGE_CONTEXT.signup_obj.username && PAGE_CONTEXT.signup_obj.email && PAGE_CONTEXT.signup_obj.password && PAGE_CONTEXT.signup_obj.legal) {
             
-            const response_stream = await fetch("/api/signup/send_verification", {
+            const response_stream = await fetch("/api/user/signup/send_verification", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({signup_obj: PAGE_CONTEXT.signup_obj})
+                body: JSON.stringify({...PAGE_CONTEXT.signup_obj})
             })
             
-            if(response_stream.status !== 200) return App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+            if(response_stream.status !== 200) return App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${await response_stream.text()}`, message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
             
-            //Status is 200
-            const {successful} = await response_stream.json()
                
-            if(successful) {
-                
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup(); router.push("/login", "/login", {scroll: false})}}})
-                set_loading(false)
-            } else {
-                
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
-                set_loading(false)
-            }
+            
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup(); router.push("/login", "/login", {scroll: false})}}})
+            set_loading(false)
 
             PAGE_CONTEXT.set_signup_obj({username: null, email: null, password: null, legal: false, occasional_emails: false})
+
         } else {
             App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
             set_loading(false)

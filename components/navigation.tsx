@@ -20,8 +20,7 @@ import { Navigation_context } from "../context/navigation_context_provider";
 
 export default function Navigation(): ReactElement {
     const Device = useContext(Device_context)
-    const Auth: any = useContext(Auth_context)
-    console.log(Auth)
+    
     return(
         <>
             {Device.is_mobile === false &&
@@ -39,6 +38,7 @@ function Navigation_desktop(): ReactElement {
     const Navigation: any = useContext(Navigation_context)
     const APP: App_context = useContext(APP_CONTEXT)
     const nav_content_container_animations = useAnimation()
+    
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
         
@@ -114,12 +114,14 @@ function Navigation_desktop(): ReactElement {
         items_container.addEventListener("scroll" , set_shadow)
     }, [])
 
+
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
             <motion.div animate={nav_content_container_animations} className="content_container" id="content_container">
 
                 {/*<Background_gradient id="nav_background" page_id="app_content_container"/>*/}
 
+                
                 <div className="content" id="nav_content">
 
                     <motion.div className="nav_button_container" id="nav_button_container">
@@ -152,10 +154,10 @@ function Navigation_desktop(): ReactElement {
                                 <Nav_item_container icon={SearchIcon} label="Search" link="/search"/>
                             </div>
                             
-
                             <div className="bottom_section">
                                 <Nav_item_container  icon={SignInIcon} label="Sign in" link="/login"/>
                             </div>
+
                         </ul>
 
                     </div>

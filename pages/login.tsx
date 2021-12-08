@@ -5,15 +5,14 @@ import Link from 'next/link';
 import { GetServerSideProps } from 'next'
 import { Auth_context } from '../context/auth_context_provider';
 
-export default function Login_page() {
+export default function Login_page(props: any) {
     
     async function login() {
         const email_input = document.getElementById("email_input") as HTMLInputElement
         const password_input = document.getElementById("password_input") as HTMLInputElement
 
-
         try {
-            const response = await fetch("/api/login", {
+            const response = await fetch("/api/user/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -27,18 +26,10 @@ export default function Login_page() {
             if(response.status === 200) {
                 const body = await response.json()
                 
-                if(body.authenticated === true) {
-                    
-                    console.log("successfully logged in!")
-
-                } else {
-
-                    console.log("wrong credentials")
-
-                }
+                console.log("Successfully logged in")
                 
             } else {
-                console.log("something went wrong")
+                console.log(await response.text())
             }
 
         } catch ( err ) {
@@ -78,12 +69,12 @@ export default function Login_page() {
 }
 
 
-export const getServerSideProps: GetServerSideProps = async(context) => {
-    const cookie = context.req.headers.cookie
+export const getServerSideProps: GetServerSideProps = async(context: any) => {
+	
+	return{
+		props: {
+			item: false,
+		}
+	}
+} 
 
-    if(cookie) return {redirect: {destination: "/", permanent: false}}
-    
-    return {
-        props: {}
-    }
-}

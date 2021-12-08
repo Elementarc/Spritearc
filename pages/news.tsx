@@ -181,7 +181,7 @@ import patchHandler from "../lib/patch_lib"
 export const getServerSideProps: GetServerSideProps = async (context) => {
 	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
 	
-	console.log(context.resolvedUrl)
+	
 	return {
 		props: {
 			patchnoteList: JSON.stringify(patchnoteList)

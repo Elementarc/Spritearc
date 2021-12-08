@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {MongoClient} from "mongodb"
-import { SignUp } from "../../../types";
+import { SignUp } from "../../../../types";
 import { SHA256 } from "crypto-js";
 const nodemailer = require("nodemailer")
 const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
@@ -8,7 +8,6 @@ const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
 const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,32}$/)
 
 const client = new MongoClient("mongodb://localhost:27017")
-
 
 
 export default async function signup(req: NextApiRequest, res: NextApiResponse) {
@@ -89,9 +88,9 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             const username_available = await validate_username(username)
             
             if(username_available) {
-                res.status(200).send({available: true})
+                res.status(200).end()
             } else {
-                res.status(200).send({available: false})
+                res.status(403).send("Can't use that username")
             }
             
         }
@@ -102,11 +101,11 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
 
             if(email_available) {
 
-                res.send({available: true})
+                res.status(200).send({available: true})
 
             } else {
                 
-                res.send({available: false})
+                res.status(403).send("Can't use that email.")
 
             }
             
@@ -114,9 +113,17 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
         //Validating whole signup request. Sending verification to email.
         else if(req.query.route === "send_verification") {
             //Verification send with signup page.
-            const { username, email, password, legal, occasional_emails } =  req.body.signup_obj as SignUp
+            
+            const { username, email, password, legal, occasional_emails } =  req.body as {username: string, email: string, password: string, legal: string | boolean, occasional_emails: string | boolean}
+            let legal_init = false
+            let ocassional_emails_init = false
+            if(typeof legal === "string") legal_init = legal.toLowerCase() === "true" ? true : false
+            if(typeof legal === "boolean") legal_init = legal ? true : false
+            if(typeof occasional_emails === "string") ocassional_emails_init = occasional_emails.toLowerCase() === "true" ? true : false
+            if(typeof occasional_emails === "boolean") ocassional_emails_init = occasional_emails ? true : false
+            
             //Checking if signup object properties exist.
-            if(!username || !email || !password || !legal) return res.status(400).end()
+            if(!username || !email || !password || !legal_init) return res.status(400).send("Missing credentials!")
             
             //Validating userinputs. Also making call to backend to check if it already exists.
             const email_available = await validate_email(email)
@@ -124,7 +131,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             const password_valid = password_regex.test(password)
             
             //Validating inputs
-            if(!email_available || !username_available || !password_valid) return res.status(400).end()
+            if(!email_available || !username_available || !password_valid) return res.status(403).send("Credentials didn't pass validations!")
            
             //Passed all tests
 
@@ -157,7 +164,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                     description: "",
                     picture: "image.png",
                     created_at: new Date(),
-                    occasional_emails: occasional_emails,
+                    occasional_emails: ocassional_emails_init,
                     notifications: [],
                     following: [],
                     followers: [],
@@ -181,7 +188,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                     user_id: user_id,
                 })
 
-                function send_verification_main(): Promise<boolean> {
+                function send_verification_mail(): Promise<boolean> {
                     return new Promise(async(resolve) =>{
                         try {
                         
@@ -214,18 +221,16 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                         
                     })
                 }
-                const success = await send_verification_main()
+                await send_verification_mail()
                 
 
-                if(success) {
-                    res.status(200).send({successful: true})
-                } else {
-                    res.status(500).end()
-                }
+                res.status(200).send("Successfully created your account!")
 
             } catch ( err ) {
+
                 console.log(err)
-                res.status(500).end()
+                res.status(500).send("Something went wrong while trying to create your account.")
+
             }
             
 
@@ -239,7 +244,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
     } 
     else {
         //Wrong mehtod
-        res.status(400).end()
+        res.status(400).send("Please use POST method.")
     }
     
 }

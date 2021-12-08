@@ -10,24 +10,28 @@ import Device_context_provider from '../context/device_context_provider';
 import App_notification_context_provider from '../context/app_notification_context_provider';
 import Navigation_context_provider, {Navigation_context} from '../context/navigation_context_provider';
 
-export default function Layout( { children }: any ) {
+export const APP_CONTEXT: any = React.createContext(null)
+
+export default function Layout({children}: any ) {
     const Router = useRouter()
+    
     //Function that will be triggert everytime a page unmounts
     function on_unmount() {
         document.documentElement.style.scrollBehavior = "unset"
         window.scrollTo(0, 0)
     }
-
+    
     const APP: App_context = {
         app_content_element: () => {return document.getElementById("app_content_container") as HTMLDivElement},
     }
 
     return (
         <APP_CONTEXT.Provider value={APP}>
-            <Auth_context_provider>
-                <Device_context_provider>
+            <Device_context_provider>
+                
                     <Navigation_context_provider>
                         <App_notification_context_provider>
+
                             <div className="app_container" id="app_container">
 
                                 <Navigation/>
@@ -36,12 +40,14 @@ export default function Layout( { children }: any ) {
 
                                     <App_content_blur/>
 
-                                    <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
-                                        <motion.main key={Router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
-                                            {children}
-                                        </motion.main>
-                                    </AnimatePresence>
-
+                                    <Auth_context_provider>
+                                        <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
+                                            <motion.main key={Router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
+                                                {children}
+                                            </motion.main>
+                                        </AnimatePresence>
+                                    </Auth_context_provider>
+                                    
                                     <AnimatePresence exitBeforeEnter>
                                         
                                         <App_notification/>
@@ -50,12 +56,12 @@ export default function Layout( { children }: any ) {
                                     
                                 </div>
                                 
-                                
                             </div>
+
                         </App_notification_context_provider>
                     </Navigation_context_provider>
-                </Device_context_provider>
-            </Auth_context_provider>
+                
+            </Device_context_provider>
         </APP_CONTEXT.Provider>
     );
 }
@@ -77,4 +83,4 @@ export function App_content_blur() {
         <div className="app_content_blur" id="app_content_blur"/>
     )
 }
-export const APP_CONTEXT: any = React.createContext(null)
+

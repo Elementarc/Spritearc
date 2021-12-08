@@ -111,6 +111,7 @@ export const getServerSideProps: GetServerSideProps = async() => {
 		recent_packs = response_obj.body
 	}
 
+	
 	const response_title_pack = await fetch(`http://localhost:3000/api/get_title_pack`)
 	let title_pack: Pack_info | null = null
 	if(response_title_pack.status === 200) {
