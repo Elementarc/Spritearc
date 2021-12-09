@@ -17,7 +17,7 @@ export default function Verify_account(props: any) {
         } else {
             App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Token has been expired!", message: "Your token has been expired. Please login to resend you a verification email.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
         }
-        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
@@ -55,10 +55,10 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
         //function that checks if token is expired
         function check_token_expired(token_time: number): boolean {
             const current_time = new Date().getTime()
-            const ten_min = 1000 * 60 * 10
+            const one_hour = 1000 * 60 * 60
             const token_alife = current_time - token_time 
             
-            if(token_alife > ten_min) {
+            if(token_alife > one_hour) {
                 return true
             } else {
                 return false

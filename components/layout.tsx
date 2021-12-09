@@ -1,5 +1,5 @@
 
-import React, {useEffect, useContext, useState} from 'react';
+import React, {useEffect, useContext} from 'react';
 import {App_context, App_navigation_context_type} from "../types"
 import { AnimatePresence, motion } from 'framer-motion';
 import App_notification from './app_notification';
@@ -17,10 +17,12 @@ export default function Layout({children}: any ) {
     const Auth: any = useContext(Auth_context)
 
     //Checking if user is signed in or not. Used for whole application.
+    
     useEffect(() => {
         async function is_auth() {
             const response = await fetch("/api/user/is_auth", {method: "POST"})
 
+            
             if(response.status === 200) {
                 const body = await response.json()
                 Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, username: body.username, description: body.description, created_at: body.created_at,  picture: body.picture}})
@@ -31,6 +33,7 @@ export default function Layout({children}: any ) {
             
         }
         is_auth()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     //Function that will be triggert everytime a page unmounts

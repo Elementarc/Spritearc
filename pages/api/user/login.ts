@@ -22,6 +22,7 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
                 {
                     $project: {
                         username: "$username",
+                        verified: "$verified",
                         created_at: "$created_at",
                         description: "$description",
                         picture: "$picture",
@@ -37,10 +38,12 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
                 }
             ]).toArray()
             
+            
             if(user_arr.length === 0) return res.status(400).send("Couldn't find Account")
             //User exists in db.
             const user = user_arr[0]
-    
+            if(!user.verified) return res.status(401).send({verified: false, email: user.email})
+
             const hashed_password = SHA256(password + user.salt).toString()
             
             if(hashed_password === user.password) {

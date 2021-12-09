@@ -7,7 +7,7 @@ import H1_with_deco from '../components/h1_with_deco';
 import DoneIcon from "../public/icons/DoneIcon.svg"
 import { Nav_shadow } from "../components/navigation";
 import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider"
-import Loading_handler from "../components/loading_button";
+import Loader from "../components/loading";
 import router from "next/router";
 import { Device_context } from "../context/device_context_provider";
 import { App_notification_context } from "../context/app_notification_context_provider";
@@ -670,7 +670,10 @@ export function Step_3() {
 
 
             <div className="button_container">
-                <button onClick={signup} className="disabled_button" id="step_button" >{<Loading_handler button_label="Create Account" init_loading={loading}/>}</button>
+                <button onClick={signup} className="disabled_button" id="step_button" >
+                    <p style={loading ? {opacity: 0} : {opacity: 1}}>Create Account</p>
+                    <Loader loading={loading}/>
+                </button>
             </div>
             
             

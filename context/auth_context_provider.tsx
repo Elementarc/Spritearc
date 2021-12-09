@@ -6,19 +6,22 @@ export const USER_DISPATCH_ACTIONS = {
     LOGOUT: "FAILED"
 }
 
-const user_init = {
-    auth: null,
-    username: null,
-    description: null,
-    created_at: null,
-}
 
-function user_dispatch_reducer(user: null | {username: string}, action: {type: string, payload?: {auth: boolean, username: string, description: string, created_at: string, picture: string}}): any {
+
+function user_dispatch_reducer(user: any, action: {type: string, payload?: {auth: boolean, username: string, description: string, created_at: string, picture: string}}): any {
     const { type, payload } = action
     
     switch ( type ) {
         case USER_DISPATCH_ACTIONS.LOGIN : {
-            if(!payload) return user_init
+
+            if(!payload) return {
+                auth: false,
+                username: null,
+                picture: null,
+                description: null,
+                created_at: null,
+            }
+
             return {
                 auth: payload.auth,
                 username: payload.username,
@@ -41,6 +44,14 @@ function user_dispatch_reducer(user: null | {username: string}, action: {type: s
     }
 }
 
+
+const user_init = {
+    auth: null,
+    username: null,
+    description: null,
+    created_at: null,
+    picture: null
+}
 
 export default function Auth_context_provider({children}: any) {
     const [user, dispatch_user] = useReducer(user_dispatch_reducer, user_init)

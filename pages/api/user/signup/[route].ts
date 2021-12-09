@@ -3,6 +3,16 @@ import {MongoClient} from "mongodb"
 import { SignUp } from "../../../../types";
 import { SHA256 } from "crypto-js";
 const nodemailer = require("nodemailer")
+//Creating email transporter
+const transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    auth: {
+        user: 'eriberto.shields32@ethereal.email',
+        pass: 'svrEs7YJuAcsyHxy41'
+    }
+});
+
 const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
 const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
 const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,32}$/)
@@ -178,7 +188,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                 const user_id =  user._id.toString()
 
                 const account_verification_token_collection = client.db("pixels").collection("account_verification_tokens")
-                account_verification_token_collection.createIndex({date: 1}, {expireAfterSeconds: 86400})
+                account_verification_token_collection.createIndex({date: 1}, {expireAfterSeconds: 3600})
                 const token = SHA256(user_id).toString()
 
                 //Creating token in db to verify account
@@ -192,15 +202,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                     return new Promise(async(resolve) =>{
                         try {
                         
-                            //Creating email transporter
-                            const transporter = nodemailer.createTransport({
-                                host: 'smtp.ethereal.email',
-                                port: 587,
-                                auth: {
-                                    user: 'shana.huel83@ethereal.email',
-                                    pass: 'RemGdUTYTdPt4PgpXd'
-                                }
-                            });
+                            
                             
                             await transporter.sendMail({
                                 from: 'Arctale.work@gmail.com', // sender address

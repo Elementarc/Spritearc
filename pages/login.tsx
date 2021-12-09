@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import Footer from '../components/footer';
 import H1_with_deco from '../components/h1_with_deco';
 import Link from 'next/link';
@@ -6,10 +6,31 @@ import { GetServerSideProps } from 'next'
 import { Auth_context } from '../context/auth_context_provider';
 import { useRouter } from 'next/router';
 import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
+import Loader from '../components/loading';
+import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
+
 export default function Login_page(props: any) {
+    const [loading, set_loading] = useState(false)
+    
+    const App_notification: any = useContext(App_notification_context)
     const Auth: any = useContext(Auth_context)
     const router = useRouter()
+    
+    async function resend_email_verification(email: string) {
+        const response = await fetch("/api/user/resend_email_confirmation", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email
+            })
+        })
+        console.log(await response.text())
+    }
+
     async function login() {
+        set_loading(true)
         const email_input = document.getElementById("email_input") as HTMLInputElement
         const password_input = document.getElementById("password_input") as HTMLInputElement
 
@@ -27,17 +48,29 @@ export default function Login_page(props: any) {
 
             if(response.status === 200) {
                 const body = await response.json()
+
                 router.push("/", "/", {scroll: false})
                 Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, username: body.username, description: body.description, created_at: body.created_at}})
                 
+                set_loading(false)
                 console.log("Successfully logged in")
                 
-            } else {
+            } 
+            //Account needs to be verified
+            else if(response.status === 401) {
+                const body = await response.json()
+                
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Please confirm your email!", message: "You have to confirm your email address to be able to login!", button_label: "Send confirmation", callb: () => {resend_email_verification(body.email)}}})
+                set_loading(false)
+
+            } else  {
                 console.log(await response.text())
+                set_loading(false)
             }
 
         } catch ( err ) {
             console.log(err)
+            set_loading(false)
         }
     }
 
@@ -48,11 +81,13 @@ export default function Login_page(props: any) {
 
                 <div className="login_container">
                     <H1_with_deco title="Sign In" />
-
                     
                     <input type="text" placeholder="Email" id="email_input" defaultValue="king@gmail.com"/>
                     <input type="password" placeholder="Password" id="password_input" defaultValue="Hurrensohn1"/>
-                    <button onClick={login}>Login</button>
+                    <button onClick={login}>
+                        <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
+                        <Loader loading={loading}/>
+                    </button>
 
                     <div className="forward_container">
 
@@ -72,23 +107,24 @@ export default function Login_page(props: any) {
     );
 }
 
-
 export const getServerSideProps: GetServerSideProps = async(context) => {
 	const cookies = context.req.cookies
-    console.log(cookies)
-    if(cookies.user) return {
-        redirect: {
-            destination: "/",
-            permanent: false,
+    
+    if(cookies.user) {
+        return {
+            redirect: {
+                destination: "/",
+                permanent: false,
+            }
+        }
+    } else {
+        return{
+            props: {
+                
+            }
         }
     }
-
-    
-	return{
-		props: {
-			
-		}
-	}
+	
 } 
 
 
