@@ -2,19 +2,22 @@ import '../styles/global.scss'
 import React from 'react'
 import Layout from '../components/layout'
 import Head from 'next/dist/shared/lib/head'
-
+import Auth_context_provider from '../context/auth_context_provider'
 
 export default function MyApp({ Component, pageProps}: any) {
     
     return(
         <>
+
             <Head>
                 <meta name="theme-color" content="#111F35" />
             </Head>
-                
-            <Layout >
-                <Component {...pageProps}/>
-            </Layout>
+            
+            <Auth_context_provider>
+                <Layout >
+                    <Component {...pageProps}/>
+                </Layout>
+            </Auth_context_provider>
         </>
     )
 }

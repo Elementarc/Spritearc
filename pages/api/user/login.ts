@@ -22,6 +22,9 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
                 {
                     $project: {
                         username: "$username",
+                        created_at: "$created_at",
+                        description: "$description",
+                        picture: "$picture",
                         email: {$toUpper: "$email"},
                         password: "$password",
                         salt: "$salt"
@@ -42,7 +45,7 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
             
             if(hashed_password === user.password) {
 
-                const token = jwt.sign({username: user.username}, "shhh")
+                const token = jwt.sign({username: user.username, description: user.description, created_at: user.created_at, picture: user.picture}, process.env.JWT_PRIVATE_KEY as string)
                 
                 res.setHeader('Set-Cookie', cookie.serialize('user', token, {
                     httpOnly: true,
@@ -50,7 +53,8 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
                     sameSite: "strict",
                     maxAge: 60 * 60
                 }));
-                res.status(200).send({authenticated: true})
+
+                res.status(200).send({username: user.username, description: user.description, created_at: user.created_at, picture: user.picture})
 
             } else {
                 res.status(403).send("Wrong credentials")

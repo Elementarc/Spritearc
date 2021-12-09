@@ -1,7 +1,5 @@
-import { GetServerSideProps, NextApiRequest, NextApiResponse } from "next";
-import { MongoClient } from "mongodb";
-import { SHA256 } from "crypto-js";
-import jwt from "jsonwebtoken";
+import { NextApiRequest, NextApiResponse } from "next";
+
 import cookie from "cookie";
 import withAuth from "../../../middleware/withAuth";
 

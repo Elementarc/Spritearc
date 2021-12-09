@@ -12,8 +12,8 @@ import SearchIcon from "../public/icons/SearchIcon.svg"
 import SignInIcon from "../public/icons/SignInIcon.svg"
 //Context
 import { APP_CONTEXT } from "../components/layout";
-import { useRouter } from "next/router";
-import { Auth_context } from "../context/auth_context_provider";
+import router, { useRouter } from "next/router";
+import { Auth_context, USER_DISPATCH_ACTIONS } from "../context/auth_context_provider";
 import { Device_context } from "../context/device_context_provider";
 import { Navigation_context } from "../context/navigation_context_provider";
 
@@ -38,7 +38,8 @@ function Navigation_desktop(): ReactElement {
     const Navigation: any = useContext(Navigation_context)
     const APP: App_context = useContext(APP_CONTEXT)
     const nav_content_container_animations = useAnimation()
-    
+    const Auth: any = useContext(Auth_context)
+    const router = useRouter()
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
         
@@ -114,7 +115,14 @@ function Navigation_desktop(): ReactElement {
         items_container.addEventListener("scroll" , set_shadow)
     }, [])
 
+    async function logout () {
+        const response = await fetch("/api/user/logout", {method: "POST"})
 
+        if(response.status === 200) {
+            router.push("/login", "/login", {scroll: false})
+            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT})
+        }
+    }
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
             <motion.div animate={nav_content_container_animations} className="content_container" id="content_container">
@@ -154,10 +162,17 @@ function Navigation_desktop(): ReactElement {
                                 <Nav_item_container icon={SearchIcon} label="Search" link="/search"/>
                             </div>
                             
-                            <div className="bottom_section">
-                                <Nav_item_container  icon={SignInIcon} label="Sign in" link="/login"/>
-                            </div>
 
+                            <div className="bottom_section">
+                                
+                                {Auth.user.auth === false &&
+                                    <Nav_item_container key="nav_item" icon={SignInIcon} label="Sign in" link="/login"/>
+                                }
+
+                                {Auth.user.auth === true &&
+                                    <h1 onClick={logout}>Logout</h1>
+                                }
+                            </div>
                         </ul>
 
                     </div>
