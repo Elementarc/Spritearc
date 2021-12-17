@@ -1,7 +1,7 @@
 /*eslint-disable */
 import React, {ReactElement, useContext, useEffect} from "react"
 import {motion, useAnimation, AnimatePresence } from "framer-motion";
-import { Nav_item, App_context} from "../types"
+import { Nav_item, App_context, Public_user} from "../types"
 //SVG Components (ICONS)
 import NavIcon from "../public/icons/NavIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
@@ -12,10 +12,12 @@ import SearchIcon from "../public/icons/SearchIcon.svg"
 import SignInIcon from "../public/icons/SignInIcon.svg"
 //Context
 import { APP_CONTEXT } from "../components/layout";
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { Auth_context, USER_DISPATCH_ACTIONS } from "../context/auth_context_provider";
 import { Device_context } from "../context/device_context_provider";
 import { Navigation_context } from "../context/navigation_context_provider";
+import Image from "next/image"
+import Link from "next/link"
 
 
 export default function Navigation(): ReactElement {
@@ -39,7 +41,7 @@ function Navigation_desktop(): ReactElement {
     const APP: App_context = useContext(APP_CONTEXT)
     const nav_content_container_animations = useAnimation()
     const Auth: any = useContext(Auth_context)
-    const router = useRouter()
+
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
         
@@ -115,21 +117,12 @@ function Navigation_desktop(): ReactElement {
         items_container.addEventListener("scroll" , set_shadow)
     }, [])
 
-    async function logout () {
-        const response = await fetch("/api/user/logout", {method: "POST"})
+    
 
-        if(response.status === 200) {
-            router.push("/login", "/login", {scroll: false})
-            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT})
-        }
-    }
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
             <motion.div animate={nav_content_container_animations} className="content_container" id="content_container">
 
-                {/*<Background_gradient id="nav_background" page_id="app_content_container"/>*/}
-
-                
                 <div className="content" id="nav_content">
 
                     <motion.div className="nav_button_container" id="nav_button_container">
@@ -153,7 +146,7 @@ function Navigation_desktop(): ReactElement {
                     </motion.div>
 
                     <div className="items_container" id="nav_items_container">
-
+                        
                         <ul>
                             <div className="main_section">
                                 <Nav_item_container icon={HomeIcon} label="Home" link="/" />
@@ -170,7 +163,7 @@ function Navigation_desktop(): ReactElement {
                                 }
 
                                 {Auth.user.auth === true &&
-                                    <h1 onClick={logout}>Logout</h1>
+                                    <User_profile/>
                                 }
                             </div>
                         </ul>
@@ -178,7 +171,7 @@ function Navigation_desktop(): ReactElement {
                     </div>
 
                 </div>
-
+                
             </motion.div>
         </motion.nav>
     )
@@ -286,6 +279,7 @@ function Navigation_mobile(): ReactElement {
         </motion.div>
     )
 }
+
 //NavItem Component
 function Nav_item_container(props: Nav_item) {
     const Navigation: any = useContext(Navigation_context)
@@ -338,6 +332,79 @@ function Nav_item_container(props: Nav_item) {
             <span />
 
         </motion.li>
+    )
+}
+
+function User_profile() {
+    const Auth: any = useContext(Auth_context)
+    const Navigation: any = useContext(Navigation_context)
+    const user_info_animation = useAnimation()
+    const router = useRouter()
+    const user = Auth.user as Public_user
+    
+    async function logout () {
+        const response = await fetch("/api/user/logout", {method: "POST"})
+
+        if(response.status === 200) {
+            router.push("/login", "/login", {scroll: false})
+            Navigation.set_nav_state(false)
+            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT})
+        }
+    }
+
+    //Showing Labels of Profile info when toggling navState
+    useEffect(() => {
+        if(Navigation.nav_state === true) {
+            user_info_animation.start({
+                transition: {duration: 0.2},
+                opacity: 1,
+            })
+        } else {
+            user_info_animation.start({
+                transition: {duration: 0.2},
+                opacity: 0,
+            })
+        }
+    }, [Navigation.nav_state, user_info_animation]);
+
+    //setting target style for background of portrait when on account page
+    useEffect(() => {
+        const user_portrait = document.getElementById("nav_user_portrait") as HTMLDivElement
+
+        if(router.pathname.toLowerCase() === "/account") {
+            user_portrait.classList.add("portrait_target")
+        } else {
+            user_portrait.classList.remove("portrait_target")
+        }
+    }, [router.pathname])
+
+    return(
+        <div className="nav_user_profile_container">
+
+            <div className="portrait_container">
+
+                <div onClick={() => {router.push("/account", "/account", {scroll: false}); Navigation.set_nav_state(false)}} className="portrait portrait_target" id="nav_user_portrait">
+                    <div className="portrait_image">
+                        <Image priority={true} src={`/profile_pictures/${user.profile_picture}`} layout="fill"/>
+                    </div>
+                    
+
+                </div>
+                
+
+                <motion.div animate={user_info_animation} className="user_info">
+                    <Link href={`/profile?user=${user.username.toLowerCase()}`}>{user.username}</Link>
+                    <div>
+                        <h4>User since: {user.created_at}</h4>
+                    </div>
+                    <p onClick={logout}>Logout</p>
+                    
+                </motion.div>
+                
+            </div>
+
+            
+        </div>
     )
 }
 

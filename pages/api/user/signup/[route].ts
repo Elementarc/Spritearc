@@ -8,8 +8,8 @@ const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
-        user: 'eriberto.shields32@ethereal.email',
-        pass: 'svrEs7YJuAcsyHxy41'
+        user: 'cynthia.klocko49@ethereal.email',
+        pass: 'HQeJnBVNyMAXGJX2je'
     }
 });
 
@@ -171,8 +171,9 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                     password: hashed_password,
                     salt: salt,
                     verified: false,
-                    description: "",
-                    picture: "image.png",
+                    description: "Hey! Im new here :)",
+                    profile_picture: "default.png",
+                    profile_banner: "default.png",
                     created_at: new Date(),
                     occasional_emails: ocassional_emails_init,
                     notifications: [],

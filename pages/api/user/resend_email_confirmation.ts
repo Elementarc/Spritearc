@@ -7,8 +7,8 @@ const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,
     auth: {
-        user: 'eriberto.shields32@ethereal.email',
-        pass: 'svrEs7YJuAcsyHxy41'
+        user: 'cynthia.klocko49@ethereal.email',
+        pass: 'HQeJnBVNyMAXGJX2je'
     }
 });
 
@@ -16,6 +16,7 @@ const client = new MongoClient("mongodb://localhost:27017")
 
 async function send_verification(req: NextApiRequest, res: NextApiResponse) {
     if(req.method === "POST") {
+        //Getting user email
         const { email } =  req.body as {email: string}
 
         //Connecting to database
@@ -42,10 +43,12 @@ async function send_verification(req: NextApiRequest, res: NextApiResponse) {
                         ]).toArray()
 
                         if(user_arr.length === 0) return res.status(400).send("Couldn't find an Account with that email")
+                        //User exists
+
                         const user_id = user_arr[0]._id.toString()
 
                         if(user_arr[0].verified === true) return res.status(400).send("Account already is verified!")
-                        
+                        //Account is not verified
 
                         const account_verification_token_collection = client.db("pixels").collection("account_verification_tokens")
                         account_verification_token_collection.createIndex({date: 1}, {expireAfterSeconds: 3600})
@@ -53,6 +56,8 @@ async function send_verification(req: NextApiRequest, res: NextApiResponse) {
 
                         const verification_tokens = await account_verification_token_collection.find({token: token}).toArray()
                         if(verification_tokens.length > 0) return res.status(400).send("There already is an token!")
+                        //Token does not already exist.
+
                         //Creating token in db to verify account
                         account_verification_token_collection.insertOne({
                             date: new Date(),
@@ -61,7 +66,7 @@ async function send_verification(req: NextApiRequest, res: NextApiResponse) {
                         })
 
                         
-                        
+                        //Sending email with to verify account.
                         await transporter.sendMail({
                             from: 'Arctale.work@gmail.com', // sender address
                             to: `arctale.gaming@gmail.com`, // list of receivers

@@ -82,12 +82,24 @@ export interface User{
     verified: boolean,
     description: string,
     picture: string,
+    theme_picture: string,
     notifications: [],
     following: [],
     followers: [],
     released_packs: [],
     created_at: Date,
     occasional_emails: boolean,
+}
+
+export interface Public_user {
+    username: string,
+    description: string,
+    created_at: Date,
+    profile_picture: string,
+    profile_banner: string,
+    following: [],
+    followers: [],
+    released_packs: [],
 }
 
 //Signup

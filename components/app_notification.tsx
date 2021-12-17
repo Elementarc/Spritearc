@@ -3,9 +3,11 @@ import { AnimatePresence } from 'framer-motion';
 import { App_notification_context } from '../context/app_notification_context_provider';
 import {motion} from "framer-motion";
 import { NOTIFICATION_ACTIONS } from "../context/app_notification_context_provider"
+import { App_notification_context_type } from '../types';
 
+//Component that renders an App notification
 export default function App_notification() {
-    const App_notification: any = useContext(App_notification_context)
+    const App_notification: App_notification_context_type = useContext(App_notification_context)
     const notification = App_notification.app_notification
      
     //Setting maxWidth and maxHeight of fixed container to page container

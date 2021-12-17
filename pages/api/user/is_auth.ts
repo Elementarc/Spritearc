@@ -1,17 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import withAuth from "../../../middleware/withAuth";
-import jwt from "jsonwebtoken";
 
-function is_auth(req: NextApiRequest, res: NextApiResponse) {
+function is_auth(req: NextApiRequest | any, res: NextApiResponse) {
+    
+
     if(req.method === "POST") {
-        const cookies = req.cookies
-        if(!cookies.user) return res.status(404).send("Not authorized")
-
+        
         try {
-            const token_payload: any = jwt.verify(cookies.user, `${process.env.JWT_PRIVATE_KEY}`)
-
+            const user = req.user
             
-            res.status(200).send({auth: true, username: token_payload.username, description: token_payload.description, created_at: token_payload.created_at, picture: token_payload.picture})
+            res.status(200).send({auth: true, ...user})
 
         } catch ( err ) {
             res.status(400).send("Wrong secret")

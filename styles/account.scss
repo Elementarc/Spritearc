@@ -1,0 +1,159 @@
+@import "./variables.module.scss";
+
+
+
+.account_page {
+    position: relative;
+    height: auto;
+    z-index: 1;
+    .content {
+        position: relative;
+        height: auto;
+        z-index: 1;
+        background: $color_background_dark;
+        .user_preview_container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            background: black;
+            width: 100%;
+            height: 350px;
+            .image_container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                img {
+                    object-fit: cover;
+                    object-position: center;
+                }
+                .blur {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 220px;
+                    background: rgb(17,31,53);
+                    background: linear-gradient(0deg, rgba(17,31,53,1) 0%, rgba(17,31,53,1) 5%, rgba(17,31,53,0) 100%);
+                }
+            }
+
+            .user_portrait_container {
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                bottom: -80px;
+                z-index: 2;
+                border-radius: 50%;
+                width: 250px;
+                height: 250px;
+                background: rgb(17,31,53);
+                background: linear-gradient(0deg, rgba(17,31,53,1) 35%, rgba(17,31,53,0) 40%);
+
+                .portrait {
+                    position: relative;
+                    overflow: hidden;
+                    width: 92%;
+                    height: 92%;
+                    border-radius: 50%;
+                    img {
+                        object-fit: cover;
+                        object-position: center;
+                    }
+                }
+
+            }
+        }
+
+        .user_info_container {
+            margin-top: 6rem;
+            margin-bottom: 6rem;
+            width: 100%;
+            text-align: center;
+            a{
+                @include a(default);
+                font-size: 36px;
+            }
+            p {
+                @include p;
+                margin-top: .3rem;
+            }
+
+        }
+
+        .user_navigator_cards {
+            position: relative;
+            padding: 0 12%;
+            padding-bottom: 10rem;
+            height: auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            column-gap: 5rem;
+            row-gap: 5rem;
+            width: 100%;
+
+            .card {
+                min-height: 200px;
+                height: auto;
+                width: 100%;
+                background-color: $color_main_blue;
+                padding: 0 1rem;
+                padding-bottom: 2rem;
+                transition: .1s ease-in-out;
+                box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.15);
+                border-radius: 5px;
+                &:hover {
+                    cursor: pointer;
+                    transform: scale(1.1);
+
+                    .icon_container {
+                        .icon_background {
+                            .icon {
+                                fill: $color_main;
+                            }
+                        }
+                    }
+                    h1 {
+                        color: $color_main;
+                    }
+                }
+                .icon_container {
+                    width: 100%;
+                    display: flex;
+                    justify-content: center;
+                    .icon_background {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100px;
+                        margin-top: -35px;
+                        width: 100px;
+                        border-radius: 50%;
+                        background: $color_main_blue;
+                        .icon {
+                            transition: .1s ease-in-out;
+                            transform: scale(4);
+                            fill: $color_white;
+                        }
+                    }
+                    
+                }
+                h1{
+                    @include h1(medium);
+                    transition: .1s ease-in-out;
+                    font-size: 24px;
+                    margin-top: 1rem;
+                    color: white;
+                    text-align: center
+                }
+                p {
+                    @include p(medium);
+                    margin-top: .5rem;
+                    text-align: center
+                }
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-import React, {useReducer, useState, useEffect, useCallback} from "react";
+import React, {useReducer} from "react";
 export const Auth_context: any = React.createContext(null)
 
 export const USER_DISPATCH_ACTIONS = {
@@ -8,7 +8,7 @@ export const USER_DISPATCH_ACTIONS = {
 
 
 
-function user_dispatch_reducer(user: any, action: {type: string, payload?: {auth: boolean, username: string, description: string, created_at: string, picture: string}}): any {
+function user_dispatch_reducer(user: any, action: {type: string, payload?: {auth: boolean, username: string, description: string, created_at: string, profile_picture: string, profile_banner: string}}): any {
     const { type, payload } = action
     
     switch ( type ) {
@@ -25,10 +25,10 @@ function user_dispatch_reducer(user: any, action: {type: string, payload?: {auth
             return {
                 auth: payload.auth,
                 username: payload.username,
-                picture: payload.picture,
+                profile_picture: payload.profile_picture,
+                profile_banner: payload.profile_banner,
                 description: payload.description,
                 created_at: payload.created_at,
-
             }
         }
 
@@ -46,11 +46,11 @@ function user_dispatch_reducer(user: any, action: {type: string, payload?: {auth
 
 
 const user_init = {
-    auth: null,
-    username: null,
-    description: null,
+    username: null, 
+    description: null, 
     created_at: null,
-    picture: null
+    profile_picture: null,
+    profile_banner: null,
 }
 
 export default function Auth_context_provider({children}: any) {

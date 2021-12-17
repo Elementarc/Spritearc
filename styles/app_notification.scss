@@ -18,9 +18,11 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        width: 500px;
         min-width: 450px;
         max-width: 550px;
         text-align: center;
+        padding: .3rem 0rem;
         @include breakpoint(mobile) {
             min-width: unset;
             width: 90%;

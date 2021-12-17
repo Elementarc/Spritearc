@@ -8,6 +8,7 @@ import { useRouter } from 'next/router';
 import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 import Loader from '../components/loading';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
+import { Nav_shadow } from '../components/navigation';
 
 export default function Login_page(props: any) {
     const [loading, set_loading] = useState(false)
@@ -48,9 +49,9 @@ export default function Login_page(props: any) {
 
             if(response.status === 200) {
                 const body = await response.json()
-
+                
                 router.push("/", "/", {scroll: false})
-                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, username: body.username, description: body.description, created_at: body.created_at}})
+                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, username: body.username, description: body.description, created_at: body.created_at, profile_picture: body.profile_picture, profile_banner: body.profile_banner}})
                 
                 set_loading(false)
                 console.log("Successfully logged in")
@@ -78,7 +79,7 @@ export default function Login_page(props: any) {
         <div className="login_page">
 
             <div className="content">
-
+                <Nav_shadow/>
                 <div className="login_container">
                     <H1_with_deco title="Sign In" />
                     
@@ -86,7 +87,7 @@ export default function Login_page(props: any) {
                     <input type="password" placeholder="Password" id="password_input" defaultValue="Hurrensohn1"/>
                     <button onClick={login}>
                         <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
-                        <Loader loading={loading}/>
+                        {loading ? <Loader loading={loading}/> : null}
                     </button>
 
                     <div className="forward_container">

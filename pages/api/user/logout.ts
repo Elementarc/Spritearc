@@ -3,7 +3,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import cookie from "cookie";
 import withAuth from "../../../middleware/withAuth";
 
-async function logout(req: NextApiRequest, res: NextApiResponse) {
+//Logs user out only if he is logged in because middlewarre withAuth
+async function logout(req: NextApiRequest |any, res: NextApiResponse) {
     
     if(req.method === "POST") {
         res.setHeader("Set-Cookie", cookie.serialize("user", "", {
