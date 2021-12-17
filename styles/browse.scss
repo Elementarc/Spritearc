@@ -11,6 +11,7 @@
         background: $color_background_dark;
         .title_pack_container {
             margin-bottom: 1.5rem;
+            min-height: 600px;
             @include breakpoint(mobile) {
                 padding: unset;
             }
@@ -84,6 +85,7 @@
         }
 
         .packs_container {
+            min-height: 330px;
             padding: 2rem;
             @include breakpoint(mobile) {
                 padding: 1rem 1rem;

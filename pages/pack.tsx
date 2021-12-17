@@ -30,6 +30,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
     const Device = useContext(Device_context)
     const Router = useRouter()
     const pack = props.pack
+    console.log(pack)
 
     //Creating parallax effect for Image
     useParallax("title_pack_background_image")
@@ -227,7 +228,7 @@ function Pack_sprite_sections(): ReactElement {
         
         section_jsx.push(
             <div key={`section_${i}`} className="section_container">
-                <h1>– {pack.content[i].section_name}</h1>
+                <h1>{"– "} {pack.content[i].section_name}</h1>
                 <Pack_asset pack_content={pack.content[i]}/>
             </div>
         )
@@ -317,7 +318,7 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
         const response = await fetch(`http://localhost:3000/api/get_pack?id=${context.query.id}`)
         if(response.status === 200) {
             const pack = await response.json()
-            
+            console.log(pack.user)
             return{
                 props: {
                     pack

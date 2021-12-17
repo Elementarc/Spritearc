@@ -18,6 +18,9 @@
             background: black;
             width: 100%;
             height: 350px;
+            @include breakpoint(mobile) {
+                height: 200px;
+            }
             .image_container {
                 position: absolute;
                 top: 0;
@@ -51,7 +54,12 @@
                 height: 250px;
                 background: rgb(17,31,53);
                 background: linear-gradient(0deg, rgba(17,31,53,1) 35%, rgba(17,31,53,0) 40%);
-
+                @include breakpoint(mobile) {
+                    width: 200px;
+                    height: 200px;
+                    background: rgb(17,31,53);
+                    background: linear-gradient(0deg, rgba(17,31,53,1) 45%, rgba(17,31,53,0) 60%);
+                }
                 .portrait {
                     position: relative;
                     overflow: hidden;
@@ -75,6 +83,9 @@
             a{
                 @include a(default);
                 font-size: 36px;
+                @include breakpoint(mobile) {
+                    font-size: 22px;
+                }
             }
             p {
                 @include p;
@@ -94,6 +105,16 @@
             row-gap: 5rem;
             width: 100%;
 
+            @include breakpoint(laptop) {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 0 10%;
+                padding-bottom: 10rem;
+            }
+            @include breakpoint(mobile) {
+                grid-template-columns: repeat(1, 1fr);
+                padding: 0 1rem;
+                padding-bottom: 10rem;
+            }
             .card {
                 min-height: 200px;
                 height: auto;

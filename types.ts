@@ -57,7 +57,7 @@ export interface Patchnote_info {
 export interface Pack_info {
     _id: string,
     premium: boolean,
-    user: User,
+    user: Public_user,
     preview_image: string,
     title: string,
     sub_title: string,

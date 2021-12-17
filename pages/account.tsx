@@ -12,7 +12,8 @@ import SettingsIcon from "../public/icons/SettingsIcon.svg"
 import { useRouter } from 'next/router';
 import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 import { Auth_context } from '../context/auth_context_provider';
-
+import { Nav_shadow } from '../components/navigation';
+import { useParallax } from '../lib/custom_hooks';
 export default function Account_page(props: {user: Public_user}) {
     const user = props.user
     const router = useRouter()
@@ -30,22 +31,23 @@ export default function Account_page(props: {user: Public_user}) {
             Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT})
         }
     }
+    useParallax("profile_banner")
     return (
         <div className='account_page'>
             
             <div className='content'>
-
+                <Nav_shadow/>
                 <div className='user_preview_container'>
 
                     <div className='image_container'>
-                        <Image src={`/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                        <Image priority={true} id="profile_banner" src={`/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
                         <div className='blur' />
                     </div>
                     
                     <div className='user_portrait_container'>
 
                         <div className='portrait'>
-                            <Image src={`/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                            <Image priority={true} src={`/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
                         </div>
 
                     </div>
