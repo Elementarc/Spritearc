@@ -30,15 +30,14 @@ export default function Pack_page(props: {pack: Pack_info}) {
     const Device = useContext(Device_context)
     const Router = useRouter()
     const pack = props.pack
-    console.log(pack)
 
-    //Creating parallax effect for Image
-    useParallax("title_pack_background_image")
+    
     //Toggling arrow svg when scrollY > 0
     useEffect(() => {
         //Function that toggles the arrow. Getting called whenever scrolling is happening.
         function toggle_arrow() {
             const arrow_down = document.getElementById("arrow_down") as HTMLDivElement
+            if(!arrow_down) return
             if(window.scrollY > 0 ) {
                 arrow_down.style.opacity = "0"
             } else {
@@ -52,7 +51,8 @@ export default function Pack_page(props: {pack: Pack_info}) {
             window.removeEventListener("scroll", toggle_arrow)
         })
     }, [])
-    
+    //Creating parallax effect for Image
+    useParallax("title_pack_background_image")
     
     //Function that sets img src + toggles show_focus_img to true.
     function toggle_asset(e: any) {
@@ -250,7 +250,7 @@ function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
     const pack = PACK_PAGE.pack as Pack_info
     const show_asset = PACK_PAGE.toggle_asset as () => void
     const pack_content = props.pack_content
-
+    
     //Array of assets as jsx
     const assets_jsx = []
     for(let i = 0; i < pack_content.section_assets.length; i++) {
@@ -307,8 +307,6 @@ function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
         </div>
     );
 }
-
-
 
 
 

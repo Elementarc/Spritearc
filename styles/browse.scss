@@ -10,6 +10,8 @@
         z-index: 1;
         background: $color_background_dark;
         .title_pack_container {
+            position: relative;
+            overflow: hidden;
             margin-bottom: 1.5rem;
             min-height: 600px;
             @include breakpoint(mobile) {
@@ -85,6 +87,7 @@
         }
 
         .packs_container {
+            position: relative;
             min-height: 330px;
             padding: 2rem;
             @include breakpoint(mobile) {

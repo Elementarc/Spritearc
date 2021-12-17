@@ -87,7 +87,7 @@ export default function Login_page(props: any) {
                     <input type="password" placeholder="Password" id="password_input" defaultValue="Hurrensohn1"/>
                     <button onClick={login}>
                         <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
-                        {loading ? <Loader loading={loading}/> : null}
+                        {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
                     </button>
 
                     <div className="forward_container">

@@ -1,6 +1,6 @@
 import React, { useEffect} from 'react';
 
-export default function Loader(props: {loading: boolean}) {
+export default function Loader(props: {loading: boolean, main_color?: boolean, scale?: number}) {
     const loading = props.loading
 
     useEffect(() => {
@@ -15,9 +15,9 @@ export default function Loader(props: {loading: boolean}) {
     }, [loading])
 
     return (
-        <div className="loading_container" id="loading_container">
+        <div style={{transform: `scale(${props.scale ? props.scale : 1})`}} className="loading_container" id="loading_container">
             
-            <div className="loader"></div>
+            <div style={{borderTop: `20px solid ${props.main_color ? "#F7C35E" : "#051020"}`}} className="loader"></div>
             
         </div>
     );

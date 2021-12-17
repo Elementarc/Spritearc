@@ -672,7 +672,7 @@ export function Step_3() {
             <div className="button_container">
                 <button onClick={signup} className="disabled_button" id="step_button" >
                     <p style={loading ? {opacity: 0} : {opacity: 1}}>Create Account</p>
-                    {loading ? <Loader loading={loading}/> : null}
+                    {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
                 </button>
             </div>
             

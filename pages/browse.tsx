@@ -1,12 +1,12 @@
 import React, {ReactElement, useState, useEffect} from 'react';
 import { Pack_info } from "../types"
-import { GetServerSideProps } from 'next'
 import Pack_preview from '../components/pack_preview';
 import Link from 'next/dist/client/link';
 import Image from "next/image"
 import { useParallax } from '../lib/custom_hooks';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
+import Loading from "../components/loading"
 
 export default function Browse() {
 	
@@ -27,23 +27,26 @@ export default function Browse() {
 }
 
 function Title_section() {
-	const [title_pack, set_title_pack] = useState(null)
+	const [title_pack, set_title_pack] = useState<any>(null)
 
 	useEffect(() => {
-
+		
 		async function get_title_pack() {
-			
 			const response_title_pack = await fetch(`/api/get_title_pack`)
+			
 			if(response_title_pack.status === 200) {
 				const response_obj: {body: Pack_info | null} = await response_title_pack.json()
 				set_title_pack(response_obj.body as any)
+			} else {
+				set_title_pack(false)
 			}
 			
 		}
-		get_title_pack()
-	}, [])
 
-	useParallax("title_pack_background_image")
+		get_title_pack()
+	}, [set_title_pack])
+
+	useParallax("title_pack_background_image", title_pack)
 	const pack = title_pack as any
 	return (
 		<div className="title_pack_container">
@@ -56,7 +59,7 @@ function Title_section() {
 						<h2>A New Story</h2>
 						<h1>Nature Of Life</h1>
 						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut.</p>
-						<Link href={`/pack?id=${pack._id}`}>View Pack</Link>
+						<Link href={`/pack?id=${pack._id}`} scroll={false}>View Pack</Link>
 					</div>
 
 					<div className="background_container">
@@ -68,7 +71,8 @@ function Title_section() {
 
 			}
 			{title_pack === null &&
-				null
+				<Loading loading={true} main_color={true} scale={1.5} />
+				
 			}
 			
 
@@ -101,15 +105,18 @@ function Packs_section(props: { header: string}) {
 
 		async function get_title_pack() {
 
-			const response_recent_pack = await fetch(`http://localhost:3000/api/get_recent_packs`)
+			const response_recent_pack = await fetch(`/api/get_recent_packs`)
 			if(response_recent_pack.status === 200) {
 				const response_obj: {body: Pack_info[] | null} = await response_recent_pack.json()
 				set_recent_packs(response_obj.body as any) 
+			} else {
+				set_recent_packs(false) 
 			}
+			
 			
 		}
 		get_title_pack()
-	}, [])
+	}, [set_recent_packs])
 	
 	//If Recent_packs are available
 	return (
@@ -123,6 +130,9 @@ function Packs_section(props: { header: string}) {
 			<div className="previews_container">
 				{recent_packs &&
 					return_jsx_packs()
+				}
+				{recent_packs === null &&
+					<Loading loading={true} main_color={true} scale={1.1} />
 				}
 			</div>
 			

@@ -1,7 +1,7 @@
 import {useEffect} from "react"
 
 //takes the id of an image component
-export function useParallax(id: string) {
+export function useParallax(id: string, dependency?: any) {
     
     useEffect(() => {
         const element = document.getElementById(id) as HTMLDivElement
@@ -17,5 +17,5 @@ export function useParallax(id: string) {
         return(() => {
             window.removeEventListener("scroll", parallax)
         })
-    }, [id])
+    }, [id, dependency ? dependency : null])
 }
