@@ -42,7 +42,8 @@ function Navigation_desktop(): ReactElement {
     const APP: App_context = useContext(APP_CONTEXT)
     const nav_content_container_animations = useAnimation()
     const Auth: any = useContext(Auth_context)
-    const user = Auth.user
+    const user = Auth.user as any
+    
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
         
@@ -341,15 +342,14 @@ function User_profile() {
     const Navigation: any = useContext(Navigation_context)
     const user_info_animation = useAnimation()
     const router = useRouter()
-    const user = Auth.user
+    const user = Auth.user as any
     
     async function logout () {
         const response = await fetch("/api/user/logout", {method: "POST"})
 
         if(response.status === 200) {
-            router.push("/login", "/login", {scroll: false})
             Navigation.set_nav_state(false)
-            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT})
+            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})} }})
         }
     }
 

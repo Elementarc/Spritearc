@@ -27,10 +27,10 @@ export default function Account_page(props: {user: Public_user}) {
         const response = await fetch("/api/user/logout", {method: "POST"})
 
         if(response.status === 200) {
-            router.push("/login", "/login", {scroll: false})
-            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT})
+            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
         }
     }
+
     useParallax("profile_banner")
     return (
         <div className='account_page'>
@@ -73,7 +73,6 @@ export default function Account_page(props: {user: Public_user}) {
                         <h1>Profile</h1>
                         <p>Visit your public profile and checkout what others will see when visiting your account!</p>
                     </div>
-
 
                     <div className='card'>
 

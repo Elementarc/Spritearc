@@ -57,7 +57,7 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
             
             if(hashed_password === user.password) {
                 
-                //Getting public user by username from database
+                //Getting public userobj by username from database
                 const public_user: Public_user | null = await get_public_user(user.username)
                 
                 if(!public_user) return res.status(401).send("Couldn't find user")

@@ -1,5 +1,6 @@
 import React, {useReducer} from "react";
 import { Public_user } from "../types";
+import Router from "next/router"
 export const Auth_context: any = React.createContext(null)
 
 export const USER_DISPATCH_ACTIONS = {
@@ -7,7 +8,7 @@ export const USER_DISPATCH_ACTIONS = {
     LOGOUT: "FAILED"
 }
 
-const user_init = {
+const user_init: any = {
     auth: null,
     username: null,
     description: null,
@@ -19,22 +20,68 @@ const user_init = {
     released_packs: null,
 }
 
-function user_dispatch_reducer(user: any, action: {type: string, payload?: {auth: boolean, public_user: Public_user}}): any {
+let init_public_user: any = {
+    username: null,
+    description: null,
+    created_at: null,
+    profile_picture: null,
+    profile_banner: null,
+    followers: null,
+    following: null,
+    released_packs: null,
+}
+
+
+
+function user_dispatch_reducer(user: any, action: {type: string, payload?: {public_user?: Public_user, callb?: () => void}}): any {
     const { type, payload } = action
-    
+
+    let init_public_user = {}
+
+    if(!payload) return {auth: false, ...init_public_user}
+    if(!payload.public_user) {
+        init_public_user = {
+            username: null,
+            description: null,
+            created_at: null,
+            profile_picture: null,
+            profile_banner: null,
+            followers: null,
+            following: null,
+            released_packs: null,
+        }
+    } else {
+        init_public_user = payload.public_user
+    }
+
     switch ( type ) {
         case USER_DISPATCH_ACTIONS.LOGIN : {
-            if(!payload) return user_init
-            if(!payload.public_user) user_init
-
-            return {
-                auth: payload.auth,
-                ...payload.public_user
+            //When callback call function
+            if(payload.callb) {
+                payload.callb()
             }
+            return {
+                auth: true,
+                ...init_public_user
+            }
+            
         }
 
         case USER_DISPATCH_ACTIONS.LOGOUT : {
-            return user_init
+            if(payload.callb) {
+                payload.callb()
+            }
+            return {
+                auth: false,
+                ...init_public_user
+            }
+        }
+
+        default : {
+            return {
+                auth: false,
+                ...init_public_user
+            }
         }
     }
 }

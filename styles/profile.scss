@@ -1,0 +1,109 @@
+@import "./variables.module.scss";
+
+
+.profile_page {
+    position: relative;
+    height: auto;
+    z-index: 1;
+    .content {
+        position: relative;
+        height: auto;
+        z-index: 1;
+        background: $color_background_dark;
+        .user_preview_container {
+            position: relative;
+            display: flex;
+            justify-content: flex-start;
+            padding-left: 12%;
+            background: $color_main_blue;
+            width: 100%;
+            height: 350px;
+            
+            @include breakpoint(mobile) {
+                height: 200px;
+            }
+            
+            .image_container {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                img {
+                    object-fit: cover;
+                    object-position: center;
+                }
+                .blur {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 220px;
+                    background: rgb(17,31,53);
+                    background: linear-gradient(0deg, rgba(17,31,53,1) 0%, rgba(17,31,53,1) 5%, rgba(17,31,53,0) 100%);
+                }
+                
+            }
+
+            .header {
+                position: absolute;
+                width: 100%;
+                left: 0;
+                padding-left: 12%;
+                bottom: 0;
+
+                .user_portrait_container {
+                    position: absolute;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    bottom: -80px;
+                    z-index: 2;
+                    border-radius: 50%;
+                    width: 250px;
+                    height: 250px;
+                    background: rgb(17,31,53);
+                    background: linear-gradient(0deg, rgba(17,31,53,1) 35%, rgba(17,31,53,0) 40%);
+                    @include breakpoint(mobile) {
+                        width: 200px;
+                        height: 200px;
+                        background: rgb(17,31,53);
+                        background: linear-gradient(0deg, rgba(17,31,53,1) 45%, rgba(17,31,53,0) 60%);
+                    }
+    
+                    .portrait {
+                        position: relative;
+                        overflow: hidden;
+                        width: 92%;
+                        height: 92%;
+                        border-radius: 50%;
+                        img {
+                            object-fit: cover;
+                            object-position: center;
+                        }
+                        
+                    }
+                        
+                    
+                    
+                }
+
+                .user_info_container {
+                    width: 100%;
+                    padding-left: 280px;
+                    a{
+                        @include a(default);
+                        font-size: 36px
+                    }
+                    p {
+                        @include p;
+                        padding-bottom: .5rem;
+                    }
+                }
+            }
+            
+            
+        }
+
+    }
+}

@@ -13,7 +13,7 @@ import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 export const APP_CONTEXT: any = React.createContext(null)
 
 export default function Layout({children}: any ) {
-    const Router = useRouter()
+    const router = useRouter()
     const Auth: any = useContext(Auth_context)
 
     //Checking if user is signed in or not. Used for whole application.
@@ -28,7 +28,7 @@ export default function Layout({children}: any ) {
                 Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...user}}})
 
             } else {
-                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT})
+                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
             }
             
         }
@@ -62,7 +62,7 @@ export default function Layout({children}: any ) {
 
                                 
                                     <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
-                                        <motion.main key={Router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
+                                        <motion.main key={router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
                                             {children}
                                         </motion.main>
                                     </AnimatePresence>
