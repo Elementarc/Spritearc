@@ -7,8 +7,27 @@ import { useParallax } from '../lib/custom_hooks';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
 import Loading from "../components/loading"
+import Packs_section from '../components/packs_section';
 
 export default function Browse() {
+	const [recent_packs, set_recent_packs] = useState<any>([])
+	
+	useEffect(() => {
+
+		async function get_title_pack() {
+
+			const response_recent_pack = await fetch(`/api/get_recent_packs`)
+			if(response_recent_pack.status === 200) {
+				const response_obj: {body: Pack_info[] | null} = await response_recent_pack.json()
+				set_recent_packs(response_obj.body as any) 
+			} else {
+				set_recent_packs(false) 
+			}
+			
+		}
+		get_title_pack()
+
+	}, [set_recent_packs])
 	
 	return (
 		<>
@@ -16,7 +35,7 @@ export default function Browse() {
 				
 				<div className="content">
 					<Title_section/>
-					<Packs_section header="Recent Packs"/>
+					<Packs_section header="Recent Packs" packs={recent_packs}/>
 					<Nav_shadow/>
 				</div>
 
@@ -82,7 +101,7 @@ function Title_section() {
 	
 }
 
-function Packs_section(props: { header: string}) {
+/* function Packs_section(props: { header: string}) {
 	const [recent_packs, set_recent_packs] = useState<any>(null)
 	//Packs Response from server.
 	//JSX RecentPacks that will be rendered
@@ -97,9 +116,6 @@ function Packs_section(props: { header: string}) {
 		
 		return jsx_recent_packs
 	}
-	
-
-	
 
 	useEffect(() => {
 
@@ -139,4 +155,4 @@ function Packs_section(props: { header: string}) {
 		</div>
 	);
 	
-}
+} */

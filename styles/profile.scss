@@ -14,13 +14,12 @@
             position: relative;
             display: flex;
             justify-content: flex-start;
-            padding-left: 12%;
             background: $color_main_blue;
             width: 100%;
             height: 350px;
             
             @include breakpoint(mobile) {
-                height: 200px;
+                height: 170px;
             }
             
             .image_container {
@@ -29,6 +28,9 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
                 img {
                     object-fit: cover;
                     object-position: center;
@@ -49,8 +51,15 @@
                 position: absolute;
                 width: 100%;
                 left: 0;
-                padding-left: 12%;
+                padding: 0 12%;
                 bottom: 0;
+
+                @include breakpoint(laptop) {
+                    padding-left: 8%;
+                }
+                @include breakpoint(mobile) {
+                    padding: 0 1rem;
+                }
 
                 .user_portrait_container {
                     position: absolute;
@@ -64,9 +73,13 @@
                     height: 250px;
                     background: rgb(17,31,53);
                     background: linear-gradient(0deg, rgba(17,31,53,1) 35%, rgba(17,31,53,0) 40%);
+                    user-select: none;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
                     @include breakpoint(mobile) {
-                        width: 200px;
-                        height: 200px;
+                        width: 110px;
+                        height: 110px;
+                        bottom: -30px;
                         background: rgb(17,31,53);
                         background: linear-gradient(0deg, rgba(17,31,53,1) 45%, rgba(17,31,53,0) 60%);
                     }
@@ -91,6 +104,10 @@
                 .user_info_container {
                     width: 100%;
                     padding-left: 280px;
+
+                    @include breakpoint(mobile) {
+                        padding-left: 120px;
+                    }
                     a{
                         @include a(default);
                         font-size: 36px
@@ -98,6 +115,12 @@
                     p {
                         @include p;
                         padding-bottom: .5rem;
+
+                        @include breakpoint(mobile) {
+                            font-size: 12px;
+                            line-height: 1.1rem;
+                            margin-top: .3rem;
+                        }
                     }
                 }
             }
@@ -105,5 +128,9 @@
             
         }
 
+        .user_packs_container {
+            width: 100%;
+            margin-top: 7rem;
+        }
     }
 }

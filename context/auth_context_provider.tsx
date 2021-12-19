@@ -20,25 +20,27 @@ const user_init: any = {
     released_packs: null,
 }
 
-let init_public_user: any = {
-    username: null,
-    description: null,
-    created_at: null,
-    profile_picture: null,
-    profile_banner: null,
-    followers: null,
-    following: null,
-    released_packs: null,
-}
-
-
-
 function user_dispatch_reducer(user: any, action: {type: string, payload?: {public_user?: Public_user, callb?: () => void}}): any {
     const { type, payload } = action
 
     let init_public_user = {}
 
-    if(!payload) return {auth: false, ...init_public_user}
+    if(!payload) {
+        init_public_user = {
+            username: null,
+            description: null,
+            created_at: null,
+            profile_picture: null,
+            profile_banner: null,
+            followers: null,
+            following: null,
+            released_packs: null,
+        }
+        return {
+            auth: false,
+            ...init_public_user
+        }
+    }
     if(!payload.public_user) {
         init_public_user = {
             username: null,
@@ -55,6 +57,8 @@ function user_dispatch_reducer(user: any, action: {type: string, payload?: {publ
     }
 
     switch ( type ) {
+
+        //Login
         case USER_DISPATCH_ACTIONS.LOGIN : {
             //When callback call function
             if(payload.callb) {
@@ -67,6 +71,7 @@ function user_dispatch_reducer(user: any, action: {type: string, payload?: {publ
             
         }
 
+        //Logout
         case USER_DISPATCH_ACTIONS.LOGOUT : {
             if(payload.callb) {
                 payload.callb()

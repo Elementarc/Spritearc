@@ -26,11 +26,21 @@ export default function Pack_page(props: {pack: Pack_info}) {
     const [focus_img_src, set_focus_img_src] = useState("/")
     //State that toggles focus of asset.
     const [show_focus_img, set_show_focus_img] = useState(false)
-
+    
+    //Contexts
     const Device = useContext(Device_context)
     const Router = useRouter()
-    const pack = props.pack
 
+    //Props
+    const pack = props.pack
+    
+    function go_back() {
+        const prev_path = sessionStorage.getItem("prev_path")
+        if(!prev_path) return Router.push("/browse", "/browse", {scroll: false})
+        
+        Router.push(prev_path, prev_path, {scroll: false})
+        
+    }
     
     //Toggling arrow svg when scrollY > 0
     useEffect(() => {
@@ -51,6 +61,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
             window.removeEventListener("scroll", toggle_arrow)
         })
     }, [])
+
     //Creating parallax effect for Image
     useParallax("title_pack_background_image")
     
@@ -63,6 +74,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
         }
         set_show_focus_img(true)
     }
+
     //Setting max_height and max_width of fixed asset_fixed_image_container in page Component.
     useEffect(() => {
         const get_page = document.getElementById("pack_page") as HTMLDivElement
@@ -113,7 +125,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
                 { Device.is_mobile === false &&
                     <div className="close_pack" id="close_pack">
 
-                        <div onClick={() => {Router.push("/browse", "/browse", {scroll: false})}} className="close">
+                        <div onClick={() => {go_back()}} className="close">
                             <CloseIcon className="close_icon"/>
                             <div className="hover_box">Close Pack</div>
                         </div>
@@ -312,25 +324,33 @@ function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
 
 
 export const getServerSideProps: GetServerSideProps = async(context) => {
+
     if(typeof context.query.id === "string") {
         const response = await fetch(`http://localhost:3000/api/get_pack?id=${context.query.id}`)
+
+
         if(response.status === 200) {
+
             const pack = await response.json()
             return{
                 props: {
-                    pack
+                    pack,
                 }
             }
+
         } else {
+
             return {
                 redirect: {
                     destination: `/browse`,
                     permanent: false,
                 }
+
             }
         }
 
     } else {
+
         return {
             redirect: {
                 destination: `/browse`,
@@ -338,6 +358,7 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
             }
         }
     }
+
 } 
 
 /* const packssss = {

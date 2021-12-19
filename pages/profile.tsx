@@ -1,11 +1,18 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { GetServerSideProps } from 'next';
 import Image from "next/image"
 import Link from "next/link"
+import { Pack_info, Public_user } from '../types';
+import Footer from '../components/footer';
+import { get_user_packs } from '../lib/mongo_lib';
+import Packs_section from '../components/packs_section';
+import { useParallax } from '../lib/custom_hooks';
 
-export default function Profile(props: {public_user: any}) {
+export default function Profile(props: {public_user: any, user_packs: any}) {
     const public_user = JSON.parse(props.public_user) as Public_user
-    console.log(public_user)
+    const user_packs = JSON.parse(props.user_packs) as Pack_info[]
+    useParallax("profile_banner")
+    
     return (
         <div className='profile_page'>
 
@@ -42,9 +49,12 @@ export default function Profile(props: {public_user: any}) {
 
                 </div>
                 
+                <div className='user_packs_container'>
+                    <Packs_section header={`Packs created by '${public_user.username}'`} packs={user_packs}/>
+                </div>
 
             </div>
-            
+            <Footer/>
         </div>
     );
 }
@@ -53,8 +63,7 @@ export default function Profile(props: {public_user: any}) {
 
 
 import { get_public_user } from '../lib/mongo_lib';
-import { Public_user } from '../types';
-import Footer from '../components/footer';
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const redirect = {redirect: {
         permanent: false,
@@ -69,11 +78,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const user = await get_public_user(username)
     if(!user) return redirect
     //User was found in the databse
-    console.log(user)
+    
+    const user_packs = await get_user_packs(user.released_packs)
     
     return {
         props: {
-            public_user: JSON.stringify(user)
+            public_user: JSON.stringify(user),
+            user_packs: JSON.stringify(user_packs)
         }
     }
     
