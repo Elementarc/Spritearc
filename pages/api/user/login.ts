@@ -4,6 +4,7 @@ import { SHA256 } from "crypto-js";
 import jwt from "jsonwebtoken";
 import cookie from "cookie";
 import { Public_user } from "../../../types";
+import { get_public_user } from "../../../lib/mongo_lib";
 const client = new MongoClient(`${process.env.MONGO_DB}`)
 
 
@@ -56,16 +57,10 @@ async function login(req: NextApiRequest, res: NextApiResponse) {
             
             if(hashed_password === user.password) {
                 
-                const public_user: Public_user = {
-                    username: user.username, 
-                    description: user.description, 
-                    created_at: user.created_at,
-                    profile_picture: user.profile_picture,
-                    profile_banner: user.profile_banner,
-                    followers: user.followers,
-                    following: user.following,
-                    released_packs: user.released_packs
-                }
+                //Getting public user by username from database
+                const public_user: Public_user | null = await get_public_user(user.username)
+                
+                if(!public_user) return res.status(401).send("Couldn't find user")
                 //Creating token
                 const token = jwt.sign(public_user, process.env.JWT_PRIVATE_KEY as string)
 

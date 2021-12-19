@@ -1,6 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {MongoClient} from "mongodb"
-import { SignUp } from "../../../../types";
 import { SHA256 } from "crypto-js";
 const nodemailer = require("nodemailer")
 //Creating email transporter

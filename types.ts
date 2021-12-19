@@ -57,7 +57,7 @@ export interface Patchnote_info {
 export interface Pack_info {
     _id: string,
     premium: boolean,
-    user: Public_user,
+    username: string,
     preview_image: string,
     title: string,
     sub_title: string,
@@ -74,20 +74,12 @@ export interface Pack_content {
 }
 
 //User
-export interface User{
-    username: string,
+export interface User extends Public_user{
     email: string,
     password: string,
     salt: string,
     verified: boolean,
-    description: string,
-    picture: string,
-    theme_picture: string,
     notifications: [],
-    following: [],
-    followers: [],
-    released_packs: [],
-    created_at: Date,
     occasional_emails: boolean,
 }
 

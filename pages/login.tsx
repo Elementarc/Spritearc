@@ -9,6 +9,7 @@ import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 import Loader from '../components/loading';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { Nav_shadow } from '../components/navigation';
+import { Public_user } from '../types';
 
 export default function Login_page(props: any) {
     const [loading, set_loading] = useState(false)
@@ -48,10 +49,10 @@ export default function Login_page(props: any) {
             })
 
             if(response.status === 200) {
-                const body = await response.json()
+                const body = await response.json() as Public_user
                 
                 router.push("/", "/", {scroll: false})
-                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, username: body.username, description: body.description, created_at: body.created_at, profile_picture: body.profile_picture, profile_banner: body.profile_banner}})
+                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, ...body}})
                 
                 set_loading(false)
                 console.log("Successfully logged in")

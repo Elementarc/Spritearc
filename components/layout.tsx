@@ -25,7 +25,7 @@ export default function Layout({children}: any ) {
             if(response.status === 200) {
                 const user: Public_user = await response.json()
                 
-                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, ...user}})
+                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...user}}})
 
             } else {
                 Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT})

@@ -149,7 +149,7 @@
             position: relative;
             width: 100%;
             height: auto;
-            min-height: 960px;
+            
             .background{
                 position: absolute;
                 z-index: -1;
@@ -280,6 +280,7 @@
                                 color: white;
                                 align-self: center;
                                 justify-self: start;
+                                text-align: start;
                                 @include breakpoint(mobile) {
                                     align-self: center;
                                     justify-self: center;
@@ -346,6 +347,9 @@
             }
             .section_container{
                 padding: 1rem;
+                @include breakpoint(mobile) {
+                    padding: unset;
+                }
                 h1{
                     @include h1(small);
                     margin-bottom: 1rem;

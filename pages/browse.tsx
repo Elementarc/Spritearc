@@ -71,7 +71,7 @@ function Title_section() {
 
 			}
 			{title_pack === null &&
-				<Loading loading={true} main_color={true} scale={1.5} />
+				null
 				
 			}
 			
@@ -132,7 +132,7 @@ function Packs_section(props: { header: string}) {
 					return_jsx_packs()
 				}
 				{recent_packs === null &&
-					<Loading loading={true} main_color={true} scale={1.1} />
+					null
 				}
 			</div>
 			

@@ -35,13 +35,14 @@ export default function Navigation(): ReactElement {
     )
 }
 
+
 //Navigation Component for Desktop
 function Navigation_desktop(): ReactElement {
     const Navigation: any = useContext(Navigation_context)
     const APP: App_context = useContext(APP_CONTEXT)
     const nav_content_container_animations = useAnimation()
     const Auth: any = useContext(Auth_context)
-
+    const user = Auth.user
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
         
@@ -158,11 +159,11 @@ function Navigation_desktop(): ReactElement {
 
                             <div className="bottom_section">
                                 
-                                {Auth.user.auth === false &&
+                                {user.auth === false &&
                                     <Nav_item_container key="nav_item" icon={SignInIcon} label="Sign in" link="/login"/>
                                 }
 
-                                {Auth.user.auth === true &&
+                                {user.auth === true &&
                                     <User_profile/>
                                 }
                             </div>
@@ -340,7 +341,7 @@ function User_profile() {
     const Navigation: any = useContext(Navigation_context)
     const user_info_animation = useAnimation()
     const router = useRouter()
-    const user = Auth.user as Public_user
+    const user = Auth.user
     
     async function logout () {
         const response = await fetch("/api/user/logout", {method: "POST"})

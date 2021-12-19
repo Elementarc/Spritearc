@@ -189,7 +189,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
                                             <h4>Creator:</h4>
                                         </div>
 
-                                        <Link href={`/profile?username=${pack.user.username}`} scroll={false}>{pack.user.username}</Link>
+                                        <Link href={`/profile?user=${pack.username}`} scroll={false}>{pack.username}</Link>
                                     </div>
                                 </div>
 
@@ -256,7 +256,7 @@ function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
     for(let i = 0; i < pack_content.section_assets.length; i++) {
         assets_jsx.push(
             <div onClick={show_asset} key={`${pack_content.section_assets[i]}_${i}`} className="asset">
-                <Image src={`/packs/${pack._id}/${pack_content.section_name}/${pack_content.section_assets[i]}`}  quality="100%" layout="fill"  alt={`One asset from the pack '${pack.title}' that was created by '${pack.user.username}'.`}  className="patch_preview_image"/>
+                <Image src={`/packs/${pack._id}/${pack_content.section_name}/${pack_content.section_assets[i]}`}  quality="100%" layout="fill"  alt={`One asset from the pack '${pack.title}' that was created by '${pack.username}'.`}  className="patch_preview_image"/>
             </div>
         )
     }
@@ -316,7 +316,6 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
         const response = await fetch(`http://localhost:3000/api/get_pack?id=${context.query.id}`)
         if(response.status === 200) {
             const pack = await response.json()
-            console.log(pack.user)
             return{
                 props: {
                     pack

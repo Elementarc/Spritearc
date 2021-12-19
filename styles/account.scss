@@ -15,7 +15,7 @@
             position: relative;
             display: flex;
             justify-content: center;
-            background: black;
+            background: $color_main_blue;
             width: 100%;
             height: 350px;
             @include breakpoint(mobile) {
