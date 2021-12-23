@@ -145,6 +145,7 @@ function Preview() {
 
             error_message.innerText = valid_blob
             dropzone.classList.add("preview_drop_zone_error")
+            create_pack.dispatch_create_pack_obj({type: CREATE_PACK_ACTIONS.ADD_PREVIEW, payload: {blob: null}})
             set_dropped_image(null)
             return
 
