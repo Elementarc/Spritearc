@@ -8,6 +8,7 @@ import { Nav_shadow } from '../components/navigation';
 import { useParallax } from '../lib/custom_hooks';
 import { APP_CONTEXT } from "../components/layout";
 import { App_context } from '../types';
+import {format} from "date-fns"
 import ArrowIcon from "../public/icons/ArrowIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
 import StarEmpty from "../public/icons/StarEmptyIcon.svg"
@@ -17,6 +18,7 @@ import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../components/h1_with_deco';
 import { Device_context } from '../context/device_context_provider';
+import { format_date } from '../lib/date';
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 
@@ -174,7 +176,7 @@ export default function Pack_page(props: {pack: Pack_info}) {
                                             <h4>Released:</h4>
                                         </div>
 
-                                        <div className="item_2">{pack.date}</div>
+                                        <div className="item_2">{format_date(new Date(pack.date))}</div>
                                     </div>
 
                                     <div className="grid_item">

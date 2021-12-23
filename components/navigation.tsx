@@ -18,6 +18,7 @@ import { Device_context } from "../context/device_context_provider";
 import { Navigation_context } from "../context/navigation_context_provider";
 import Image from "next/image"
 import Link from "next/link"
+import { format_date } from "../lib/date";
 
 
 export default function Navigation(): ReactElement {
@@ -35,6 +36,12 @@ export default function Navigation(): ReactElement {
     )
 }
 
+export function Nav_shadow(): ReactElement {
+
+    return(
+        <div className="nav_shadow"/>
+    )
+}
 
 //Navigation Component for Desktop
 function Navigation_desktop(): ReactElement {
@@ -349,7 +356,7 @@ function User_profile() {
 
         if(response.status === 200) {
             Navigation.set_nav_state(false)
-            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})} }})
+            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
         }
     }
 
@@ -396,7 +403,7 @@ function User_profile() {
                 <motion.div animate={user_info_animation} className="user_info">
                     <Link href={`/profile?user=${user.username.toLowerCase()}`}>{user.username}</Link>
                     <div>
-                        <h4>User since: {user.created_at}</h4>
+                        <h4>User since: {format_date(new Date(user.created_at))}</h4>
                     </div>
                     <p onClick={logout}>Logout</p>
                     
@@ -409,11 +416,6 @@ function User_profile() {
     )
 }
 
-export function Nav_shadow(): ReactElement {
 
-    return(
-        <div className="nav_shadow"/>
-    )
-}
 
 

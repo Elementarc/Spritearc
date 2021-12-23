@@ -1,0 +1,89 @@
+@import "./variables.module.scss";
+
+
+.steps_container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    column-gap: .3rem;
+    margin-top: 10rem;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    @include breakpoint(mobile) {
+        margin-top: 8rem;
+    }
+    
+    .step_items_container {
+        position: relative;
+        display: flex;
+        column-gap: .3rem;
+        justify-content: center;
+        .step {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            
+            @include breakpoint(mobile) {
+                width: 10px;
+                height: 10px;
+            }
+            p {
+                @include p(small);
+                position: absolute;
+                top: -2.3rem;
+                font-family: $font_alatsi;
+                color: $color_main;
+                padding: .2rem 0;
+                width: 50px;
+                text-align: center;
+            }
+        }
+        span {
+            align-self: center;
+            justify-self: center;
+            margin: 0 1rem;
+            height: 1px;
+            width: 40px;
+            background: white;
+        }
+        .step_done {
+            background: $color_main;
+            opacity: .6;
+            &:hover {
+                cursor: pointer;
+                background: $color_main_bright;
+                p { 
+                    color: $color_main_bright;
+                }
+            }
+            p {
+                color: $color_main;
+            }
+        }
+        .step_focus {
+            background: $color_main;
+            &:hover {
+                background: $color_main_bright;
+                cursor: pointer;
+                p { 
+                    color: $color_main_bright;
+                }
+            }
+            p {
+                color: $color_main;
+            }
+        }
+        .step_inactive {
+            background: $color_dark_grey;
+            
+            p {
+                color: $color_dark_grey;
+            }
+        }
+    }
+
+}

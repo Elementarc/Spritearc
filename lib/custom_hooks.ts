@@ -19,3 +19,4 @@ export function useParallax(id: string, dependency?: any) {
         })
     }, [id, dependency ? dependency : null])
 }
+

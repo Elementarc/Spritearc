@@ -15,6 +15,8 @@
 @import "./account.scss";
 @import "./profile.scss";
 @import "./packs_section.scss";
+@import "./create_pack.scss";
+@import "./steps.scss";
 
 html,
 body {
@@ -42,6 +44,3 @@ a {
   box-sizing: border-box;
   border-style: none;
 }
-
-
-

@@ -74,7 +74,7 @@ export default function Account_page(props: {user: Public_user}) {
                         <p>Visit your public profile and checkout what others will see when visiting your account!</p>
                     </div>
 
-                    <div className='card'>
+                    <div onClick={() => go_to(`/create_pack`)} className='card'>
 
                         <div className='icon_container'>
 

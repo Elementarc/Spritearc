@@ -9,16 +9,13 @@
     }
     
     .info{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
         margin-bottom: .6rem;
+        width: 100%;
         h1{
             @include h1(small);
-        }
-        a{
-            @include a(medium);
-            align-self: center;
-            justify-self: end;
+            @include breakpoint(mobile) {
+                font-size: 18px;
+            }
         }
     }
     

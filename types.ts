@@ -70,8 +70,21 @@ export interface Pack_info {
 }
 export interface Pack_content {
     section_name: string,
-    section_assets: string[]
+    section_assets: string[] | []
 }
+//Create pack
+export interface Create_pack_frontend {
+    current_step: number,
+    next_step_available: boolean,
+    preview: Blob | null
+    premium: boolean,
+    title: string | null,
+    sub_title: string | null,
+    description: string | null,
+    tags: string[] | [],
+    content: Pack_content[]
+}
+
 
 //User
 export interface User extends Public_user{
@@ -111,3 +124,4 @@ export interface ServerSignUp extends SignUp {
     profile_image: string,
     released_packs: Pack_info[]
 }
+
