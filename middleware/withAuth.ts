@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 
 //Checks if user is authorized! Then calls handler (Next api call.) also pushes user obj into req stream
-const withAuth = (handler?: any) => {
+const withAuth = (handler: any) => {
     return async (req: any, res: any) => {
         
         try {

@@ -3,6 +3,7 @@ import {MongoClient} from "mongodb"
 import { SHA256 } from "crypto-js";
 import { create_user } from "../../../../lib/custom_lib";
 import { email_available, username_available } from "../../../../lib/mongo_lib";
+import { send_email_verification } from "../../../../lib/nodemailer_lib";
 
 const nodemailer = require("nodemailer")
 //Creating email transporter
@@ -148,33 +149,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                     user_id: user_id,
                 })
 
-                function send_verification_mail(): Promise<boolean> {
-                    return new Promise(async(resolve) =>{
-                        try {
-                        
-                            
-                            
-                            await transporter.sendMail({
-                                from: 'Arctale.work@gmail.com', // sender address
-                                to: `arctale.gaming@gmail.com`, // list of receivers
-                                subject: "E-mail confirmation", // Subject line
-                                text: `Hey please confirm your email address by clicking on this link: ${process.env.FULL_DOMAIN}/verify_account?token=${token}`, // plain text body
-                            }, (err: any, info: any) => {
-                                if(err) throw err
-                                resolve(true)
-                            });
-                            
-                        } catch ( err ) {
-
-                            console.log(err)
-                            resolve(false)
-
-                        }
-                        
-                    })
-                }
-                await send_verification_mail()
-                
+                await send_email_verification(email, `Hey please confirm your email address by clicking on this link: ${process.env.FULL_DOMAIN}/verify_account?token=${token}`)
 
                 res.status(200).send("Successfully created your account!")
 

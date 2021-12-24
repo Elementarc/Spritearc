@@ -1,11 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import {MongoClient, ObjectId} from "mongodb"
 import { get_released_packs_by_user } from "../../lib/mongo_lib";
-import { Pack } from "../../types";
 
-const client = new MongoClient("mongodb://localhost:27017")
-
-export default async function get_pack(req: NextApiRequest, res: NextApiResponse) {
+export default async function api_request(req: NextApiRequest, res: NextApiResponse) {
     const pack_id_arr = req.body as string[]
 
     if(req.method === "GET") {

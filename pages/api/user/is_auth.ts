@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import withAuth from "../../../middleware/withAuth";
 
-function is_auth(req: NextApiRequest | any, res: NextApiResponse) {
+function api_request(req: NextApiRequest | any, res: NextApiResponse) {
     
 
     if(req.method === "POST") {
@@ -20,6 +20,6 @@ function is_auth(req: NextApiRequest | any, res: NextApiResponse) {
     }
 }
 
-export default withAuth(is_auth)
+export default withAuth(api_request)
 
 

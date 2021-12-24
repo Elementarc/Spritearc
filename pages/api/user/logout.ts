@@ -4,12 +4,13 @@ import cookie from "cookie";
 import withAuth from "../../../middleware/withAuth";
 
 //Logs user out only if he is logged in because middlewarre withAuth
-async function logout(req: NextApiRequest |any, res: NextApiResponse) {
+async function api_request(req: NextApiRequest |any, res: NextApiResponse) {
     
     if(req.method === "POST") {
         res.setHeader("Set-Cookie", cookie.serialize("user", "", {
             maxAge: -1,
-            path: "/"
+            path: "/",
+            httpOnly: true
         }))
         
         res.status(200).send("Successfully logged out!")
@@ -20,4 +21,4 @@ async function logout(req: NextApiRequest |any, res: NextApiResponse) {
 
 }
 
-export default withAuth(logout)
+export default withAuth(api_request)

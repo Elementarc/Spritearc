@@ -1,4 +1,4 @@
-import React, {ReactElement, useState, useEffect} from 'react';
+import React, { useState, useEffect} from 'react';
 import { Pack } from "../types"
 import Pack_preview from '../components/pack_preview';
 import Link from 'next/dist/client/link';

@@ -19,6 +19,8 @@ import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../components/h1_with_deco';
 import { Device_context } from '../context/device_context_provider';
 import { format_date } from '../lib/date';
+import { get_pack_by_id } from '../lib/mongo_lib';
+import { ObjectId } from 'mongodb';
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 
@@ -34,7 +36,7 @@ export default function Pack_page(props: {pack: Pack}) {
     const Router = useRouter()
 
     //Props
-    const pack = props.pack
+    const pack = JSON.parse(`${props.pack}`)
     
     function go_back() {
         const prev_path = sessionStorage.getItem("prev_path")
@@ -325,40 +327,38 @@ function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
 
 
 
+
 export const getServerSideProps: GetServerSideProps = async(context) => {
 
     if(typeof context.query.id === "string") {
-        const response = await fetch(`http://localhost:3000/api/get_pack?id=${context.query.id}`)
+        const pack = await get_pack_by_id(new ObjectId(context.query.id))
 
+        if(!pack) return {
 
-        if(response.status === 200) {
-
-            const pack = await response.json()
-            return{
-                props: {
-                    pack,
-                }
-            }
-
-        } else {
-
-            return {
-                redirect: {
-                    destination: `/browse`,
-                    permanent: false,
-                }
-
-            }
-        }
-
-    } else {
-
-        return {
             redirect: {
                 destination: `/browse`,
                 permanent: false,
             }
+
         }
+
+        return{
+            props: {
+                pack: JSON.stringify(pack)
+            }
+        }
+        
+    } else {
+
+        return {
+
+            redirect: {
+                destination: `/browse`,
+                permanent: false,
+            }
+
+        }
+
     }
 
 } 

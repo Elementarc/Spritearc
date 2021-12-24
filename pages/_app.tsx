@@ -13,9 +13,10 @@ export default function MyApp({ Component, pageProps}: any) {
         
         return(() => {
             sessionStorage.setItem("prev_path", router.asPath)
-            console.log(sessionStorage.getItem("prev_path"))
         })
+
     }, [router.asPath])
+
     return(
         <>
 

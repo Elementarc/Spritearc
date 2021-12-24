@@ -1,11 +1,5 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { get_recent_packs } from '../../lib/mongo_lib';
-import { MongoClient } from 'mongodb'
-import { Pack } from "../../types"
-import { send } from 'process';
-const url = 'mongodb://localhost:27017';
-const client = new MongoClient(url);
 
 export default async function api_request(req: NextApiRequest, res: NextApiResponse) {
 
