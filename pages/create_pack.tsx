@@ -1,20 +1,23 @@
-import React, {useEffect, useCallback, useReducer, useState, ReactElement, useContext} from 'react';
+import React, {useEffect, useReducer, useState, ReactElement, useContext} from 'react';
 import Footer from '../components/footer';
 import H1_with_deco from '../components/h1_with_deco';
 import Steps from '../components/steps';
-import {Create_pack_frontend, Pack_content} from "../types"
+import {Create_pack_frontend} from "../types"
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import Image from 'next/image';
 import { validate_blob } from '../lib/custom_lib';
 
+//Context
 const create_pack_context: any = React.createContext(null)
 
+//Actions 
 const CREATE_PACK_ACTIONS = {
     ADD_SECTION: "ADD_SECTION",
     ADD_ASSET: "ADD_ASSET",
     ADD_PREVIEW: "ADD_PREVIEW"
 }
 
+//Initial value for reducer state
 const initial_create_pack_obj: Create_pack_frontend = {
     current_step: 0,
     next_step_available: false,
@@ -27,6 +30,7 @@ const initial_create_pack_obj: Create_pack_frontend = {
     content: [],
 }
 
+//Create Pack handler that handles all functions for
 function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {type: string, payload?: any}): Create_pack_frontend {
     const {type , payload} = action
 
@@ -57,20 +61,21 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             create_pack_obj.preview = payload.blob
         }
 
+        //Default value
         default : {
             return create_pack_obj
         }
     } 
 }
 
+//Page Component
 export default function Create_page() {
     const [create_pack_obj, dispatch_create_pack_obj] = useReducer(create_pack_reducer, initial_create_pack_obj)
     const [pack_content_jsx, set_pack_content_jsx] = useState<ReactElement[]>([])
 
-
-    /*useEffect(() => {
-        dispatch_create_pack_obj({type: CREATE_PACK_ACTIONS.ADD_SECTION, payload: {section_name: "Background"}})
-    }, []) */
+    useEffect(() => {
+        /* dispatch_create_pack_obj({type: CREATE_PACK_ACTIONS.ADD_SECTION, payload: {section_name: "Background"}}) */
+    }, [])
 
     //Setting pack_content_jsx whenever Content of pack changes. (Sections, Assets)
     useEffect(() => {
@@ -121,7 +126,7 @@ export default function Create_page() {
     );
 }
 
-
+//Component that creates a preview
 function Preview() {
     const create_pack: any = useContext(create_pack_context)
     const [dropped_image, set_dropped_image] = useState<string | null>(null)
@@ -214,6 +219,7 @@ function Preview() {
     );
 }
 
+//Component that creates a section for assets
 function Section({section_name, section_assets}: {section_name: string, section_assets: string[]}) {
 
     async function on_drop(e: any) {

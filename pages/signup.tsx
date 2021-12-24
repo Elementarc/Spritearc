@@ -2,7 +2,7 @@ import { AnimatePresence, motion} from "framer-motion";
 import React, { useState, useEffect, useContext} from "react";
 import Footer from "../components/footer";
 import Link from "next/dist/client/link";
-import { SignUp } from "../types";
+import { Signup_obj } from "../types";
 import H1_with_deco from '../components/h1_with_deco';
 import DoneIcon from "../public/icons/DoneIcon.svg"
 import { Nav_shadow } from "../components/navigation";
@@ -20,10 +20,10 @@ const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]
 
 //CONTEXT
 interface SignupContext {
-    signup_obj: SignUp,
+    signup_obj: Signup_obj,
     current_step: number,
     reset_signup: () => void,
-    set_signup_obj: React.Dispatch<React.SetStateAction<SignUp>>
+    set_signup_obj: React.Dispatch<React.SetStateAction<Signup_obj>>
     // eslint-disable-next-line no-unused-vars
     set_error_message: (error: boolean, message: string, element: HTMLParagraphElement, input_element: HTMLInputElement) => void,
     set_step: React.Dispatch<React.SetStateAction<number>>,
@@ -40,7 +40,7 @@ interface SignupContext {
 
 export default function Sign_up_page() {
     //Obj will be send to server to create account for user.
-    const [signup_obj, set_signup_obj] = useState<SignUp>({
+    const [signup_obj, set_signup_obj] = useState<Signup_obj>({
         username: "King",
         email: "King@gmail.com",
         password: "Hurrensohn1",

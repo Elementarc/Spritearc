@@ -4,7 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Pack_info, Public_user } from '../types';
 import Footer from '../components/footer';
-import { get_user_packs } from '../lib/mongo_lib';
+import { get_released_packs_by_user } from '../lib/mongo_lib';
 import Packs_section from '../components/packs_section';
 import { useParallax } from '../lib/custom_hooks';
 
@@ -79,7 +79,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if(!user) return redirect
     //User was found in the databse
     
-    const user_packs = await get_user_packs(user.released_packs)
+    const user_packs = await get_released_packs_by_user(user.released_packs)
     
     return {
         props: {

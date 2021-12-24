@@ -18,7 +18,7 @@ export default async function get_pack(req: NextApiRequest, res: NextApiResponse
             if(!pack) return res.status(404).send("Could not find a pack with the given id.")
 
             res.status(200).send(pack)
-
+            
         } else {
             //Id is not correct
             res.status(400).send("Please check the id of the pack")

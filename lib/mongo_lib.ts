@@ -50,8 +50,8 @@ export async function get_public_user(username: string): Promise<Public_user | n
     }
 }
 
-
-export async function get_user_packs(pack_id_arr: string[])  {
+//Function that returns spec
+export async function get_released_packs_by_user(pack_id_arr: string[]): Promise<Pack_info[] | [] | null>  {
 
     try {
 
@@ -76,5 +76,74 @@ export async function get_user_packs(pack_id_arr: string[])  {
     } catch ( err ) {
         console.log(err)
         return null
+    }
+}
+
+//Function that checks if email exists in database. and has proper structure
+export async function email_available(email: string | string[] | null) {
+    const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
+    if(typeof email !== "string") return false
+    if(email_regex.test(email) === false) return false
+
+    try {
+        await client.connect()
+        const collection = client.db("pixels").collection("users")
+
+        const aggregated_response = await collection.aggregate([
+            {
+                $project: {
+                    email: { $toUpper: "$email" },
+                },
+            },
+            {
+                $match: {email: email.toUpperCase()}
+            }
+        ]).toArray()
+        
+        if(aggregated_response.length > 0) {
+            return false
+        } else {
+            return true
+        }
+
+    } catch ( err ) {
+        console.log(err)
+        return false
+    }
+}
+
+//Function that checks if username exists in database. and has proper structure
+export async function username_available(username: string | string[] | null) {
+    const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
+
+    if(typeof username !== "string") return false
+    if(username_regex.test(username) === false) return false
+
+    try {
+
+        await client.connect()
+        const collection = client.db("pixels").collection("users")
+        const aggregated_response = await collection.aggregate([
+            {
+                $project: {
+                    username: { $toUpper: "$username" },
+                },
+            },
+            {
+                $match: {username: username.toUpperCase()}
+            }
+            
+        ]).toArray()
+        
+        if(aggregated_response.length > 0) {
+            return false
+        } else {
+            return true
+        }
+
+    } catch ( err ) {
+
+        console.log(err)
+        return false
     }
 }

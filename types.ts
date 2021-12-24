@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 
 //APP context_types
 export interface App_navigation_context_type {
@@ -72,6 +73,7 @@ export interface Pack_content {
     section_name: string,
     section_assets: string[] | []
 }
+
 //Create pack
 export interface Create_pack_frontend {
     current_step: number,
@@ -104,18 +106,19 @@ export interface Public_user {
     profile_banner: string,
     following: [],
     followers: [],
-    released_packs: [],
+    released_packs: string[] | [],
 }
 
+
 //Signup
-export interface SignUp {
+export interface Signup_obj {
     username: string | null,
     email: string | null,
     password: string | null,
     legal: boolean,
     occasional_emails: boolean,
 }
-export interface ServerSignUp extends SignUp {
+export interface Server_signup_obj extends Signup_obj {
     hashed_password: string,
     salt: string,
     date: Date,

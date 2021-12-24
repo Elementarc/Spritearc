@@ -1,6 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {MongoClient} from "mongodb"
 import { SHA256 } from "crypto-js";
+import { create_user } from "../../../../lib/custom_lib";
+import { email_available, username_available } from "../../../../lib/mongo_lib";
+
 const nodemailer = require("nodemailer")
 //Creating email transporter
 const transporter = nodemailer.createTransport({
@@ -12,8 +15,6 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
-const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
 const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,32}$/)
 
 const client = new MongoClient("mongodb://localhost:27017")
@@ -21,71 +22,6 @@ const client = new MongoClient("mongodb://localhost:27017")
 
 export default async function signup(req: NextApiRequest, res: NextApiResponse) {
     
-    //Function that validates an email.
-    async function validate_email(email: string | string[] | null) {
-        if(typeof email !== "string") return false
-        if(email_regex.test(email) === false) return false
-    
-        try {
-            await client.connect()
-            const collection = client.db("pixels").collection("users")
-    
-            const aggregated_response = await collection.aggregate([
-                {
-                    $project: {
-                        email: { $toUpper: "$email" },
-                    },
-                },
-                {
-                    $match: {email: email.toUpperCase()}
-                }
-            ]).toArray()
-            
-            if(aggregated_response.length > 0) {
-                return false
-            } else {
-                return true
-            }
-    
-        } catch ( err ) {
-            console.log(err)
-            return false
-        }
-    }
-    //Function that validates an username.
-    async function validate_username(username: string | string[] | null) {
-        if(typeof username !== "string") return false
-        if(username_regex.test(username) === false) return false
-    
-        try {
-    
-            await client.connect()
-            const collection = client.db("pixels").collection("users")
-            const aggregated_response = await collection.aggregate([
-                {
-                    $project: {
-                        username: { $toUpper: "$username" },
-                    },
-                },
-                {
-                    $match: {username: username.toUpperCase()}
-                }
-                
-            ]).toArray()
-            
-            if(aggregated_response.length > 0) {
-                return false
-            } else {
-                return true
-            }
-    
-        } catch ( err ) {
-    
-            console.log(err)
-            return false
-        }
-    }
-
     //POST Method
     if(req.method === "POST") {
         if(typeof req.query.route !== "string") return res.status(400).end()
@@ -94,9 +30,9 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
         if(req.query.route === "validate_username") {
             const username = req.body.username
 
-            const username_available = await validate_username(username)
+            const u_available = await username_available(username)
             
-            if(username_available) {
+            if(u_available) {
                 res.status(200).end()
             } else {
                 res.status(403).send("Can't use that username")
@@ -106,9 +42,9 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
         //Validating email only.
         else if(req.query.route === "validate_email") {
             const email = req.body.email
-            const email_available = await validate_email(email)
+            const e_available = await email_available(email)
 
-            if(email_available) {
+            if(e_available) {
 
                 res.status(200).send({available: true})
 
@@ -135,12 +71,12 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             if(!username || !email || !password || !legal_init) return res.status(400).send("Missing credentials!")
             
             //Validating userinputs. Also making call to backend to check if it already exists.
-            const email_available = await validate_email(email)
-            const username_available = await validate_username(username)
+            const e_available = await email_available(email)
+            const u_available = await username_available(username)
             const password_valid = password_regex.test(password)
             
             //Validating inputs
-            if(!email_available || !username_available || !password_valid) return res.status(403).send("Credentials didn't pass validations!")
+            if(!e_available || !u_available || !password_valid) return res.status(403).send("Credentials didn't pass validations!")
            
             //Passed all tests
 
@@ -163,23 +99,11 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             
                 const users_collection = client.db("pixels").collection("users")
                 
+                //Creating new user instance
+                const user_obj =  create_user(username, email, hashed_password, salt, ocassional_emails_init)
+
                 //Creating a new user instance for user.
-                await users_collection.insertOne({
-                    username: username,
-                    email: email,
-                    password: hashed_password,
-                    salt: salt,
-                    verified: false,
-                    description: "Hey! Im new here :)",
-                    profile_picture: "default.png",
-                    profile_banner: "default.png",
-                    created_at: new Date(),
-                    occasional_emails: ocassional_emails_init,
-                    notifications: [],
-                    following: [],
-                    followers: [],
-                    released_packs: [],
-                })
+                await users_collection.insertOne(user_obj)
                 
                 const user = await users_collection.findOne({username: username})
                 if(! user) throw new Error("Could not find username in database")
