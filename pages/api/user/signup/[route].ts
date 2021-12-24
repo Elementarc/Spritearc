@@ -30,29 +30,55 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
         if(req.query.route === "validate_username") {
             const username = req.body.username
 
-            const u_available = await username_available(username)
-            
-            if(u_available) {
-                res.status(200).end()
-            } else {
-                res.status(403).send("Can't use that username")
+            try {
+
+                const u_available = await username_available(username)
+
+                if(u_available) {
+
+                    res.status(200).send({available: true})
+    
+                } else {
+                    
+                    res.status(400).send("Can't use that username.")
+    
+                }
+
+            } catch ( err ) {
+
+                console.log(err)
+                res.status(500).send("Something went wrong")
+
             }
             
         }
         //Validating email only.
         else if(req.query.route === "validate_email") {
             const email = req.body.email
-            const e_available = await email_available(email)
 
-            if(e_available) {
+            try {
 
-                res.status(200).send({available: true})
+                const e_available = await email_available(email)
 
-            } else {
-                
-                res.status(403).send("Can't use that email.")
+                if(e_available) {
+
+                    res.status(200).send({available: true})
+    
+                } else {
+                    
+                    res.status(400).send("Can't use that email.")
+    
+                }
+
+            } catch ( err ) {
+
+                console.log(err)
+                res.status(500).send("Something went wrong")
 
             }
+            
+
+            
             
         } 
         //Validating whole signup request. Sending verification to email.

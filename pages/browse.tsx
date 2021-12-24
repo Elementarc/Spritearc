@@ -1,5 +1,5 @@
 import React, {ReactElement, useState, useEffect} from 'react';
-import { Pack_info } from "../types"
+import { Pack } from "../types"
 import Pack_preview from '../components/pack_preview';
 import Link from 'next/dist/client/link';
 import Image from "next/image"
@@ -18,7 +18,7 @@ export default function Browse() {
 
 			const response_recent_pack = await fetch(`/api/get_recent_packs`)
 			if(response_recent_pack.status === 200) {
-				const response_obj: {body: Pack_info[] | null} = await response_recent_pack.json()
+				const response_obj: {body: Pack[] | null} = await response_recent_pack.json()
 				set_recent_packs(response_obj.body as any) 
 			} else {
 				set_recent_packs(false) 
@@ -54,7 +54,7 @@ function Title_section() {
 			const response_title_pack = await fetch(`/api/get_title_pack`)
 			
 			if(response_title_pack.status === 200) {
-				const response_obj: {body: Pack_info | null} = await response_title_pack.json()
+				const response_obj: {body: Pack | null} = await response_title_pack.json()
 				set_title_pack(response_obj.body as any)
 			} else {
 				set_title_pack(false)

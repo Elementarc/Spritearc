@@ -55,7 +55,7 @@ export interface Patchnote_info {
 }
 
 //PackPreview types
-export interface Pack_info {
+export interface Pack {
     _id: string,
     premium: boolean,
     username: string,
@@ -125,6 +125,6 @@ export interface Server_signup_obj extends Signup_obj {
     about: string,
     socials: string[],
     profile_image: string,
-    released_packs: Pack_info[]
+    released_packs: Pack[]
 }
 

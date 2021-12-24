@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import React, {ReactElement, useEffect, useContext, useState} from 'react';
 import Footer from '../components/footer';
-import {Pack_content, Pack_info} from "../types"
+import {Pack_content, Pack} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
@@ -23,7 +23,7 @@ const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 
 //Renders the full Pack
-export default function Pack_page(props: {pack: Pack_info}) {
+export default function Pack_page(props: {pack: Pack}) {
     //State that saves currently clicked asset as a url string.
     const [focus_img_src, set_focus_img_src] = useState("/")
     //State that toggles focus of asset.
@@ -261,7 +261,7 @@ function Pack_sprite_sections(): ReactElement {
 //Component that creates assets from pack.
 function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
     const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
-    const pack = PACK_PAGE.pack as Pack_info
+    const pack = PACK_PAGE.pack as Pack
     const show_asset = PACK_PAGE.toggle_asset as () => void
     const pack_content = props.pack_content
     

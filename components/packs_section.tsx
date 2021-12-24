@@ -1,10 +1,10 @@
 import React, {ReactElement, useState, useEffect} from 'react';
- import { Pack_info } from '../types';
+ import { Pack } from '../types';
 import Link from 'next/link';
 import Pack_preview from './pack_preview';
 import Loader from './loading';
 
-export default function Packs_section(props: { header: string , packs: Pack_info[] | null}) {
+export default function Packs_section(props: { header: string , packs: Pack[] | null}) {
 	const packs = props.packs ? props.packs : []
 
     const jsx_packs = []

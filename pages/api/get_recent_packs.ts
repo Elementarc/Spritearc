@@ -1,34 +1,36 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { get_recent_packs } from '../../lib/mongo_lib';
 import { MongoClient } from 'mongodb'
-import { Pack_info } from "../../types"
+import { Pack } from "../../types"
+import { send } from 'process';
 const url = 'mongodb://localhost:27017';
 const client = new MongoClient(url);
 
-export default async function get_recent_packs(req: NextApiRequest, res: NextApiResponse) {
+export default async function api_request(req: NextApiRequest, res: NextApiResponse) {
 
     if(req.method === "GET") {
-        try {
-            //Connecting to database
-            await client.connect()
-            //Choosing db
-            const db = client.db("pixels");
-            //Returning 12 Packs Ordered by Date.
-            const recent_packs = await db.collection("packs").find({}).sort({date: -1}).limit(12).toArray() as Pack_info[]
 
-            res.setHeader("Content-type", "application/json")
-            if(recent_packs.length > 0) {
-                res.status(200).send({body: recent_packs})
-            } else {
-                res.status(200).send({body: null})
-            }
+        try {
+
+            //gettings packs from db
+            const packs = await get_recent_packs(12)
+
+            if(!packs) return res.status(200).send({body: null})
+
+            res.status(200).send({body: packs})
 
         } catch (err) {
+
             console.log(err)
-            res.status(500).end()
+            res.status(500).send("Something went wrong!")
+
         }
+
     } else {
+
         res.status(400).end()
+
     }
     
 }
