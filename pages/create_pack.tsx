@@ -8,8 +8,7 @@ import Image from 'next/image';
 import { validate_files } from '../lib/custom_lib';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import { AnimatePresence } from 'framer-motion';
-import { test } from 'gray-matter';
-
+import ThrashIcon from "../public/icons/ThrashIcon.svg"
 //Context
 const create_pack_context: any = React.createContext(null)
 const section_name_regex = new RegExp(/^[a-zA-Z0-9]{3,12}$/)
@@ -19,6 +18,7 @@ const CREATE_PACK_ACTIONS = {
     ADD_SECTION: "ADD_SECTION",
     DELETE_SECTION: "DELETE_SECTION",
     ADD_ASSET: "ADD_ASSET",
+    DELETE_ASSET: "DELETE_ASSET",
     ADD_PREVIEW: "ADD_PREVIEW",
     NEXT_STEP: "NEXT_STEP"
 }
@@ -63,7 +63,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
                 /* create_pack_obj.content = new_content_map */
             }
             
-            console.log(create_pack_obj.content)
             return {...create_pack_obj}
         }
 
@@ -105,7 +104,25 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             
 
             create_pack_obj.content.set(section_name, {section_assets: all_blobs, section_urls: object_urls})
-            console.log(create_pack_obj.content)
+            console.log(create_pack_obj)
+            return {...create_pack_obj}
+        }
+
+        //Adding assets to section_assets in content
+        case ( CREATE_PACK_ACTIONS.DELETE_ASSET ) : {
+            if(!payload) return create_pack_obj
+            const section_name = payload.section_name as string
+            const index = payload.asset_index as number
+            
+            console.log(index)
+            const section = create_pack_obj.content.get(section_name.toLowerCase())
+
+            if(!section) return {...create_pack_obj}
+
+            section.section_assets.splice(index, 1)
+            section.section_urls.splice(index, 1)
+            create_pack_obj.content.set(section_name.toLowerCase(), {section_assets: [...section.section_assets], section_urls: [...section.section_urls]})
+            
             return {...create_pack_obj}
         }
 
@@ -269,22 +286,6 @@ function Create_page() {
         dispatch
     }
 
-    function test() {
-        console.log(create_pack.create_pack_obj)
-        
-        const files: File[] = [new File([new Blob()], "lol.png")]
-        
-        let blobs: Blob[] = []
-
-        for(let file of files) {
-            blobs.push(new Blob([file], {type: file.type}))
-        }
-        
-        
-        console.log("dispatched!")
-        create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_ASSET, payload: {section_name: "test", new_section_assets: blobs}})
-    }
-
     return (
         <create_pack_context.Provider value={create_pack}>
             <div className='create_pack_page'>
@@ -305,9 +306,7 @@ function Create_page() {
 
                                 </div>
                                 
-                                <div onClick={() => {set_toggle_add_section(false)}} className='background_wrapper'>
-
-                                </div>
+                                <div onClick={() => {set_toggle_add_section(false)}} className='background_wrapper' />
 
                             </div>
 
@@ -327,7 +326,7 @@ function Create_page() {
                     
 
 
-                    <div className='button_container' onClick={test}>
+                    <div className='button_container'>
                         <button>Next Step</button>
                     </div>
 
@@ -348,26 +347,33 @@ function Section({section_name, section_content}: {section_name: string, section
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
     const [section_assets_jsx, set_section_assets_jsx] = useState<ReactElement[] | null>(null)
 
+    function delete_asset(e: any) {
+        create_pack.dispatch({type: CREATE_PACK_ACTIONS.DELETE_ASSET, payload: {section_name, asset_index: parseInt(e.target.id)}})
+    }
+
     useEffect(() => {
         let asset_jsx: ReactElement[] = []
-
 
         for(let i = 0; i < section_content.section_urls.length; i++) {
             
             asset_jsx.push(
 
-                <div key={`${section_content.section_urls}_${i}`} className='asset'>
-                    <Image src={section_content.section_urls[i]} layout='fill'></Image>
+                <div onClick={delete_asset} id={`${i}`} key={`${section_content.section_urls}_${i}`} className='asset'>
+                    <Image  src={section_content.section_urls[i]} layout='fill'></Image>
+
+                    <div className='delete_background_container'>
+                        <ThrashIcon/>
+                    </div>
+
                 </div>
 
             )
 
         }
         
-        
-        set_section_assets_jsx(asset_jsx)
+        set_section_assets_jsx(asset_jsx.reverse())
 
-    }, [section_content])
+    }, [section_content.section_urls, section_content.section_assets])
 
 
     function delete_section() {
@@ -379,7 +385,13 @@ function Section({section_name, section_content}: {section_name: string, section
 
             <div className='section_header_container'>
                 <h1>{`- ${section_name}`}</h1>
-                <p onClick={delete_section}>Delete Pack</p>
+
+                <div className='delete_section'>
+                    
+                    <p onClick={delete_section}>Delete section</p>
+                    <ThrashIcon/>
+                </div>
+                
             </div>
 
             <Dropzone section_name={`${section_name}`} section_content={section_content}>

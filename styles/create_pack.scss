@@ -89,7 +89,7 @@
         
         .dropzone_container {
             width: 100%;
-            margin-top: .2rem;
+            margin-top: .3rem;
             p {
                 @include p(small);
                 color: $color_error;
@@ -109,7 +109,7 @@
                 padding: 1rem;
                 border: 1px dashed $color_dark_grey;
                 transition: .1s ease-in-out;
-
+                
                 .asset {
                     background: $color_main_blue;
                     position: relative;
@@ -125,17 +125,46 @@
                     -khtml-user-select: none;
                     -webkit-user-select: none;
                     -o-user-select: none;
-
+                    overflow: hidden;
+                    
                     &:hover{
                         cursor: pointer;
                         transform: scale(1.1);
+                        .delete_background_container{
+                            opacity: 1;
+                            transform: scale(3);
+                        }
                     }
 
+                    span {
+                        pointer-events: none;
+                    }
                     img {
                         pointer-events: none;
                         image-rendering: pixelated;
                         object-position: center;
                         object-fit: cover;
+                    }
+                    .delete_background_container {
+                        position: absolute;
+                        pointer-events: none;
+                        opacity: 0;
+                        transition: .1s ease-in-out;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        transform: scale(1.01);
+                        height: 100%;
+                        background: rgba(0, 0, 0, 0.80);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        
+                        svg {
+                            transform: scale(1);
+                            transition: .2s ease-in-out;
+                            fill: $color_error;
+                        }
                     }
                 }
 
@@ -152,6 +181,7 @@
                         color: $color_dark_grey;
                     }
                 }
+                
             }
             .dropzone_hover {
                 border: 1px dashed $color_main;
@@ -240,13 +270,29 @@
                 h1 {
                     @include h1(small);
                 }
-                p{
-                    justify-self: end;
-                    @include p(small);
-                    color: $color_error;
-                    &:hover{
+                .delete_section {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    column-gap: .5rem;
+                    &:hover {
                         cursor: pointer;
-                        color: $color_error_hover;
+                        
+                        p {
+                            color: $color_error_hover;
+                        }
+                        svg {
+                            fill: $color_error_hover;
+                        }
+                        
+                    }
+                    svg {
+                        fill: $color_error;
+                    }
+                    p{
+                        justify-self: end;
+                        @include p(small);
+                        color: $color_error;
                         
                     }
                 }
