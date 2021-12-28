@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient, ObjectId, WithId } from 'mongodb';
 import { Public_user } from '../types';
 import { Pack } from '../types';
 const client = new MongoClient("mongodb://localhost:27017")
@@ -57,7 +57,7 @@ export async function get_released_packs_by_user(pack_id_arr: string[]): Promise
         const pack_id_valid = ObjectId.isValid(pack_id)
 
         if(pack_id_valid) {
-            const pack = await packs_collection.findOne({_id: new ObjectId(pack_id)}) as Pack
+            const pack = (await packs_collection.findOne({_id: new ObjectId(pack_id)}) as unknown) as Pack
             
             if(pack) {
                 user_packs.push(pack)
@@ -136,7 +136,7 @@ export async function get_pack_by_id(pack_id: ObjectId): Promise<Pack | null> {
 
     await client.connect();
     const packs_collection = client.db(DATABASE).collection("packs")
-    const pack = await packs_collection.findOne({_id: new ObjectId(`${pack_id}`)})
+    const pack = (await packs_collection.findOne({_id: new ObjectId(`${pack_id}`)}) as unknown) as Pack
     
     if(!pack) return null
 
@@ -154,8 +154,7 @@ export async function get_recent_packs(number_of_returns: number): Promise<Pack[
     const db = client.db(DATABASE);
 
     //Returning 12 Packs Ordered by Date.
-    const recent_packs = await db.collection("packs").find({}).sort({date: -1}).limit(number_of_returns).toArray() as Pack[]
-
+    const recent_packs = (await db.collection("packs").find({}).sort({date: -1}).limit(number_of_returns).toArray() as unknown) as Pack[]
 
     if(recent_packs.length > 0) {
 

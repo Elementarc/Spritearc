@@ -10,6 +10,7 @@ import Device_context_provider from '../context/device_context_provider';
 import App_notification_context_provider from '../context/app_notification_context_provider';
 import Navigation_context_provider, {Navigation_context} from '../context/navigation_context_provider';
 import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
+
 export const APP_CONTEXT: any = React.createContext(null)
 
 export default function Layout({children}: any ) {
@@ -99,6 +100,7 @@ export function App_content_blur() {
             app_content_blur.style.pointerEvents = "all"
         }
     }, [Nav.nav_state])
+
     return(
         <div onClick={() => {Nav.set_nav_state(false)}} className="app_content_blur" id="app_content_blur"/>
     )

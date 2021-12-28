@@ -25,6 +25,7 @@ $color_main_blue: #111F35;
 $color_main_blue_hover: #192b49;
 
 $color_error: #F75E5E;
+$color_error_hover: #fa8787;
 //Font-family
 $font_alatsi: 'Alatsi';
 $font_alata: 'Alata';
@@ -112,6 +113,7 @@ $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba
         background-color: $color_main;
         font-size: 1.125rem;
         padding: .75rem 3.8rem;
+        pointer-events: none;
         
         @include breakpoint(mobile) {
             font-size: 0.875rem;

@@ -7,22 +7,31 @@ export function capitalize_first_letter_rest_lowercase(string: string) {
 }
 
 //return true if blob type & size is valid
-export function validate_blob(blob: Blob): boolean | string {
+export function validate_files(files: File[]): boolean | string {
     
-    //Checking if type of dropped files are jpg / png / jpeg
-    if(blob.type === "image/jpg" || blob.type === "image/png" || blob.type === "image/jpeg" || blob.type === "image/gif") {
+    let passed_validation: boolean | string = false
 
-        if(blob.size <= 150000) {
-            return true
-        } else {
-            return "File is to big! max. 150kb per file"
-        }
+    for(let file of files) {
         
+        //Checking if type of dropped files are jpg / png / jpeg
+        if(file.type === "image/jpg" || file.type === "image/png" || file.type === "image/jpeg" || file.type === "image/gif") {
 
-    } else {
+            if(file.size <= 150000) {
+                passed_validation = true
+            } else {
+                passed_validation = `The file: '${file.name}' is to big! max. 150kb per file`
+                break
+            }
 
-        return "Supported types: JPG, PNG, JPEG, GIF"
+        } else {
+
+            passed_validation = "Supported types: JPG, PNG, JPEG, GIF"
+            break
+        }
+
     }
+    
+    return passed_validation
 
 }
 

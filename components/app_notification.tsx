@@ -4,16 +4,17 @@ import { App_notification_context } from '../context/app_notification_context_pr
 import {motion} from "framer-motion";
 import { NOTIFICATION_ACTIONS } from "../context/app_notification_context_provider"
 import { App_notification_context_type } from '../types';
-
+import { APP_CONTEXT } from './layout';
 //Component that renders an App notification
 export default function App_notification() {
     const App_notification: App_notification_context_type = useContext(App_notification_context)
+    const APP: any = useContext(APP_CONTEXT)
     const notification = App_notification.app_notification
      
     //Setting maxWidth and maxHeight of fixed container to page container
     useEffect(() => {
-        const app_fixed_container = document.getElementById("app_overlay_fixed") as HTMLDivElement
-        const app_content_container = document.getElementById("app_content_container") as HTMLDivElement
+        const app_fixed_container = document.getElementById("app_notification_container") as HTMLDivElement
+        const app_content_container = APP.app_content_element() as HTMLDivElement
 
         const observer = new ResizeObserver(() => {
             
@@ -43,7 +44,7 @@ export default function App_notification() {
         <AnimatePresence exitBeforeEnter>
             {notification.toggle &&
 
-                <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className="app_overlay_fixed" id="app_overlay_fixed">
+                <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className="app_notification_container" id="app_notification_container">
                 
                     <motion.div initial={{scale: .8}} animate={{scale: 1}} exit={{scale: .8}} className={`notification_container ${notification.success? "notification_success_container" : "notification_error_container"}`}>
                         

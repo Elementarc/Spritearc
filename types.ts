@@ -84,9 +84,16 @@ export interface Create_pack_frontend {
     sub_title: string | null,
     description: string | null,
     tags: string[] | [],
-    content: Pack_content[]
+    content: Map<string, {section_assets: Blob[], section_urls: string[]}>
 }
 
+export interface Create_pack_context_type {
+    create_pack_obj: Create_pack_frontend;
+    dispatch: React.Dispatch<{
+        type: string;
+        payload?: any;
+    }>;
+}
 
 //User
 export interface User extends Public_user{

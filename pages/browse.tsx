@@ -18,8 +18,11 @@ export default function Browse() {
 
 			const response_recent_pack = await fetch(`/api/get_recent_packs`)
 			if(response_recent_pack.status === 200) {
+
 				const response_obj: {body: Pack[] | null} = await response_recent_pack.json()
+				
 				set_recent_packs(response_obj.body as any) 
+
 			} else {
 				set_recent_packs(false) 
 			}
@@ -51,21 +54,23 @@ function Title_section() {
 	useEffect(() => {
 		
 		async function get_title_pack() {
-			const response_title_pack = await fetch(`/api/get_title_pack`)
+			const response_title_pack = await fetch(`/api/get_recent_packs`)
 			
 			if(response_title_pack.status === 200) {
 				const response_obj: {body: Pack | null} = await response_title_pack.json()
-				set_title_pack(response_obj.body as any)
+
+				set_title_pack((response_obj.body as any)[0])
 			} else {
 				set_title_pack(false)
 			}
 			
 		}
-
+		
 		get_title_pack()
 	}, [set_title_pack])
-
+	
 	useParallax("title_pack_background_image", title_pack)
+	
 	const pack = title_pack as any
 	return (
 		<div className="title_pack_container">
