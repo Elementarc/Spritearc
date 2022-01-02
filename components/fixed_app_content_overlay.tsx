@@ -29,7 +29,7 @@ export default function Fixed_app_content_overlay({children}: any) {
     }, [APP])
 
     return (
-        <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className="fixed_app_content_overlay" id="fixed_app_content_overlay">
+        <motion.div initial={{opacity: 0}} animate={{opacity: 1, scale: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className="fixed_app_content_overlay" id="fixed_app_content_overlay">
 
             {children}
             

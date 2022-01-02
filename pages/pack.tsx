@@ -21,6 +21,7 @@ import { Device_context } from '../context/device_context_provider';
 import { format_date } from '../lib/date';
 import { get_pack_by_id } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
+import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 
@@ -147,7 +148,6 @@ export default function Pack_page(props: {pack: Pack}) {
 
                         <div className="pack_info">
                             <div className="header_container">
-                                <h2>{pack.sub_title}</h2>
 
                                 <H1_with_deco title={pack.title}/>
 
@@ -236,7 +236,7 @@ export default function Pack_page(props: {pack: Pack}) {
 //Component that creates a section with assets
 function Pack_sprite_sections(): ReactElement {
     const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
-    const pack = PACK_PAGE.pack
+    const pack: Pack = PACK_PAGE.pack
 
     const section_jsx = []
     //Looping through content to create a section for each content
@@ -244,7 +244,7 @@ function Pack_sprite_sections(): ReactElement {
         
         section_jsx.push(
             <div key={`section_${i}`} className="section_container">
-                <h1>{"– "} {pack.content[i].section_name}</h1>
+                <h1>{"– "} {capitalize_first_letter_rest_lowercase(pack.content[i].section_name)}</h1>
                 <Pack_asset pack_content={pack.content[i]}/>
             </div>
         )

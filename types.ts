@@ -78,7 +78,7 @@ export interface Pack_content {
 export interface Create_pack_frontend {
     current_step: number,
     next_step_available: boolean,
-    preview: Blob | null
+    preview: {preview_asset: Blob | null, preview_url: string | null}
     premium: boolean,
     title: string | null,
     sub_title: string | null,
@@ -102,6 +102,7 @@ export interface User extends Public_user{
     salt: string,
     verified: boolean,
     notifications: [],
+    role: string,
     occasional_emails: boolean,
 }
 

@@ -68,7 +68,6 @@ export default function Pack_preview(props: {pack: Pack}) {
 
                 <div className="content_container">
                     <h1>{pack.title}</h1>
-                    <h2>{pack.sub_title}</h2>
                 </div>
                 
                 <div className="background_container">

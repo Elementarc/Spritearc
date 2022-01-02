@@ -44,6 +44,7 @@ export function create_user(username: string, email: string, password: string, s
         password,
         salt,
         verified: false,
+        role: "member",
         occasional_emails: occasional_emails,
         description: "Hey! Im new here :)",
         profile_picture: "default.png",
