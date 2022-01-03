@@ -36,17 +36,21 @@ export default function Steps({steps, current_step, steps_available}: {steps: nu
             
             //Adding step_done class whenever a step gets available
             if(steps_available.length === 0) {
+
                 steps[i].classList.add("step_inactive")
                 steps[i].classList.remove("step_focus")
                 steps[i].classList.remove("step_done")
+
             } else {
+                //Making every step inactive
                 steps[i].classList.add("step_inactive")
                 steps[i].classList.remove("step_focus")
                 steps[i].classList.remove("step_done")
+
+                //Activating steps based on steps_available
                 for(let n = 0; n < steps_available.length; n++ ) {
                     
                     if(steps[i].getAttribute("data-step") === `${steps_available[n]}`) {
-                        console.log(steps[i])
                         steps[i].classList.remove("step_inactive")
                         steps[i].classList.remove("step_focus")
                         steps[i].classList.add("step_done")

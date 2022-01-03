@@ -44,6 +44,7 @@ export function validate_pack_title(title: string): boolean | string {
 
     return true
 }
+
 export function validate_pack_description(description: string): boolean | string {
     const description_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\!\?\_\&\:\ -]{100,500}$/)
 
@@ -53,6 +54,7 @@ export function validate_pack_description(description: string): boolean | string
 
     return true
 }
+
 //Returning a user obj
 export function create_user(username: string, email: string, password: string, salt: string, occasional_emails: boolean): User {
     

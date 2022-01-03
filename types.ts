@@ -61,7 +61,6 @@ export interface Pack {
     username: string,
     preview_image: string,
     title: string,
-    sub_title: string,
     description: string,
     date: string,
     tags: string[],

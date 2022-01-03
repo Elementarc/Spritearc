@@ -345,9 +345,6 @@
         }
 
 
-        
-
-
         .step_2_container {
             
             .pack_title_container {
@@ -509,24 +506,26 @@
                 .add_tag_container {
                     margin-top: 1rem;
                     display: flex;
-                    column-gap: 3rem;
+                    column-gap: 2rem;
                     align-items: center;
                     input {
                         @include input;
-                        @include p;
+                        font-size: 18px;
                         display: inline-block;
                         color: white
                     }
 
                     button {
                         @include button;
-                        width: 60%;
-                        font-size: 16px;
+                        padding: unset;
+                        padding: .4rem 1rem;
+                        font-size: 24px;
                     }
                 }
                 
             }
         }
+
         .button_container {
             width: 100%;
             display: flex;

@@ -30,7 +30,7 @@ const CREATE_PACK_ACTIONS = {
 //Initial value for reducer state
 const initial_create_pack_obj: Create_pack_frontend = {
     current_step: 0,
-    steps_available: [0],
+    steps_available: [],
     preview: {preview_asset: null, preview_url: null},
     premium: false,
     title: null,
@@ -181,7 +181,7 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
     } 
 
     function available_steps() {
-        let steps = []
+        let steps = [0]
 
         //Step 2 available handler
         if(create_pack_obj.content.size > 0) {
@@ -206,7 +206,7 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
         }
 
         if(steps.includes(1)) {
-            
+
             //Step 3 available handler
             if(create_pack_obj.title && create_pack_obj.description) {
                 const valid_title = validate_pack_title(create_pack_obj.title)
@@ -223,7 +223,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
     }
 
     create_pack_obj.steps_available = available_steps()
-    console.log(available_steps())
     return {...create_pack_obj}
 }
 
@@ -245,7 +244,7 @@ function Create_page() {
             <div className='create_pack_page'>
 
                 <div className='content'>
-                    <H1_with_deco title='Create a pack'/>
+                    
                     <AnimatePresence exitBeforeEnter>
 
                         {create_pack_obj.current_step === 0 &&
@@ -262,14 +261,6 @@ function Create_page() {
                             <Step_3 key="step_3"/>
                         }
                     </AnimatePresence>
-
-                    <div className='button_container'>
-                        {create_pack_obj.current_step > 0 &&
-                            <button onClick={() => {dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="prev_button">Prev Step</button>
-
-                        }
-                        <button onClick={() => {dispatch({type: CREATE_PACK_ACTIONS.NEXT_STEP})}} className={create_pack_obj.steps_available.includes(create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Next Step</button>
-                    </div>
 
                     <Steps steps={3} current_step={create_pack_obj.current_step} steps_available={create_pack_obj.steps_available}/>
                 </div>
@@ -289,6 +280,9 @@ function Step_1() {
     const [toggle_add_section, set_toggle_add_section] = useState(false)
 
 
+    useEffect(() => {
+        create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_SECTION, payload: {section_name: "Lol"}})
+    }, [])
     //CREATING JSX OF create_pack_obj.content
     useEffect(() => {
         const sections_jsx: any = []
@@ -327,52 +321,47 @@ function Step_1() {
             const input = document.getElementById("section_name_input") as HTMLInputElement
             
             const error_message = document.getElementById("section_name_error_message") as HTMLParagraphElement
-    
-            clearTimeout(timer)
-    
-            timer = setTimeout(() => {
             
-                if(input.value.length < 3) {
+            if(input.value.length < 3) {
 
-                    error_message.innerText = "Sectioname must be atleast 3 characters long!"
-                    style_error_items(true)
-                    resolve(false)
+                error_message.innerText = "Sectioname must be atleast 3 characters long!"
+                style_error_items(true)
+                resolve(false)
 
-                }
-                else {
-                    
-                    if(section_name_regex.test(input.value) === true) {
-
-                        let exists = false
-                        for(let [key, value] of create_pack_obj.content.entries()) {
+            }
+            else {
                 
-                            if(key.toLowerCase() === input.value.toLowerCase()) {
-                                exists = true
-                            }
-                        }
+                if(section_name_regex.test(input.value) === true) {
 
-                        if(exists) {
-                            style_error_items(true)
-                            resolve(false)
-                            error_message.innerText = "Sectioname already exists!"
-                        } else {
-                            style_error_items(false)
-                            resolve(true)
-                            error_message.innerText = ""
+                    let exists = false
+                    for(let [key, value] of create_pack_obj.content.entries()) {
+            
+                        if(key.toLowerCase() === input.value.toLowerCase()) {
+                            exists = true
                         }
-                        
-                        
-                    } 
-                    else {
+                    }
+
+                    if(exists) {
                         style_error_items(true)
                         resolve(false)
-                        error_message.innerText = "You can only use characters a-z A-Z or numbers 1-9. Max. 12 Characters"
+                        error_message.innerText = "Sectioname already exists!"
+                    } else {
+                        style_error_items(false)
+                        resolve(true)
+                        error_message.innerText = ""
                     }
+                    
+                    
+                } 
+                else {
+                    style_error_items(true)
+                    resolve(false)
+                    error_message.innerText = "You can only use characters a-z A-Z or numbers 1-9. Max. 12 Characters"
                 }
-    
-            }, 150);
-        })
 
+            }
+    
+        })
     }
 
     async function dispatch_section_name_with_input_value() {
@@ -417,41 +406,49 @@ function Step_1() {
         };
     }, [toggle_add_section])
 
+
     return (
-        <div className='step_1_container'>
-            <AnimatePresence exitBeforeEnter>
+        <>
+            <H1_with_deco title='Step 1'/>
+            <div className='step_1_container'>
+                <AnimatePresence exitBeforeEnter>
 
-                {toggle_add_section &&
-                    <Fixed_app_content_overlay key="fixed_container">
+                    {toggle_add_section &&
+                        <Fixed_app_content_overlay key="fixed_container">
 
-                        <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: .2}}} exit={{scale: .8, transition: {duration: .2}}} className='enter_section_name_container'>
+                            <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: .2}}} exit={{scale: .8, transition: {duration: .2}}} className='enter_section_name_container'>
 
-                            <div className='content_container'>
+                                <div className='content_container'>
 
-                                <h1>Please enter a section name!</h1>
-                                <input autoComplete='off' onKeyUp={validate_section_name} type="text" placeholder='Section name' id="section_name_input"/>
-                                <p id="section_name_error_message"></p>
-                                <button onClick={dispatch_section_name_with_input_value} id='add_section_button' className='button_disabled'>Add section</button>
+                                    <h1>Please enter a section name!</h1>
+                                    <input autoComplete='off' onKeyUp={validate_section_name} type="text" placeholder='Section name' id="section_name_input"/>
+                                    <p id="section_name_error_message"></p>
+                                    <button onClick={dispatch_section_name_with_input_value} id='add_section_button' className='button_disabled'>Add section</button>
 
-                            </div>
-                            
-                            <div onClick={() => {set_toggle_add_section(false)}} className='background_wrapper' />
+                                </div>
+                                
+                                <div onClick={() => {set_toggle_add_section(false)}} className='background_wrapper' />
 
-                        </motion.div>
+                            </motion.div>
 
-                    </Fixed_app_content_overlay>
-                }
+                        </Fixed_app_content_overlay>
+                    }
 
-            </AnimatePresence>
+                </AnimatePresence>
 
-            <Preview section_name='preview'/>
+                <Preview section_name='preview'/>
 
-            {pack_content_jsx}
+                {pack_content_jsx}
 
 
-            <p onClick={() => {set_toggle_add_section(true)}} className='add_section'>{`+ Add Section`}</p>
+                <p onClick={() => {set_toggle_add_section(true)}} className='add_section'>{`+ Add Section`}</p>
 
-        </div>
+            </div>
+
+            <div className='button_container'>
+                <button onClick={() => {dispatch({type: CREATE_PACK_ACTIONS.NEXT_STEP})}} className={create_pack_obj.steps_available.includes(create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Next Step</button>
+            </div>
+        </>
     );
 }
 
@@ -460,7 +457,7 @@ function Step_2() {
     let timer: NodeJS.Timer
 
     //Validating and setting Title
-    function validate_title(e: any) {
+    async function validate_title(e: any) {
         const counter = document.getElementById("title_counter") as HTMLParagraphElement
         //error styles for title container
         function error_styles(error: boolean, message: string) {
@@ -479,19 +476,15 @@ function Step_2() {
         const input_value = e.target.value as string
         counter.innerText = `${input_value.length} / 25`
 
-        clearTimeout(timer)
-        timer = setTimeout(() => {
-            const title_validation = validate_pack_title(input_value)
-
-            if(typeof title_validation === "string") {
-                create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_TITLE, payload: {title: null}})
-                error_styles(true, title_validation)
-            } else {
-                create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_TITLE, payload: {title: input_value}})
-                error_styles(false, "")
-            }
-
-        }, 200);
+        const title_validation = validate_pack_title(input_value)
+    
+        if(typeof title_validation === "string") {
+            create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_TITLE, payload: {title: null}})
+            error_styles(true, title_validation)
+        } else {
+            create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_TITLE, payload: {title: input_value}})
+            error_styles(false, "")
+        }
         
     }
 
@@ -500,70 +493,100 @@ function Step_2() {
         const input_value = e.target.value as string
         
         function error_styles(error: boolean, message: string) {
-            const input = document.getElementById("description_input") as HTMLTextAreaElement
-            const error_message = document.getElementById("description_error_message") as HTMLParagraphElement
+            if(create_pack.create_pack_obj.current_step === 1) {
+            
+                const input = document.getElementById("description_input") as HTMLTextAreaElement
+                const error_message = document.getElementById("description_error_message") as HTMLParagraphElement
 
-            if(error) {
-                input.classList.add("description_input_error")
-                error_message.innerText = `${message}`
-            } else {
-                input.classList.remove("description_input_error")
-                error_message.innerText = ``
+                if(error) {
+                    input.classList.add("description_input_error")
+                    error_message.innerText = `${message}`
+                } else {
+                    input.classList.remove("description_input_error")
+                    error_message.innerText = ``
+                }
             }
         }
         const counter = document.getElementById("description_counter") as HTMLParagraphElement
         counter.innerText = `${input_value.length} / 500`
 
-        clearTimeout(timer)
-        timer = setTimeout(() => {
-            const description_valid = validate_pack_description(input_value)
+        const description_valid = validate_pack_description(input_value)
+        if(typeof description_valid === "string") {
+            error_styles(true, description_valid)
+            create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_DESCRIPTION, payload: {description: null}})
+        } else {
+            error_styles(false, "")
+            create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_DESCRIPTION, payload: {description: input_value}})
+        }
 
-            if(typeof description_valid === "string") {
-                error_styles(true, description_valid)
-                create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_DESCRIPTION, payload: {description: null}})
-            } else {
-                error_styles(false, "")
-                create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_DESCRIPTION, payload: {description: input_value}})
-            }
             
-        }, 200);
     }
 
+    function go_next_step() {
+        const title_input = document.getElementById("title_input") as HTMLInputElement
+        const description_input = document.getElementById("description_input") as HTMLInputElement
+
+        const valid_description = validate_pack_description(description_input.value)
+        const valid_title = validate_pack_title(title_input.value)
+
+        if(valid_description === true && valid_title === true) {
+            create_pack.dispatch({type: CREATE_PACK_ACTIONS.NEXT_STEP})
+        }
+    }
+
+    useEffect(() => {
+      return () => {
+        clearTimeout(timer)
+      };
+    }, [])
+
     return(
-        <div className='step_2_container'>
+        <>
 
-            <div className='pack_title_container'>
-                <h1>Title</h1>
-                <div className='input_container'>
-                    <input defaultValue={create_pack.create_pack_obj.title ? create_pack.create_pack_obj.title : ""} className='title_input' onKeyUp={validate_title} onBlur={validate_title} type="text" placeholder='Max. 25 characters' id="title_input"/>
-                    
-                    <div className='input_info_container'>
-                        <h4 id="title_counter">{`${create_pack.create_pack_obj.title ? create_pack.create_pack_obj.title.length : "0"} / 25`}</h4>
-                        <p id="title_error_message"></p>
+            <H1_with_deco title='Step 2'/>
+
+            <div className='step_2_container'>
+
+                <div className='pack_title_container'>
+                    <h1>Title</h1>
+                    <div className='input_container'>
+                        <input defaultValue={create_pack.create_pack_obj.title ? create_pack.create_pack_obj.title : ""} className='title_input' onKeyUp={validate_title} onBlur={validate_title} type="text" placeholder='Max. 25 characters' id="title_input"/>
+                        
+                        <div className='input_info_container'>
+                            <h4 id="title_counter">{`${create_pack.create_pack_obj.title ? create_pack.create_pack_obj.title.length : "0"} / 25`}</h4>
+                            <p id="title_error_message"></p>
+                        </div>
+                        
                     </div>
+
+                </div>
+
+                <div className='pack_description_container'>
+                    <h1>Description</h1>
+
+                    <div className='input_container'>
+
+                        <textarea defaultValue={create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description : ""} onKeyUp={validate_description} onBlur={validate_description} placeholder='Max. 500 characters' className='description_input' id="description_input"></textarea>
+                        
+                        <div className='input_info_container'>
+                            <h4 id="description_counter">{`${create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description.length : "0"} / 500`}</h4>
+                            <p id="description_error_message"></p>
+                        </div>
+                        
+                    </div>
+                    
                     
                 </div>
 
-            </div>
+                <div className='button_container'>
+                    {create_pack.create_pack_obj.current_step > 0 &&
+                        <button onClick={() => {create_pack.dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="prev_button">Prev Step</button>
 
-            <div className='pack_description_container'>
-                <h1>Description</h1>
-
-                <div className='input_container'>
-
-                    <textarea defaultValue={create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description : ""} onKeyUp={validate_description} placeholder='Max. 500 characters' className='description_input' id="description_input"></textarea>
-                    
-                    <div className='input_info_container'>
-                        <h4 id="description_counter">{`${create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description.length : "0"} / 500`}</h4>
-                        <p id="description_error_message"></p>
-                    </div>
-                    
+                    }
+                    <button onClick={go_next_step} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Next Step</button>
                 </div>
-                
-                
             </div>
-
-        </div>
+        </>
     )
 }
 
@@ -571,19 +594,33 @@ function Step_3() {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
 
     return(
-        <div className='step_3_container'>
 
-            <div className='pack_tags_container'>
-                <h1>Pack tags</h1>
-                
-                <div className='add_tag_container'>
-                    <input type="text" placeholder='Max. 5 Tags'/>
-                    <button>Add Tag</button>
+        <>
+            <H1_with_deco title='Step 3'/>
+            <div className='step_3_container'>
+
+                <div className='pack_tags_container'>
+                    <h1>Tags</h1>
+                    
+                    <div className='add_tag_container'>
+                        <input type="text" placeholder='Max. 5 Tags'/>
+                            <button>+</button>
+                        
+                    </div>
+                    
                 </div>
-                
+
             </div>
 
-        </div>
+            <div className='button_container'>
+                {create_pack.create_pack_obj.current_step > 0 &&
+                    <button onClick={() => {create_pack.dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="prev_button">Prev Step</button>
+
+                }
+                <button onClick={() => {}} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Next Step</button>
+            </div>
+        </>
+ 
     )
 }
 
