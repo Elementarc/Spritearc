@@ -5,14 +5,15 @@ import Steps from '../components/steps';
 import {Create_pack_frontend, Create_pack_context_type} from "../types"
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import Image from 'next/image';
-import { validate_files } from '../lib/custom_lib';
+import { validate_files , validate_pack_title, validate_pack_description} from '../lib/custom_lib';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import { AnimatePresence, motion } from 'framer-motion';
 import ThrashIcon from "../public/icons/ThrashIcon.svg"
+
 //Context
 const create_pack_context: any = React.createContext(null)
 const section_name_regex = new RegExp(/^[a-zA-Z0-9]{3,12}$/)
-
+const description_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\!\?\_\&\:\ -]{100,500}$/)
 //Actions 
 const CREATE_PACK_ACTIONS = {
     ADD_SECTION: "ADD_SECTION",
@@ -21,17 +22,18 @@ const CREATE_PACK_ACTIONS = {
     DELETE_ASSET: "DELETE_ASSET",
     ADD_PREVIEW: "ADD_PREVIEW",
     NEXT_STEP: "NEXT_STEP",
-    PREV_STEP: "PREV_STEP"
+    PREV_STEP: "PREV_STEP",
+    ADD_TITLE: "ADD_TITLE",
+    ADD_DESCRIPTION: "ADD_DESCRIPTION"
 }
 
 //Initial value for reducer state
 const initial_create_pack_obj: Create_pack_frontend = {
     current_step: 0,
-    next_step_available: false,
+    steps_available: [0],
     preview: {preview_asset: null, preview_url: null},
     premium: false,
     title: null,
-    sub_title: null,
     description: null,
     tags: [],
     content: new Map(),
@@ -141,9 +143,26 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break
         }
 
-        case (CREATE_PACK_ACTIONS.NEXT_STEP) : {
+        case ( CREATE_PACK_ACTIONS.ADD_TITLE ) : {
             
-            if(create_pack_obj.next_step_available) create_pack_obj.current_step = create_pack_obj.current_step + 1
+            if(!payload) return create_pack_obj
+            const title = payload.title
+
+            create_pack_obj.title = title
+            break
+        }
+
+        case ( CREATE_PACK_ACTIONS.ADD_DESCRIPTION ) : {
+            
+            if(!payload) return create_pack_obj
+            const description = payload.description
+
+            create_pack_obj.description = description
+            break
+        }
+
+        case (CREATE_PACK_ACTIONS.NEXT_STEP) : {
+            if(create_pack_obj.steps_available.includes(create_pack_obj.current_step + 1)) create_pack_obj.current_step = create_pack_obj.current_step + 1
 
             break
         }
@@ -161,46 +180,50 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
         
     } 
 
-    //Current step handler
-    function next_step_available(current_step: number): boolean {
-        let next_step_is_available = false
+    function available_steps() {
+        let steps = []
 
-        //Checking if next step should be available.
-        switch( current_step ) {
+        //Step 2 available handler
+        if(create_pack_obj.content.size > 0) {
+            const step_2 = 1
+            if(create_pack_obj.preview.preview_asset) {
 
-            case ( 0 ) : {
-                
-                if(create_pack_obj.content.size > 0) {
-                    
-                    if(create_pack_obj.preview.preview_asset) {
+                for(let [key, value] of create_pack_obj.content.entries()) {
 
-                        for(let [key, value] of create_pack_obj.content.entries()) {
-                            if(value.section_assets.length > 2) {
-                                next_step_is_available = true
-                                
-                            } else {
-                                next_step_is_available = false
-                            }
-                        }
-        
-                        return next_step_is_available
+                    if(value.section_assets.length > 2) {
+                        steps.push(step_2)
+                        
+                    } else {
+                        let index = steps.indexOf(step_2)
+                        steps.splice(index, 1)
                     }
-                    
+
                 }
 
+                
             }
-
-            case ( 1 ) : {
-                return next_step_is_available
-            }
-
-            default : {
-                return next_step_is_available
-            }
+            
         }
+
+        if(steps.includes(1)) {
+            
+            //Step 3 available handler
+            if(create_pack_obj.title && create_pack_obj.description) {
+                const valid_title = validate_pack_title(create_pack_obj.title)
+                const valid_description = validate_pack_description(create_pack_obj.description)
+
+                if(valid_title === true && valid_description === true) {
+                    steps.push(2)
+                } 
+                
+            }
+
+        }
+        return steps
     }
-    let next_step_is_available = next_step_available(create_pack_obj.current_step)
-    create_pack_obj.next_step_available = next_step_is_available
+
+    create_pack_obj.steps_available = available_steps()
+    console.log(available_steps())
     return {...create_pack_obj}
 }
 
@@ -208,6 +231,10 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
 function Create_page() {
     const [create_pack_obj, dispatch] = useReducer(create_pack_reducer, initial_create_pack_obj)
     
+    useEffect(() => {
+        window.scrollTo(0,0)
+    }, [create_pack_obj.current_step])
+
     const create_pack = {
         create_pack_obj,
         dispatch
@@ -218,6 +245,7 @@ function Create_page() {
             <div className='create_pack_page'>
 
                 <div className='content'>
+                    <H1_with_deco title='Create a pack'/>
                     <AnimatePresence exitBeforeEnter>
 
                         {create_pack_obj.current_step === 0 &&
@@ -229,18 +257,24 @@ function Create_page() {
                         {create_pack_obj.current_step === 1 &&
                             <Step_2 key="step_2"/>
                         }
-                        
+
+                        {create_pack_obj.current_step === 2 &&
+                            <Step_3 key="step_3"/>
+                        }
                     </AnimatePresence>
 
                     <div className='button_container'>
-                        <button onClick={() => {dispatch({type: CREATE_PACK_ACTIONS.NEXT_STEP})}} className={create_pack_obj.next_step_available ? `active_button` : 'disabled_button'}>Next Step</button>
+                        {create_pack_obj.current_step > 0 &&
+                            <button onClick={() => {dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="prev_button">Prev Step</button>
+
+                        }
+                        <button onClick={() => {dispatch({type: CREATE_PACK_ACTIONS.NEXT_STEP})}} className={create_pack_obj.steps_available.includes(create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Next Step</button>
                     </div>
 
-                    <Steps steps={3} current_step={create_pack_obj.current_step} next_step_available={create_pack_obj.next_step_available}/>
+                    <Steps steps={3} current_step={create_pack_obj.current_step} steps_available={create_pack_obj.steps_available}/>
                 </div>
-
+                
                 <Footer/>
-
             </div>
 
         </create_pack_context.Provider>
@@ -384,7 +418,7 @@ function Step_1() {
     }, [toggle_add_section])
 
     return (
-        <motion.div initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .1, type: "tween"}}} exit={{opacity: 0,y: 50, transition: {duration: .1, type: "tween"}}} className='step_1_container'>
+        <div className='step_1_container'>
             <AnimatePresence exitBeforeEnter>
 
                 {toggle_add_section &&
@@ -410,8 +444,6 @@ function Step_1() {
 
             </AnimatePresence>
 
-            <H1_with_deco title='Create a pack'/>
-
             <Preview section_name='preview'/>
 
             {pack_content_jsx}
@@ -419,34 +451,143 @@ function Step_1() {
 
             <p onClick={() => {set_toggle_add_section(true)}} className='add_section'>{`+ Add Section`}</p>
 
-        </motion.div>
+        </div>
     );
 }
 
 function Step_2() {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
+    let timer: NodeJS.Timer
+
+    //Validating and setting Title
+    function validate_title(e: any) {
+        const counter = document.getElementById("title_counter") as HTMLParagraphElement
+        //error styles for title container
+        function error_styles(error: boolean, message: string) {
+            const input = document.getElementById("title_input") as HTMLInputElement
+            const error_message = document.getElementById("title_error_message") as HTMLParagraphElement
+
+            if(error) {
+                input.classList.add("title_input_error")
+                error_message.innerText = `${message}`
+            } else {
+                input.classList.remove("title_input_error")
+                error_message.innerText = ``
+            }
+        }
+
+        const input_value = e.target.value as string
+        counter.innerText = `${input_value.length} / 25`
+
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+            const title_validation = validate_pack_title(input_value)
+
+            if(typeof title_validation === "string") {
+                create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_TITLE, payload: {title: null}})
+                error_styles(true, title_validation)
+            } else {
+                create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_TITLE, payload: {title: input_value}})
+                error_styles(false, "")
+            }
+
+        }, 200);
+        
+    }
+
+    //Validating and setting Description of pack
+    function validate_description(e: any) {
+        const input_value = e.target.value as string
+        
+        function error_styles(error: boolean, message: string) {
+            const input = document.getElementById("description_input") as HTMLTextAreaElement
+            const error_message = document.getElementById("description_error_message") as HTMLParagraphElement
+
+            if(error) {
+                input.classList.add("description_input_error")
+                error_message.innerText = `${message}`
+            } else {
+                input.classList.remove("description_input_error")
+                error_message.innerText = ``
+            }
+        }
+        const counter = document.getElementById("description_counter") as HTMLParagraphElement
+        counter.innerText = `${input_value.length} / 500`
+
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+            const description_valid = validate_pack_description(input_value)
+
+            if(typeof description_valid === "string") {
+                error_styles(true, description_valid)
+                create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_DESCRIPTION, payload: {description: null}})
+            } else {
+                error_styles(false, "")
+                create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_DESCRIPTION, payload: {description: input_value}})
+            }
+            
+        }, 200);
+    }
 
     return(
-        <motion.div initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .1, type: "tween"}}} exit={{opacity: 0,y: 50, transition: {duration: .1, type: "tween"}}} className='step_2_container'>
+        <div className='step_2_container'>
 
             <div className='pack_title_container'>
-                <h1>Pack title</h1>
-                <input type="text" />
+                <h1>Title</h1>
+                <div className='input_container'>
+                    <input defaultValue={create_pack.create_pack_obj.title ? create_pack.create_pack_obj.title : ""} className='title_input' onKeyUp={validate_title} onBlur={validate_title} type="text" placeholder='Max. 25 characters' id="title_input"/>
+                    
+                    <div className='input_info_container'>
+                        <h4 id="title_counter">{`${create_pack.create_pack_obj.title ? create_pack.create_pack_obj.title.length : "0"} / 25`}</h4>
+                        <p id="title_error_message"></p>
+                    </div>
+                    
+                </div>
+
             </div>
 
             <div className='pack_description_container'>
+                <h1>Description</h1>
 
+                <div className='input_container'>
+
+                    <textarea defaultValue={create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description : ""} onKeyUp={validate_description} placeholder='Max. 500 characters' className='description_input' id="description_input"></textarea>
+                    
+                    <div className='input_info_container'>
+                        <h4 id="description_counter">{`${create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description.length : "0"} / 500`}</h4>
+                        <p id="description_error_message"></p>
+                    </div>
+                    
+                </div>
+                
+                
             </div>
 
-            <div className='pack_tags_container'>
-
-            </div>
-
-            <h1 onClick={() => {create_pack.dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}}>LOL</h1>
-
-        </motion.div>
+        </div>
     )
 }
+
+function Step_3() {
+    const create_pack: Create_pack_context_type = useContext(create_pack_context)
+
+    return(
+        <div className='step_3_container'>
+
+            <div className='pack_tags_container'>
+                <h1>Pack tags</h1>
+                
+                <div className='add_tag_container'>
+                    <input type="text" placeholder='Max. 5 Tags'/>
+                    <button>Add Tag</button>
+                </div>
+                
+            </div>
+
+        </div>
+    )
+}
+
+
 
 //Preview Component that display a pack preview
 function Preview({section_name}: {section_name: string}) {
@@ -574,8 +715,6 @@ function Dropzone({children, section_name, type}: {children: any, section_name: 
             blobs.push(new Blob([file], {type: file.type}))
         }
         
-        console.log("dispatched!")
-
         if(type.toLowerCase() === "section") return create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_ASSET, payload: {section_name, section_assets: blobs}})
         else return create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_PREVIEW, payload: {section_name, preview_asset: blobs[0]}})
         

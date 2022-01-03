@@ -35,6 +35,24 @@ export function validate_files(files: File[]): boolean | string {
 
 }
 
+export function validate_pack_title(title: string): boolean | string {
+    const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9 ]+)$/)
+
+    if(title.length < 3) return "Min. 3 characters."
+    if(title.length > 25) return "Max. 25 characters."
+    if(title_regex.test(title) === false) return "Max. 3 words allowed and title can only contain letters from a-z and number between 0-9"
+
+    return true
+}
+export function validate_pack_description(description: string): boolean | string {
+    const description_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\!\?\_\&\:\ -]{100,500}$/)
+
+    if(description.length < 100) return "Min. 100 characters."
+    if(description.length > 500) return "Max. 500 characters."
+    if(description_regex.test(description) === false) return "Allowed special characters: . , - ! ? _ & :"
+
+    return true
+}
 //Returning a user obj
 export function create_user(username: string, email: string, password: string, salt: string, occasional_emails: boolean): User {
     

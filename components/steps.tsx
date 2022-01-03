@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-export default function Steps({steps, current_step, next_step_available}: {steps: number, current_step: number, next_step_available: boolean}) {
+export default function Steps({steps, current_step, steps_available}: {steps: number, current_step: number, steps_available: number[]}) {
     const c_step = current_step
     //Function that takes in the number of steps that needs to be created!
     function create_steps(steps: number) {
@@ -10,9 +10,9 @@ export default function Steps({steps, current_step, next_step_available}: {steps
 
             steps_jsx.push(
 
-                <div className='step_items_container' key={`step_${i}`} >
+                <div className='step_items_container' key={`step_${i}`}>
 
-                    <div className="step step_inactive" >
+                    <div className="step step_inactive" data-step={`${i}`}>
                         <p id="step_1">Step {i + 1}</p>
                     </div>
 
@@ -34,6 +34,27 @@ export default function Steps({steps, current_step, next_step_available}: {steps
         
         for(let i = 0; i < steps.length; i++) {
             
+            //Adding step_done class whenever a step gets available
+            if(steps_available.length === 0) {
+                steps[i].classList.add("step_inactive")
+                steps[i].classList.remove("step_focus")
+                steps[i].classList.remove("step_done")
+            } else {
+                steps[i].classList.add("step_inactive")
+                steps[i].classList.remove("step_focus")
+                steps[i].classList.remove("step_done")
+                for(let n = 0; n < steps_available.length; n++ ) {
+                    
+                    if(steps[i].getAttribute("data-step") === `${steps_available[n]}`) {
+                        console.log(steps[i])
+                        steps[i].classList.remove("step_inactive")
+                        steps[i].classList.remove("step_focus")
+                        steps[i].classList.add("step_done")
+                    }
+                    
+                }
+            }
+
             //Setting current step always focus
             if(i === c_step) {
                 
@@ -41,14 +62,9 @@ export default function Steps({steps, current_step, next_step_available}: {steps
                 steps[i].classList.remove("step_done")
                 steps[i].classList.remove("step_inactive")
                 
-            } else {
-
-                steps[i].classList.add("step_inactive")
-                steps[i].classList.remove("step_focus")
-                steps[i].classList.remove("step_done")
-                
             }
 
+            //Prev steps will always have step_done class
             if(i < c_step) {
                 steps[i].classList.remove("step_inactive")
                 steps[i].classList.remove("step_focus")
@@ -56,32 +72,7 @@ export default function Steps({steps, current_step, next_step_available}: {steps
             }
         }
 
-    }, [current_step])
-
-    //Setting style when next_step is available
-    useEffect(() => {
-        const steps = Array.from(document.getElementsByClassName("step") as HTMLCollection)
-        
-        if(next_step_available === true) {
-
-            if(steps[c_step + 1]) {
-                steps[c_step + 1].classList.remove("step_inactive")
-                steps[c_step + 1].classList.remove("step_focus")
-                steps[c_step + 1].classList.add("step_done")
-            }
-            
-        } else {
-
-            if(steps[c_step + 1]) {
-
-                steps[c_step + 1].classList.add("step_inactive")
-                steps[c_step + 1].classList.remove("step_focus")
-                steps[c_step + 1].classList.remove("step_done")
-
-            }
-        }
-
-    }, [current_step, next_step_available])
+    }, [current_step, steps_available])
 
     return (
         <div className="steps_container">

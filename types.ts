@@ -77,11 +77,10 @@ export interface Pack_content {
 //Create pack
 export interface Create_pack_frontend {
     current_step: number,
-    next_step_available: boolean,
+    steps_available: number[],
     preview: {preview_asset: Blob | null, preview_url: string | null}
     premium: boolean,
     title: string | null,
-    sub_title: string | null,
     description: string | null,
     tags: string[] | [],
     content: Map<string, {section_assets: Blob[], section_urls: string[]}>

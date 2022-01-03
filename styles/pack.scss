@@ -175,9 +175,10 @@
                 justify-content: center;
                 align-items: center;
                 text-align: center;
-                padding-top: 14rem;
+                padding-top: 13rem;
                 @include breakpoint(mobile) {
                     padding-top: 8.5rem;
+                    padding-bottom: unset;
                 }
                 .header_container {
                     display: flex;

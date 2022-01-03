@@ -83,11 +83,12 @@
             padding: 0 3rem;
             text-align: center;
             width: 100%;
+            margin-bottom: 4rem;
             @include breakpoint(mobile) {
                 margin-bottom: 3rem;
             }
         }
-        
+
         .step_1_container {
 
             .preview_container {
@@ -348,14 +349,194 @@
 
 
         .step_2_container {
+            
+            .pack_title_container {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-bottom: 4rem;
+                h1{
+                    @include h1(medium);
+                    margin-bottom: 1rem;
+                }
+                .input_container {
+                    position: relative;
+                    width: 45%;
+                    .title_input {
+                        @include input;
+                        width: 100%;
+                        color: white
+                    }
+                    .title_input_error {
+                        border-color: $color_error;
+                        color: $color_error;
+                        ::placeholder{
+                            color: $color_error;
+                        }
+                    }
 
+                    .input_info_container {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        h4{
+                            @include p(small);
+                            position: absolute;
+                            top: 2.2rem;
+                            color: $color_dark_grey;
+                            right: 0;
+                            bottom: 0rem;
+                        }
+                        p {
+                            @include p(small);
+                            width: 80%;
+                            text-align: center;
+                            color: $color_error;
+                        }
+                    }
+
+                }
+
+            }
+
+            .pack_description_container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-bottom: 4rem;
+                h1{
+                    @include h1(medium);
+                    margin-bottom: 1rem;
+                }
+
+                .input_container {
+                    position: relative;
+                    width: 45%;
+                    .description_input {
+                        @include input;
+                        height: 36px;
+                        font-family: $font_alata;
+                        font-size: 18px;
+                        width: 100%;
+                        color: white
+                    }
+    
+                    .description_input_error {
+                        border-color: $color_error;
+                        color: $color_error;
+                    }
+                    .description_error_message {
+                        @include p(small); 
+                        color: $color_error;
+                    }
+
+                    .input_info_container {
+                        position: relative;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        h4{
+                            position: absolute;
+                            right: 0;
+                            margin-top: 1.3rem;
+                            @include p(small);
+                            color: $color_dark_grey;
+                            
+                        }
+                        p {
+                            @include p(small);
+                            width: 80%;
+                            text-align: center;
+                            color: $color_error;
+                        }
+                    }
+
+                }
+                
+            }
+
+            .pack_tags_container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                h1{
+                    @include h1(medium);
+                    margin-bottom: 1rem;
+                }
+
+                .add_tag_container {
+                    margin-top: 1rem;
+                    display: flex;
+                    column-gap: 3rem;
+                    align-items: center;
+                    input {
+                        @include input;
+                        @include p;
+                        display: inline-block;
+                        color: white
+                    }
+
+                    button {
+                        @include button;
+                        width: 60%;
+                        font-size: 16px;
+                    }
+                }
+                
+            }
         }
 
+        .step_3_container {
+            
+            .pack_tags_container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                h1{
+                    @include h1(medium);
+                    margin-bottom: 1rem;
+                }
+
+                .add_tag_container {
+                    margin-top: 1rem;
+                    display: flex;
+                    column-gap: 3rem;
+                    align-items: center;
+                    input {
+                        @include input;
+                        @include p;
+                        display: inline-block;
+                        color: white
+                    }
+
+                    button {
+                        @include button;
+                        width: 60%;
+                        font-size: 16px;
+                    }
+                }
+                
+            }
+        }
         .button_container {
             width: 100%;
             display: flex;
             justify-content: center;
+            column-gap: 3rem;
             margin-top: 7rem;
+            margin-bottom: 7rem;
+            .prev_button {
+                @include button(sub_button);
+            }
             .active_button {
                 @include button;
             }
