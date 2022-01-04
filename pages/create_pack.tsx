@@ -675,14 +675,8 @@ function Preview({section_name}: {section_name: string}) {
                         <Image  src={`${create_pack.create_pack_obj.preview.preview_url}`} layout='fill'></Image>
                     </div>
                 }
-                {create_pack.create_pack_obj.preview.preview_asset === null &&
-                    <div className='preview_label_container'>
-                        <h1>Drop your 'Preview' file here!</h1>
-                    </div>
-                }
                 
             </Dropzone>
-
         </div>
     );
 }
@@ -808,15 +802,15 @@ function Dropzone({children, section_name, type}: {children: any, section_name: 
     }
 
     return (
-
-        <div className='dropzone_container'>
-
-            <p id={`dropzone_error_message_${section_name}`}></p>
-            <div onDrop={on_drop} onDragOver={on_drag_over} onDragLeave={on_drag_leave} className='dropzone' id={`dropzone_${section_name}`}>
+        <>
+            <p id={`dropzone_error_message_${section_name}`} className='drop_zone_error_message'></p>
+            <div onDrop={on_drop} onDragOver={on_drag_over} onDragLeave={on_drag_leave} id={`dropzone_${section_name}`} className='dropzone_container'>
+                
                 {children}
-            </div>
 
-        </div>
+            </div>
+        </>
+
         
     );
 }
