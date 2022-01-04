@@ -90,19 +90,32 @@
         }
 
         .step_1_container {
-
+            width: 100%;
+            height: auto;
             .preview_container {
                 position: relative;
                 width: 100%;
+                height: auto;
                 padding: 0 3rem;
                 margin-top: 2rem;
-                h1 {
-                    @include h1(small);
+                background: black;
+
+                .preview_header_container {
+                    position: relative;
+                    h1 {
+                        @include h1(small);
+                    }
                 }
+                
     
                 .dropzone_container {
+                    position: relative;
                     width: 100%;
+                    height: 450px;
+
+                    background: blue;
                     margin-top: .3rem;
+
                     p {
                         @include p(small);
                         color: $color_error;
@@ -112,10 +125,7 @@
                         position: relative;
                         width: 100%;
                         height: 100%;
-                        width: 100%;
-                        height: auto;
                         padding: 1rem;
-                        min-height: 500px;
                         border: 1px dashed $color_dark_grey;
                         transition: .1s ease-in-out;
                         
@@ -125,7 +135,7 @@
                             display: flex;
                             justify-content: center;
                             align-items: center;
-                            height: 500px;
+                            height: 450px;
                             background: $color_main_blue;
                             box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.25);
                             transition: 0.2s ease-in-out;
@@ -164,6 +174,7 @@
                         }
                         
                     }
+
                     .dropzone_hover {
                         border: 1px dashed $color_main;
                         .section_label {
@@ -174,12 +185,29 @@
                         }
                         
                     }
+
                     .dropzone_error {
                         border: 1px dashed $color_error;
                         h1 {
                             color: $color_error;
                         }
                     } 
+
+                    .preview_label_container {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        h1{
+                            @include h1(small);
+                            color: $color_dark_grey;
+                        }
+                    }
                 }
             }
     
@@ -518,11 +546,56 @@
                     button {
                         @include button;
                         padding: unset;
-                        padding: .4rem 1rem;
+                        padding: .2rem .8rem;
                         font-size: 24px;
                     }
                 }
                 
+            }
+
+            .pack_license_container {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                margin-top: 4rem;
+                h1{
+                    @include h1(medium);
+                }
+
+                .selection_container {
+                    width: 30%;
+                    height: 45px;
+                    background: $color_main_blue;
+                    margin-top: 1rem;
+                    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                    overflow: hidden;
+                    &:hover {
+                        cursor: pointer;
+                    }
+                    ul {
+                        display: grid;
+                        grid-template-columns: 1fr;
+                        align-items: center;
+                        justify-items: center;
+                        width: 100%;
+                        list-style: none;
+                        
+                        li {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            @include p;
+                            height: 45px;
+                            width: 100%;
+                            &:hover {
+                                background: $color_main_blue_hover;
+                                
+                            }
+                        }
+                    }
+                }
             }
         }
 

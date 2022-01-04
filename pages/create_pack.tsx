@@ -7,8 +7,9 @@ import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import Image from 'next/image';
 import { validate_files , validate_pack_title, validate_pack_description} from '../lib/custom_lib';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import ThrashIcon from "../public/icons/ThrashIcon.svg"
+// @ts-ignore: Unreachable code error
 
 //Context
 const create_pack_context: any = React.createContext(null)
@@ -263,6 +264,7 @@ function Create_page() {
                     </AnimatePresence>
 
                     <Steps steps={3} current_step={create_pack_obj.current_step} steps_available={create_pack_obj.steps_available}/>
+
                 </div>
                 
                 <Footer/>
@@ -592,6 +594,22 @@ function Step_2() {
 
 function Step_3() {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
+    const [selection_state, set_selection_state] = useState(false)
+    const selection_animation = useAnimation()
+    
+    useEffect(() => {
+
+        if(selection_state === true) {
+            selection_animation.start({
+                height: "auto",
+            })
+        } else {
+            selection_animation.start({
+                height: "",
+            })
+        }
+        
+    }, [selection_state, selection_animation])
 
     return(
 
@@ -604,12 +622,25 @@ function Step_3() {
                     
                     <div className='add_tag_container'>
                         <input type="text" placeholder='Max. 5 Tags'/>
-                            <button>+</button>
-                        
+                        <button>+</button>
                     </div>
                     
                 </div>
 
+                <div className='pack_license_container'>
+
+                    <h1>License</h1>
+
+                    <motion.div animate={selection_animation} onClick={() => set_selection_state(!selection_state)} className='selection_container'>
+                        <ul>
+                            <li>Opensource</li>
+                            <li>Opensource</li>
+                        </ul>
+                    </motion.div>
+                    
+                </div>
+
+                <div id="my_gif"></div>
             </div>
 
             <div className='button_container'>
@@ -617,7 +648,7 @@ function Step_3() {
                     <button onClick={() => {create_pack.dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="prev_button">Prev Step</button>
 
                 }
-                <button onClick={() => {}} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Next Step</button>
+                <button onClick={() => {}} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Create Pack</button>
             </div>
         </>
  
@@ -635,7 +666,6 @@ function Preview({section_name}: {section_name: string}) {
 
             <div className='preview_header_container'>
                 <h1>{`- ${capitalize_first_letter_rest_lowercase(section_name)}`}</h1>
-
             </div>
 
             <Dropzone type='preview' section_name='preview'>
@@ -643,6 +673,11 @@ function Preview({section_name}: {section_name: string}) {
                 {create_pack.create_pack_obj.preview.preview_asset &&
                     <div className='asset'>
                         <Image  src={`${create_pack.create_pack_obj.preview.preview_url}`} layout='fill'></Image>
+                    </div>
+                }
+                {create_pack.create_pack_obj.preview.preview_asset === null &&
+                    <div className='preview_label_container'>
+                        <h1>Drop your 'Preview' file here!</h1>
                     </div>
                 }
                 
