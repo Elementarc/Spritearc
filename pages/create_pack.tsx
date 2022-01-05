@@ -1,9 +1,11 @@
-import React, {useEffect, useReducer, useState, ReactElement, useContext} from 'react';
+import React, {useEffect, useReducer, useState, ReactElement, useContext, useCallback} from 'react';
+import CloseIcon from "../public/icons/CloseIcon.svg"
 import Footer from '../components/footer';
 import H1_with_deco from '../components/h1_with_deco';
 import Steps from '../components/steps';
 import {Create_pack_frontend, Create_pack_context_type} from "../types"
-import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
+import ExpandIcon from "../public/icons/ExpandIcon.svg"
+import { capitalize_first_letter_rest_lowercase, validate_pack_tag_name } from '../lib/custom_lib';
 import Image from 'next/image';
 import { validate_files , validate_pack_title, validate_pack_description} from '../lib/custom_lib';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
@@ -14,24 +16,28 @@ import ThrashIcon from "../public/icons/ThrashIcon.svg"
 //Context
 const create_pack_context: any = React.createContext(null)
 const section_name_regex = new RegExp(/^[a-zA-Z0-9]{3,12}$/)
-const description_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\!\?\_\&\:\ -]{100,500}$/)
+
 //Actions 
 const CREATE_PACK_ACTIONS = {
     ADD_SECTION: "ADD_SECTION",
     DELETE_SECTION: "DELETE_SECTION",
+    ADD_LICENSE: "ADD_LICENSE",
     ADD_ASSET: "ADD_ASSET",
     DELETE_ASSET: "DELETE_ASSET",
     ADD_PREVIEW: "ADD_PREVIEW",
     NEXT_STEP: "NEXT_STEP",
     PREV_STEP: "PREV_STEP",
     ADD_TITLE: "ADD_TITLE",
-    ADD_DESCRIPTION: "ADD_DESCRIPTION"
+    ADD_DESCRIPTION: "ADD_DESCRIPTION",
+    ADD_TAG: "ADD_TAG",
+    DELETE_TAG: "DELETE_TAG",
 }
 
 //Initial value for reducer state
 const initial_create_pack_obj: Create_pack_frontend = {
-    current_step: 0,
+    current_step: 2,
     steps_available: [],
+    license: null,
     preview: {preview_asset: null, preview_url: null},
     premium: false,
     title: null,
@@ -47,7 +53,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
     //Object handler
     switch ( type ) {
         
-        //Adding a section
         case ( CREATE_PACK_ACTIONS.ADD_SECTION ) : {
             if(!payload) break
 
@@ -71,8 +76,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break
         }
 
-
-        //Deleting a section
         case ( CREATE_PACK_ACTIONS.DELETE_SECTION ) : {
             if(!payload) break
             const section_name = payload.section_name as string
@@ -90,7 +93,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break
         }
         
-        //Adding assets to section_assets in content
         case ( CREATE_PACK_ACTIONS.ADD_ASSET ) : {
             if(!payload) return create_pack_obj
             const section_name = (payload.section_name as string).toLowerCase()
@@ -112,7 +114,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break 
         }
 
-        //Deleting specific asset from section
         case ( CREATE_PACK_ACTIONS.DELETE_ASSET ) : {
             if(!payload) return create_pack_obj
             const section_name = payload.section_name as string
@@ -130,7 +131,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break
         }
 
-        //Function that adds a preview to create_pack_obj
         case ( CREATE_PACK_ACTIONS.ADD_PREVIEW ) : {
             
             if(!payload) return create_pack_obj
@@ -174,6 +174,59 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break
         }
 
+        case (CREATE_PACK_ACTIONS.ADD_LICENSE) : {
+            if(!payload) break
+
+            const license = (payload.license as string).toLowerCase()
+            
+            create_pack_obj.license = license
+            break
+        }
+
+        case (CREATE_PACK_ACTIONS.ADD_TAG) : {
+            if(!payload) break
+
+            if(create_pack_obj.tags.length >= 5) break
+            const tag = (payload.tag as string).toLowerCase()
+
+            console.log(tag)
+
+            let tags_array = create_pack_obj.tags as string[]
+
+            if(tags_array.length === 0) {
+
+                tags_array.push(tag)
+                
+            } else {
+
+                let exists = false
+                
+                for(let existing_tag of tags_array) {
+                    
+                    if(existing_tag.toLowerCase() === tag) {
+                        exists = true
+                    }
+
+                }
+
+                if(exists === false) tags_array.push(tag)
+            }
+            
+            
+            create_pack_obj.tags = tags_array
+            console.log(create_pack_obj.tags)
+            break
+        }
+
+        case (CREATE_PACK_ACTIONS.DELETE_TAG) : {
+            if(!payload) break
+            const tag = payload.tag as string
+            
+            const index = create_pack_obj.tags.indexOf(tag.toLowerCase())
+
+            create_pack_obj.tags.splice(index, 1)
+            break
+        }
         //Default value
         default : {
             return {...create_pack_obj}
@@ -233,7 +286,7 @@ function Create_page() {
     
     useEffect(() => {
         window.scrollTo(0,0)
-    }, [create_pack_obj.current_step])
+    }, [create_pack_obj])
 
     const create_pack = {
         create_pack_obj,
@@ -315,7 +368,6 @@ function Step_1() {
         }
     }
 
-    let timer: NodeJS.Timer
 
     function validate_section_name(): Promise<boolean> {
         return new Promise((resolve) => {
@@ -374,14 +426,6 @@ function Step_1() {
         dispatch({type: CREATE_PACK_ACTIONS.ADD_SECTION, payload: {section_name: input.value.toLowerCase()}})
         set_toggle_add_section(false)
     }
-
-    //Clearing timeout
-    useEffect(() => {
-        
-        return () => {
-            clearTimeout(timer)
-        };
-    }, [])
 
     //Adding eventlisteners to be able to press enter to create section
     useEffect(() => {
@@ -456,7 +500,6 @@ function Step_1() {
 
 function Step_2() {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
-    let timer: NodeJS.Timer
 
     //Validating and setting Title
     async function validate_title(e: any) {
@@ -536,12 +579,6 @@ function Step_2() {
         }
     }
 
-    useEffect(() => {
-      return () => {
-        clearTimeout(timer)
-      };
-    }, [])
-
     return(
         <>
 
@@ -595,8 +632,11 @@ function Step_2() {
 function Step_3() {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
     const [selection_state, set_selection_state] = useState(false)
+    const [tag_jsx, set_tag_jsx] = useState<ReactElement[]>([])
+
     const selection_animation = useAnimation()
     
+    //Animation for licens container when opening / closing
     useEffect(() => {
 
         if(selection_state === true) {
@@ -611,6 +651,116 @@ function Step_3() {
         
     }, [selection_state, selection_animation])
 
+    //Creating tag components
+    useEffect(() => {
+
+        let tags_jsx: ReactElement[] = []
+        for(let i = 0; i < create_pack.create_pack_obj.tags.length; i++) {
+            tags_jsx.push(
+                <Tag key={`${create_pack.create_pack_obj.tags[i]}_${i}`} name={create_pack.create_pack_obj.tags[i]} />
+            )
+        }
+        
+        set_tag_jsx(tags_jsx)
+    }, [create_pack.create_pack_obj])
+
+
+    function set_license(e: any) {
+        const license = e.target.getAttribute("data-license") as string
+        
+        create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_LICENSE, payload: {license}})
+    }
+
+    const set_tag = useCallback(
+      () => {
+        function set_tag() {
+            const tag = document.getElementById("tag_input") as HTMLInputElement
+
+            const valid = validate_pack_tag_name(tag.value)
+
+            const error_message = document.getElementById("tag_error_message") as HTMLParagraphElement
+            const exists = (create_pack.create_pack_obj.tags as string[]).includes(tag.value.toLowerCase())
+    
+            
+            if(exists) {
+                
+                error_message.innerText = "Tag already exists."
+    
+            } else {
+                
+                if(typeof valid === "string") {
+                
+                    error_message.innerText = valid
+                } else {
+                    
+                    if(create_pack.create_pack_obj.tags.length < 5) {
+                        
+                        create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_TAG, payload: {tag: tag.value.toLowerCase() }})
+                        error_message.innerText = ""
+                        tag.value = ""
+
+                    } else {
+                        error_message.innerText = "Max. tags allowed 5."
+                    }
+                    
+                    
+                }
+                
+            }
+        }
+
+        set_tag()
+      },
+      [create_pack],
+    )
+    
+    //Adding eventlistener to add tag with pressing enter
+    useEffect(() => {
+        const tag_input = document.getElementById("tag_input") as HTMLInputElement
+
+        function add_tag(e: any) {
+            if(tag_input === document.activeElement) {
+                
+                if(e.keyCode === 13) {
+                    set_tag()
+                }
+            }
+        }
+
+        window.addEventListener("keyup",add_tag)
+        return(() => {
+            window.removeEventListener("keyup",add_tag)
+        })
+    }, [set_tag])
+
+
+    function key_up_event(e: any) {
+        const value = e.target.value as string
+
+        const valid = validate_pack_tag_name(value)
+
+        const error_message = document.getElementById("tag_error_message") as HTMLParagraphElement
+        const exists = (create_pack.create_pack_obj.tags as string[]).includes(value.toLowerCase())
+
+        if(exists) {
+
+            error_message.innerText = "Tag already exists."
+
+        } else {
+
+            if(typeof valid === "string") {
+            
+
+                error_message.innerText = valid
+            } else {
+                error_message.innerText = ""
+            }
+            
+        }
+
+
+    }
+
     return(
 
         <>
@@ -621,26 +771,44 @@ function Step_3() {
                     <h1>Tags</h1>
                     
                     <div className='add_tag_container'>
-                        <input type="text" placeholder='Max. 5 Tags'/>
-                        <button>+</button>
+                        <input onKeyUp={key_up_event} type="text" placeholder='Max. 5 Tags' id="tag_input" autoComplete="off"/>
+                        <p onClick={set_tag}>+ Add</p>
                     </div>
+
+                    <p id="tag_error_message" className='tag_error_message'></p>
                     
+                    <div className='included_tags_container'>
+
+                        {tag_jsx}
+                        
+                    </div>
                 </div>
 
                 <div className='pack_license_container'>
 
                     <h1>License</h1>
 
-                    <motion.div animate={selection_animation} onClick={() => set_selection_state(!selection_state)} className='selection_container'>
+                    <motion.div animate={selection_animation} onClick={() => set_selection_state(!selection_state)} onMouseLeave={() => set_selection_state(false)} className='selection_container'>
+
+                        <div className='target_licens_container'>
+                            {create_pack.create_pack_obj.license &&
+                                <p>{capitalize_first_letter_rest_lowercase(create_pack.create_pack_obj.license)}</p>
+                            }
+                            {create_pack.create_pack_obj.license === null &&
+                                <p>Choose a license</p>
+                            }
+                            <div className='licens_deco_container'>
+                                <ExpandIcon/>
+                            </div>
+                        </div>
+
                         <ul>
-                            <li>Opensource</li>
-                            <li>Opensource</li>
+                            <li onClick={set_license} data-license="opensource">Opensource</li>
                         </ul>
                     </motion.div>
                     
                 </div>
 
-                <div id="my_gif"></div>
             </div>
 
             <div className='button_container'>
@@ -655,6 +823,27 @@ function Step_3() {
     )
 }
 
+
+function Tag({name}: {name:string}) {
+    const create_pack: Create_pack_context_type = useContext(create_pack_context)
+
+    function delete_tag(e: any) {
+        const tag_name = e.target.getAttribute("data-tag") as string
+
+        create_pack.dispatch({type: CREATE_PACK_ACTIONS.DELETE_TAG, payload: {tag: tag_name}})
+        
+    }
+
+    return (
+        <div onClick={delete_tag} data-tag={name} id={name} className='tag'>
+            <p>{name.toUpperCase()}</p>
+            
+            <div className='tag_close_container'>
+                <CloseIcon/>
+            </div>
+        </div>
+    );
+}
 
 
 //Preview Component that display a pack preview
@@ -686,12 +875,14 @@ function Section({section_name, section_content}: {section_name: string, section
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
     const [section_assets_jsx, set_section_assets_jsx] = useState<ReactElement[] | null>(null)
 
-    function delete_asset(e: any) {
-        create_pack.dispatch({type: CREATE_PACK_ACTIONS.DELETE_ASSET, payload: {section_name, asset_index: parseInt(e.target.id)}})
-    }
+    
 
     useEffect(() => {
         let asset_jsx: ReactElement[] = []
+
+        function delete_asset(e: any) {
+            create_pack.dispatch({type: CREATE_PACK_ACTIONS.DELETE_ASSET, payload: {section_name, asset_index: parseInt(e.target.id)}})
+        }
 
         for(let i = 0; i < section_content.section_urls.length; i++) {
             
@@ -712,7 +903,7 @@ function Section({section_name, section_content}: {section_name: string, section
         
         set_section_assets_jsx(asset_jsx.reverse())
 
-    }, [section_content])
+    }, [create_pack, section_name, section_content, set_section_assets_jsx])
 
     function delete_section() {
         create_pack.dispatch({type: CREATE_PACK_ACTIONS.DELETE_SECTION, payload: {section_name: section_name}})

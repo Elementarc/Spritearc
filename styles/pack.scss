@@ -237,6 +237,7 @@
                             width: 100%;
                         }
                     }
+                    
                     .grid_container{
                         display: grid;
                         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -268,8 +269,10 @@
                                     align-self: center;
                                     justify-self: center;
                                 }
-                                h4{
-                                    @include h4(big);
+                                p{
+                                    @include p(medium);
+                                    font-family: $font_alatsi;
+                                    color: $color_dark_grey;
                                     font-size: 16px;
                                     @include breakpoint(mobile) {
                                         font-size: 14px;

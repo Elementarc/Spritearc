@@ -37,7 +37,7 @@ export default function Pack_page(props: {pack: Pack}) {
     const Router = useRouter()
 
     //Props
-    const pack = JSON.parse(`${props.pack}`)
+    const pack: Pack = JSON.parse(`${props.pack}`)
     
     function go_back() {
         const prev_path = sessionStorage.getItem("prev_path")
@@ -163,7 +163,7 @@ export default function Pack_page(props: {pack: Pack}) {
                                     <div className="grid_item">
 
                                         <div className="item_1">
-                                            <h4>Rating:</h4>
+                                            <p>Rating:</p>
                                         </div>
 
 
@@ -175,7 +175,7 @@ export default function Pack_page(props: {pack: Pack}) {
                                     <div className="grid_item">
 
                                         <div className="item_1">
-                                            <h4>Released:</h4>
+                                            <p>Released:</p>
                                         </div>
 
                                         <div className="item_2">{format_date(new Date(pack.date))}</div>
@@ -184,7 +184,7 @@ export default function Pack_page(props: {pack: Pack}) {
                                     <div className="grid_item">
 
                                         <div className="item_1">
-                                            <h4>Downloads:</h4>
+                                            <p>Downloads:</p>
                                         </div>
 
                                         <div className="item_2">{pack.downloads}</div>
@@ -193,7 +193,7 @@ export default function Pack_page(props: {pack: Pack}) {
                                     <div className="grid_item">
 
                                         <div className="item_1">
-                                            <h4>Tags:</h4>
+                                            <p>Tags:</p>
                                         </div>
 
                                         <div className="item_2">{pack.tags.join(", ").toUpperCase()}</div>
@@ -202,11 +202,22 @@ export default function Pack_page(props: {pack: Pack}) {
                                     <div className="grid_item">
 
                                         <div className="item_1">
-                                            <h4>Creator:</h4>
+                                            <p>License:</p>
+                                        </div>
+
+                                        <div className="item_2">{pack.license.toUpperCase()}</div>
+                                    </div>
+
+                                    <div className="grid_item">
+
+                                        <div className="item_1">
+                                            <p>Creator:</p>
                                         </div>
 
                                         <Link href={`/profile?user=${pack.username}`} scroll={false}>{pack.username}</Link>
                                     </div>
+
+
                                 </div>
 
                                 <span className="bottom_line" />

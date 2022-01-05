@@ -55,6 +55,21 @@ export function validate_pack_description(description: string): boolean | string
     return true
 }
 
+export function validate_pack_tag_name(tag_name: string): boolean | string {
+    const tag_regex = new RegExp(/^[a-zA-Z]{3,10}$/)
+
+    if(tag_name.length < 3) return "Min. 3 characters"
+    if(tag_name.length > 10) return "Max. 10 characters"
+    else {
+        if(tag_regex.test(tag_name) === false) {
+            return "Allowed characters: a-z A-Z"
+        } else {
+            return true
+        }
+    }
+    
+}
+
 //Returning a user obj
 export function create_user(username: string, email: string, password: string, salt: string, occasional_emails: boolean): User {
     

@@ -61,6 +61,7 @@ export interface Pack {
     username: string,
     preview_image: string,
     title: string,
+    license: string,
     description: string,
     date: string,
     tags: string[],
@@ -77,11 +78,12 @@ export interface Pack_content {
 export interface Create_pack_frontend {
     current_step: number,
     steps_available: number[],
+    license: string | null,
     preview: {preview_asset: Blob | null, preview_url: string | null}
     premium: boolean,
     title: string | null,
     description: string | null,
-    tags: string[] | [],
+    tags: string[],
     content: Map<string, {section_assets: Blob[], section_urls: string[]}>
 }
 

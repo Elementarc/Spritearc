@@ -32,7 +32,7 @@ export default function App_notification() {
             observer.unobserve(app_content_container)
         })
 
-    }, [notification])
+    }, [notification, APP])
 
     //Button function
     function button_func() {

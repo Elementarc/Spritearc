@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 
 export default function Steps({steps, current_step, steps_available}: {steps: number, current_step: number, steps_available: number[]}) {
-    const c_step = current_step
     //Function that takes in the number of steps that needs to be created!
     function create_steps(steps: number) {
         const steps_jsx = []
@@ -60,7 +59,7 @@ export default function Steps({steps, current_step, steps_available}: {steps: nu
             }
 
             //Setting current step always focus
-            if(i === c_step) {
+            if(i === current_step) {
                 
                 steps[i].classList.add("step_focus")
                 steps[i].classList.remove("step_done")
@@ -69,7 +68,7 @@ export default function Steps({steps, current_step, steps_available}: {steps: nu
             }
 
             //Prev steps will always have step_done class
-            if(i < c_step) {
+            if(i < current_step) {
                 steps[i].classList.remove("step_inactive")
                 steps[i].classList.remove("step_focus")
                 steps[i].classList.add("step_done")

@@ -636,6 +636,7 @@ export function Step_3() {
             <p className="input_error_message" id="input_error_message_password_repeat"></p>
             
             <div className="legal_container">
+                
                 <div className="check_box_container">
 
                     <div onClick={() => {PAGE_CONTEXT.update_signup_informations("legal", !PAGE_CONTEXT.signup_obj.legal)}} className="check_box" id="legal_check_box">
