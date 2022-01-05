@@ -4,9 +4,10 @@ import cookie from "cookie";
 import withAuth from "../../../middleware/withAuth";
 
 //Logs user out only if he is logged in because middlewarre withAuth
-async function api_request(req: NextApiRequest |any, res: NextApiResponse) {
+async function api_request(req: NextApiRequest | any, res: NextApiResponse) {
     
     if(req.method === "POST") {
+        console.log(req.user)
         res.setHeader("Set-Cookie", cookie.serialize("user", "", {
             maxAge: -1,
             path: "/",
@@ -21,4 +22,4 @@ async function api_request(req: NextApiRequest |any, res: NextApiResponse) {
 
 }
 
-export default withAuth(api_request)
+export default api_request

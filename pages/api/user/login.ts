@@ -8,7 +8,7 @@ import { get_public_user } from "../../../lib/mongo_lib";
 const client = new MongoClient(`${process.env.MONGO_DB}`)
 
 
-async function api_request(req: NextApiRequest, res: NextApiResponse) {
+async function api_request(req: NextApiRequest | any, res: NextApiResponse) {
     
     if(req.method === "POST") {
         const cookies = req.cookies

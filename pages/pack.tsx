@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../components/h1_with_deco';
 import { Device_context } from '../context/device_context_provider';
-import { format_date } from '../lib/date';
+import { format_date } from '../lib/date_lib';
 import { get_pack_by_id } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
@@ -231,7 +231,7 @@ export default function Pack_page(props: {pack: Pack}) {
                     </div>
                     
                     
-                    <Pack_sprite_sections/>
+                    <Pack_sprite_sections pack={pack}/>
 
                     <Nav_shadow/>
                 </div>
@@ -245,9 +245,8 @@ export default function Pack_page(props: {pack: Pack}) {
 }
 
 //Component that creates a section with assets
-function Pack_sprite_sections(): ReactElement {
-    const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
-    const pack: Pack = PACK_PAGE.pack
+function Pack_sprite_sections(props: {pack: Pack}): ReactElement {
+    const pack: Pack = props.pack
 
     const section_jsx = []
     //Looping through content to create a section for each content
@@ -256,7 +255,7 @@ function Pack_sprite_sections(): ReactElement {
         section_jsx.push(
             <div key={`section_${i}`} className="section_container">
                 <h1>{"– "} {capitalize_first_letter_rest_lowercase(pack.content[i].section_name)}</h1>
-                <Pack_asset pack_content={pack.content[i]}/>
+                <Pack_asset pack_content={pack.content[i]} pack_id={pack._id}/>
             </div>
         )
     }
@@ -271,19 +270,22 @@ function Pack_sprite_sections(): ReactElement {
         </div>
     );
 }
+
 //Component that creates assets from pack.
-function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
+function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): ReactElement {
     const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
-    const pack = PACK_PAGE.pack as Pack
-    const show_asset = PACK_PAGE.toggle_asset as () => void
+    const pack_id = props.pack_id
     const pack_content = props.pack_content
+
+    const show_asset = PACK_PAGE.toggle_asset as () => void
+    
     
     //Array of assets as jsx
     const assets_jsx = []
-    for(let i = 0; i < pack_content.section_assets.length; i++) {
+    for(let i = 0; i < pack_content.section_images.length; i++) {
         assets_jsx.push(
-            <div onClick={show_asset} key={`${pack_content.section_assets[i]}_${i}`} className="asset">
-                <Image src={`/packs/${pack._id}/${pack_content.section_name}/${pack_content.section_assets[i]}`}  quality="100%" layout="fill"  alt={`One asset from the pack '${pack.title}' that was created by '${pack.username}'.`}  className="patch_preview_image"/>
+            <div onClick={show_asset} key={`${pack_content.section_images[i]}_${i}`} className="asset">
+                <Image src={`/packs/${pack_id.toString()}/${pack_content.section_name}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
             </div>
         )
     }
@@ -294,6 +296,7 @@ function Pack_asset(props: {pack_content: Pack_content}): ReactElement {
         </div>
     );
 }
+
 //Component that renders Stars based on pack Rating.
 function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
     const ratings: {user: string, rating: number}[] = props.ratings
@@ -302,6 +305,7 @@ function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
     for(let item of ratings) {
         sum_ratings = sum_ratings + item.rating
     }
+    
     const avg_rating = sum_ratings / ratings.length
     //Return a ReactElement array with stars. 
     function create_stars(number: number) {
@@ -334,8 +338,6 @@ function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
         </div>
     );
 }
-
-
 
 
 
@@ -373,42 +375,3 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
     }
 
 } 
-
-/* const packssss = {
-    _id: "1",
-    user: {
-        _id: "123",
-        username: "Arclipse",
-        user_since: "20.04.2015",
-        about: "Pixelart artist",
-        profile_image: "/image1",
-        released_packs: []
-    },
-    title: "Lost Sanctuary",
-    sub_title: "A new Story has begun",
-    preview_image: "/packs/pack_1/SampleA.png",
-    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque. Sed scelerisque sit faucibus imperdiet. Leo senectus diam volutpat arcu. Consequat libero, scelerisque sed pretium sit semper.",
-    socials: ["Twitter", "Insta"],
-    date: "20.05.2015",
-    rating: {
-        user_ratings: [
-            {
-                user: "arclipse",
-                rating: 5
-            }
-        ],
-        avg_rating: 5
-    },
-    tags: ["Lol", "rpg"],
-    content: [
-        {
-            section_name: "Characters",
-            section_assets: ["/image1", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2", "/image2"]
-        },
-        {
-            section_name: "Backgrounds",
-            section_assets: ["/image1", "/image2"]
-        },
-    ],
-    downloads: 1
-} */

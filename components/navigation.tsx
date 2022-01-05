@@ -1,7 +1,7 @@
 /*eslint-disable */
 import React, {ReactElement, useContext, useEffect} from "react"
 import {motion, useAnimation, AnimatePresence } from "framer-motion";
-import { Nav_item, App_context, Public_user} from "../types"
+import { Nav_item, App_context} from "../types"
 //SVG Components (ICONS)
 import NavIcon from "../public/icons/NavIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
@@ -18,7 +18,7 @@ import { Device_context } from "../context/device_context_provider";
 import { Navigation_context } from "../context/navigation_context_provider";
 import Image from "next/image"
 import Link from "next/link"
-import { format_date } from "../lib/date";
+import { format_date } from "../lib/date_lib";
 
 
 export default function Navigation(): ReactElement {

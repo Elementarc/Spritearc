@@ -1,11 +1,4 @@
-import {validate_files, capitalize_first_letter_rest_lowercase} from "../lib/custom_lib"
-import { Blob } from "buffer"
-
-test("validate_blob", async() => {
-    const blob = new Blob([""], {type: "image/png"})
-    
-    expect(validate_files(blob as any)).toBe(true)
-})
+import {capitalize_first_letter_rest_lowercase} from "../lib/custom_lib"
 
 test("capitalize_first_letter_rest_lowercase", async() => {
     

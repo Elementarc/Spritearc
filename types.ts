@@ -56,8 +56,7 @@ export interface Patchnote_info {
 
 //PackPreview types
 export interface Pack {
-    _id: string,
-    premium: boolean,
+    _id: ObjectId,
     username: string,
     preview_image: string,
     title: string,
@@ -67,24 +66,44 @@ export interface Pack {
     tags: string[],
     downloads: number,
     content: Pack_content[]
-    ratings: {user: string, rating: number}[] | []
+    ratings: Pack_rating[]
+}
+export interface Pack_rating {
+    user: string,
+    rating: number
 }
 export interface Pack_content {
     section_name: string,
-    section_assets: string[] | []
+    section_images: string[]
 }
 
-//Create pack
-export interface Create_pack_frontend {
+
+export interface Sendable_pack {
+    license: string,
+    preview: {preview_asset: File}
+    title: string,
+    description: string,
+    tags: string[],
+    content: [
+        {
+            section_name: string, 
+            section_assets: File[]
+        }
+    ]
+}
+
+export interface Create_pack_frontend{
     current_step: number,
     steps_available: number[],
     license: string | null,
-    preview: {preview_asset: Blob | null, preview_url: string | null}
-    premium: boolean,
+    preview: {
+        preview_asset: Blob | null,
+        preview_url: string | null
+    },
     title: string | null,
     description: string | null,
     tags: string[],
-    content: Map<string, {section_assets: Blob[], section_urls: string[]}>
+    content: Map<string, {section_assets: File[], section_urls: string[]}>
 }
 
 export interface Create_pack_context_type {

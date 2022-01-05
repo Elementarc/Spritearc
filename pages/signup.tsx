@@ -266,7 +266,7 @@ export default function Sign_up_page() {
     
     return (
         <SIGNUP_CONTEXT.Provider value={PAGE_CONTEXT}>
-            <div className="login_page" id="login_page">
+            <div className="signup_page" id="signup_page">
                 
                 <div className="content">
                     <Nav_shadow/>

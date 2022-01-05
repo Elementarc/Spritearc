@@ -5,12 +5,15 @@ import H1_with_deco from '../components/h1_with_deco';
 import Steps from '../components/steps';
 import {Create_pack_frontend, Create_pack_context_type} from "../types"
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
-import { capitalize_first_letter_rest_lowercase, validate_pack_tag_name } from '../lib/custom_lib';
+import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import Image from 'next/image';
-import { validate_files , validate_pack_title, validate_pack_description} from '../lib/custom_lib';
+import { validate_files , validate_pack_title, validate_pack_description, validate_pack_tag_name} from '../lib/validate_lib';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import ThrashIcon from "../public/icons/ThrashIcon.svg"
+import { Device_context } from '../context/device_context_provider';
+import { create_user_pack } from '../lib/mongo_lib';
+import { create_sendable_pack_obj } from '../lib/create_lib';
 // @ts-ignore: Unreachable code error
 
 //Context
@@ -31,15 +34,15 @@ const CREATE_PACK_ACTIONS = {
     ADD_DESCRIPTION: "ADD_DESCRIPTION",
     ADD_TAG: "ADD_TAG",
     DELETE_TAG: "DELETE_TAG",
+    SUBMIT_PACK: "SUBMIT_PACK"
 }
 
 //Initial value for reducer state
 const initial_create_pack_obj: Create_pack_frontend = {
-    current_step: 2,
+    current_step: 0,
     steps_available: [],
     license: null,
     preview: {preview_asset: null, preview_url: null},
-    premium: false,
     title: null,
     description: null,
     tags: [],
@@ -96,21 +99,21 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
         case ( CREATE_PACK_ACTIONS.ADD_ASSET ) : {
             if(!payload) return create_pack_obj
             const section_name = (payload.section_name as string).toLowerCase()
-            const section_blobs = payload.section_assets as Blob[] 
+            const section_blobs = payload.section_assets as File[] 
 
             const old_blobs = create_pack_obj.content.get(section_name)
 
             if(!old_blobs) break
 
-            let all_blobs = [...section_blobs, ...old_blobs.section_assets]
+            let all_files = [...section_blobs, ...old_blobs.section_assets]
 
             let object_urls: string[] = []
-            for(let blob of all_blobs){
-                object_urls.push(URL.createObjectURL(blob))
+            for(let file of all_files){
+                object_urls.push(URL.createObjectURL(file))
             }
             
 
-            create_pack_obj.content.set(section_name, {section_assets: all_blobs, section_urls: object_urls})
+            create_pack_obj.content.set(section_name, {section_assets: all_files, section_urls: object_urls})
             break 
         }
 
@@ -227,6 +230,24 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             create_pack_obj.tags.splice(index, 1)
             break
         }
+
+        case (CREATE_PACK_ACTIONS.SUBMIT_PACK) : {
+
+            const filled_pack_obj = create_sendable_pack_obj(create_pack_obj)
+            
+            if(filled_pack_obj) {
+                async function send_pack() {
+                    const response = fetch("/api/user/create_pack", {
+                        method: "POST",
+                        body: JSON.stringify(filled_pack_obj)
+                    })
+
+                    ;(await response).status
+                }
+                send_pack()
+            }
+            break
+        }
         //Default value
         default : {
             return {...create_pack_obj}
@@ -273,6 +294,15 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             }
 
         }
+
+        if(steps.includes(2)) {
+            
+            if(create_pack_obj.tags.length >= 3 && create_pack_obj.license) {
+                steps.push(3)
+                console.log(steps)
+            } 
+            
+        }
         return steps
     }
 
@@ -286,7 +316,7 @@ function Create_page() {
     
     useEffect(() => {
         window.scrollTo(0,0)
-    }, [create_pack_obj])
+    }, [create_pack_obj.current_step])
 
     const create_pack = {
         create_pack_obj,
@@ -605,7 +635,7 @@ function Step_2() {
 
                     <div className='input_container'>
 
-                        <textarea defaultValue={create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description : ""} onKeyUp={validate_description} onBlur={validate_description} placeholder='Max. 500 characters' className='description_input' id="description_input"></textarea>
+                        <textarea defaultValue={create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description : ""} onKeyUp={validate_description} onBlur={validate_description} placeholder='Min. 100 characters' className='description_input' id="description_input"></textarea>
                         
                         <div className='input_info_container'>
                             <h4 id="description_counter">{`${create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description.length : "0"} / 500`}</h4>
@@ -631,9 +661,10 @@ function Step_2() {
 
 function Step_3() {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
+    const device = useContext(Device_context)
     const [selection_state, set_selection_state] = useState(false)
     const [tag_jsx, set_tag_jsx] = useState<ReactElement[]>([])
-
+    
     const selection_animation = useAnimation()
     
     //Animation for licens container when opening / closing
@@ -661,9 +692,25 @@ function Step_3() {
             )
         }
         
-        set_tag_jsx(tags_jsx)
-    }, [create_pack.create_pack_obj])
 
+        const get_tag_grid = document.getElementById("included_tags_container") as HTMLDivElement
+        function set_grid_template() {
+            
+            if(device.is_mobile) {
+                get_tag_grid.style.gridTemplateColumns = `repeat(2, auto)`
+            } else {
+                get_tag_grid.style.gridTemplateColumns = `repeat(${tags_jsx.length}, auto)`
+            }
+        }
+        set_grid_template()
+
+        set_tag_jsx(tags_jsx)
+        window.addEventListener("resize", set_grid_template)
+        return(() => {
+            window.removeEventListener("resize", set_grid_template)
+        })
+        
+    }, [create_pack.create_pack_obj, device])
 
     function set_license(e: any) {
         const license = e.target.getAttribute("data-license") as string
@@ -691,6 +738,7 @@ function Step_3() {
                 if(typeof valid === "string") {
                 
                     error_message.innerText = valid
+
                 } else {
                     
                     if(create_pack.create_pack_obj.tags.length < 5) {
@@ -733,7 +781,6 @@ function Step_3() {
         })
     }, [set_tag])
 
-
     function key_up_event(e: any) {
         const value = e.target.value as string
 
@@ -761,6 +808,10 @@ function Step_3() {
 
     }
 
+    function send_pack_to_api() {
+        create_pack.dispatch({type: CREATE_PACK_ACTIONS.SUBMIT_PACK})
+    }
+
     return(
 
         <>
@@ -777,7 +828,7 @@ function Step_3() {
 
                     <p id="tag_error_message" className='tag_error_message'></p>
                     
-                    <div className='included_tags_container'>
+                    <div className='included_tags_container' id="included_tags_container">
 
                         {tag_jsx}
                         
@@ -812,11 +863,12 @@ function Step_3() {
             </div>
 
             <div className='button_container'>
+
                 {create_pack.create_pack_obj.current_step > 0 &&
                     <button onClick={() => {create_pack.dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="prev_button">Prev Step</button>
-
                 }
-                <button onClick={() => {}} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Create Pack</button>
+
+                <button onClick={send_pack_to_api} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Create Pack</button>
             </div>
         </>
  
@@ -824,6 +876,7 @@ function Step_3() {
 }
 
 
+//Tag component that previes one single tag
 function Tag({name}: {name:string}) {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
 
@@ -844,7 +897,6 @@ function Tag({name}: {name:string}) {
         </div>
     );
 }
-
 
 //Preview Component that display a pack preview
 function Preview({section_name}: {section_name: string}) {
@@ -966,15 +1018,8 @@ function Dropzone({children, section_name, type}: {children: any, section_name: 
             dropzone.classList.remove("dropzone_error")
         }
                 
-        let blobs: Blob[] = []
-
-        for(let file of files) {
-            blobs.push(new Blob([file], {type: file.type}))
-        }
-        
-        if(type.toLowerCase() === "section") return create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_ASSET, payload: {section_name, section_assets: blobs}})
-        else return create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_PREVIEW, payload: {section_name, preview_asset: blobs[0]}})
-        
+        if(type.toLowerCase() === "section") return create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_ASSET, payload: {section_name, section_assets: files}})
+        else return create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_PREVIEW, payload: {section_name, preview_asset: files[0]}})
 
     }
     

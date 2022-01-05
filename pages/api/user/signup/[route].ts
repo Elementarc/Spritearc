@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {MongoClient} from "mongodb"
 import { SHA256 } from "crypto-js";
-import { create_user } from "../../../../lib/custom_lib";
+import { create_user } from "../../../../lib/create_lib";
 import { email_available, username_available } from "../../../../lib/mongo_lib";
 import { send_email_verification } from "../../../../lib/nodemailer_lib";
 

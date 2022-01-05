@@ -6,16 +6,16 @@ import { ObjectId } from "mongodb"
 test("get_public_user", async() => {
 
     const public_user_obj: Public_user = {
-        username: "OmegALul",
+        username: "King",
         description: "Hey! Im new here :)",
-        created_at: new Date("2021-12-19T15:34:44.345+00:00"),
+        created_at: new Date("2022-01-02T12:15:57.603Z"),
         profile_picture: "default.png",
         profile_banner: "default.png",
         following: [],
         followers: [],
-        released_packs: [new ObjectId("61bf5095ab31abd884779522").toString()],
+        released_packs: [],
     }
-    const public_user = await get_public_user("OmegALul")
+    const public_user = await get_public_user("King")
 
     expect(public_user).toStrictEqual(public_user_obj)
 })
