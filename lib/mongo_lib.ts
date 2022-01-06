@@ -50,6 +50,9 @@ export async function get_public_user(username: string): Promise<Public_user | n
     
 }
 
+export async function get_user_id(username: string) {
+    
+}
 //Function that returns spec
 export async function get_released_packs_by_user(pack_id_arr: string[]): Promise<Pack[]>  {
 
@@ -219,7 +222,10 @@ export async function create_user_pack(pack: Pack) {
         await client.connect()
 
         const packs_collection = client.db(DATABASE).collection("packs")
+        const user_collection = client.db(DATABASE).collection("users")
 
+        const result = await user_collection.updateOne({username: pack.username}, {$push: {released_packs: pack._id.toString()}})
+        console.log(result)
         packs_collection.insertOne(pack)
 
     } catch( err ) {
