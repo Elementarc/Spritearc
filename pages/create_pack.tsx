@@ -165,19 +165,19 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break
         }
 
-        case (CREATE_PACK_ACTIONS.NEXT_STEP) : {
+        case ( CREATE_PACK_ACTIONS.NEXT_STEP ) : {
             if(create_pack_obj.steps_available.includes(create_pack_obj.current_step + 1)) create_pack_obj.current_step = create_pack_obj.current_step + 1
 
             break
         }
 
-        case (CREATE_PACK_ACTIONS.PREV_STEP) : {
+        case ( CREATE_PACK_ACTIONS.PREV_STEP ) : {
             if(create_pack_obj.current_step > 0) create_pack_obj.current_step = create_pack_obj.current_step - 1
 
             break
         }
 
-        case (CREATE_PACK_ACTIONS.ADD_LICENSE) : {
+        case ( CREATE_PACK_ACTIONS.ADD_LICENSE ) : {
             if(!payload) break
 
             const license = (payload.license as string).toLowerCase()
@@ -186,7 +186,7 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break
         }
 
-        case (CREATE_PACK_ACTIONS.ADD_TAG) : {
+        case ( CREATE_PACK_ACTIONS.ADD_TAG ) : {
             if(!payload) break
 
             if(create_pack_obj.tags.length >= 5) break
@@ -221,7 +221,7 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break
         }
 
-        case (CREATE_PACK_ACTIONS.DELETE_TAG) : {
+        case ( CREATE_PACK_ACTIONS.DELETE_TAG ) : {
             if(!payload) break
             const tag = payload.tag as string
             
@@ -231,14 +231,14 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break
         }
 
-        case (CREATE_PACK_ACTIONS.SUBMIT_PACK) : {
+        case ( CREATE_PACK_ACTIONS.SUBMIT_PACK ) : {
 
             
             async function send_pack() {
                 const Form_data = create_form_data(create_pack_obj)
             
                 if(!Form_data) return
-                const response = await fetch("/api/user/create_pack", {
+                await fetch("/api/user/create_pack", {
                     method: "POST",
                     body: Form_data
                 })
@@ -249,6 +249,7 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
 
             break
         }
+
         //Default value
         default : {
             return {...create_pack_obj}

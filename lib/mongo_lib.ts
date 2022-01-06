@@ -1,4 +1,4 @@
-import { MongoClient, ObjectId, WithId } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { Public_user } from '../types';
 import { Pack } from '../types';
 
@@ -50,10 +50,6 @@ export async function get_public_user(username: string): Promise<Public_user | n
     
 }
 
-export async function get_user_id(username: string) {
-    
-}
-//Function that returns spec
 export async function get_released_packs_by_user(pack_id_arr: string[]): Promise<Pack[]>  {
 
     try {
@@ -86,7 +82,6 @@ export async function get_released_packs_by_user(pack_id_arr: string[]): Promise
     
 }
 
-//Function that checks if email exists in database. and has proper structure
 export async function email_available(email: string): Promise<boolean> {
 
     try {
@@ -124,7 +119,6 @@ export async function email_available(email: string): Promise<boolean> {
 
 }
 
-//Function that checks if username exists in database. and has proper structure
 export async function username_available(username: string): Promise<boolean> {
 
     try {
@@ -161,7 +155,6 @@ export async function username_available(username: string): Promise<boolean> {
 
 }
 
-//returns a pack Obj from database.
 export async function get_pack_by_id(pack_id: ObjectId): Promise<Pack | null> {
 
     try {
@@ -184,7 +177,6 @@ export async function get_pack_by_id(pack_id: ObjectId): Promise<Pack | null> {
         
 }
 
-//Returns
 export async function get_recent_packs(number_of_returns: number): Promise<Pack[] | null> {
 
     try {
@@ -224,8 +216,8 @@ export async function create_user_pack(pack: Pack) {
         const packs_collection = client.db(DATABASE).collection("packs")
         const user_collection = client.db(DATABASE).collection("users")
 
-        const result = await user_collection.updateOne({username: pack.username}, {$push: {released_packs: pack._id.toString()}})
-        console.log(result)
+        await user_collection.updateOne({username: pack.username}, {$push: {released_packs: pack._id.toString()}})
+        
         packs_collection.insertOne(pack)
 
     } catch( err ) {

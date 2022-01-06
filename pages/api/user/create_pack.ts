@@ -1,66 +1,99 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiResponse } from 'next'
 import fs from "fs"
 import withAuth from '../../../middleware/withAuth'
 import { Public_user, Pack, Pack_content } from '../../../types'
 // @ts-ignore: Unreachable code error
 import formidable from 'formidable';
-
 import { ObjectId } from 'mongodb'
 import { create_user_pack } from '../../../lib/mongo_lib';
+import { validate_single_file } from '../../../lib/validate_lib';
 
 async function api_request(req: any, res: NextApiResponse) {
 
     if(req.method === "POST") {
 
         try {
+            //Req user that initiated the create pack request
             const public_user: Public_user = req.user
+
+            //Creating an object id
             const id = new ObjectId()
+
+            //Directory where the packs will be created at
             const pack_directory = `${process.cwd()}/public/packs/${id}`
             
-            console.log(pack_directory)
-
+            //Handles multiple files form.
             const form = new formidable.IncomingForm({multiples: true});
             
-            form.on("fileBegin", (name, file) => {
+            //Event that validates & creates files in the correct directory with the correct strutcure based of the pack content
+            form.on("fileBegin", (section_name, file) => {
+                
+                //Checking if pack_directory already exists.
                 const exists = fs.existsSync(pack_directory)
+
+                //Creating directory when directory is not exisiting.
                 if(!exists) fs.mkdirSync(pack_directory)
 
+                //Validating file
+                const valid_file = validate_single_file(file)
 
-                if(name.toLowerCase() === "preview") {
+                if(valid_file === true) {
 
-                    file.filepath = `${pack_directory}/${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`
+                    //Creating files in the correct sturcture.
+                    if(section_name.toLowerCase() === "preview") {
 
-                } else {
-                    const section_name = file.originalFilename?.split("_")[0]
-
-                    if(!fs.existsSync(`${pack_directory}/${section_name}`)) {
-                        fs.mkdirSync(`${pack_directory}/${section_name}`)
-                    }
+                        file.filepath = `${pack_directory}/${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`
     
-                    file.filepath = `${pack_directory}/${section_name?.toLowerCase()}/${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`
+                    } else {
+                        
+                        //Getting the extention from the file
+                        const file_extention = `${file.mimetype?.split("/")[1].toLowerCase()}`
+
+                        //Checking if directory exists with section_name
+                        if(!fs.existsSync(`${pack_directory}/${section_name}`)) {
+                            //Creating directory when no directory with given section name exists
+                            fs.mkdirSync(`${pack_directory}/${section_name}`)
+                        }
+                        
+                        //Creating file in given path.
+                        file.filepath = `${pack_directory}/${section_name.toLowerCase()}/${file.originalFilename?.toLowerCase()}.${file_extention}`
+                    }
+
                 }
+
              
             })
             
-
+            //Function that creates a database entry
             function enter_pack_to_db(): Promise<void> {
                 return new Promise((resolve, reject) => {
+
+                    //Parsing FromData Files & Fields
                     form.parse(req, async(err, fields, files) => {
                         if(err) reject(err)
+                        
+                        //Preview file
                         const preview_file: any = files.preview
-                        const content_files: any = files.content
 
+                        //Array that will be the content of a pack.
                         let pack_content: Pack_content[] = []
+                        
+                        //Looping through FormData Obj Files.
                         for(let key in files) {
+                            
+                            //Logic for sections besides preview.
+                            if(key.toLocaleLowerCase() !== "preview") {
 
-                            if(key !== "preview") {
-
+                                //Creating an array with directories to specific file in the public folder.
                                 const section_images: string[] = []
+
+                                //Looping through files of specific object property
                                 for(let file of files[key] as any) {
 
                                     section_images.push(`${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`)
                                 }
 
+                                //Pushing content to pack_content arr. that will be used
                                 pack_content.push({
                                     section_name: key.toLowerCase(),
                                     section_images: section_images
@@ -69,6 +102,8 @@ async function api_request(req: any, res: NextApiResponse) {
                             }
                             
                         }
+
+                        //Creating a pack obj. That will be created in database
                         const pack: Pack = {
                             _id: id,
                             username: public_user.username,
@@ -83,6 +118,7 @@ async function api_request(req: any, res: NextApiResponse) {
                             ratings: []
                         } 
 
+                        //Creating database entry for a pack.
                         await create_user_pack(pack)
 
                         //create_user_pack()
@@ -93,20 +129,19 @@ async function api_request(req: any, res: NextApiResponse) {
             }
             
             await enter_pack_to_db()
-
             
-            res.status(200).send("")
+            res.status(200).send("Successfully created a pack!")
 
         } catch (err) {
 
             console.log(err)
-            res.status(500).send("Something went wrong!")
+            res.status(500).send("Something went wrong while trying to create your pack!")
 
         }
 
     } else {
 
-        res.status(400).end()
+        res.status(400).send("Please use POST method.")
 
     }
     

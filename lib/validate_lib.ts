@@ -1,4 +1,4 @@
-import { User } from "../types"
+import { User, Formidable_file } from "../types"
 
 //return true if blob type & size is valid
 export function validate_files(files: File[]): boolean | string {
@@ -29,17 +29,18 @@ export function validate_files(files: File[]): boolean | string {
 
 }
 
-export function validate_single_file(file: File): boolean | string {
+export function validate_single_file(file: Formidable_file): boolean | string {
     
     let passed_validation: boolean | string = false
-        
+    
+    
     //Checking if type of dropped files are jpg / png / jpeg
-    if(file.type === "image/jpg" || file.type === "image/png" || file.type === "image/jpeg" || file.type === "image/gif") {
+    if(file.mimetype === "image/jpg" || file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/gif") {
 
         if(file.size <= 150000) {
             passed_validation = true
         } else {
-            passed_validation = `The file: '${file.name}' is to big! max. 150kb per file`
+            passed_validation = `The file: '${file.originalFilename}' is to big! max. 150kb per file`
         }
 
     } else {
@@ -86,28 +87,4 @@ export function validate_pack_tag_name(tag_name: string): boolean | string {
         }
     }
     
-}
-
-//Returning a user obj
-export function create_user(username: string, email: string, password: string, salt: string, occasional_emails: boolean): User {
-    
-    const user_obj: User = {
-        username,
-        email,
-        password,
-        salt,
-        verified: false,
-        role: "member",
-        occasional_emails: occasional_emails,
-        description: "Hey! Im new here :)",
-        profile_picture: "default.png",
-        profile_banner: "default.png",
-        created_at: new Date(),
-        notifications: [],
-        following: [],
-        followers: [],
-        released_packs: [],
-    }
-
-    return user_obj
 }

@@ -1,8 +1,8 @@
 import { Create_pack_frontend, User } from "../types"
 import { Public_user } from "../types";
 
-//Returning a user obj
-export function create_user(username: string, email: string, password: string, salt: string, occasional_emails: boolean): User {
+//Default user
+export function create_default_user(username: string, email: string, password: string, salt: string, occasional_emails: boolean): User {
     const user_obj: User = {
         username,
         email,
@@ -24,6 +24,7 @@ export function create_user(username: string, email: string, password: string, s
     return user_obj
 }
 
+//Return public_user obj from username.
 export function create_default_public_user(username: string): Public_user {
     
     const public_user_obj: Public_user = {
@@ -40,7 +41,7 @@ export function create_default_public_user(username: string): Public_user {
     return public_user_obj
 }
 
-
+//Creating a FormData that is used to send a pack files and infos to backend.
 export function create_form_data(pack: Create_pack_frontend): FormData | null {
     if(!pack.license) return null
     if(!pack.content) return null

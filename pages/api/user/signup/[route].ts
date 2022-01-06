@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import {MongoClient} from "mongodb"
 import { SHA256 } from "crypto-js";
-import { create_user } from "../../../../lib/create_lib";
+import { create_default_user } from "../../../../lib/create_lib";
 import { email_available, username_available } from "../../../../lib/mongo_lib";
 import { send_email_verification } from "../../../../lib/nodemailer_lib";
 
@@ -127,7 +127,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
                 const users_collection = client.db("pixels").collection("users")
                 
                 //Creating new user instance
-                const user_obj =  create_user(username, email, hashed_password, salt, ocassional_emails_init)
+                const user_obj =  create_default_user(username, email, hashed_password, salt, ocassional_emails_init)
 
                 //Creating a new user instance for user.
                 await users_collection.insertOne(user_obj)
