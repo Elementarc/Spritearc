@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { FileJSON } from "formidable";
+import formidable, { FileJSON } from "formidable";
 
 //APP context_types
 export interface App_navigation_context_type {
@@ -78,6 +78,9 @@ export interface Pack_content {
     section_images: string[]
 }
 
+export interface Formidable_files {
+    [file: string]: Formidable_file | Formidable_file[];
+}
 export interface Formidable_file {
     /**
      * The size of the uploaded file in bytes. If the file is still being uploaded (see `'fileBegin'`

@@ -19,7 +19,7 @@ import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../components/h1_with_deco';
 import { Device_context } from '../context/device_context_provider';
 import { format_date } from '../lib/date_lib';
-import { get_pack_by_id } from '../lib/mongo_lib';
+import { get_pack } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
@@ -344,7 +344,7 @@ function Rating_container(props: {ratings: Pack_rating[]}) {
 export const getServerSideProps: GetServerSideProps = async(context) => {
 
     if(typeof context.query.id === "string") {
-        const pack = await get_pack_by_id(new ObjectId(context.query.id))
+        const pack = await get_pack(new ObjectId(context.query.id))
 
         if(!pack) return {
 

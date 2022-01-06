@@ -1,4 +1,4 @@
-import { User, Formidable_file } from "../types"
+import { User, Formidable_file , Formidable_files} from "../types"
 
 //return true if blob type & size is valid
 export function validate_files(files: File[]): boolean | string {
@@ -29,7 +29,64 @@ export function validate_files(files: File[]): boolean | string {
 
 }
 
-export function validate_single_file(file: Formidable_file): boolean | string {
+export function validate_formidable_files(files: Formidable_files): boolean | string {
+    
+    let passed_validation: boolean | string = false
+
+    
+    for(let key in files) {
+        files[key]
+
+        if(Array.isArray(files[key]) === true) {
+            
+            const file_arr = files[key] as Formidable_file[]
+            for(let file of file_arr) {
+                //Checking if type of dropped files are jpg / png / jpeg
+                if(file.mimetype === "image/jpg" || file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/gif") {
+
+                    if(file.size <= 150000) {
+                        passed_validation = true
+                    } else {
+                        passed_validation = `The file: '${file.originalFilename}' is to big! max. 150kb per file`
+                        break
+                    }
+
+                } else {
+
+                    passed_validation = "Supported types: JPG, PNG, JPEG, GIF"
+                    break
+                }             
+            }
+
+        } else {
+            
+            const file = files[key] as Formidable_file
+
+            console.log(file)
+            //Checking if type of dropped files are jpg / png / jpeg
+            if(file.mimetype === "image/jpg" || file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/gif") {
+                
+                if(file.size <= 150000) {
+                    passed_validation = true
+                } else {
+                    passed_validation = `The file: '${file.originalFilename}' is to big! max. 150kb per file`
+                    break
+                }
+
+            } else {
+
+                passed_validation = "Supported types: JPG, PNG, JPEG, GIF"
+                break
+            }    
+        }
+
+    }
+    
+    return passed_validation
+
+}
+
+export function validate_single_formidable_file(file: Formidable_file): boolean | string {
     
     let passed_validation: boolean | string = false
     

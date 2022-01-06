@@ -155,7 +155,18 @@ export async function username_available(username: string): Promise<boolean> {
 
 }
 
-export async function get_pack_by_id(pack_id: ObjectId): Promise<Pack | null> {
+export async function delete_pack(pack_id: ObjectId): Promise<boolean> {
+    await client.connect()
+    const packs_collection = client.db(DATABASE).collection("packs")
+
+    const results = await packs_collection.deleteOne({_id: pack_id})
+
+    console.log(results)
+    
+    return false
+    
+}
+export async function get_pack(pack_id: ObjectId): Promise<Pack | null> {
 
     try {
 

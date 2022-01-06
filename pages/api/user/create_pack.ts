@@ -1,43 +1,41 @@
 import type { NextApiResponse } from 'next'
 import fs from "fs"
 import withAuth from '../../../middleware/withAuth'
-import { Public_user, Pack, Pack_content } from '../../../types'
+import { Public_user, Pack, Pack_content, Formidable_files } from '../../../types'
 // @ts-ignore: Unreachable code error
 import formidable from 'formidable';
 import { ObjectId } from 'mongodb'
-import { create_user_pack } from '../../../lib/mongo_lib';
-import { validate_single_file } from '../../../lib/validate_lib';
+import { create_user_pack, delete_pack, get_pack } from '../../../lib/mongo_lib';
+import { validate_files, validate_formidable_files, validate_single_formidable_file } from '../../../lib/validate_lib';
 
 async function api_request(req: any, res: NextApiResponse) {
 
     if(req.method === "POST") {
+        //Creating an object id
+        const id = new ObjectId()
+        //Directory where the packs will be created at
+        const pack_directory = `${process.cwd()}/public/packs/${id}`
 
         try {
             //Req user that initiated the create pack request
             const public_user: Public_user = req.user
-
-            //Creating an object id
-            const id = new ObjectId()
-
-            //Directory where the packs will be created at
-            const pack_directory = `${process.cwd()}/public/packs/${id}`
             
             //Handles multiple files form.
             const form = new formidable.IncomingForm({multiples: true});
             
             //Event that validates & creates files in the correct directory with the correct strutcure based of the pack content
             form.on("fileBegin", (section_name, file) => {
-                
-                //Checking if pack_directory already exists.
-                const exists = fs.existsSync(pack_directory)
-
-                //Creating directory when directory is not exisiting.
-                if(!exists) fs.mkdirSync(pack_directory)
 
                 //Validating file
-                const valid_file = validate_single_file(file)
+                const valid_file = validate_single_formidable_file(file)
 
                 if(valid_file === true) {
+
+                    //Checking if pack_directory already exists.
+                    const exists = fs.existsSync(pack_directory)
+
+                    //Creating directory when directory is not exisiting.
+                    if(!exists) fs.mkdirSync(pack_directory)
 
                     //Creating files in the correct sturcture.
                     if(section_name.toLowerCase() === "preview") {
@@ -71,7 +69,11 @@ async function api_request(req: any, res: NextApiResponse) {
                     //Parsing FromData Files & Fields
                     form.parse(req, async(err, fields, files) => {
                         if(err) reject(err)
-                        
+                        const pack_files = files as unknown
+                        const valid_files = validate_formidable_files(pack_files as Formidable_files)
+
+                        if(typeof valid_files === "string") throw `${valid_files}`
+
                         //Preview file
                         const preview_file: any = files.preview
 
@@ -134,8 +136,23 @@ async function api_request(req: any, res: NextApiResponse) {
 
         } catch (err) {
 
-            console.log(err)
-            res.status(500).send("Something went wrong while trying to create your pack!")
+            try {
+
+                //Checking if part of the pack was created. Removing pack folder from filesystem.
+                if(fs.existsSync(pack_directory)) fs.rmdirSync(pack_directory)
+                const pack = await get_pack(id)
+
+                if(pack) await delete_pack(id)
+
+                console.log(err)
+                res.status(500).send("Something went wrong!")
+
+            } catch( err ) {
+
+                console.log(err)
+                res.status(500).send("Something went wrong!")
+
+            }
 
         }
 
