@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import React, {ReactElement, useEffect, useContext, useState} from 'react';
 import Footer from '../components/footer';
-import {Pack_content, Pack} from "../types"
+import {Pack_content, Pack, Pack_rating} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
@@ -142,7 +142,7 @@ export default function Pack_page(props: {pack: Pack}) {
                         
                     <div className="preview_container" id="preview_container">
                         <div className="background">
-						    <Image src={`/packs/${pack._id}/${pack.preview_image}`} alt="Preview Image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						    <Image src={`/packs/${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
                             <div className="background_blur" />
                         </div>
 
@@ -298,14 +298,14 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
 }
 
 //Component that renders Stars based on pack Rating.
-function Rating_container(props: {ratings: {user: string, rating: number}[]}) {
+function Rating_container(props: {ratings: Pack_rating[]}) {
     const ratings: {user: string, rating: number}[] = props.ratings
     let sum_ratings: number = 0
 
     for(let item of ratings) {
         sum_ratings = sum_ratings + item.rating
     }
-    
+
     const avg_rating = sum_ratings / ratings.length
     //Return a ReactElement array with stars. 
     function create_stars(number: number) {

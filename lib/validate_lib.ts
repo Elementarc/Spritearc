@@ -29,6 +29,29 @@ export function validate_files(files: File[]): boolean | string {
 
 }
 
+export function validate_single_file(file: File): boolean | string {
+    
+    let passed_validation: boolean | string = false
+        
+    //Checking if type of dropped files are jpg / png / jpeg
+    if(file.type === "image/jpg" || file.type === "image/png" || file.type === "image/jpeg" || file.type === "image/gif") {
+
+        if(file.size <= 150000) {
+            passed_validation = true
+        } else {
+            passed_validation = `The file: '${file.name}' is to big! max. 150kb per file`
+        }
+
+    } else {
+
+        passed_validation = "Supported types: JPG, PNG, JPEG, GIF"
+    }
+
+    
+    return passed_validation
+
+}
+
 export function validate_pack_title(title: string): boolean | string {
     const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9 ]+)$/)
 

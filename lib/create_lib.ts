@@ -1,4 +1,4 @@
-import { Create_pack_frontend, Pack_content, User } from "../types"
+import { Create_pack_frontend, User } from "../types"
 import { Public_user } from "../types";
 
 //Returning a user obj
@@ -24,7 +24,6 @@ export function create_user(username: string, email: string, password: string, s
     return user_obj
 }
 
-//Returning a public user obj
 export function create_default_public_user(username: string): Public_user {
     
     const public_user_obj: Public_user = {
@@ -41,13 +40,42 @@ export function create_default_public_user(username: string): Public_user {
     return public_user_obj
 }
 
-export function create_sendable_pack(pack: Create_pack_frontend) {
+
+export function create_form_data(pack: Create_pack_frontend): FormData | null {
     if(!pack.license) return null
     if(!pack.content) return null
     if(!pack.title) return null
     if(!pack.description) return null
     if(!pack.preview.preview_asset) return null
     if(!pack.tags) return null
-
     
+    let pack_content: {section_name: string, section_assets: File[]}[] = []
+
+    for(let [key, value] of pack.content.entries()) {
+        pack_content.push({
+            section_name: key,
+            section_assets: value.section_assets 
+        })
+    }
+
+    const form_data = new FormData()
+
+    form_data.set("title", pack.title)
+    form_data.set("description", pack.description)
+    form_data.set("license", pack.license)
+    form_data.set("preview", pack.preview.preview_asset, `preview`)
+    form_data.set("tags", JSON.stringify(pack.tags))
+
+
+    for(let section of pack_content) {
+        
+        for(let i = 0; i < section.section_assets.length; i ++) {
+            console.log(section.section_assets[i])
+            form_data.append(section.section_name.toLowerCase(), section.section_assets[i], `${section.section_name.toLowerCase()}_${i}`)
+        }
+        
+    }
+    
+    return form_data
+
 }

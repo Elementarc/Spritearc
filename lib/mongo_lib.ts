@@ -1,6 +1,7 @@
 import { MongoClient, ObjectId, WithId } from 'mongodb';
 import { Public_user } from '../types';
 import { Pack } from '../types';
+
 const client = new MongoClient("mongodb://localhost:27017")
 const DATABASE = "pixels"
 
@@ -211,23 +212,20 @@ export async function get_recent_packs(number_of_returns: number): Promise<Pack[
     
 }
 
-
-export async function create_user_pack(create_pack_obj: any) {
+export async function create_user_pack(pack: Pack) {
 
     try {
 
-        const pack = create_pack_obj
         await client.connect()
-    
+
         const packs_collection = client.db(DATABASE).collection("packs")
-    
+
         packs_collection.insertOne(pack)
 
-    } catch ( err ) {
+    } catch( err ) {
 
-        throw err;
+        throw err
 
     }
-    
 
 }

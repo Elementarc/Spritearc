@@ -10,7 +10,7 @@ export default function Packs_section(props: { header: string , packs: Pack[] | 
     const jsx_packs = []
     for(let pack of packs) {
         jsx_packs.push(
-            <Pack_preview key={pack._id} pack={pack}/>
+            <Pack_preview key={pack._id.toString()} pack={pack}/>
         )
     }
     

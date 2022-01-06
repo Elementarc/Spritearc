@@ -13,7 +13,7 @@ import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import ThrashIcon from "../public/icons/ThrashIcon.svg"
 import { Device_context } from '../context/device_context_provider';
 import { create_user_pack } from '../lib/mongo_lib';
-import { create_sendable_pack_obj } from '../lib/create_lib';
+import { create_form_data as create_form_data } from '../lib/create_lib';
 // @ts-ignore: Unreachable code error
 
 //Context
@@ -43,9 +43,9 @@ const initial_create_pack_obj: Create_pack_frontend = {
     steps_available: [],
     license: null,
     preview: {preview_asset: null, preview_url: null},
-    title: null,
-    description: null,
-    tags: [],
+    title: "ASDKAD",
+    description: "adaopkidaopisduhaosiduap9isdu9pd182d9p8ad9pas8hdp9qd2189hd9as8hd9asuhdauiodsh19uda9sdg9asdadaopkidaopisduhaosiduap9isdu9pd182d9p8ad9pas8hdp9qd2189hd9as8hd9asuhdauiodsh19uda9sdg9asd",
+    tags: ["lol", "TEST", "LOASD"],
     content: new Map(),
 }
 
@@ -233,19 +233,20 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
 
         case (CREATE_PACK_ACTIONS.SUBMIT_PACK) : {
 
-            const filled_pack_obj = create_sendable_pack_obj(create_pack_obj)
             
-            if(filled_pack_obj) {
-                async function send_pack() {
-                    const response = fetch("/api/user/create_pack", {
-                        method: "POST",
-                        body: JSON.stringify(filled_pack_obj)
-                    })
-
-                    ;(await response).status
-                }
-                send_pack()
+            async function send_pack() {
+                const Form_data = create_form_data(create_pack_obj)
+            
+                if(!Form_data) return
+                const response = await fetch("/api/user/create_pack", {
+                    method: "POST",
+                    body: Form_data
+                })
+                
+                
             }
+            send_pack()
+
             break
         }
         //Default value
@@ -299,7 +300,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             
             if(create_pack_obj.tags.length >= 3 && create_pack_obj.license) {
                 steps.push(3)
-                console.log(steps)
             } 
             
         }

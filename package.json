@@ -9,10 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@types/formidable": "^2.0.3",
     "adm-zip": "^0.5.9",
     "cookie": "^0.4.1",
     "crypto-js": "^4.1.1",
     "date-fns": "^2.25.0",
+    "formidable": "^2.0.1",
     "framer-motion": "^5.2.1",
     "gray-matter": "^4.0.3",
     "jsonwebtoken": "^8.5.1",

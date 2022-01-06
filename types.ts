@@ -58,11 +58,11 @@ export interface Patchnote_info {
 export interface Pack {
     _id: ObjectId,
     username: string,
-    preview_image: string,
+    preview: string,
     title: string,
     license: string,
     description: string,
-    date: string,
+    date: Date,
     tags: string[],
     downloads: number,
     content: Pack_content[]
@@ -78,26 +78,13 @@ export interface Pack_content {
 }
 
 
-export interface Sendable_pack {
-    license: string,
-    preview: {preview_asset: File}
-    title: string,
-    description: string,
-    tags: string[],
-    content: [
-        {
-            section_name: string, 
-            section_assets: File[]
-        }
-    ]
-}
 
 export interface Create_pack_frontend{
     current_step: number,
     steps_available: number[],
     license: string | null,
     preview: {
-        preview_asset: Blob | null,
+        preview_asset: File | null,
         preview_url: string | null
     },
     title: string | null,
