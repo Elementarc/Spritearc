@@ -176,3 +176,12 @@ export function validate_pack_tags(tags: string[]): boolean | string {
     }
     
 }
+
+export function validate_license(license: string): boolean | string {
+    
+    if(license === "opensource") {
+        return true
+    } else {
+        return "License is not supported"
+    }
+}

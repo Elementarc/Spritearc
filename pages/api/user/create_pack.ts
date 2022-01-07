@@ -6,7 +6,7 @@ import { Public_user, Pack, Pack_content, Formidable_files } from '../../../type
 import formidable from 'formidable';
 import { ObjectId } from 'mongodb'
 import { create_user_pack, delete_pack, get_pack } from '../../../lib/mongo_lib';
-import { validate_files, validate_formidable_files, validate_pack_description, validate_pack_section_name, validate_pack_tags, validate_pack_title, validate_single_formidable_file } from '../../../lib/validate_lib';
+import { validate_files, validate_formidable_files, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tags, validate_pack_title, validate_single_formidable_file } from '../../../lib/validate_lib';
 import del from 'del';
 
 async function api_request(req: any, res: NextApiResponse) {
@@ -32,7 +32,6 @@ async function api_request(req: any, res: NextApiResponse) {
             //Event that validates & creates files in the correct directory with the correct strutcure based of the pack content
             form.on("fileBegin", (section_name, file) => {
 
-                console.log(section_name)
                 //Validating file
                 const valid_file = validate_single_formidable_file(file)
                 const valid_section_name = validate_pack_section_name(section_name)
@@ -52,6 +51,7 @@ async function api_request(req: any, res: NextApiResponse) {
                         if(file.originalFilename?.includes(".")) {
                             file.filepath = `${pack_directory}/${file.originalFilename?.toLowerCase()}`
                         } else {
+                            console.log(file)
                             //Creating extention
                             file.filepath = `${pack_directory}/${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`
                         }
@@ -85,36 +85,58 @@ async function api_request(req: any, res: NextApiResponse) {
                     //Parsing FromData Files & Fields
                     form.parse(req, async(err, fields, files) => {
                         if(err) throw err;
+                        
+                        if(! fields.title) return reject("No Title found!")
+                        if(! fields.description) return reject("No Description found!")
+                        if(! fields.tags) return reject("No Tags found!")
+                        if(! fields.license) return reject("No License found!")
+                        if(! files.preview ) return reject("No preview file found!")
+
+                        if(typeof fields.title !== "string") return reject("Only 1 title allowed!")
+                        if(typeof fields.description !== "string") return reject("Only 1 description allowed!")
+                        if(typeof fields.tags !== "string") return reject("Only 1 tag key allowed!")
+                        if(typeof fields.license !== "string") return reject("Only 1 license allowed!")
+                        if(typeof fields.preview !== "string") return reject("Only 1 preview allowed!")
+
+                        const preview_file: any = files.preview
                         const tags = (JSON.parse(fields.tags as string)as string[])
                         const pack_files = files as unknown
+
                         const valid_files = validate_formidable_files(pack_files as Formidable_files)
                         const valid_title = validate_pack_title(fields.title as string)
                         const valid_description = validate_pack_description(fields.description as string)
+                        const valid_license = validate_license(fields.license as string)
                         const valid_tags = validate_pack_tags(tags)
 
                         if(typeof valid_files === "string") return reject(`${valid_files}`)
                         if(typeof valid_title === "string") throw reject(`${valid_title}`)
                         if(typeof valid_description === "string") return reject(`${valid_description}`)
                         if(typeof valid_tags === "string") return reject(`${valid_tags}`)
+                        if(typeof valid_license === "string") return reject(`${valid_license}`)
                         //Passed validations
 
-                        //Preview file
-                        const preview_file: any = files.preview
-                        if(!preview_file) reject("Couldn't find a preview file")
-                        if(!fields.license) reject("Couldn't find a license")
                         //Array that will be the content of a pack.
                         let pack_content: Pack_content[] = []
                         
+                        //Checking how many props files obj has
+                        let object_props = 0
+                        for(let key in files) {
+                            object_props ++
+                        }
+
+                        if(object_props < 2) return reject("Object has not enough sections")
                         //Looping through FormData Obj Files.
                         for(let key in files) {
+                            
                             //Checkign if object has preview property.
                             const has_preview = files.hasOwnProperty("preview")
-                            if(!has_preview) reject("Couldn't find preview file")
+                            if(!has_preview) return reject("Couldn't find preview file")
 
                             const valid_section_name = validate_pack_section_name(key)
 
                             if(typeof valid_section_name === "string") throw "Sectionname didnt pass validations"
 
+                            
                             //Logic for sections besides preview.
                             if(key.toLocaleLowerCase() !== "preview") {
 
