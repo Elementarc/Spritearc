@@ -19,7 +19,9 @@ async function api_request(req: NextApiRequest | any, res: NextApiResponse) {
         const { email, password } = req.body as {email: string, password: string}
         
         try {
-
+            if(!email) return res.status(400).send("Couldn't find Email")
+            if(!password) return res.status(400).send("Couldn't find password")
+            
             await client.connect()
             const collection = client.db("pixels").collection("users")
             const user_arr = await collection.aggregate([

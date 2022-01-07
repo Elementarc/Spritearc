@@ -25,11 +25,13 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
     
     //POST Method
     if(req.method === "POST") {
+
         if(typeof req.query.route !== "string") return res.status(400).end()
 
         //Validating username only.
         if(req.query.route === "validate_username") {
             const username = req.body.username
+            if(!username) res.status(400).send("Couldnt find username in body.")
 
             try {
 
@@ -53,9 +55,11 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             }
             
         }
+
         //Validating email only.
         else if(req.query.route === "validate_email") {
             const email = req.body.email
+            if(!email) return res.status(400).send("Couldnt find email in body")
 
             try {
 
@@ -82,10 +86,11 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             
             
         } 
+
         //Validating whole signup request. Sending verification to email.
         else if(req.query.route === "send_verification") {
+
             //Verification send with signup page.
-            
             const { username, email, password, legal, occasional_emails } =  req.body as {username: string, email: string, password: string, legal: string | boolean, occasional_emails: string | boolean}
             let legal_init = false
             let ocassional_emails_init = false
@@ -162,6 +167,7 @@ export default async function signup(req: NextApiRequest, res: NextApiResponse) 
             
 
         } 
+        
         //Could'nt find correct route.
         else {
             //console.log("couldn't find correct route")

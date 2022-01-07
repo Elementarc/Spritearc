@@ -23,6 +23,7 @@ async function api_request(req: any, res: NextApiResponse) {
         try {
             process.on('unhandledRejection', (reason, p) => {
                 console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+                throw reason
                 // application specific logging, throwing an error, or other logic here
             });
             
@@ -111,7 +112,7 @@ async function api_request(req: any, res: NextApiResponse) {
                         const valid_tags = validate_pack_tags(tags)
 
                         if(typeof valid_files === "string") return reject(`${valid_files}`)
-                        if(typeof valid_title === "string") throw reject(`${valid_title}`)
+                        if(typeof valid_title === "string") return reject(`${valid_title}`)
                         if(typeof valid_description === "string") return reject(`${valid_description}`)
                         if(typeof valid_tags === "string") return reject(`${valid_tags}`)
                         if(typeof valid_license === "string") return reject(`${valid_license}`)
