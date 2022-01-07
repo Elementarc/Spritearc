@@ -100,6 +100,18 @@ export default function Pack_page(props: {pack: Pack}) {
         })
     }, [show_focus_img])
     
+    async function delete_pack() {
+        const query = Router.query
+
+        const response = await fetch(`/api/user/delete_pack?id=${query.id}`, {
+            method: "POST"
+        })
+
+        if(response.status === 200) {
+            
+        }
+
+    }
     return (
         <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
 
@@ -139,7 +151,7 @@ export default function Pack_page(props: {pack: Pack}) {
                 }
 
                 <div className="content" id="content">
-                        
+        
                     <div className="preview_container" id="preview_container">
                         <div className="background">
 						    <Image src={`/packs/${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
@@ -153,6 +165,7 @@ export default function Pack_page(props: {pack: Pack}) {
 
                                 <p>{pack.description}</p>
                                 <button>Download Pack</button>
+                                <button onClick={delete_pack}>Delete Pack</button>
                             </div>
 
                             <div className="stats_container"> 

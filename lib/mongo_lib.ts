@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { Public_user } from '../types';
-import { Pack } from '../types';
+import { Pack , User} from '../types';
 
 const client = new MongoClient("mongodb://localhost:27017")
 const DATABASE = "pixels"
@@ -155,17 +155,39 @@ export async function username_available(username: string): Promise<boolean> {
 
 }
 
-export async function delete_pack(pack_id: ObjectId): Promise<boolean> {
-    await client.connect()
-    const packs_collection = client.db(DATABASE).collection("packs")
+export async function delete_pack(pack_id: ObjectId, signed_user: Public_user): Promise<boolean> {
 
-    const results = await packs_collection.deleteOne({_id: pack_id})
+    try {
+        await client.connect()
+        const packs_collection = client.db(DATABASE).collection("packs")
+        
+        const pack = await packs_collection.findOne({_id: pack_id}) as Pack | null
+    
+        if(!pack) return false
+        if(signed_user.username === pack.username) {
+            //Deleting pack
+            const delete_results = await packs_collection.deleteOne({_id: pack_id})
 
-    console.log(results)
-    
-    return false
-    
+            //Updating released_packs from user Obj
+            const users_collection = client.db(DATABASE).collection("users")
+
+            const update_results = await users_collection.updateOne({username: signed_user.username}, {$pull: {"released_packs": pack_id.toString()}})
+
+            console.log("delete: ", delete_results, "update: ", update_results)
+
+            return true
+        } else {
+            return false
+        }
+       
+
+    } catch ( err ) {
+        console.log(err)
+        return false
+    }
+
 }
+
 export async function get_pack(pack_id: ObjectId): Promise<Pack | null> {
 
     try {

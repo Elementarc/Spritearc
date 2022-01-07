@@ -63,9 +63,9 @@ export default function Pack_preview(props: {pack: Pack}) {
 
 	return (
         <Link href={`/pack?id=${pack._id}`} scroll={false}>
-
+			
             <div className="pack_preview_container">
-
+				
                 <div className="content_container">
                     <h1>{pack.title}</h1>
                 </div>

@@ -62,7 +62,6 @@ export function validate_formidable_files(files: Formidable_files): boolean | st
             
             const file = files[key] as Formidable_file
 
-            console.log(file)
             //Checking if type of dropped files are jpg / png / jpeg
             if(file.mimetype === "image/jpg" || file.mimetype === "image/png" || file.mimetype === "image/jpeg" || file.mimetype === "image/gif") {
                 

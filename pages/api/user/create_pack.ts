@@ -16,9 +16,11 @@ async function api_request(req: any, res: NextApiResponse) {
         //Directory where the packs will be created at
         const pack_directory = `${process.cwd()}/public/packs/${id}`
 
+        //Req user that initiated the create pack request
+        const public_user: Public_user = req.user
+        
         try {
-            //Req user that initiated the create pack request
-            const public_user: Public_user = req.user
+            
             
             //Handles multiple files form.
             const form = new formidable.IncomingForm({multiples: true});
@@ -142,7 +144,7 @@ async function api_request(req: any, res: NextApiResponse) {
                 if(fs.existsSync(pack_directory)) fs.rmdirSync(pack_directory)
                 const pack = await get_pack(id)
 
-                if(pack) await delete_pack(id)
+                if(pack) await delete_pack(id, public_user)
 
                 console.log(err)
                 res.status(500).send("Something went wrong!")
