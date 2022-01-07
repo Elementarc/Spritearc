@@ -129,7 +129,16 @@ export function validate_pack_description(description: string): boolean | string
     return true
 }
 
-export function validate_pack_tag_name(tag_name: string): boolean | string {
+export function validate_pack_section_name(section_name: string): boolean | string {
+    const section_name_regex = new RegExp(/^[a-zA-Z0-9]{3,12}$/)
+
+    if(!section_name_regex.test(section_name)) return "section name did'nt pass validations"
+
+    return true
+    
+}
+
+export function validate_pack_tag(tag_name: string): boolean | string {
     const tag_regex = new RegExp(/^[a-zA-Z]{3,10}$/)
 
     if(tag_name.length === 0) return ""

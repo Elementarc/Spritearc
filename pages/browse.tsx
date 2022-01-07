@@ -38,8 +38,6 @@ export default function Browse() {
 				
 				<div className="content">
 					<Packs_section header="Recent Packs" packs={recent_packs}/>
-					<Packs_section header="Recent Packs" packs={recent_packs}/>
-					<Packs_section header="Recent Packs" packs={recent_packs}/>
 					<Nav_shadow/>
 				</div>
 

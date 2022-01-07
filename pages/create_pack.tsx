@@ -7,7 +7,7 @@ import {Create_pack_frontend, Create_pack_context_type} from "../types"
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import Image from 'next/image';
-import { validate_files , validate_pack_title, validate_pack_description, validate_pack_tag_name} from '../lib/validate_lib';
+import { validate_files , validate_pack_title, validate_pack_description, validate_pack_tag} from '../lib/validate_lib';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import ThrashIcon from "../public/icons/ThrashIcon.svg"
@@ -724,7 +724,7 @@ function Step_3() {
         function set_tag() {
             const tag = document.getElementById("tag_input") as HTMLInputElement
 
-            const valid = validate_pack_tag_name(tag.value)
+            const valid = validate_pack_tag(tag.value)
 
             const error_message = document.getElementById("tag_error_message") as HTMLParagraphElement
             const exists = (create_pack.create_pack_obj.tags as string[]).includes(tag.value.toLowerCase())
@@ -785,7 +785,7 @@ function Step_3() {
     function key_up_event(e: any) {
         const value = e.target.value as string
 
-        const valid = validate_pack_tag_name(value)
+        const valid = validate_pack_tag(value)
 
         const error_message = document.getElementById("tag_error_message") as HTMLParagraphElement
         const exists = (create_pack.create_pack_obj.tags as string[]).includes(value.toLowerCase())

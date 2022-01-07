@@ -6,7 +6,8 @@ import { Public_user, Pack, Pack_content, Formidable_files } from '../../../type
 import formidable from 'formidable';
 import { ObjectId } from 'mongodb'
 import { create_user_pack, delete_pack, get_pack } from '../../../lib/mongo_lib';
-import { validate_files, validate_formidable_files, validate_single_formidable_file } from '../../../lib/validate_lib';
+import { validate_files, validate_formidable_files, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file } from '../../../lib/validate_lib';
+import del from 'del';
 
 async function api_request(req: any, res: NextApiResponse) {
 
@@ -30,8 +31,9 @@ async function api_request(req: any, res: NextApiResponse) {
 
                 //Validating file
                 const valid_file = validate_single_formidable_file(file)
+                const valid_section_name = validate_pack_section_name(section_name)
 
-                if(valid_file === true) {
+                if(valid_file === true && valid_section_name === true) {
 
                     //Checking if pack_directory already exists.
                     const exists = fs.existsSync(pack_directory)
@@ -59,8 +61,9 @@ async function api_request(req: any, res: NextApiResponse) {
                         file.filepath = `${pack_directory}/${section_name.toLowerCase()}/${file.originalFilename?.toLowerCase()}.${file_extention}`
                     }
 
+                } else {
+                    console.log(`File: ${file.originalFilename} did not pass validations.`)
                 }
-
              
             })
             
@@ -73,9 +76,27 @@ async function api_request(req: any, res: NextApiResponse) {
                         if(err) reject(err)
                         const pack_files = files as unknown
                         const valid_files = validate_formidable_files(pack_files as Formidable_files)
+                        const valid_title = validate_pack_title(fields.title as string)
+                        const valid_description = validate_pack_description(fields.description as string)
+                        let valid_tags: boolean | string = true
+
+                        for(let tag of (JSON.parse(fields.tags as string)as string[])) {
+                            
+                            const valid_tag = validate_pack_tag(tag)
+
+
+                            if(typeof valid_tag === "string") {
+                                valid_tags = valid_tag
+                            }
+                            
+                        }
 
                         if(typeof valid_files === "string") throw `${valid_files}`
+                        if(typeof valid_title === "string") throw `${valid_title}`
+                        if(typeof valid_description === "string") throw `${valid_title}`
+                        if(typeof valid_tags === "string") throw `${valid_tags}`
 
+                        //Passed validations
                         //Preview file
                         const preview_file: any = files.preview
 
@@ -84,6 +105,10 @@ async function api_request(req: any, res: NextApiResponse) {
                         
                         //Looping through FormData Obj Files.
                         for(let key in files) {
+                            
+                            const valid_section_name = validate_pack_section_name(key)
+
+                            if(typeof valid_section_name === "string") throw "Sectionname didnt pass validations"
                             
                             //Logic for sections besides preview.
                             if(key.toLocaleLowerCase() !== "preview") {
@@ -138,10 +163,11 @@ async function api_request(req: any, res: NextApiResponse) {
 
         } catch (err) {
 
+            //Deleting pack entry if something fails
             try {
 
                 //Checking if part of the pack was created. Removing pack folder from filesystem.
-                if(fs.existsSync(pack_directory)) fs.rmdirSync(pack_directory)
+                if(fs.existsSync(pack_directory)) del([pack_directory]);
                 const pack = await get_pack(id)
 
                 if(pack) await delete_pack(id, public_user)

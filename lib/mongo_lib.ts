@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { Public_user } from '../types';
-import { Pack , User} from '../types';
+import { Pack } from '../types';
 
 const client = new MongoClient("mongodb://localhost:27017")
 const DATABASE = "pixels"

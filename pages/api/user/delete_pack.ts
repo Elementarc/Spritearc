@@ -1,14 +1,9 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import fs from "fs"
+import type { NextApiResponse } from 'next'
 import del from "del"
-
 import withAuth from '../../../middleware/withAuth'
-import { Public_user, Pack, Pack_content, Formidable_files } from '../../../types'
-// @ts-ignore: Unreachable code error
-import formidable from 'formidable';
+import { Public_user} from '../../../types'
 import { ObjectId } from 'mongodb'
-import { create_user_pack, delete_pack, get_pack } from '../../../lib/mongo_lib';
-import { validate_files, validate_formidable_files, validate_single_formidable_file } from '../../../lib/validate_lib';
+import { delete_pack } from '../../../lib/mongo_lib';
 
 async function api_request(req: any, res: NextApiResponse) {
 
@@ -40,12 +35,6 @@ async function api_request(req: any, res: NextApiResponse) {
 
     }
     
-}
-
-export const config = {
-    api: {
-        bodyParser: false,
-    }
 }
 
 export default withAuth(api_request)

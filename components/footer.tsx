@@ -1,16 +1,21 @@
-import React, { ReactElement, useEffect } from 'react';
+import React, { ReactElement, useEffect , useContext} from 'react';
 import Image from "next/image"
 //SVG COMPONENTS (ICONS)
 import Twitter from "../public/logos/twitter.png"
 import Link from 'next/dist/client/link';
+import { App_context } from '../types';
+import { APP_CONTEXT } from './layout';
+import { useRouter } from 'next/router';
 
 export default function Footer(): ReactElement {
-
+    const APP: App_context = useContext(APP_CONTEXT)
+    const router = useRouter()
     //Setting background max-width and height
     useEffect(() => {
         const background = document.getElementById("background") as HTMLDivElement
         const footer = document.getElementById("footer_container") as HTMLDivElement
-       
+        const app_content_container = APP.app_content_element()
+
         const observer = new ResizeObserver((entries) => {
 
             for(let entry of entries) {
@@ -18,10 +23,11 @@ export default function Footer(): ReactElement {
                 background.style.maxWidth = `${entry.contentRect.width}px`
             }
         }) 
-
-        observer.observe(footer)
+        background.style.maxHeight = `${footer.offsetTop + footer.offsetHeight}px`
+        
+        observer.observe(app_content_container)
         return(() => {
-            observer.unobserve(footer)
+            observer.unobserve(app_content_container)
         })
     }, [])
 

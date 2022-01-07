@@ -6,9 +6,6 @@ import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
 import { useParallax } from '../lib/custom_hooks';
-import { APP_CONTEXT } from "../components/layout";
-import { App_context } from '../types';
-import {format} from "date-fns"
 import ArrowIcon from "../public/icons/ArrowIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
 import StarEmpty from "../public/icons/StarEmptyIcon.svg"
@@ -22,8 +19,8 @@ import { format_date } from '../lib/date_lib';
 import { get_pack } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
-const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
+const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 //Renders the full Pack
 export default function Pack_page(props: {pack: Pack}) {
@@ -112,6 +109,7 @@ export default function Pack_page(props: {pack: Pack}) {
         }
 
     }
+
     return (
         <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
 
@@ -165,7 +163,6 @@ export default function Pack_page(props: {pack: Pack}) {
 
                                 <p>{pack.description}</p>
                                 <button>Download Pack</button>
-                                <button onClick={delete_pack}>Delete Pack</button>
                             </div>
 
                             <div className="stats_container"> 

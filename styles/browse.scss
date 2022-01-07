@@ -9,7 +9,7 @@
         position: relative;
         z-index: 1;
         background: $color_background_dark;
-        
+        min-height: 100vh;
         .title_pack_container {
             position: relative;
             overflow: hidden;

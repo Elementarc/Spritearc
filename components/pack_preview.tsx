@@ -2,6 +2,7 @@ import React, { useEffect} from 'react';
 import Link from 'next/dist/client/link';
 import { Pack } from '../types';
 import Image from 'next/dist/client/image';
+import ThrashIcon from "../public/icons/ThrashIcon.svg"
 
 
 export function Packs_navigator(props: {page: number, setPage: any, lastPage: number}) {
@@ -65,7 +66,7 @@ export default function Pack_preview(props: {pack: Pack}) {
         <Link href={`/pack?id=${pack._id}`} scroll={false}>
 			
             <div className="pack_preview_container">
-				
+
                 <div className="content_container">
                     <h1>{pack.title}</h1>
                 </div>

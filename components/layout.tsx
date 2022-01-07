@@ -18,7 +18,6 @@ export default function Layout({children}: any ) {
     const Auth: any = useContext(Auth_context)
 
     //Checking if user is signed in or not. Used for whole application.
-    
     useEffect(() => {
         async function is_auth() {
             const response = await fetch("/api/user/is_auth", {method: "POST"})
