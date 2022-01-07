@@ -365,7 +365,6 @@ function Step_1() {
     const [pack_content_jsx, set_pack_content_jsx] = useState<ReactElement[]>([])
     const [toggle_add_section, set_toggle_add_section] = useState(false)
 
-
     useEffect(() => {
         create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_SECTION, payload: {section_name: "Lol"}})
     }, [])

@@ -254,7 +254,7 @@ export async function create_user_pack(pack: Pack) {
         packs_collection.insertOne(pack)
 
     } catch( err ) {
-
+        console.log("LOL")
         throw err
 
     }

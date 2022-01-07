@@ -6,7 +6,7 @@ import { Public_user, Pack, Pack_content, Formidable_files } from '../../../type
 import formidable from 'formidable';
 import { ObjectId } from 'mongodb'
 import { create_user_pack, delete_pack, get_pack } from '../../../lib/mongo_lib';
-import { validate_files, validate_formidable_files, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file } from '../../../lib/validate_lib';
+import { validate_files, validate_formidable_files, validate_pack_description, validate_pack_section_name, validate_pack_tags, validate_pack_title, validate_single_formidable_file } from '../../../lib/validate_lib';
 import del from 'del';
 
 async function api_request(req: any, res: NextApiResponse) {
@@ -21,7 +21,10 @@ async function api_request(req: any, res: NextApiResponse) {
         const public_user: Public_user = req.user
         
         try {
-            
+            process.on('unhandledRejection', (reason, p) => {
+                console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
+                // application specific logging, throwing an error, or other logic here
+            });
             
             //Handles multiple files form.
             const form = new formidable.IncomingForm({multiples: true});
@@ -29,6 +32,7 @@ async function api_request(req: any, res: NextApiResponse) {
             //Event that validates & creates files in the correct directory with the correct strutcure based of the pack content
             form.on("fileBegin", (section_name, file) => {
 
+                console.log(section_name)
                 //Validating file
                 const valid_file = validate_single_formidable_file(file)
                 const valid_section_name = validate_pack_section_name(section_name)
@@ -44,7 +48,14 @@ async function api_request(req: any, res: NextApiResponse) {
                     //Creating files in the correct sturcture.
                     if(section_name.toLowerCase() === "preview") {
 
-                        file.filepath = `${pack_directory}/${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`
+                        //Using given extention
+                        if(file.originalFilename?.includes(".")) {
+                            file.filepath = `${pack_directory}/${file.originalFilename?.toLowerCase()}`
+                        } else {
+                            //Creating extention
+                            file.filepath = `${pack_directory}/${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`
+                        }
+                        
     
                     } else {
                         
@@ -68,48 +79,42 @@ async function api_request(req: any, res: NextApiResponse) {
             })
             
             //Function that creates a database entry
-            function enter_pack_to_db(): Promise<void> {
+            function enter_pack_to_db(): Promise<boolean | string> {
                 return new Promise((resolve, reject) => {
 
                     //Parsing FromData Files & Fields
                     form.parse(req, async(err, fields, files) => {
-                        if(err) reject(err)
+                        if(err) throw err;
+                        const tags = (JSON.parse(fields.tags as string)as string[])
                         const pack_files = files as unknown
                         const valid_files = validate_formidable_files(pack_files as Formidable_files)
                         const valid_title = validate_pack_title(fields.title as string)
                         const valid_description = validate_pack_description(fields.description as string)
-                        let valid_tags: boolean | string = true
+                        const valid_tags = validate_pack_tags(tags)
 
-                        for(let tag of (JSON.parse(fields.tags as string)as string[])) {
-                            
-                            const valid_tag = validate_pack_tag(tag)
-
-
-                            if(typeof valid_tag === "string") {
-                                valid_tags = valid_tag
-                            }
-                            
-                        }
-
-                        if(typeof valid_files === "string") throw `${valid_files}`
-                        if(typeof valid_title === "string") throw `${valid_title}`
-                        if(typeof valid_description === "string") throw `${valid_title}`
-                        if(typeof valid_tags === "string") throw `${valid_tags}`
-
+                        if(typeof valid_files === "string") return reject(`${valid_files}`)
+                        if(typeof valid_title === "string") throw reject(`${valid_title}`)
+                        if(typeof valid_description === "string") return reject(`${valid_description}`)
+                        if(typeof valid_tags === "string") return reject(`${valid_tags}`)
                         //Passed validations
+
                         //Preview file
                         const preview_file: any = files.preview
-
+                        if(!preview_file) reject("Couldn't find a preview file")
+                        if(!fields.license) reject("Couldn't find a license")
                         //Array that will be the content of a pack.
                         let pack_content: Pack_content[] = []
                         
                         //Looping through FormData Obj Files.
                         for(let key in files) {
-                            
+                            //Checkign if object has preview property.
+                            const has_preview = files.hasOwnProperty("preview")
+                            if(!has_preview) reject("Couldn't find preview file")
+
                             const valid_section_name = validate_pack_section_name(key)
 
                             if(typeof valid_section_name === "string") throw "Sectionname didnt pass validations"
-                            
+
                             //Logic for sections besides preview.
                             if(key.toLocaleLowerCase() !== "preview") {
 
@@ -151,9 +156,11 @@ async function api_request(req: any, res: NextApiResponse) {
                         await create_user_pack(pack)
 
                         //create_user_pack()
-                        
-                        resolve()
+                         
+                        resolve(true)
                     })
+                    
+
                 })
             }
             
@@ -162,7 +169,7 @@ async function api_request(req: any, res: NextApiResponse) {
             res.status(200).send("Successfully created a pack!")
 
         } catch (err) {
-
+            
             //Deleting pack entry if something fails
             try {
 
@@ -173,15 +180,15 @@ async function api_request(req: any, res: NextApiResponse) {
                 if(pack) await delete_pack(id, public_user)
 
                 console.log(err)
-                res.status(500).send("Something went wrong!")
+                
 
             } catch( err ) {
 
                 console.log(err)
-                res.status(500).send("Something went wrong!")
 
             }
 
+            res.status(500).send("Something went wrong!")
         }
 
     } else {

@@ -153,3 +153,26 @@ export function validate_pack_tag(tag_name: string): boolean | string {
     }
     
 }
+
+export function validate_pack_tags(tags: string[]): boolean | string {
+    const tag_regex = new RegExp(/^[a-zA-Z]{3,10}$/)
+
+    if(tags.length === 0) return ""
+    if(tags.length < 3) return "Min. 3 Tags"
+    else {
+        let passed_test = true
+        for(let tag of tags) {
+
+            if(tag_regex.test(tag) === false) {
+                passed_test = false
+            }
+        }
+        
+        if(passed_test === true) {
+            return true
+        } else {
+            return "Tags didnt pass validation"
+        }
+    }
+    
+}
