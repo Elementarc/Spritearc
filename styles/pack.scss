@@ -356,24 +356,28 @@
                 padding: 1.5rem 1rem 1rem 1rem;
             }
             .section_container{
-                padding: 1rem;
+                margin-top: 1rem;
+                padding: 0 2rem;
+                padding-bottom: 2rem;
                 @include breakpoint(mobile) {
                     padding: unset;
+                    margin-top: 2rem;
                 }
                 h1{
                     @include h1(small);
                     margin-bottom: 1rem;
+                    @include breakpoint(mobile) {
+                        margin-bottom: .6rem;
+                    }
                 }
+
                 .assets_grid_container{
                     display: grid;
                     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-                    grid-template-rows: 140px;
                     row-gap: 1rem;
                     column-gap: 1rem;
-                    
                     @include breakpoint(mobile) {
                         grid-template-columns: repeat(auto-fill, minmax(75px, 1fr));
-                        grid-template-rows: 75px;
                     }
                     .asset{
                         position: relative;
@@ -386,6 +390,10 @@
                         -khtml-user-select: none;
                         -webkit-user-select: none;
                         -o-user-select: none;
+                        
+                        @include breakpoint(mobile) {
+                            height: 75px;
+                        }
                         
                         &:hover{
                             cursor: pointer;
