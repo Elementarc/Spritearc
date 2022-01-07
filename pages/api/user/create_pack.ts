@@ -92,11 +92,13 @@ async function api_request(req: any, res: NextApiResponse) {
                         if(! fields.license) return reject("No License found!")
                         if(! files.preview ) return reject("No preview file found!")
 
+                        
                         if(typeof fields.title !== "string") return reject("Only 1 title allowed!")
                         if(typeof fields.description !== "string") return reject("Only 1 description allowed!")
                         if(typeof fields.tags !== "string") return reject("Only 1 tag key allowed!")
                         if(typeof fields.license !== "string") return reject("Only 1 license allowed!")
-                        if(typeof fields.preview !== "string") return reject("Only 1 preview allowed!")
+                        if(Array.isArray(files.preview)) return reject("Only 1 preview allowed!")
+                        //Validated body
 
                         const preview_file: any = files.preview
                         const tags = (JSON.parse(fields.tags as string)as string[])
