@@ -50,13 +50,7 @@
         h1{
             @include h1(small);
             transition: 0.1s ease-in-out;
-            
-        }
-        h2{
-            @include h2(small);
-            @include breakpoint(mobile) {
-                padding-left: unset;
-            }
+            margin-top: .3rem;
         }
     }
 

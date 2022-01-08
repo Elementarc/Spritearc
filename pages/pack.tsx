@@ -19,6 +19,7 @@ import { format_date } from '../lib/date_lib';
 import { get_pack } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
+import Pack_star_raiting from '../components/pack_stars_raiting';
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
@@ -173,14 +174,13 @@ export default function Pack_page(props: {pack: Pack}) {
                                     <div className="grid_item">
 
                                         <div className="item_1">
-                                            <p>Rating:</p>
+                                            <p>Creator:</p>
                                         </div>
 
-
-                                        <div className="item_2">
-                                            <Rating_container ratings={pack.ratings}/>
-                                        </div>
+                                        <Link href={`/profile?user=${pack.username}`} scroll={false}>{pack.username}</Link>
                                     </div>
+
+
 
                                     <div className="grid_item">
 
@@ -194,19 +194,23 @@ export default function Pack_page(props: {pack: Pack}) {
                                     <div className="grid_item">
 
                                         <div className="item_1">
-                                            <p>Downloads:</p>
+                                            <p>Rating:</p>
                                         </div>
 
-                                        <div className="item_2">{pack.downloads}</div>
+
+                                        <div className="item_2">
+                                            <Pack_star_raiting ratings={pack.ratings}/>
+                                            <p>{`(${pack.ratings.length})`}</p>
+                                        </div>
                                     </div>
 
                                     <div className="grid_item">
 
                                         <div className="item_1">
-                                            <p>Tags:</p>
+                                            <p>Downloads:</p>
                                         </div>
 
-                                        <div className="item_2">{pack.tags.join(", ").toUpperCase()}</div>
+                                        <div className="item_2">{`${pack.downloads}`}</div>
                                     </div>
 
                                     <div className="grid_item">
@@ -221,11 +225,15 @@ export default function Pack_page(props: {pack: Pack}) {
                                     <div className="grid_item">
 
                                         <div className="item_1">
-                                            <p>Creator:</p>
+                                            <p>Tags:</p>
                                         </div>
 
-                                        <Link href={`/profile?user=${pack.username}`} scroll={false}>{pack.username}</Link>
+                                        <div className="item_2">{pack.tags.join(", ").toUpperCase()}</div>
                                     </div>
+
+
+
+
 
 
                                 </div>
@@ -239,6 +247,7 @@ export default function Pack_page(props: {pack: Pack}) {
                         </div>
 
                     </div>
+                    
                     
                     
                     <Pack_sprite_sections pack={pack}/>
@@ -306,50 +315,6 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
         </div>
     );
 }
-
-//Component that renders Stars based on pack Rating.
-function Rating_container(props: {ratings: Pack_rating[]}) {
-    const ratings: {user: string, rating: number}[] = props.ratings
-    let sum_ratings: number = 0
-
-    for(let item of ratings) {
-        sum_ratings = sum_ratings + item.rating
-    }
-
-    const avg_rating = sum_ratings / ratings.length
-    //Return a ReactElement array with stars. 
-    function create_stars(number: number) {
-        const max_stars = 5
-        const stars_jsx: any = []
-        const decimal = number % 1
-
-        for(let i = 0; i < Math.floor(number); i++) {
-            stars_jsx.push(<Star key={i}/>)
-        }
-        
-
-        if(decimal >= .5) {
-            stars_jsx.push(<StarHalf key={decimal}/>)
-        }
-
-        if(stars_jsx.length < max_stars) {
-            const left_over = max_stars - stars_jsx.length
-            for(let i = 0; i < left_over; i++) {
-                stars_jsx.push(<StarEmpty key={`empty_star_${i}`}/>)
-            }
-        }
-
-        return stars_jsx
-    }
-    const stars = create_stars(avg_rating)
-    return (
-        <div className="stars_container">
-            {stars}
-        </div>
-    );
-}
-
-
 
 export const getServerSideProps: GetServerSideProps = async(context) => {
 

@@ -2,8 +2,7 @@ import React, { useEffect} from 'react';
 import Link from 'next/dist/client/link';
 import { Pack } from '../types';
 import Image from 'next/dist/client/image';
-import ThrashIcon from "../public/icons/ThrashIcon.svg"
-
+import Pack_stars_raiting from './pack_stars_raiting';
 
 export function Packs_navigator(props: {page: number, setPage: any, lastPage: number}) {
 	const page = props.page
@@ -68,6 +67,7 @@ export default function Pack_preview(props: {pack: Pack}) {
             <div className="pack_preview_container">
 
                 <div className="content_container">
+					<Pack_stars_raiting ratings={pack.ratings}/>
                     <h1>{pack.title}</h1>
                 </div>
                 

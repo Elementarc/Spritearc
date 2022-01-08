@@ -1,0 +1,15 @@
+.pack_stars_container{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    svg{
+        width: 30px;
+        transform: scale(1.1);
+        fill: $color_main_bright;
+        @include breakpoint(mobile) {
+            width: 25px;
+            transform: scale(1);
+        }
+    }
+}

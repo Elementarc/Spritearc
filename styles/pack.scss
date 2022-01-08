@@ -269,7 +269,7 @@
                                 margin-bottom: .4rem;
                             }
                             .item_1{
-                                align-self: center;
+                                align-self: start;
                                 justify-self: start;
                                 @include breakpoint(mobile) {
                                     align-self: center;
@@ -287,28 +287,28 @@
                             }
                             .item_2{
                                 @include p(medium);
+                                display: flex;
+                                justify-content: center;
                                 color: white;
-                                align-self: center;
+                                align-self: start;
                                 justify-self: start;
                                 text-align: start;
+                                height: 100%;
+                                p {
+                                    display: flex;
+                                    justify-content: center;
+                                    align-items: center;
+                                    @include p(small);
+                                    height: 100%;
+                                    padding: 0 .5rem;
+                                }
                                 @include breakpoint(mobile) {
-                                    align-self: center;
+                                    align-self: flex-start;
                                     justify-self: center;
                                     margin-top: .3rem;
                                 }
-                                .stars_container{
-                                    svg{
-                                        width: 35px;
-                                        transform: translateY(.2rem) translateX(-.2rem) scale(1.2);
-                                        fill: $color_main_bright;
-                                        @include breakpoint(mobile) {
-                                            width: 30px;
-                                            transform: translateY(.2rem) translateX(-.0rem) scale(1);
-                                        }
-                                    }
-                                }
-                                
                             }
+                            
                             a{
                                 @include a(medium);
                                 align-self: center;
@@ -322,6 +322,7 @@
                         }
                         
                     }
+
                     .bottom_line {
                         @include next_section_line;
                         width: 80%;
@@ -331,7 +332,9 @@
                             width: 100%;
                         }
                     }
+
                 }
+
                 .arrow_container{
                     display: flex;
                     justify-content: center;
