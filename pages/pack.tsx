@@ -20,16 +20,22 @@ import { get_pack } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import Pack_star_raiting from '../components/pack_stars_raiting';
-
+import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
+import ThrashIcon from "../public/icons/ThrashIcon.svg"
+import { App_notification_context } from "../context/app_notification_context_provider";
+import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider"
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 //Renders the full Pack
 export default function Pack_page(props: {pack: Pack}) {
+    const App_notification: any = useContext(App_notification_context)
     //State that saves currently clicked asset as a url string.
     const [focus_img_src, set_focus_img_src] = useState("/")
     //State that toggles focus of asset.
     const [show_focus_img, set_show_focus_img] = useState(false)
-    
+    //State to toggle delete pack confirmation container
+    const [delete_confirmation_state, set_delete_confirmation_state] = useState(false)
+
     //Contexts
     const Device = useContext(Device_context)
     const Router = useRouter()
@@ -105,12 +111,16 @@ export default function Pack_page(props: {pack: Pack}) {
             method: "POST"
         })
 
+        
         if(response.status === 200) {
-            
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully deleted pack!", message: `Successfully deleted pack! You now will be redirected.`, button_label: "Ok", callb: go_back}})
+        } else {
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Couldn't delete pack!", message: "Something went wrong while trying to delete your pack! Please relog and try again!", button_label: "Ok", callb: go_back}})
         }
 
     }
 
+    
     return (
         <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
 
@@ -138,15 +148,48 @@ export default function Pack_page(props: {pack: Pack}) {
                     }
                 </AnimatePresence>
 
+                
+
                 { Device.is_mobile === false &&
-                    <div className="close_pack" id="close_pack">
+                    <>
 
-                        <div onClick={() => {go_back()}} className="close">
-                            <CloseIcon className="close_icon"/>
-                            <div className="hover_box">Close Pack</div>
-                        </div>
+                        <Fixed_app_content_overlay>
 
-                    </div>
+                            <div className='fixed_container'>
+                                <div className='close_pack_container' id="close_pack">
+
+                                    <div onClick={() => {go_back()}} className="icon_container">
+                                        <CloseIcon className="close_icon"/>
+                                        <div className="hover_box">Close Pack</div>
+                                    </div>
+
+                                </div>
+
+                                <AnimatePresence exitBeforeEnter>
+                                    {delete_confirmation_state &&
+                                        <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
+                                            <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                                <h1>Delete Pack?</h1>
+                                                <p>Do you want to delete this pack? Remember, after deleting this pack it wont be recoverable.</p>
+                                                <button onClick={delete_pack}>Yes, delete pack!</button>
+                                                <h4 onClick={() => {set_delete_confirmation_state(false)}}>No, dont delete pack</h4>
+                                            </motion.div>
+
+                                            <div onClick={() => {set_delete_confirmation_state(false)}} className='delete_pack_confirmation_background' />
+                                        </motion.div>
+                                    }
+                                </AnimatePresence>
+
+                                <div className='delete_pack_container'>
+                                    <div className='icon_container' onClick={() => {set_delete_confirmation_state(!delete_confirmation_state)}}>
+                                        <ThrashIcon/>
+                                        <p>Delete pack</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </Fixed_app_content_overlay>
+                    </>
                 }
 
                 <div className="content" id="content">
@@ -320,7 +363,7 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
 
     if(typeof context.query.id === "string") {
         const pack = await get_pack(new ObjectId(context.query.id))
-
+        
         if(!pack) return {
 
             redirect: {

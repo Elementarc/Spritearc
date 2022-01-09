@@ -4,10 +4,11 @@ import withAuth from '../../../middleware/withAuth'
 import { Public_user, Pack, Pack_content, Formidable_files } from '../../../types'
 // @ts-ignore: Unreachable code error
 import formidable from 'formidable';
+import del from 'del';
 import { ObjectId } from 'mongodb'
 import { create_user_pack, delete_pack, get_pack } from '../../../lib/mongo_lib';
 import { validate_files, validate_formidable_files, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tags, validate_pack_title, validate_single_formidable_file } from '../../../lib/validate_lib';
-import del from 'del';
+
 
 async function api_request(req: any, res: NextApiResponse) {
 
@@ -21,12 +22,6 @@ async function api_request(req: any, res: NextApiResponse) {
         const public_user: Public_user = req.user
         
         try {
-            process.on('unhandledRejection', (reason, p) => {
-                console.log('Unhandled Rejection at: Promise', p, 'reason:', reason);
-                throw reason
-                // application specific logging, throwing an error, or other logic here
-            });
-            
             //Handles multiple files form.
             const form = new formidable.IncomingForm({multiples: true});
             
@@ -85,104 +80,131 @@ async function api_request(req: any, res: NextApiResponse) {
 
                     //Parsing FromData Files & Fields
                     form.parse(req, async(err, fields, files) => {
-                        if(err) throw err;
+                        if(err) return reject(err);
                         
-                        if(! fields.title) return reject("No Title found!")
-                        if(! fields.description) return reject("No Description found!")
-                        if(! fields.tags) return reject("No Tags found!")
-                        if(! fields.license) return reject("No License found!")
-                        if(! files.preview ) return reject("No preview file found!")
-
-                        
-                        if(typeof fields.title !== "string") return reject("Only 1 title allowed!")
-                        if(typeof fields.description !== "string") return reject("Only 1 description allowed!")
-                        if(typeof fields.tags !== "string") return reject("Only 1 tag key allowed!")
-                        if(typeof fields.license !== "string") return reject("Only 1 license allowed!")
-                        if(Array.isArray(files.preview)) return reject("Only 1 preview allowed!")
-                        //Validated body
-
-                        const preview_file: any = files.preview
-                        const tags = (JSON.parse(fields.tags as string)as string[])
-                        const pack_files = files as unknown
-
-                        const valid_files = validate_formidable_files(pack_files as Formidable_files)
-                        const valid_title = validate_pack_title(fields.title as string)
-                        const valid_description = validate_pack_description(fields.description as string)
-                        const valid_license = validate_license(fields.license as string)
-                        const valid_tags = validate_pack_tags(tags)
-
-                        if(typeof valid_files === "string") return reject(`${valid_files}`)
-                        if(typeof valid_title === "string") return reject(`${valid_title}`)
-                        if(typeof valid_description === "string") return reject(`${valid_description}`)
-                        if(typeof valid_tags === "string") return reject(`${valid_tags}`)
-                        if(typeof valid_license === "string") return reject(`${valid_license}`)
-                        //Passed validations
-
-                        //Array that will be the content of a pack.
-                        let pack_content: Pack_content[] = []
-                        
-                        //Checking how many props files obj has
-                        let object_props = 0
-                        for(let key in files) {
-                            object_props ++
-                        }
-
-                        if(object_props < 2) return reject("Object has not enough sections")
-                        //Looping through FormData Obj Files.
-                        for(let key in files) {
+                        async function handle_body() {
                             
-                            //Checkign if object has preview property.
-                            const has_preview = files.hasOwnProperty("preview")
-                            if(!has_preview) return reject("Couldn't find preview file")
+                            try {
 
-                            const valid_section_name = validate_pack_section_name(key)
+                                if(! fields.title) throw new Error("No Title found!")
+                                if(! fields.description) throw new Error("No Description found!")
+                                if(! fields.tags) throw new Error("No Tags found!")
+                                if(! fields.license) throw new Error("No License found!")
+                                if(! files.preview ) throw new Error("No preview file found!")
 
-                            if(typeof valid_section_name === "string") throw "Sectionname didnt pass validations"
+                                
+                                if(typeof fields.title !== "string") throw new Error("Only 1 title allowed!")
+                                if(typeof fields.description !== "string") throw new Error("Only 1 description allowed!")
+                                if(typeof fields.tags !== "string") throw new Error("Only 1 tag key allowed!")
+                                if(typeof fields.license !== "string") throw new Error("Only 1 license allowed!")
+                                if(Array.isArray(files.preview)) throw new Error("Only 1 preview allowed!")
+                                //Validated body
 
-                            
-                            //Logic for sections besides preview.
-                            if(key.toLocaleLowerCase() !== "preview") {
+                                const preview_file: any = files.preview
+                                const tags = (()=> {
+                                    try {
+                                        let tags_none_json = (JSON.parse(fields.tags as string)as string[])
+                                        return tags_none_json
+                                    } catch ( err ) {
+                                        return null
+                                    }
+                                    
+                                })();
 
-                                //Creating an array with directories to specific file in the public folder.
-                                const section_images: string[] = []
+                                if(!tags) throw new Error("Please use a valid JSON Form")
 
-                                //Looping through files of specific object property
-                                for(let file of files[key] as any) {
+                                const pack_files = files as unknown
 
-                                    section_images.push(`${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`)
+                                const valid_files = validate_formidable_files(pack_files as Formidable_files)
+                                const valid_title = validate_pack_title(fields.title as string)
+                                const valid_description = validate_pack_description(fields.description as string)
+                                const valid_license = validate_license(fields.license as string)
+                                const valid_tags = validate_pack_tags(tags)
+
+                                if(typeof valid_files === "string") throw new Error(`${valid_files}`)
+                                if(typeof valid_title === "string") throw new Error(`${valid_title}`)
+                                if(typeof valid_description === "string") throw new Error(`${valid_description}`)
+                                if(typeof valid_tags === "string") throw new Error(`${valid_tags}`)
+                                if(typeof valid_license === "string") throw new Error(`${valid_license}`)
+                                //Passed validations
+
+                                //Array that will be the content of a pack.
+                                let pack_content: Pack_content[] = []
+                                
+                                //Checking how many props files obj has
+                                let object_props = 0
+                                for(let key in files) {
+                                    object_props ++
                                 }
 
-                                //Pushing content to pack_content arr. that will be used
-                                pack_content.push({
-                                    section_name: key.toLowerCase(),
-                                    section_images: section_images
-                                })
+                                if(object_props < 2) throw new Error("Object has not enough sections")
+                                //Looping through FormData Obj Files.
+
+                                for(let key in files) {
+                                    
+                                    //Checkign if object has preview property.
+                                    const has_preview = files.hasOwnProperty("preview")
+                                    if(!has_preview) throw new Error("Couldn't find preview file")
+
+                                    const valid_section_name = validate_pack_section_name(key)
+
+                                    if(typeof valid_section_name === "string") throw new Error("Sectionname didnt pass validations")
+
+                                    
+                                    //Logic for sections besides preview.
+                                    if(key.toLocaleLowerCase() !== "preview") {
+
+                                        //Creating an array with directories to specific file in the public folder.
+                                        const section_images: string[] = []
+
+                                        const files_arr: any = files[key]
+                                        
+                                        if(files_arr.length < 3) throw new Error("Pack needs to have atleast 5 assets!")
+                                        //Looping through files of specific object property
+                                        
+                                        for(let file of files[key] as any) {
+
+                                            section_images.push(`${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`)
+                                        }
+
+                                        //Pushing content to pack_content arr. that will be used
+                                        pack_content.push({
+                                            section_name: key.toLowerCase(),
+                                            section_images: section_images
+                                        })
+                                        
+                                    }
+                                    
+                                }
+
+                                //Creating a pack obj. That will be created in database
+                                const pack: Pack = {
+                                    _id: id,
+                                    username: public_user.username,
+                                    preview: `preview.${preview_file.mimetype.split("/")[1].toLowerCase()}`,
+                                    title: fields.title as string,
+                                    description: fields.description as string,
+                                    license: fields.license as string,
+                                    date: new Date(),
+                                    tags: JSON.parse(fields.tags as string),
+                                    downloads: 0,
+                                    content: pack_content,
+                                    ratings: []
+                                } 
+
+                                //Creating database entry for a pack.
+                                await create_user_pack(pack)
+
+                                //create_user_pack()
                                 
+                                resolve(true)
+
+                            } catch( err ) {
+                                return reject(err)
                             }
-                            
                         }
 
-                        //Creating a pack obj. That will be created in database
-                        const pack: Pack = {
-                            _id: id,
-                            username: public_user.username,
-                            preview: `preview.${preview_file.mimetype.split("/")[1].toLowerCase()}`,
-                            title: fields.title as string,
-                            description: fields.description as string,
-                            license: fields.license as string,
-                            date: new Date(),
-                            tags: JSON.parse(fields.tags as string),
-                            downloads: 0,
-                            content: pack_content,
-                            ratings: []
-                        } 
-
-                        //Creating database entry for a pack.
-                        await create_user_pack(pack)
-
-                        //create_user_pack()
-                         
-                        resolve(true)
+                        await handle_body()
                     })
                     
 
@@ -191,10 +213,10 @@ async function api_request(req: any, res: NextApiResponse) {
             
             await enter_pack_to_db()
             
-            res.status(200).send("Successfully created a pack!")
+            res.status(200).send({success: true, message: "Successfully created a pack!"})
 
         } catch (err) {
-            
+            const error: any = err
             //Deleting pack entry if something fails
             try {
 
@@ -204,16 +226,16 @@ async function api_request(req: any, res: NextApiResponse) {
 
                 if(pack) await delete_pack(id, public_user)
 
-                console.log(err)
-                
+                res.status(400).send({success: false, message:`${error.message}`})
+                console.log(error.message)
 
             } catch( err ) {
 
                 console.log(err)
+                res.status(500).send({success: false, message:"Internal server issue."})
 
             }
 
-            res.status(500).send("Something went wrong!")
         }
 
     } else {

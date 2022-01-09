@@ -4,49 +4,158 @@
 .pack_page{
     position: relative;
     height: auto;
-    .close_pack{
-        position: fixed;
-        z-index: 100;
-        display: flex;
-        width: inherit;
-        height: inherit;
-        pointer-events: none;
-        .close{
-            position: relative;
-            pointer-events: all;
+
+    .fixed_container {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    
+        .close_pack_container{
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            .icon_container{
+                pointer-events: all;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 4rem;
+                height: 50px;
+                width: 50px;
+                box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                border-radius: 50%;
+                background: $color_main;
+                position: absolute;
+                
+                &:hover {
+                    cursor: pointer;
+                    background: $color_main_bright;
+                    .hover_box {
+                        opacity: 1;
+                        transform: scale(1);
+                    }
+                }
+
+                .hover_box{
+                    transition: 0.1s ease-in-out;
+                    @include p(default);
+                    position: absolute;
+                    right: -110px;
+                    color: white;
+                    pointer-events: none;
+                    opacity: 0;
+                    transform: scale(0.8);
+                }
+
+                .close_icon{
+                    transform: scale(1.2);
+                    fill: $color_background_dark;
+                }
+            }
+        }
+
+        .delete_pack_container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            .icon_container {
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                right: 0;
+                top: 0;
+                height: 50px;
+                width: 50px;
+                margin: 4rem;
+                border-radius: 50%;
+                background: $color_error;
+                pointer-events: all;
+
+                &:hover {
+                    cursor: pointer;
+                    background: $color_error_hover;
+                    p {
+                        opacity: 1;
+                        transform: scale(1)
+                    }
+                }
+                p {
+                    @include p;
+                    color: $color_error;
+                    opacity: 0;
+                    position: absolute;
+                    width: 150px;
+                    left: -125px;
+                    transition: .1s ease-in-out;
+                    transform: scale(.7);
+                    pointer-events: none;
+                }
+                svg {
+                    fill: black;
+                    transform: scale(1.1);
+                }
+            }
+        }
+
+        .delete_pack_confirmation_container {
+            position: absolute;
             display: flex;
+            z-index: 100;
             justify-content: center;
             align-items: center;
-            margin: 4rem;
-            height: 50px;
-            width: 50px;
-            box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
-            border-radius: 50%;
-            background: $color_main;
-            position: absolute;
+            width: 100%;
+            height: 100%;
             
-            &:hover {
-                cursor: pointer;
-                background: $color_main_bright;
-                .hover_box {
-                    opacity: 1;
-                    transform: scale(1);
+            .confirmation_content {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 38%;
+                padding: 2rem 4rem;
+                background: $color_main_blue;
+                box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                pointer-events: all;
+                z-index: 1;
+                @include breakpoint(laptop) {
+                    width: 500px
+                }
+                @include breakpoint(mobile) {
+                    width: 90%
+                }
+                h1{
+                    @include h1(medium);
+                    color: $color_error
+                }
+                p {
+                    @include p();
+                    margin-top: 1rem;
+                    text-align: center;
+                    width: 100%;
+                }
+                button {
+                    @include button;
+                    margin-top: 2rem;
+                }
+                h4 {
+                    @include h4;
+                    margin-top: 2rem;
+                    &:hover {
+                        cursor: pointer;
+                        color: $color_grey;
+                    }
                 }
             }
 
-            .hover_box{
-                transition: 0.1s ease-in-out;
-                @include p(default);
+            .delete_pack_confirmation_background {
                 position: absolute;
-                right: -110px;
-                color: white;
-                pointer-events: none;
-                opacity: 0;
-                transform: scale(0.8);
-            }
-            .close_icon{
-                transform: scale(1.2);
-                fill: $color_background_dark;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.75);
+                pointer-events: all;
             }
         }
     }
@@ -141,6 +250,7 @@
         
     }
 
+    
     .content {
         position: relative;
         z-index: 1;
@@ -219,6 +329,16 @@
                         margin-top: 2.5rem;
                         @include breakpoint(mobile) {
                             margin-top: 2rem;
+                        }
+                    }
+                    .delete_pack_text {
+                        @include p(medium);
+                        margin-top: 2rem;
+                        color: $color_error;
+
+                        &:hover {
+                            cursor: pointer;
+                            color: $color_error_hover;
                         }
                     }
                 }

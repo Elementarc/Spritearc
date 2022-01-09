@@ -20,7 +20,7 @@ async function api_request(req: any, res: NextApiResponse) {
 
             const deleted_paths = await del([pack_directory])
             
-            res.status(200).send("successfully deleted pack")
+            res.status(200).send({message: "Successfully deleted pack!"})
 
         } catch (err) {
 
