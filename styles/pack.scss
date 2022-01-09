@@ -86,7 +86,7 @@
                     opacity: 0;
                     position: absolute;
                     width: 150px;
-                    left: -125px;
+                    left: -120px;
                     transition: .1s ease-in-out;
                     transform: scale(.7);
                     pointer-events: none;
@@ -159,6 +159,7 @@
             }
         }
     }
+    
     .asset_fixed_container{
         position: fixed;
         width: 100%;
@@ -280,6 +281,7 @@
             }
             
             .pack_info{
+                width: 100%;
                 position: relative;
                 display: inline-flex;
                 flex-direction: column;
@@ -407,6 +409,7 @@
                             }
                             .item_2{
                                 @include p(medium);
+                                position: relative;
                                 display: flex;
                                 justify-content: center;
                                 color: white;
@@ -427,6 +430,21 @@
                                     justify-self: center;
                                     margin-top: .3rem;
                                 }
+
+                                .pack_rating_count_container {
+                                    position: relative;
+                                    height: 100%;
+                                    justify-content: flex-start;
+                                   
+                                    .pack_rating_count {
+                                        display: inline-block;
+                                        width: 100px;
+                                        @include p(small);
+                                        position: absolute;
+                                        
+                                    }
+                                }
+                                
                             }
                             
                             a{

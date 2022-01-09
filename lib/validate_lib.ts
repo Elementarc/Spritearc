@@ -1,4 +1,4 @@
-import { User, Formidable_file , Formidable_files} from "../types"
+import { Formidable_file , Formidable_files} from "../types"
 
 //return true if blob type & size is valid
 export function validate_files(files: File[]): boolean | string {

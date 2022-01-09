@@ -12,8 +12,9 @@ import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import ThrashIcon from "../public/icons/ThrashIcon.svg"
 import { Device_context } from '../context/device_context_provider';
-import { create_user_pack } from '../lib/mongo_lib';
 import { create_form_data as create_form_data } from '../lib/create_lib';
+import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
+import { useRouter } from 'next/router';
 // @ts-ignore: Unreachable code error
 
 //Context
@@ -34,7 +35,8 @@ const CREATE_PACK_ACTIONS = {
     ADD_DESCRIPTION: "ADD_DESCRIPTION",
     ADD_TAG: "ADD_TAG",
     DELETE_TAG: "DELETE_TAG",
-    SUBMIT_PACK: "SUBMIT_PACK"
+    SUBMIT_PACK: "SUBMIT_PACK",
+    RESET_ALL: "RESET_ALL"
 }
 
 //Initial value for reducer state
@@ -43,9 +45,9 @@ const initial_create_pack_obj: Create_pack_frontend = {
     steps_available: [],
     license: null,
     preview: {preview_asset: null, preview_url: null},
-    title: "ASDKAD",
-    description: "adaopkidaopisduhaosiduap9isdu9pd182d9p8ad9pas8hdp9qd2189hd9as8hd9asuhdauiodsh19uda9sdg9asdadaopkidaopisduhaosiduap9isdu9pd182d9p8ad9pas8hdp9qd2189hd9as8hd9asuhdauiodsh19uda9sdg9asd",
-    tags: ["lol", "TEST", "LOASD"],
+    title: null,
+    description: null,
+    tags: [],
     content: new Map(),
 }
 
@@ -250,6 +252,16 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             break
         }
 
+        case ( CREATE_PACK_ACTIONS.RESET_ALL) : {
+            create_pack_obj = initial_create_pack_obj
+            for(let section of create_pack_obj.content.entries()) {
+                for(let url of section[1].section_urls) {
+                    URL.revokeObjectURL(url)
+                }
+            }
+            create_pack_obj.content = new Map()
+        }
+
         //Default value
         default : {
             return {...create_pack_obj}
@@ -267,7 +279,7 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
 
                 for(let [key, value] of create_pack_obj.content.entries()) {
 
-                    if(value.section_assets.length > 2) {
+                    if(value.section_assets.length > 0) {
                         steps.push(step_2)
                         
                     } else {
@@ -315,6 +327,17 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
 function Create_page() {
     const [create_pack_obj, dispatch] = useReducer(create_pack_reducer, initial_create_pack_obj)
     
+    
+    useEffect(() => {
+        
+
+        return () => {
+
+            dispatch({type: CREATE_PACK_ACTIONS.RESET_ALL})
+
+        };
+    }, [dispatch, CREATE_PACK_ACTIONS])
+
     useEffect(() => {
         window.scrollTo(0,0)
     }, [create_pack_obj.current_step])
@@ -368,6 +391,7 @@ function Step_1() {
     useEffect(() => {
         create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_SECTION, payload: {section_name: "Lol"}})
     }, [])
+
     //CREATING JSX OF create_pack_obj.content
     useEffect(() => {
         const sections_jsx: any = []
@@ -406,7 +430,7 @@ function Step_1() {
             
             const error_message = document.getElementById("section_name_error_message") as HTMLParagraphElement
             
-            if(input.value.length < 3) {
+            if(input.value.length < 1) {
 
                 error_message.innerText = "Sectioname must be atleast 3 characters long!"
                 style_error_items(true)
@@ -808,7 +832,32 @@ function Step_3() {
 
     }
 
+    const App_notification: any = useContext(App_notification_context)
+    const router = useRouter()
     function send_pack_to_api() {
+        async function send_pack() {
+            const Form_data = create_form_data(create_pack.create_pack_obj)
+        
+            if(!Form_data) return
+            const response = await fetch("/api/user/create_pack", {
+                method: "POST",
+                body: Form_data
+            })
+            
+            if(response.status === 200) {
+                const body = await response.json()
+                function go_to_pack() {
+                    router.push(`/pack?id=${body.pack_id}`, `/pack?id=${body.pack_id}`, {scroll: false})
+                }
+
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully created pack!", message: "Your pack is now live and can be viewed by everyone.", button_label: "Visit pack", callb: go_to_pack}})
+            } else {
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "We couldn't create your pack! Please relog and try again!", button_label: "Ok"}})
+
+            }
+            
+        }
+        send_pack()
         create_pack.dispatch({type: CREATE_PACK_ACTIONS.SUBMIT_PACK})
     }
 

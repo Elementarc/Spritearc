@@ -7,7 +7,7 @@ import formidable from 'formidable';
 import del from 'del';
 import { ObjectId } from 'mongodb'
 import { create_user_pack, delete_pack, get_pack } from '../../../lib/mongo_lib';
-import { validate_files, validate_formidable_files, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tags, validate_pack_title, validate_single_formidable_file } from '../../../lib/validate_lib';
+import { validate_formidable_files, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tags, validate_pack_title, validate_single_formidable_file } from '../../../lib/validate_lib';
 
 
 async function api_request(req: any, res: NextApiResponse) {
@@ -159,7 +159,7 @@ async function api_request(req: any, res: NextApiResponse) {
 
                                         const files_arr: any = files[key]
                                         
-                                        if(files_arr.length < 3) throw new Error("Pack needs to have atleast 5 assets!")
+                                        if(files_arr.length < 1) throw new Error("Pack needs to have atleast 1 assets!")
                                         //Looping through files of specific object property
                                         
                                         for(let file of files[key] as any) {
@@ -213,7 +213,7 @@ async function api_request(req: any, res: NextApiResponse) {
             
             await enter_pack_to_db()
             
-            res.status(200).send({success: true, message: "Successfully created a pack!"})
+            res.status(200).send({success: true, message: "Successfully created a pack!", pack_id: id})
 
         } catch (err) {
             const error: any = err

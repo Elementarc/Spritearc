@@ -38,6 +38,7 @@ export default function Pack_stars_raiting(props: {ratings: Pack_rating[]}) {
 
         return stars_jsx
     }
+    
     const stars = create_stars(avg_rating)
     return (
         <div className="pack_stars_container">
