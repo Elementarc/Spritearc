@@ -65,6 +65,8 @@ $gradiant_sections: linear-gradient(180deg, #05102000 -100%, $color_background_d
 $gradiant_nav_mobile: linear-gradient(180deg, $color_main_blue 60%, $color_background_dark_hover 100%);
 $next_section_line_gradiant: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 50%, rgba(255,255,255,0) 100%);
 
+//Pack props 
+$pack_preview_height: 232px;
 //BreakPoints
 @mixin breakpoint($point) {
     @if $point == desktop {

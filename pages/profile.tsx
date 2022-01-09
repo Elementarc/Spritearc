@@ -4,12 +4,14 @@ import Image from "next/image"
 import Link from "next/link"
 import { Pack, Public_user } from '../types';
 import Footer from '../components/footer';
-import Packs_section from '../components/packs_section';
+import Packs_preview_grid from '../components/packs_section';
 import { useParallax } from '../lib/custom_hooks';
+import { Nav_shadow } from '../components/navigation';
+import { get_public_user } from '../lib/mongo_lib';
+import Packs_section from '../components/packs_section';
 
-export default function Profile(props: {public_user: any, user_packs: any}) {
+export default function Profile(props: {public_user: any}) {
     const public_user = JSON.parse(props.public_user) as Public_user
-    const user_packs = JSON.parse(props.user_packs) as Pack[]
     useParallax("profile_banner")
     
     return (
@@ -49,7 +51,7 @@ export default function Profile(props: {public_user: any, user_packs: any}) {
                 </div>
                 
                 <div className='user_packs_container'>
-                    <Packs_section header={`Packs created by '${public_user.username}'`} packs={user_packs}/>
+                    <Packs_section section_name={`Packs created by '${public_user.username}'`} api="/api/user_packs" method='POST' body={public_user.released_packs}/>
                 </div>
 
             </div>
@@ -61,8 +63,7 @@ export default function Profile(props: {public_user: any, user_packs: any}) {
 
 
 
-import { get_public_user, get_released_packs_by_user} from '../lib/mongo_lib';
-import { Nav_shadow } from '../components/navigation';
+
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const redirect = {redirect: {
@@ -80,12 +81,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         const user = await get_public_user(username)
         if(!user) return redirect
 
-        const user_packs = await get_released_packs_by_user(user.released_packs)
-
         return {
             props: {
                 public_user: JSON.stringify(user),
-                user_packs: JSON.stringify(user_packs)
             }
         }
 

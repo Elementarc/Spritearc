@@ -3,7 +3,7 @@
 //Previews
 .pack_preview_container {
     position: relative;
-    height: 232px;
+    height: $pack_preview_height;
     width: 100%;
     box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.30);
     transition: 0.1s ease-in-out;

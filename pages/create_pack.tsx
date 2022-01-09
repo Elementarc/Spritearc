@@ -516,16 +516,16 @@ function Step_1() {
                     {toggle_add_section &&
                         <Fixed_app_content_overlay key="fixed_container">
 
-                            <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: .2}}} exit={{scale: .8, transition: {duration: .2}}} className='enter_section_name_container'>
+                            <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className='enter_section_name_container'>
 
-                                <div className='content_container'>
+                                <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: .2}}} exit={{scale: .8, transition: {duration: .2}}} className='content_container'>
 
                                     <h1>Please enter a section name!</h1>
                                     <input autoComplete='off' onKeyUp={validate_section_name} type="text" placeholder='Section name' id="section_name_input"/>
                                     <p id="section_name_error_message"></p>
                                     <button onClick={dispatch_section_name_with_input_value} id='add_section_button' className='button_disabled'>Add section</button>
 
-                                </div>
+                                </motion.div>
                                 
                                 <div onClick={() => {set_toggle_add_section(false)}} className='background_wrapper' />
 

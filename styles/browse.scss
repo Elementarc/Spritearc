@@ -88,41 +88,6 @@
                 }
             }
         }
-
-        .packs_container {
-            position: relative;
-            overflow: hidden;
-            padding: 2rem;
-            @include breakpoint(mobile) {
-                padding: 1rem 1rem;
-            }
-            
-            .info{
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                margin-bottom: .6rem;
-                h1{
-                    @include h1(small);
-                }
-                a{
-                    @include a(medium);
-                    align-self: center;
-                    justify-self: end;
-                }
-            }
-            
-            .previews_container {
-                display: grid;
-                grid-template-columns: repeat(auto-fill, minMax(350px, 1fr));
-                column-gap: 1rem;
-                row-gap: 1rem;
-                @include breakpoint(mobile) {
-                    grid-template-columns: 1fr;
-                }
-                //Each Pack component as a child
-            }
-        }
-
-        
     }
 }
+

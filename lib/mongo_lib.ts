@@ -171,9 +171,7 @@ export async function delete_pack(pack_id: ObjectId, signed_user: Public_user): 
             //Updating released_packs from user Obj
             const users_collection = client.db(DATABASE).collection("users")
 
-            const update_results = await users_collection.updateOne({username: signed_user.username}, {$pull: {"released_packs": pack_id.toString()}})
-
-            console.log("delete: ", delete_results, "update: ", update_results)
+            await users_collection.updateOne({username: signed_user.username}, {$pull: {"released_packs": pack_id.toString()}})
 
             return true
         } else {
@@ -238,6 +236,23 @@ export async function get_recent_packs(number_of_returns: number): Promise<Pack[
     }
 
     
+}
+
+export async function get_packs_collection_size() {
+
+    try {
+        await client.connect()
+
+        const collection = client.db(DATABASE).collection("packs")
+
+        return await collection.countDocuments()
+
+    } catch ( err ) {
+
+        return "Something went wrong while trying to connecto to database"
+
+    }
+
 }
 
 export async function create_user_pack(pack: Pack) {
