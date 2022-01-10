@@ -1,0 +1,159 @@
+@import "./variables.module.scss";
+
+
+.search_page {
+    position: relative;
+    z-index: 1;
+    height: auto;
+
+    .content {
+        position: relative;
+        z-index: 1;
+        height: auto;
+        min-height: 100vh;
+        background: $color_background_dark;
+
+
+        .searching_container {
+            display: flex;
+            align-items: center;
+            padding: 0 3rem;
+            width: 100%;
+            background: $color_main_blue;
+
+            @include breakpoint(mobile) {
+                position: fixed;
+                bottom: 0;
+                padding: 0 1rem;
+            }
+            .search_input_container {
+                display: grid;
+                grid-template-columns: 1fr .3fr;
+                height: 70px;
+                padding: 1rem 0rem;
+                width: 550px;
+                @include breakpoint(mobile) {
+                    width: 100%;
+                }
+                input {
+                    height: 100%;
+                    width: 100%;
+                    background: $color_background_dark;
+                    outline: none;
+                    padding: 0 1rem;
+                    @include p(medium);
+                }
+                button {
+                    @include button();
+                    font-size: 16px;
+                    height: 100%;
+                    padding: unset;
+                    width: 100%;
+                    display: inline;
+                }
+            }
+        }
+
+        .recommendations_container {
+            position: sticky;
+            z-index: 10;
+            top: 0px;
+            width: 100%;
+            height: auto;
+            span {
+                height: 50%;
+                width: 1px;
+                background: rgba(255, 255, 255, 0.2);
+            }
+
+            .grid_items {
+                position: relative;
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minMax(150px, 1fr));
+                grid-template-rows: 50px;
+                z-index: 1;
+                height: 50px;
+                overflow: hidden;
+                background: #0e1a2e;
+                .grid_item {
+                    display: flex;
+                    height: 50px;
+                    width: 100%;
+                    justify-content: center;
+                    align-items: center;
+    
+                    
+                    &:hover {
+                        cursor: pointer;
+                        background: $color_main_blue_hover;
+                    }
+                    p {
+                        @include p(small);
+                        width: 100%;
+                        text-align: center;
+                    }
+                }
+            }
+            
+
+            .expand_container {
+                position: absolute;
+                z-index: 0;
+                top: 0;
+                height: 100%;
+                width: 100%;
+                pointer-events: none;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                .svg_container {
+                    pointer-events: all;
+                    position: absolute;
+                    bottom: -.8rem;
+                    transform: rotate(45deg);
+                    background: #0e1a2e;
+                    height: 45px;
+                    width: 45px;
+                    &:hover {
+                        cursor: pointer;
+                        background: $color_main_blue_hover;
+                    }
+                    .svg_wrapper {
+                        display: flex;
+                        justify-content: center;
+                        width: 100%;
+                        height: 100%;
+                        transform: rotate(-45deg);
+                        svg {
+                            transition: .1s ease-in-out;
+                            position: absolute;
+                            bottom: -.4rem;
+                            transform: scale(1.5);
+                            fill: $color_main;
+                        }
+                        
+                    }
+                    
+                }
+                
+            }
+        }
+
+        .search_results_user_container{
+            padding: 3rem 0rem;
+        }
+
+        .empty_container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 20rem 0rem;
+            h1 {
+                @include h1;
+                color: $color_main_blue;
+            }
+        }
+    }
+}

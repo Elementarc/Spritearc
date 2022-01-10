@@ -185,3 +185,14 @@ export function validate_license(license: string): boolean | string {
         return "License is not supported"
     }
 }
+
+export function validate_username(username: string): boolean | string {
+    const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
+
+    if(username_regex.test(username) === true) {
+        return true
+    } else {
+        return "Username didnt pass validation"
+    }
+    
+}

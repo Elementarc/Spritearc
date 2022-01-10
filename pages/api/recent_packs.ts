@@ -17,7 +17,7 @@ export default async function api_request(req: NextApiRequest, res: NextApiRespo
             const collection_count = await get_packs_collection_size()
             
             
-            if(!packs) return res.status(200).send({body: []})
+            if(!packs) return res.status(200).send({packs: [], max_page: 0})
             if(typeof collection_count !== "number") return res.status(500).end()
 
             const max_page = Math.ceil(collection_count / packs_per_page)

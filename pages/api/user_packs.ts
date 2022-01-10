@@ -4,8 +4,6 @@ import { create_number_from_page_query } from "../../lib/custom_lib";
 
 export default async function api_request(req: NextApiRequest, res: NextApiResponse) {
 
-    
-
     if(req.method === "POST") {
         
         const packs_per_page = 8
@@ -18,7 +16,7 @@ export default async function api_request(req: NextApiRequest, res: NextApiRespo
             const pack_id_arr = JSON.parse(req.body) as string[]
             const packs = await get_released_packs_by_user(pack_id_arr)
             const max_page = Math.ceil(packs.length / packs_per_page)
-            
+
             res.status(200).send({packs: packs.slice(0, packs_per_page * page_int), max_page: max_page})
 
         } catch ( err ) {

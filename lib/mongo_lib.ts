@@ -208,6 +208,29 @@ export async function get_pack(pack_id: ObjectId): Promise<Pack | null> {
         
 }
 
+export async function get_title_pack(): Promise<Pack | null> {
+    
+    try {
+        await client.connect()
+
+        const collection = client.db(DATABASE).collection("packs")
+    
+        const pack = await collection.aggregate([
+            {
+                $sample: {size: 1}
+            }
+        ]).toArray()
+
+        return pack[0] as Pack
+    } catch ( err ) {
+        console.log(err)
+        return null
+    }
+    
+
+    
+}
+
 export async function get_recent_packs(number_of_returns: number): Promise<Pack[] | null> {
 
     try {
@@ -238,6 +261,33 @@ export async function get_recent_packs(number_of_returns: number): Promise<Pack[
     
 }
 
+export async function get_pack_by_tag(tag: string) {
+    try {
+        //Connecting to database
+        await client.connect()
+
+        //Choosing db
+        const db = client.db(DATABASE);
+
+        const packs_found = await db.collection("packs").find({tags: tag}).toArray() as Pack[]
+
+
+        if(packs_found.length > 0) {
+
+            return {packs_found, collection_size: packs_found.length}
+
+        } else {
+
+            return null
+
+        }
+
+    } catch( err ) {
+
+        throw err;
+
+    }
+}
 export async function get_packs_collection_size() {
 
     try {
@@ -275,3 +325,4 @@ export async function create_user_pack(pack: Pack) {
     }
 
 }
+

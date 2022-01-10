@@ -6,6 +6,7 @@ import { useParallax } from '../lib/custom_hooks';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
+
 export default function Browse() {
 	
 	
@@ -14,6 +15,7 @@ export default function Browse() {
 			<div className="browse_page">
 				
 				<div className="content">
+					<Title_pack_section/>
 					<Packs_section section_name='Recent Packs' api="/api/recent_packs" method='GET'/>
 					<Nav_shadow/>
 				</div>
@@ -25,17 +27,17 @@ export default function Browse() {
 }
 
 function Title_pack_section() {
-	const [title_pack, set_title_pack] = useState<any>(null)
+	const [title_pack, set_title_pack] = useState<Pack | null | false>(null)
 
 	useEffect(() => {
 		
 		async function get_title_pack() {
-			const response_title_pack = await fetch(`/api/get_recent_packs`)
+			const response_title_pack = await fetch(`/api/title_pack`)
 			
 			if(response_title_pack.status === 200) {
-				const response_obj: {body: Pack | null} = await response_title_pack.json()
+				const response_obj: {pack: Pack | null} = await response_title_pack.json()
 
-				set_title_pack((response_obj.body as any)[0])
+				set_title_pack((response_obj.pack as any))
 			} else {
 				set_title_pack(false)
 			}
@@ -55,14 +57,14 @@ function Title_pack_section() {
 				<div className="title_pack_preview_container">
 						
 					<div className="content_container">
-						<h2>A New Story</h2>
-						<h1>Nature Of Life</h1>
-						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut.</p>
+						<h2>Winner of this week!</h2>
+						<h1>{title_pack.title}</h1>
+						<p>{title_pack.description}</p>
 						<Link href={`/pack?id=${title_pack._id}`} scroll={false}>View Pack</Link>
 					</div>
 
 					<div className="background_container">
-						<Image src={`/packs/${title_pack._id}/${title_pack.preview_image}`} alt="Preview image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						<Image src={`/packs/${title_pack._id}/${title_pack.preview}`} alt="Preview image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
 						<div className="background_blur" />
 					</div>
 

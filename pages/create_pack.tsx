@@ -834,6 +834,7 @@ function Step_3() {
 
     const App_notification: any = useContext(App_notification_context)
     const router = useRouter()
+    
     function send_pack_to_api() {
         async function send_pack() {
             const Form_data = create_form_data(create_pack.create_pack_obj)

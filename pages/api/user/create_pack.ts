@@ -103,8 +103,16 @@ async function api_request(req: any, res: NextApiResponse) {
                                 const preview_file: any = files.preview
                                 const tags = (()=> {
                                     try {
+
                                         let tags_none_json = (JSON.parse(fields.tags as string)as string[])
-                                        return tags_none_json
+                                        let new_tags = []
+
+                                        for(let tag of tags_none_json) {
+                                            new_tags.push(tag.toLowerCase())
+                                        } 
+
+                                        return new_tags
+
                                     } catch ( err ) {
                                         return null
                                     }
@@ -186,7 +194,7 @@ async function api_request(req: any, res: NextApiResponse) {
                                     description: fields.description as string,
                                     license: fields.license as string,
                                     date: new Date(),
-                                    tags: JSON.parse(fields.tags as string),
+                                    tags: tags,
                                     downloads: 0,
                                     content: pack_content,
                                     ratings: []

@@ -11,11 +11,10 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 	//Getting recent packs
 	useEffect(() => {
-
 		async function get_packs() {
 			
 			const response_recent_pack = await fetch(`${api}?page=${page}`, {
-				method: method,
+				method: method.toUpperCase(),
 				body: body ? JSON.stringify(body) : null
 			})
 
@@ -29,6 +28,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 				function toggle_load_more() {
 					const counter_cointainer = document.getElementById("load_more_container") as HTMLDivElement
 
+					if(!counter_cointainer) return
 					if(response_obj.max_page === page) {
 						
 						counter_cointainer.style.display = "none"
@@ -44,7 +44,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 		get_packs()
 
 
-	}, [set_packs, page])
+	}, [set_packs, page, api, method, body])
 
 
 	return (
