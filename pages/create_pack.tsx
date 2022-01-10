@@ -15,6 +15,9 @@ import { Device_context } from '../context/device_context_provider';
 import { create_form_data as create_form_data } from '../lib/create_lib';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { useRouter } from 'next/router';
+import jwt from "jsonwebtoken"
+import { GetServerSideProps } from 'next';
+
 // @ts-ignore: Unreachable code error
 
 //Context
@@ -1104,3 +1107,28 @@ function Dropzone({children, section_name, type}: {children: any, section_name: 
 
 
 export default Create_page
+
+
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+    const redirect = {redirect: {
+        permanent: false,
+        destination: "/login"
+    }}
+
+    try {
+        const user = jwt.verify(context.req.cookies.user, process.env.JWT_PRIVATE_KEY as string)
+
+        if(user) {
+            return {
+                props: {
+                    user: user
+                }
+            }
+        } else {
+            return redirect
+        }
+
+    } catch (err) {
+        return redirect
+    }
+}

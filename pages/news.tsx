@@ -177,10 +177,13 @@ function Patchnote_template(props: {patchnote: Patchnote}): ReactElement{
 }
 
 //Serverside
+
 import patchHandler from "../lib/patch_lib"
-export const getServerSideProps: GetServerSideProps = async (context) => {
+import { GetStaticProps } from 'next';
+import { GetStaticPaths } from 'next';
+
+export const getStaticProps: GetStaticProps = async (context) => {
 	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
-	
 	
 	return {
 		props: {
@@ -188,3 +191,4 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 		}
 	}
 }
+

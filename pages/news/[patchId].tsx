@@ -107,6 +107,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
 	}
 	
 }
+
 export const getStaticPaths: GetStaticPaths  = async ()  => {
 	const patchnoteList = patchHandler.patchnoteList
     //Prerendering Paths for Patches. Function returns all paths for possible patches.

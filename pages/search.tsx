@@ -23,6 +23,27 @@ export default function Search_page() {
 		set_search_query(input.value)
 	}
 
+	useEffect(() => {
+		const get_input = document.getElementById("search_input") as HTMLInputElement
+
+		get_input.focus()
+
+		function search(e: any) {
+			if(get_input === document.activeElement) {
+				if(e.keyCode === 13) {
+					const search_button = document.getElementById("search_button") as HTMLButtonElement
+					search_button.click()
+				}
+			}
+		}
+
+		window.addEventListener("keyup", search)
+
+		return(() => {
+			window.removeEventListener("keyup", search)
+		})
+	}, [])
+
 	return (
 		<search_context.Provider value={set_search_query}>
 			<div className='search_page'>
@@ -32,7 +53,7 @@ export default function Search_page() {
 
 						<div className='search_input_container'>
 							<input type="text" placeholder='Search Tags' id="search_input"/>
-							<button onClick={set_query}>Search</button>
+							<button onClick={set_query} id="search_button">Search</button>
 						</div>
 
 					</div>
@@ -55,16 +76,6 @@ export default function Search_page() {
 		</search_context.Provider>
 	);
 }
-
-function Search_results_users({search_query}: {search_query: string}) {
-	
-	return(
-		<div className='search_results_user_container'>
-
-		</div>
-	)
-}
-
 
 function Search_results_packs({search_query}: {search_query: string}) {
 	

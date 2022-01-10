@@ -15,8 +15,10 @@
 
 
         .searching_container {
+            position: relative;
             display: flex;
             align-items: center;
+            z-index: 10;
             padding: 0 3rem;
             width: 100%;
             background: $color_main_blue;
@@ -26,6 +28,7 @@
                 bottom: 0;
                 padding: 0 1rem;
             }
+
             .search_input_container {
                 display: grid;
                 grid-template-columns: 1fr .3fr;
@@ -60,6 +63,9 @@
             top: 0px;
             width: 100%;
             height: auto;
+            @include breakpoint(mobile) {
+                top: 50px;
+            }
             span {
                 height: 50%;
                 width: 1px;
@@ -75,6 +81,11 @@
                 height: 50px;
                 overflow: hidden;
                 background: #0e1a2e;
+                
+                @include breakpoint(mobile) {
+                    grid-template-columns: repeat(auto-fill, minMax(65px, 1fr));
+                    padding: 0 1rem;
+                }
                 .grid_item {
                     display: flex;
                     height: 50px;
@@ -106,7 +117,13 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
+                user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
                 .svg_container {
+                    user-select: none;
+                    -moz-user-select: none;
+                    -webkit-user-select: none;
                     pointer-events: all;
                     position: absolute;
                     bottom: -.8rem;
@@ -124,7 +141,11 @@
                         width: 100%;
                         height: 100%;
                         transform: rotate(-45deg);
+                        user-select: none;
+                        -moz-user-select: none;
+                        -webkit-user-select: none;
                         svg {
+                            
                             transition: .1s ease-in-out;
                             position: absolute;
                             bottom: -.4rem;
@@ -141,6 +162,10 @@
 
         .search_results_user_container{
             padding: 3rem 0rem;
+            @include breakpoint(mobile) {
+                grid-template-columns: repeat(auto-fill, minMax(60px, 1fr));
+                padding: 2rem 0rem;
+            }
         }
 
         .empty_container{
