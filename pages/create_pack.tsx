@@ -862,7 +862,6 @@ function Step_3() {
             
         }
         send_pack()
-        create_pack.dispatch({type: CREATE_PACK_ACTIONS.SUBMIT_PACK})
     }
 
     return(

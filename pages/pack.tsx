@@ -17,6 +17,8 @@ import { format_date } from '../lib/date_lib';
 import { get_pack } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
+import StarEmptyIcon from "../public/icons/StarEmptyIcon.svg"
+import StarIcon from "../public/icons/StarIcon.svg"
 import Pack_star_raiting from '../components/pack_stars_raiting';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import ThrashIcon from "../public/icons/ThrashIcon.svg"
@@ -213,6 +215,9 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
                                 <button>Download Pack</button>
                             </div>
 
+                           
+                            
+
                             <div className="stats_container"> 
                                 <span className="top_line" />
 
@@ -309,6 +314,36 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
             </div>
 
         </PACK_PAGE_CONTEXT.Provider>
+    );
+}
+
+
+function Rate_pack() {
+    const [full_stars, set_full_stars] = useState<ReactElement[]>([])
+
+    return (
+        <div className='rate_pack_container'>
+            <h1>Rate This Pack</h1>
+            <div className='rate_pack_stars_container'>
+
+                <div className='empty_stars_container'>
+                    
+                    <StarEmptyIcon className="empty_rate_star"/>
+                    <StarEmptyIcon className="empty_rate_star"/>
+                    <StarEmptyIcon className="empty_rate_star"/>
+                    <StarEmptyIcon className="empty_rate_star"/>
+                    <StarEmptyIcon className="empty_rate_star"/>
+                    
+                </div>
+
+                <div className='full_stars_container'>
+
+                    {full_stars}
+
+                </div>
+            </div>
+            
+        </div>
     );
 }
 

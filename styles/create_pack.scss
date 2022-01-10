@@ -97,7 +97,7 @@
 
         .drop_zone_error_message{
             @include p(small);
-            padding: 0 1rem;
+            padding: 0rem 0rem;
             color: $color_error;
         }
 
@@ -115,9 +115,13 @@
                 .preview_header_container {
                     h1 {
                         @include h1(small);
+                        margin-bottom: .2rem;
                     }
                 }
                 
+                .drop_zone_error_message {
+                    line-height: 1.5rem;
+                }
                 .dropzone_container {
                     display: block;
                     position: relative;
@@ -131,6 +135,7 @@
                     @include breakpoint(mobile) {
                         height: 250px;
                     }
+                    
                     .asset {
                         background: $color_main_blue;
                         position: relative;

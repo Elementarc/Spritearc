@@ -3,7 +3,7 @@ import { Formidable_file , Formidable_files} from "../types"
 //return true if blob type & size is valid
 export function validate_files(files: File[]): boolean | string {
     
-    let passed_validation: boolean | string = false
+    let passed_validation: boolean | string = "Failed"
 
     for(let file of files) {
         

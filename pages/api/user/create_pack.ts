@@ -21,6 +21,7 @@ async function api_request(req: any, res: NextApiResponse) {
         //Req user that initiated the create pack request
         const public_user: Public_user = req.user
         
+        console.log("Test1")
         try {
             //Handles multiple files form.
             const form = new formidable.IncomingForm({multiples: true});

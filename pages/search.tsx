@@ -1,6 +1,7 @@
 import { useAnimation, motion } from 'framer-motion';
 import React, {useState, useEffect, useContext} from 'react';
 import Footer from '../components/footer';
+import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
@@ -49,6 +50,7 @@ export default function Search_page() {
 			<div className='search_page'>
 
 				<div className='content'>
+					<Nav_shadow/>
 					<div className='searching_container'>
 
 						<div className='search_input_container'>

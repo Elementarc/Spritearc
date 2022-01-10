@@ -390,4 +390,5 @@
 
 .nav_shadow{
     @include nav_shadow;
+    z-index: 0;
 }
