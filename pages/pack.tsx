@@ -8,6 +8,7 @@ import { Nav_shadow } from '../components/navigation';
 import { useParallax } from '../lib/custom_hooks';
 import ArrowIcon from "../public/icons/ArrowIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
+import ReportIcon from "../public/icons/ReportIcon.svg"
 import jwt from 'jsonwebtoken';
 import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
@@ -35,6 +36,7 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
     const [show_focus_img, set_show_focus_img] = useState(false)
     //State to toggle delete pack confirmation container
     const [delete_confirmation_state, set_delete_confirmation_state] = useState(false)
+    const [report_confirmation_state, set_report_confirmation_state] = useState(false)
 
     //Contexts
     const Device = useContext(Device_context)
@@ -108,7 +110,7 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
     async function delete_pack() {
         const query = Router.query
 
-        const response = await fetch(`/api/user/delete_pack?id=${query.id}`, {
+        const response = await fetch(`/user/delete_pack?id=${query.id}`, {
             method: "POST"
         })
 
@@ -116,12 +118,59 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
         if(response.status === 200) {
             App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully deleted pack!", message: `You now will be redirected.`, button_label: "Ok", callb: go_back}})
         } else {
-            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Couldn't delete pack!", message: "Something went wrong while trying to delete your pack! Please relog and try again!", button_label: "Ok", callb: go_back}})
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "No Permission!", message: "You do not have the permission to delete this pack!", button_label: "Ok"}})
         }
 
     }
 
     
+    function report_pack_validation() {
+        const report_input = document.getElementById("report_input") as HTMLInputElement
+        const get_report_button = document.getElementById("report_submit_button") as HTMLButtonElement
+        const report_input_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\_?!]/)
+
+        if(report_input.value.length < 25) {
+
+            get_report_button.classList.add("disabled_button")
+            return false
+        }
+
+        if(report_input_regex.test(report_input.value) === true) {
+            get_report_button.classList.remove("disabled_button")
+            return true
+        }
+        else {
+            get_report_button.classList.add("disabled_button")
+            return false
+        }
+    }
+
+    async function submit_pack_report() {
+        const valid_report_reason = report_pack_validation()
+        const report_input = document.getElementById("report_input") as HTMLInputElement
+        if(!valid_report_reason) return
+        const pack_id = Router.query.id
+
+        if(!pack_id) return
+        if(typeof pack_id !== "string") return
+
+        const response = await fetch(`/report_pack?pack_id=${pack_id}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({reason: report_input.value})
+        })
+
+        if(response.status === 200) {
+            const response_body = await response.json() as {success:boolean, message:string}
+            console.log(response_body)
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Thank you for helping us!", message: response_body.message, button_label: "Ok", callb: () => {set_report_confirmation_state(false)}}})
+        } else {
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to report this pack. We are sorry that you have to experience this.", button_label: "Ok"}})
+        }
+    }
+
     return (
         <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
 
@@ -166,31 +215,53 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
 
                                 </div>
                                 
-                                    {user && user.username === pack.username &&
-                                        <>
-                                            <AnimatePresence exitBeforeEnter>
-                                                {delete_confirmation_state &&
-                                                    <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
-                                                        <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                                            <h1>Delete Pack?</h1>
-                                                            <p>Do you want to delete this pack? Remember, after deleting this pack it wont be recoverable.</p>
-                                                            <button onClick={delete_pack}>Yes, delete pack!</button>
-                                                            <h4 onClick={() => {set_delete_confirmation_state(false)}}>No, dont delete pack</h4>
-                                                        </motion.div>
+                                
+                                    <>
+                                        <AnimatePresence exitBeforeEnter>
 
-                                                        <div onClick={() => {set_delete_confirmation_state(false)}} className='delete_pack_confirmation_background' />
+                                            {delete_confirmation_state &&
+                                                <motion.div key="report_pack" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
+                                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                                        <h1>Delete Pack?</h1>
+                                                        <p>Do you want to delete this pack? Remember, after deleting this pack it wont be recoverable.</p>
+                                                        <button onClick={delete_pack}>Yes, delete pack!</button>
+                                                        <h4 onClick={() => {set_delete_confirmation_state(false)}}>No, dont delete pack</h4>
                                                     </motion.div>
-                                                }
-                                            </AnimatePresence>
 
-                                            <div className='delete_pack_container'>
-                                                <div className='icon_container' onClick={() => {set_delete_confirmation_state(!delete_confirmation_state)}}>
-                                                    <ThrashIcon/>
-                                                    <p>Delete pack</p>
-                                                </div>
+                                                    <div onClick={() => {set_delete_confirmation_state(false)}} className='delete_pack_confirmation_background' />
+                                                </motion.div>
+                                            }
+
+                                            {report_confirmation_state &&
+                                                <motion.div key="report_pack"initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='report_pack_confirmation_container'>
+                                                    
+                                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                                        <h1>Report Pack</h1>
+                                                        <input onKeyUp={report_pack_validation} type="text" placeholder='Reason' id="report_input"/>
+                                                        <button className='disabled_button' id="report_submit_button" onClick={submit_pack_report}>Report pack</button>
+                                                        <h4 onClick={() => {set_report_confirmation_state(false)}}>No, dont report this pack</h4>
+                                                    </motion.div>
+
+                                                    <div onClick={() => {set_report_confirmation_state(false)}} className='report_pack_confirmation_background' />
+
+                                                </motion.div>
+                                            }
+
+                                        </AnimatePresence>
+
+                                        <div className='pack_actions_fixed_container'>
+
+                                            <div className='pack_actions_container'>
+
+                                                <Pack_action Action_icon={ReportIcon} name='Report Pack' callb={() => {set_report_confirmation_state(!delete_confirmation_state)}}/>
+                                                {user && (user.username === pack.username || user.role === "admin") &&
+                                                    <Pack_action Action_icon={ThrashIcon} name='Delete Pack' callb={() => {set_delete_confirmation_state(!delete_confirmation_state)}}/>
+                                                }
+
                                             </div>
-                                        </>
-                                    }
+
+                                        </div>
+                                    </>
                                    
                             </div>
 
@@ -202,7 +273,7 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
         
                     <div className="preview_container" id="preview_container">
                         <div className="background">
-						    <Image src={`/packs/${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						    <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH}/packs/${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
                             <div className="background_blur" />
                         </div>
 
@@ -388,7 +459,7 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
     for(let i = 0; i < pack_content.section_images.length; i++) {
         assets_jsx.push(
             <div onClick={show_asset} key={`${pack_content.section_images[i]}_${i}`} className="asset">
-                <Image src={`/packs/${pack_id.toString()}/${pack_content.section_name}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
+                <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH}/packs/${pack_id.toString()}/${pack_content.section_name}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
             </div>
         )
     }
@@ -398,6 +469,16 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
             {assets_jsx}
         </div>
     );
+}
+
+
+function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string, callb: ()=>void}) {
+  return (
+    <div className='pack_action' onClick={callb}>
+        <Action_icon/>
+        <p>{name}</p>
+    </div>
+  );
 }
 
 export const getServerSideProps: GetServerSideProps = async(context) => {

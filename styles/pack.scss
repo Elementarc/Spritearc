@@ -54,46 +54,60 @@
             }
         }
 
-        .delete_pack_container {
+        .pack_actions_fixed_container {
             position: absolute;
             width: 100%;
             height: 100%;
-            .icon_container {
-                position: absolute;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                right: 0;
-                top: 0;
-                height: 50px;
-                width: 50px;
-                margin: 4rem;
-                border-radius: 50%;
-                background: $color_error;
-                pointer-events: all;
 
-                &:hover {
-                    cursor: pointer;
-                    background: $color_error_hover;
-                    p {
-                        opacity: 1;
-                        transform: scale(1)
+            .pack_actions_container {
+                position: relative;
+                right: 0;
+                width: 100%;
+                display: flex;
+                justify-content: flex-end;
+                align-items: flex-end;
+                row-gap: 2rem;
+                padding-right: 4rem;
+                padding-top: 4rem;
+                flex-direction: column;
+                pointer-events: none;
+
+                .pack_action {
+                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    right: 0;
+                    top: 0;
+                    height: 50px;
+                    width: 50px;
+                    border-radius: 50%;
+                    background: $color_error;
+                    pointer-events: all;
+
+                    &:hover {
+                        cursor: pointer;
+                        background: $color_error_hover;
+                        p {
+                            opacity: 1;
+                            transform: scale(1)
+                        }
                     }
-                }
-                p {
-                    @include p;
-                    color: $color_error;
-                    opacity: 0;
-                    position: absolute;
-                    width: 150px;
-                    left: -120px;
-                    transition: .1s ease-in-out;
-                    transform: scale(.7);
-                    pointer-events: none;
-                }
-                svg {
-                    fill: $color_background_dark;
-                    transform: scale(1.1);
+                    p {
+                        @include p;
+                        color: $color_error;
+                        opacity: 0;
+                        position: absolute;
+                        width: 150px;
+                        left: -120px;
+                        transition: .1s ease-in-out;
+                        transform: scale(.7);
+                        pointer-events: none;
+                    }
+                    svg {
+                        fill: $color_background_dark;
+                        transform: scale(1.1);
+                    }
                 }
             }
         }
@@ -150,6 +164,74 @@
             }
 
             .delete_pack_confirmation_background {
+                position: absolute;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.75);
+                pointer-events: all;
+            }
+        }
+
+        .report_pack_confirmation_container {
+            position: absolute;
+            display: flex;
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            
+            .confirmation_content {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 38%;
+                padding: 2rem 4rem;
+                background: $color_main_blue;
+                box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                pointer-events: all;
+                z-index: 1;
+                @include breakpoint(laptop) {
+                    width: 500px
+                }
+                @include breakpoint(mobile) {
+                    width: 90%
+                }
+                h1{
+                    @include h1(medium);
+                    color: $color_error
+                }
+                input {
+                    @include input;
+                    margin: 1.5rem 0rem
+                }
+                p {
+                    @include p();
+                    margin-top: 1rem;
+                    text-align: center;
+                    width: 100%;
+                }
+                button {
+                    @include button;
+                    margin-top: 2rem;
+                }
+                .disabled_button {
+                    @include button(disabled);
+                }
+                h4 {
+                    @include h4;
+                    margin-top: 2rem;
+                    &:hover {
+                        cursor: pointer;
+                        color: $color_grey;
+                    }
+                }
+            }
+
+            .report_pack_confirmation_background {
                 position: absolute;
                 top: 0;
                 width: 100%;
@@ -271,6 +353,9 @@
                 img{
                     object-fit: cover;
                     object-position: center;
+                    image-rendering: pixelated;
+                    image-rendering: -moz-crisp-edges;
+                    image-rendering: crisp-edges;
                 }
                 .background_blur{
                     position: absolute;

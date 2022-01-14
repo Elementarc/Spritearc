@@ -1,10 +1,12 @@
 import { MongoClient, ObjectId } from 'mongodb';
-import { Public_user } from '../types';
+import { Public_user, User, User_with_id } from '../types';
 import { Pack } from '../types';
-
+import { SHA256 } from 'crypto-js';
+import { send_email_verification } from './nodemailer_lib';
 const client = new MongoClient("mongodb://localhost:27017")
 const DATABASE = "pixels"
 
+const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
 //Function that returns a public user obj from db. Null if given username wasnt found
 export async function get_public_user(username: string): Promise<Public_user | null> {
 
@@ -20,6 +22,7 @@ export async function get_public_user(username: string): Promise<Public_user | n
                     username: "$username",
                     description: "$description",
                     created_at: "$created_at",
+                    role: "$role",
                     profile_picture: "$profile_picture",
                     profile_banner: "$profile_banner",
                     followers: "$followers",
@@ -86,7 +89,6 @@ export async function email_available(email: string): Promise<boolean> {
 
     try {
 
-        const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
         if(typeof email !== "string") return false
         if(email_regex.test(email) === false) return false
     
@@ -159,12 +161,15 @@ export async function delete_pack(pack_id: ObjectId, signed_user: Public_user): 
 
     try {
         await client.connect()
+        const user_collection = client.db(DATABASE).collection("users")
         const packs_collection = client.db(DATABASE).collection("packs")
         
+        const user = await (user_collection.findOne({username: signed_user.username}) as unknown) as User
+        if(!user) return false
         const pack = await packs_collection.findOne({_id: pack_id}) as Pack | null
     
         if(!pack) return false
-        if(signed_user.username === pack.username) {
+        if(signed_user.username === pack.username || user.role === "admin") {
             //Deleting pack
             const delete_results = await packs_collection.deleteOne({_id: pack_id})
 
@@ -288,6 +293,7 @@ export async function get_pack_by_tag(tag: string) {
 
     }
 }
+
 export async function get_packs_collection_size() {
 
     try {
@@ -303,6 +309,42 @@ export async function get_packs_collection_size() {
 
     }
 
+}
+
+export async function create_user(user: User): Promise<string | boolean> {
+    try {
+
+        await client.connect()
+            
+        const users_collection = client.db("pixels").collection("users")
+
+        await users_collection.insertOne(user)
+
+        //Getting created user from db
+        const user_db = await users_collection.findOne({username: user.username})
+        if(! user_db) throw new Error("Could not find username in database")
+
+        const user_id =  user_db._id.toString()
+
+        const account_verification_token_collection = client.db("pixels").collection("account_verification_tokens")
+        account_verification_token_collection.createIndex({date: 1}, {expireAfterSeconds: 3600})
+        const token = SHA256(user_id).toString()
+
+        //Creating token in db to verify account
+        account_verification_token_collection.insertOne({
+            date: new Date(),
+            token: token,
+            user_id: user_id,
+        })
+
+        await send_email_verification(user.email, `Hey please confirm your email address by clicking on this link: ${process.env.FULL_DOMAIN}/verify_account?token=${token}`)
+        
+        return true
+    } catch ( err ) {
+    
+        console.log(err)
+        return "Something went wrong while trying to create your acccount"
+    }
 }
 
 export async function create_user_pack(pack: Pack) {
@@ -326,3 +368,201 @@ export async function create_user_pack(pack: Pack) {
 
 }
 
+export async function get_user_by_email(email: string): Promise<string | {_id: ObjectId, email: string, verfied: boolean}> {
+    if(!email_regex.test(email)) return "Not a valid email"
+
+    try {
+        await client.connect();
+        const collection = client.db("pixels").collection("users")
+        const user_arr = await collection.aggregate([
+            {
+                $project: {
+                    _id: "$_id",
+                    email: {$toUpper: "$email"},
+                    verified: "$verified"
+                }
+            },
+            {
+                $match: {
+                    email: email.toUpperCase()
+                }
+            }
+        ]).toArray()
+
+        if(user_arr.length === 0) return "Couldn't find an Account with that email"
+
+
+        return user_arr[0] as {_id: ObjectId, email: string, verfied: boolean}
+
+
+    } catch( err ) {
+        return "Something went wrong!"
+    }
+}
+
+export async function create_account_verification_token(user_id: ObjectId): Promise<string | {token: string}> {
+    try {
+
+        const account_verification_token_collection = client.db("pixels").collection("account_verification_tokens")
+        account_verification_token_collection.createIndex({date: 1}, {expireAfterSeconds: 3600})
+        const token = SHA256(user_id.toString()).toString()
+
+        const verification_tokens = await account_verification_token_collection.find({token: token}).toArray()
+        if(verification_tokens.length > 0) return "There already is an token!"
+        //Token does not already exist.
+
+        //Creating token in db to verify account
+        account_verification_token_collection.insertOne({
+            date: new Date(),
+            token: token,
+            user_id: user_id,
+        })
+
+        return {
+            token: token
+        }
+    } catch(err) {
+        return "something went wrong while trying to create an account verification token."
+    }
+}
+
+export async function verify_user_account(token: string): Promise<string|number> {
+    try {
+        
+        await client.connect()
+        const token_collection = client.db("pixels").collection("account_verification_tokens")
+        
+        const found_token = await token_collection.findOne({token: token})
+
+        if(!found_token) return "Couldn't find the token!"
+        //Token exists in database.
+        const token_date = new Date(found_token.date)
+        
+        //function that checks if token is expired
+        function check_token_expired(token_time: number): boolean {
+            const current_time = new Date().getTime()
+            const one_hour = 1000 * 60 * 60
+            const token_alife = current_time - token_time 
+            
+            if(token_alife > one_hour) {
+                return true
+            } else {
+                return false
+            }
+        }
+        
+        const token_expired = check_token_expired(token_date.getTime())
+        
+        if(token_expired) {
+            await token_collection.deleteOne({token: token})
+            return 1
+        }
+
+        //Token is not expired
+        const user_collection = client.db("pixels").collection("users")
+
+        const user_found = await user_collection.find({_id: new ObjectId(found_token.user_id)}).toArray()
+        if(user_found.length === 0) return "Did not find account to verify"
+
+        //user found & verifieng user
+        user_collection.updateOne({_id: new ObjectId(found_token.user_id)}, {$set: {verified: true}}, async(err, mres) => {
+            if( err ) throw err;
+        })
+
+        await token_collection.deleteOne({token: token})
+
+        return 0
+        
+    } catch ( err ) {
+
+        console.log(err)
+        return "Something went wrong!"
+    }
+}
+
+export async function validate_user_credentials(email: string, password: string): Promise<string | User> {
+
+    try {
+        if(!email) return "Coulnd't find an email input"
+        if(!password) return "Coulnd't find an password input"
+        
+        await client.connect()
+        const collection = client.db("pixels").collection("users")
+        const user_arr = await collection.aggregate([
+            {
+                $project: {
+                    username: "$username",
+                    verified: "$verified",
+                    created_at: "$created_at",
+                    description: "$description",
+                    profile_picture: "$profile_picture",
+                    profile_banner: "$profile_banner",
+                    email: {$toUpper: "$email"},
+                    password: "$password",
+                    salt: "$salt",
+                    followers: "$followers",
+                    following: "$following",
+                    released_packs: "$released_packs",
+                }
+            },
+            {
+                $match: {
+                    email: email.toUpperCase()
+                }
+            }
+        ]).toArray()
+        
+        
+        if(user_arr.length === 0) return "Couldn't find Account"
+        //User exists in db.
+
+        const user = user_arr[0] as User
+        
+        //User is verified
+        const hashed_password = SHA256(password + user.salt).toString()
+        
+        if(hashed_password === user.password) {
+            
+            return user
+
+        } else {
+            return "Wrong credentials"
+        }
+
+        return user
+        
+    } catch ( err ) {
+
+        return "Something went wrong"
+
+    }
+}
+
+export async function report_pack(pack_id: string, reason: string): Promise<string | boolean> {
+    
+    try {
+        const valid_id = ObjectId.isValid(pack_id)
+        if(!valid_id) return "Please enter a valid Pack id"
+
+        await client.connect()
+
+        const packs_collection = client.db(DATABASE).collection("packs")
+
+        const pack = (packs_collection.findOne({_id: new ObjectId(pack_id)}) as unknown) as Pack | null
+
+        if(!pack) return "Couldnt find a pack with that id."
+
+        const pack_reports_collection = client.db(DATABASE).collection("pack_reports")
+
+        await pack_reports_collection.insertOne({
+            pack_id: pack_id,
+            date: new Date(),
+            reason: reason
+        })
+
+        return true
+    } catch(err) {
+        console.log(err)
+        return "Something went wrong while trying to create a report"
+    }
+}

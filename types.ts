@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import formidable, { FileJSON } from "formidable";
+import { FileJSON } from "formidable";
 
 //APP context_types
 export interface App_navigation_context_type {
@@ -158,13 +158,16 @@ export interface Create_pack_context_type {
 }
 
 //User
+export interface User_with_id extends User {
+    _id: ObjectId
+}
 export interface User extends Public_user{
     email: string,
     password: string,
     salt: string,
     verified: boolean,
     notifications: [],
-    role: string,
+    
     occasional_emails: boolean,
 }
 
@@ -177,6 +180,7 @@ export interface Public_user {
     following: [],
     followers: [],
     released_packs: string[] | [],
+    role: string,
 }
 
 

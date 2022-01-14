@@ -51,7 +51,7 @@ export default function Profile(props: {public_user: any}) {
                 </div>
                 
                 <div className='user_packs_container'>
-                    <Packs_section section_name={`Packs created by '${public_user.username}'`} api="/api/user_packs" method='POST' body={public_user.released_packs}/>
+                    <Packs_section section_name={`Packs created by '${public_user.username}'`} api="/user_packs" method='POST' body={public_user.released_packs}/>
                 </div>
 
             </div>

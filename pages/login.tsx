@@ -19,7 +19,7 @@ export default function Login_page(props: any) {
     const router = useRouter()
     
     async function resend_email_verification(email: string) {
-        const response = await fetch("/api/user/resend_email_confirmation", {
+        const response = await fetch("/signup/resend_email_confirmation", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -37,7 +37,7 @@ export default function Login_page(props: any) {
         const password_input = document.getElementById("password_input") as HTMLInputElement
 
         try {
-            const response = await fetch("/api/user/login", {
+            const response = await fetch("/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -117,7 +117,7 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
     if(cookies.user) {
         return {
             redirect: {
-                destination: "/",
+                destination: "/account",
                 permanent: false,
             }
         }

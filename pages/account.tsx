@@ -24,7 +24,7 @@ export default function Account_page(props: {user: Public_user}) {
     
     
     async function logout () {
-        const response = await fetch("/api/user/logout", {method: "POST"})
+        const response = await fetch("/user/logout", {method: "POST"})
 
         if(response.status === 200) {
             Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})

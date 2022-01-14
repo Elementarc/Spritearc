@@ -83,7 +83,7 @@ function Search_results_packs({search_query}: {search_query: string}) {
 	
 	return(
 		<div className='search_results_user_container'>
-			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`/api/search/${search_query}`} method='POST'/>
+			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`/search/${search_query}`} method='POST'/>
 		</div>
 	)
 }

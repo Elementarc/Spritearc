@@ -29,6 +29,7 @@ export function create_default_public_user(username: string): Public_user {
     
     const public_user_obj: Public_user = {
         username: username,
+        role: "member",
         description: "Hey! Im new here :)",
         profile_picture: "default.png",
         profile_banner: "default.png",

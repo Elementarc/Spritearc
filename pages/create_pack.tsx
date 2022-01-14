@@ -843,7 +843,7 @@ function Step_3() {
             const Form_data = create_form_data(create_pack.create_pack_obj)
         
             if(!Form_data) return
-            const response = await fetch("/api/user/create_pack", {
+            const response = await fetch("/user/create_pack", {
                 method: "POST",
                 body: Form_data
             })

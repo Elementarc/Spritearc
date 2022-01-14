@@ -72,7 +72,7 @@ export default function Pack_preview(props: {pack: Pack}) {
                 </div>
                 
                 <div className="background_container">
-					<Image priority={true} src={`/packs/${pack._id}/${pack.preview}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
+					<Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/packs/${pack._id}/${pack.preview}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
                     <div className="background_blur" />
                     <div className="background_blur_hover" />
                 </div>

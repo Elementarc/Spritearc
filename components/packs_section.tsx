@@ -9,13 +9,17 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	const [packs, set_packs] = useState<Pack[] | null>(null)
 	const [page, set_page] = useState(1)
 
+	
 	//Getting recent packs
 	useEffect(() => {
 		async function get_packs() {
 			
 			const response_recent_pack = await fetch(`${api}?page=${page}`, {
 				method: method.toUpperCase(),
-				body: body ? JSON.stringify(body) : null
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(body),
 			})
 
 			if(response_recent_pack.status === 200) {

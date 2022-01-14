@@ -20,7 +20,7 @@ export default function Layout({children}: any ) {
     //Checking if user is signed in or not. Used for whole application.
     useEffect(() => {
         async function is_auth() {
-            const response = await fetch("/api/user/is_auth", {method: "POST"})
+            const response = await fetch("/user/is_auth", {method: "POST"})
             
             if(response.status === 200) {
                 const user: Public_user = await response.json()

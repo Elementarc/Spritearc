@@ -134,7 +134,7 @@ export default function Sign_up_page() {
                 const error_element = document.getElementById("input_error_message") as HTMLParagraphElement
                 const input_element = document.getElementById("input") as HTMLInputElement
                 if(email_regex.test(email) === true) {
-                    const response = await fetch(`/api/user/signup/validate_email`, {
+                    const response = await fetch(`/signup/validate_email`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
@@ -216,7 +216,7 @@ export default function Sign_up_page() {
                             //Finally checking if username passes the test. It should pass the test at this point of code. Else is just incase i forgot something.
                             if(username_regex.test(username) === true){
                                 //Checking if a username already exists with.
-                                const response = await fetch(`/api/user/signup/validate_username`, {
+                                const response = await fetch(`/signup/validate_username`, {
                                     method: "POST",
                                     headers: {
                                         "Content-Type": "application/json"
@@ -546,7 +546,7 @@ export function Step_3() {
         set_loading(true)
         if(PAGE_CONTEXT.signup_obj.username && PAGE_CONTEXT.signup_obj.email && PAGE_CONTEXT.signup_obj.password && PAGE_CONTEXT.signup_obj.legal) {
             
-            const response_stream = await fetch("/api/user/signup/send_verification", {
+            const response_stream = await fetch("/signup/send_account_verification", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

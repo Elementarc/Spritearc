@@ -9,14 +9,13 @@ import Packs_section from '../components/packs_section';
 
 export default function Browse() {
 	
-	
 	return (
 		<>
 			<div className="browse_page">
 				
 				<div className="content">
 					<Title_pack_section/>
-					<Packs_section section_name='Recent Packs' api="/api/recent_packs" method='GET'/>
+					<Packs_section section_name='Recent Packs' api="/recent_packs" method='POST'/>
 					<Nav_shadow/>
 				</div>
 
@@ -32,7 +31,9 @@ function Title_pack_section() {
 	useEffect(() => {
 		
 		async function get_title_pack() {
-			const response_title_pack = await fetch(`/api/title_pack`)
+			const response_title_pack = await fetch(`/title_pack`, {
+				method: "POST"
+			})
 			
 			if(response_title_pack.status === 200) {
 				const response_obj: {pack: Pack | null} = await response_title_pack.json()
@@ -64,7 +65,7 @@ function Title_pack_section() {
 					</div>
 
 					<div className="background_container">
-						<Image src={`/packs/${title_pack._id}/${title_pack.preview}`} alt="Preview image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						<Image src={`${process.env.NEXT_PUBLIC_BASE_PATH}/packs/${title_pack._id}/${title_pack.preview}`} alt="Preview image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
 						<div className="background_blur" />
 					</div>
 

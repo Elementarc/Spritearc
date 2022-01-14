@@ -63,6 +63,9 @@
         
         .background_image{
             transition: 0.2s ease-in-out;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
             object-fit: cover;
             object-position: center;
         }
