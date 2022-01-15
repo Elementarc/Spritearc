@@ -67,7 +67,7 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             const section_name = payload.section_name
 
             let exists = false
-            for(let [key, value] of create_pack_obj.content.entries()) {
+            for(let [key] of create_pack_obj.content.entries()) {
 
                 if(key.toLowerCase() === payload.section_name.toLowerCase()) {
                     exists = true
@@ -330,7 +330,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
 function Create_page() {
     const [create_pack_obj, dispatch] = useReducer(create_pack_reducer, initial_create_pack_obj)
     
-    
     useEffect(() => {
         
 
@@ -339,7 +338,7 @@ function Create_page() {
             dispatch({type: CREATE_PACK_ACTIONS.RESET_ALL})
 
         };
-    }, [dispatch, CREATE_PACK_ACTIONS])
+    }, [dispatch])
 
     useEffect(() => {
         window.scrollTo(0,0)
@@ -391,10 +390,6 @@ function Step_1() {
     const [pack_content_jsx, set_pack_content_jsx] = useState<ReactElement[]>([])
     const [toggle_add_section, set_toggle_add_section] = useState(false)
 
-    useEffect(() => {
-        create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_SECTION, payload: {section_name: "Lol"}})
-    }, [])
-
     //CREATING JSX OF create_pack_obj.content
     useEffect(() => {
         const sections_jsx: any = []
@@ -445,7 +440,7 @@ function Step_1() {
                 if(section_name_regex.test(input.value) === true) {
 
                     let exists = false
-                    for(let [key, value] of create_pack_obj.content.entries()) {
+                    for(let [key] of create_pack_obj.content.entries()) {
             
                         if(key.toLowerCase() === input.value.toLowerCase()) {
                             exists = true
@@ -965,7 +960,7 @@ function Preview({section_name}: {section_name: string}) {
                 
                 {create_pack.create_pack_obj.preview.preview_asset &&
                     <div className='asset'>
-                        <Image  src={`${create_pack.create_pack_obj.preview.preview_url}`} layout='fill'></Image>
+                        <Image  src={`${create_pack.create_pack_obj.preview.preview_url}`} alt='An image that will preview this pack.' layout='fill'></Image>
                     </div>
                 }
                 
@@ -993,7 +988,7 @@ function Section({section_name, section_content}: {section_name: string, section
             asset_jsx.push(
 
                 <div onClick={delete_asset} id={`${i}`} key={`${section_content.section_urls}_${i}`} className='asset'>
-                    <Image  src={section_content.section_urls[i]} layout='fill'></Image>
+                    <Image  src={section_content.section_urls[i]} alt='An asset that will represent 1 sprite/asset from this pack.' layout='fill'></Image>
 
                     <div className='delete_background_container'>
                         <ThrashIcon/>

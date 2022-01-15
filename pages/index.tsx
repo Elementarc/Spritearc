@@ -3,7 +3,7 @@ import Link from "next/dist/client/link";
 import Footer from "../components/footer";
 import { Nav_shadow } from "../components/navigation";
 
-export default function Home(props: any): ReactElement {
+export default function Home(): ReactElement {
     
     return (
         <>

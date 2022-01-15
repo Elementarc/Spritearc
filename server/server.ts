@@ -2,8 +2,8 @@ import express from "express"
 import {parse} from "url"
 import next from "next"
 import { create_number_from_page_query } from "../lib/custom_lib"
-import { create_user, create_user_pack, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack } from "../lib/mongo_lib"
-import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file } from "../lib/validate_lib"
+import { create_user, create_user_pack, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack } from "../lib/mongo_lib"
+import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file, validate_pack_report_reason } from "../lib/validate_lib"
 import cookieParser from "cookie-parser"
 import jwt from "jsonwebtoken"
 import { Public_user , Pack, Pack_content, Formidable_files} from "../types"
@@ -40,7 +40,7 @@ function with_auth(req:any, res: any, next: any) {
         if(!user) return res.status(403).send("Not authorized!")
         
         //adding user property to req stream
-        req.user = user
+        req.user = user as Public_user
         next()
     } catch ( err ) {
 
@@ -336,9 +336,6 @@ async function main() {
         
         res.status(200).send("Successfully logged out!")
     })
-    server.post("/user/create_pack", (req,res) => {
-
-    })
     server.post("/user/is_auth", async(req: any, res) => {
         try {
             const user = req.user
@@ -349,6 +346,21 @@ async function main() {
             res.status(400).send("Wrong secret")
         }
         
+    })
+    server.post("/user/rate_pack", async(req:any, res) => {
+        const {rating} = req.body as {rating: number} // 0 - 4
+        const pack_id = req.query.pack_id as string | string[] | undefined
+        const user = req.user as Public_user
+        if(rating <= 0) return res.status(400).end()
+        if(rating > 5) return res.status(400).end()
+        if(!pack_id) return res.status(400).end()
+        if(typeof pack_id !== "string") return res.status(400).end()
+
+        const response = await rate_pack(pack_id, rating, user.username) 
+        if(!response) return res.status(400).end()
+        if(typeof response === "string") return res.status(400).send(response)
+        console.log(user.username, rating)
+        return res.status(200).send(JSON.stringify({user: user.username, rating: rating}))
     })
     
     //Login
@@ -549,7 +561,8 @@ async function main() {
             const packs_per_page = 8
             const user_search = req.params.search_query
             const page = req.query.page
-
+            const query = req.query
+            console.log(query)
             if(typeof user_search !== "string") return res.status(400).end()
             if(typeof page !== "string") return res.status(400).end()
 
@@ -639,7 +652,9 @@ async function main() {
         try {
             const pack_id = req.query.pack_id
             const {reason}: {reason: string} = req.body
-            console.log(reason, pack_id)
+            const valid_reason = validate_pack_report_reason(reason)
+            
+            if(!valid_reason) return res.status(400).end()
             if(!pack_id) return res.status(400).end()
             if(typeof pack_id !== "string") return res.status(400).end()
 

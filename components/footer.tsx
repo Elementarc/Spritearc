@@ -5,11 +5,9 @@ import Twitter from "../public/logos/twitter.png"
 import Link from 'next/dist/client/link';
 import { App_context } from '../types';
 import { APP_CONTEXT } from './layout';
-import { useRouter } from 'next/router';
 
 export default function Footer(): ReactElement {
     const APP: App_context = useContext(APP_CONTEXT)
-    const router = useRouter()
     //Setting background max-width and height
     useEffect(() => {
         const background = document.getElementById("background") as HTMLDivElement
@@ -29,7 +27,7 @@ export default function Footer(): ReactElement {
         return(() => {
             observer.unobserve(app_content_container)
         })
-    }, [])
+    }, [APP])
 
     return (
         <>

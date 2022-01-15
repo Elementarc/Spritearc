@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
-import React, {ReactElement, useEffect, useContext, useState} from 'react';
+import React, {ReactElement, useEffect, useContext, useState, useCallback} from 'react';
 import Footer from '../components/footer';
-import {Pack_content, Pack, Public_user} from "../types"
+import {Pack_content, Pack, Public_user, Pack_rating} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
@@ -13,7 +13,6 @@ import jwt from 'jsonwebtoken';
 import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../components/h1_with_deco';
-import { Device_context } from '../context/device_context_provider';
 import { format_date } from '../lib/date_lib';
 import { get_pack } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
@@ -27,9 +26,20 @@ import { App_notification_context } from "../context/app_notification_context_pr
 import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider"
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
-//Renders the full Pack
-export default function Pack_page(props: {pack: Pack, user: Public_user}) {
+export default function Pack_page_handler({pack, user}: {pack: Pack, user: Public_user | null}) {
     const App_notification: any = useContext(App_notification_context)
+
+    return(
+        <Pack_page pack={pack} user={user} App_notification={App_notification}/>
+    )
+}
+
+const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null, App_notification: any}) => {
+    //Props
+    const pack: Pack = JSON.parse(`${props.pack}`)
+    const user: Public_user = JSON.parse(`${props.user}`)
+    //Context
+    const App_notification: any = props.App_notification
     //State that saves currently clicked asset as a url string.
     const [focus_img_src, set_focus_img_src] = useState("/")
     //State that toggles focus of asset.
@@ -37,14 +47,10 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
     //State to toggle delete pack confirmation container
     const [delete_confirmation_state, set_delete_confirmation_state] = useState(false)
     const [report_confirmation_state, set_report_confirmation_state] = useState(false)
-
+    //Pack ratings
+    const [prev_pack_ratings, set_prev_pack_ratings] = useState<Pack_rating[]>(pack.ratings)
     //Contexts
-    const Device = useContext(Device_context)
     const Router = useRouter()
-
-    //Props
-    const pack: Pack = JSON.parse(`${props.pack}`)
-    const user: Public_user = JSON.parse(`${props.user}`)
 
     function go_back() {
         const prev_path = sessionStorage.getItem("prev_path")
@@ -126,21 +132,28 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
     
     function report_pack_validation() {
         const report_input = document.getElementById("report_input") as HTMLInputElement
+        const report_pack_error_message = document.getElementById("report_pack_error_message") as HTMLParagraphElement
         const get_report_button = document.getElementById("report_submit_button") as HTMLButtonElement
-        const report_input_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\_?!]/)
+        const report_input_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\_?! ]{25,250}$/)
 
         if(report_input.value.length < 25) {
 
             get_report_button.classList.add("disabled_button")
+            report_pack_error_message.innerText = "Atleast 25 characters"
+            report_input.classList.add("input_error")
             return false
         }
 
         if(report_input_regex.test(report_input.value) === true) {
             get_report_button.classList.remove("disabled_button")
+            report_pack_error_message.innerText = ""
+            report_input.classList.remove("input_error")
             return true
         }
         else {
             get_report_button.classList.add("disabled_button")
+            report_pack_error_message.innerText = "Allowed characters: a-z A-Z 0-9 . , - _ ? !"
+            report_input.classList.add("input_error")
             return false
         }
     }
@@ -164,7 +177,7 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
 
         if(response.status === 200) {
             const response_body = await response.json() as {success:boolean, message:string}
-            console.log(response_body)
+            
             App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Thank you for helping us!", message: response_body.message, button_label: "Ok", callb: () => {set_report_confirmation_state(false)}}})
         } else {
             App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to report this pack. We are sorry that you have to experience this.", button_label: "Ok"}})
@@ -198,76 +211,70 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
                     }
                 </AnimatePresence>
 
-                
+            
 
-                { Device.is_mobile === false &&
-                    <>
+                <Fixed_app_content_overlay>
 
-                        <Fixed_app_content_overlay>
+                    <div className='fixed_container'>
+                        <div className='close_pack_container' id="close_pack">
 
-                            <div className='fixed_container'>
-                                <div className='close_pack_container' id="close_pack">
-
-                                    <div onClick={() => {go_back()}} className="icon_container">
-                                        <CloseIcon className="close_icon"/>
-                                        <div className="hover_box">Close Pack</div>
-                                    </div>
-
-                                </div>
-                                
-                                
-                                    <>
-                                        <AnimatePresence exitBeforeEnter>
-
-                                            {delete_confirmation_state &&
-                                                <motion.div key="report_pack" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
-                                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                                        <h1>Delete Pack?</h1>
-                                                        <p>Do you want to delete this pack? Remember, after deleting this pack it wont be recoverable.</p>
-                                                        <button onClick={delete_pack}>Yes, delete pack!</button>
-                                                        <h4 onClick={() => {set_delete_confirmation_state(false)}}>No, dont delete pack</h4>
-                                                    </motion.div>
-
-                                                    <div onClick={() => {set_delete_confirmation_state(false)}} className='delete_pack_confirmation_background' />
-                                                </motion.div>
-                                            }
-
-                                            {report_confirmation_state &&
-                                                <motion.div key="report_pack"initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='report_pack_confirmation_container'>
-                                                    
-                                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                                        <h1>Report Pack</h1>
-                                                        <input onKeyUp={report_pack_validation} type="text" placeholder='Reason' id="report_input"/>
-                                                        <button className='disabled_button' id="report_submit_button" onClick={submit_pack_report}>Report pack</button>
-                                                        <h4 onClick={() => {set_report_confirmation_state(false)}}>No, dont report this pack</h4>
-                                                    </motion.div>
-
-                                                    <div onClick={() => {set_report_confirmation_state(false)}} className='report_pack_confirmation_background' />
-
-                                                </motion.div>
-                                            }
-
-                                        </AnimatePresence>
-
-                                        <div className='pack_actions_fixed_container'>
-
-                                            <div className='pack_actions_container'>
-
-                                                <Pack_action Action_icon={ReportIcon} name='Report Pack' callb={() => {set_report_confirmation_state(!delete_confirmation_state)}}/>
-                                                {user && (user.username === pack.username || user.role === "admin") &&
-                                                    <Pack_action Action_icon={ThrashIcon} name='Delete Pack' callb={() => {set_delete_confirmation_state(!delete_confirmation_state)}}/>
-                                                }
-
-                                            </div>
-
-                                        </div>
-                                    </>
-                                   
+                            <div onClick={() => {go_back()}} className="icon_container">
+                                <CloseIcon className="close_icon"/>
+                                <div className="hover_box">Close Pack</div>
                             </div>
 
-                        </Fixed_app_content_overlay>
-                    </>
-                }
+                        </div>
+                        
+                        <AnimatePresence exitBeforeEnter>
+
+                            {delete_confirmation_state &&
+                                <motion.div key="report_pack" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
+                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                        <h1>Delete Pack?</h1>
+                                        <p>Do you want to delete this pack? Remember, after deleting it wont be recoverable and all stats will be lost.</p>
+                                        <button onClick={delete_pack}>Yes, delete pack!</button>
+                                        <h4 onClick={() => {set_delete_confirmation_state(false)}}>No, dont delete pack</h4>
+                                    </motion.div>
+
+                                    <div onClick={() => {set_delete_confirmation_state(false)}} className='delete_pack_confirmation_background' />
+                                </motion.div>
+                            }
+
+                            {report_confirmation_state &&
+                                <motion.div key="report_pack"initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='report_pack_confirmation_container'>
+                                    
+                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                        <h1>Report Pack</h1>
+                                        <input onKeyUp={report_pack_validation} type="text" placeholder='Reason' id="report_input"/>
+                                        <p className='report_pack_error_message' id="report_pack_error_message"></p>
+                                        <button className='disabled_button' id="report_submit_button" onClick={submit_pack_report}>Report pack</button>
+                                        <h4 onClick={() => {set_report_confirmation_state(false)}}>I changed my mind.</h4>
+                                    </motion.div>
+
+                                    <div onClick={() => {set_report_confirmation_state(false)}} className='report_pack_confirmation_background' />
+
+                                </motion.div>
+                            }
+
+                        </AnimatePresence>
+
+                        <div className='pack_actions_fixed_container'>
+
+                            <div className='pack_actions_container'>
+
+                                <Pack_action Action_icon={ReportIcon} name='Report Pack' callb={() => {set_report_confirmation_state(!delete_confirmation_state)}}/>
+                                {user && (user.username === pack.username || user.role === "admin") &&
+                                    <Pack_action Action_icon={ThrashIcon} name='Delete Pack' callb={() => {set_delete_confirmation_state(!delete_confirmation_state)}}/>
+                                }
+
+                            </div>
+
+                        </div>
+                            
+                    </div>
+
+                </Fixed_app_content_overlay>
+               
 
                 <div className="content" id="content">
         
@@ -286,7 +293,7 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
                                 <button>Download Pack</button>
                             </div>
 
-                           
+                            <Rate_pack user={user} set_prev_pack_ratings={set_prev_pack_ratings} prev_pack_ratings={prev_pack_ratings}/>
                             
 
                             <div className="stats_container"> 
@@ -322,9 +329,9 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
 
 
                                         <div className="item_2">
-                                            <Pack_star_raiting ratings={pack.ratings}/>
+                                            <Pack_star_raiting ratings={prev_pack_ratings}/>
                                             <div className='pack_rating_count_container'>
-                                                <p className='pack_rating_count'>{`(${pack.ratings.length})`}</p>
+                                                <p className='pack_rating_count'>{`(${prev_pack_ratings.length})`}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -386,37 +393,149 @@ export default function Pack_page(props: {pack: Pack, user: Public_user}) {
 
         </PACK_PAGE_CONTEXT.Provider>
     );
-}
+})
+Pack_page.displayName = "Pack_page"
 
+const Rate_pack = React.memo((props: {user: Public_user | null, set_prev_pack_ratings: any, prev_pack_ratings: any}) => {
+    const set_prev_pack_ratings = props.set_prev_pack_ratings
+    const prev_pack_ratings = props.prev_pack_ratings
+    const user = props.user
+    const router = useRouter()
+    //Filled stars
+    let stars_jsx: ReactElement[] = []
+    for(let i = 0; i < 5; i++) {
+        stars_jsx.push(
+            <div onMouseEnter={mouse_enter} onClick={submit_rating} onMouseLeave={mouse_leave} key={`full_rate_star_${i}`} className='full_rate_star' id={`${i}`}>
+                <StarIcon/>
+            </div>
+        )
+    }
+    
 
-function Rate_pack() {
-    const [full_stars, set_full_stars] = useState<ReactElement[]>([])
+    //Empty stars
+    let empty_stars_jsx: ReactElement[] = []
+    for(let i = 0; i < 5; i++) {
+        empty_stars_jsx.push(
+            <div key={`empty_rate_star_${i}`} className='empty_rate_star'>
+                <StarEmptyIcon/>
+            </div>
+        )
+    }
+    
+    const user_has_rated = useCallback(() => {
+        function user_has_rated(): null | Pack_rating {
+            let user_rated_obj: null | Pack_rating = null
+            
+            if(user) {
+                for(let rating of prev_pack_ratings) {
+                
+                    if(rating.user.toLowerCase() === user.username.toLowerCase()) {
+                        user_rated_obj = {
+                            user: rating.user,
+                            rating: rating.rating
+                        }
+                    }
+                }
+            }
+            
+            
+            if(!user_rated_obj) return null
+            return user_rated_obj
+        }
+        return user_has_rated()
+    }, [prev_pack_ratings, user])
+
+    function mouse_enter(e: any) {
+        if(user_has_rated()) return
+        const id = parseInt(e.target.id)
+        const stars = document.getElementsByClassName(`full_rate_star`) as HTMLCollection
+        
+        const stars_arr = Array.from(stars)
+
+        for(let i = 0; i <= id; i++) {
+            stars_arr[i].classList.add("visible_star")
+        }
+        
+    }
+
+    function mouse_leave(e: any) {
+        if(user_has_rated()) return
+        const id = parseInt(e.target.id)
+        const stars = document.getElementsByClassName(`full_rate_star`) as HTMLCollection
+        
+        const stars_arr = Array.from(stars)
+
+        for(let i = 0; i <= id; i++) {
+            stars_arr[i].classList.remove("visible_star")
+        }
+        
+    }
+
+    async function submit_rating(e: any) {
+        const rating = parseInt(e.target.id)
+        
+        const pack_id = router.query.id
+
+        if(!pack_id) return
+        if(typeof pack_id !== "string") return
+        const response = await fetch(`/user/rate_pack?pack_id=${pack_id}`, {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({rating: rating + 1})
+        })
+
+        if(response.status === 200) {
+            const user_rating = await response.json() as {user: string, rating: number}
+            let updated_pack_ratings = [...prev_pack_ratings, {user: user_rating.user, rating: user_rating.rating}]
+
+            console.log("Success!")
+            set_prev_pack_ratings(updated_pack_ratings)
+        } else {
+            console.log("Something went wrong!")
+        }
+    }
+
+    useEffect(() => {
+        const user_rating = user_has_rated()
+        if(!user_rating) return
+        const stars = document.getElementsByClassName(`full_rate_star`) as HTMLCollection
+        const stars_arr = Array.from(stars)
+
+        for(let i = 0; i < stars_arr.length; i++) {
+            
+            stars_arr[i].classList.add("already_rated")
+            
+            if(i <= user_rating.rating - 1) {
+
+                if(stars_arr[i]) {
+                    stars_arr[i].classList.add("visible_star")
+                }
+                
+            }
+        }
+        
+    }, [user_has_rated])
 
     return (
         <div className='rate_pack_container'>
-            <h1>Rate This Pack</h1>
+            <h1>{user_has_rated() ? "You Rated" : "Rate This Pack"}</h1>
             <div className='rate_pack_stars_container'>
 
                 <div className='empty_stars_container'>
                     
-                    <StarEmptyIcon className="empty_rate_star"/>
-                    <StarEmptyIcon className="empty_rate_star"/>
-                    <StarEmptyIcon className="empty_rate_star"/>
-                    <StarEmptyIcon className="empty_rate_star"/>
-                    <StarEmptyIcon className="empty_rate_star"/>
+                    {empty_stars_jsx}
                     
                 </div>
 
                 <div className='full_stars_container'>
-
-                    {full_stars}
-
+                    {stars_jsx}
                 </div>
             </div>
             
         </div>
     );
-}
+})
+Rate_pack.displayName = "Rate_pack"
 
 //Component that creates a section with assets
 function Pack_sprite_sections(props: {pack: Pack}): ReactElement {

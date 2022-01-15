@@ -1,10 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import { GetServerSideProps } from 'next';
 import Image from "next/image"
 import Link from "next/link"
-import { Pack, Public_user } from '../types';
+import { Public_user } from '../types';
 import Footer from '../components/footer';
-import Packs_preview_grid from '../components/packs_section';
 import { useParallax } from '../lib/custom_hooks';
 import { Nav_shadow } from '../components/navigation';
 import { get_public_user } from '../lib/mongo_lib';

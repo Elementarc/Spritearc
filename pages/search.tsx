@@ -1,29 +1,37 @@
-import { useAnimation, motion } from 'framer-motion';
+import { useAnimation, motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from 'next/router';
 import React, {useState, useEffect, useContext} from 'react';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
-
+import Router from 'next/router';
 const search_context: any = React.createContext(null)
 
 export default function Search_page() {
-	const [search_query, set_search_query] = useState<string | null>(null)
-
+	const router = useRouter()
+	const search_query = typeof router.query.query === "string" ? router.query.query : ""
 	useEffect(() => {
-
 		const get_input = document.getElementById("search_input") as HTMLInputElement
-		get_input.defaultValue = search_query ? `${search_query}` : ""
+		if(router.query.query as string) {
+			get_input.defaultValue = router.query.query ? `${router.query.query}` : ""
+		}
+		
 
 	}, [search_query])
 
-	function set_query() {
+	function search() {
 		const input = document.getElementById("search_input") as HTMLInputElement
 
-		set_search_query(input.value)
+		router.push(`/search?query=${input.value}`, `/search?query=${input.value}`, {scroll: false})
 	}
 
+	function set_input_value(string: string) {
+		const input = document.getElementById("search_input") as HTMLInputElement
+
+		input.value = string
+	}
 	useEffect(() => {
 		const get_input = document.getElementById("search_input") as HTMLInputElement
 
@@ -44,9 +52,9 @@ export default function Search_page() {
 			window.removeEventListener("keyup", search)
 		})
 	}, [])
-
+	
 	return (
-		<search_context.Provider value={set_search_query}>
+		<search_context.Provider value={{search, set_input_value}}>
 			<div className='search_page'>
 
 				<div className='content'>
@@ -55,17 +63,21 @@ export default function Search_page() {
 
 						<div className='search_input_container'>
 							<input type="text" placeholder='Search Tags' id="search_input"/>
-							<button onClick={set_query} id="search_button">Search</button>
+							<button onClick={search} id="search_button">Search</button>
 						</div>
 
 					</div>
 
 					<Search_recommendations/>
 
-					{search_query &&
-						<Search_results_packs search_query={search_query}/>
-					} 
-					
+					<AnimatePresence exitBeforeEnter>
+						{search_query &&
+							<motion.div exit={{opacity: 0, transition: {duration: .2}}}>
+								<Search_results_packs search_query={search_query}/>
+							</motion.div>
+						} 
+					</AnimatePresence>
+
 					{!search_query &&
 						<div className='empty_container'>
 							<h1>It looks empty in here :(</h1>
@@ -92,7 +104,6 @@ function Search_recommendations() {
 	
 	const [expand_state, set_expand_state] = useState(false)
 	const expand_recommendations_animation = useAnimation()
-	const expand_icon_animation = useAnimation()
 
 	useEffect(() => {
 		const icon = document.getElementById("expand_icon") as HTMLElement
@@ -146,12 +157,11 @@ function Search_recommendations() {
 }
 
 function Recommendation({name}: {name: string}) {
-	const set_search_query: any = useContext(search_context)
-
+	const search_c: any = useContext(search_context)
 	
 	return(
 		<>
-			<div onClick={() => {set_search_query(name)}} className='grid_item'>
+			<div onClick={() => {search_c.set_input_value(name); search_c.search()}} className='grid_item'>
 				<p>{capitalize_first_letter_rest_lowercase(name)}</p>
 			</div>
 		</>

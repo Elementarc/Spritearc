@@ -23,11 +23,14 @@ import { format_date } from "../lib/date_lib";
 
 export default function Navigation(): ReactElement {
     const Device = useContext(Device_context)
-    
+    const Navigation: any = useContext(Navigation_context)
+    const APP: App_context = useContext(APP_CONTEXT)
+    const Auth: any = useContext(Auth_context)
+
     return(
         <>
             {Device.is_mobile === false &&
-                <Navigation_desktop key="Navigation_desktop"/>
+                <Navigation_desktop key="Navigation_desktop" Navigation={Navigation} APP={APP} Auth={Auth}/>
             }
             {Device.is_mobile === true &&
                <Navigation_mobile key="Navigation_mobile"/>
@@ -44,12 +47,11 @@ export function Nav_shadow(): ReactElement {
 }
 
 //Navigation Component for Desktop
-function Navigation_desktop(): ReactElement {
-    const Navigation: any = useContext(Navigation_context)
-    const APP: App_context = useContext(APP_CONTEXT)
+const Navigation_desktop = React.memo((props: {Navigation: any, APP: any, Auth: any}) => {
+    const Navigation: any = props.Navigation
+    const APP: App_context = props.APP
     const nav_content_container_animations = useAnimation()
-    const Auth: any = useContext(Auth_context)
-    const user = Auth.user as any
+    const user = props.Auth.user as any
     
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
@@ -126,8 +128,6 @@ function Navigation_desktop(): ReactElement {
         items_container.addEventListener("scroll" , set_shadow)
     }, [])
 
-    
-
     return (
         <motion.nav className="nav_container_desktop" id="nav_container">
             <motion.div animate={nav_content_container_animations} className="content_container" id="content_container">
@@ -184,7 +184,7 @@ function Navigation_desktop(): ReactElement {
             </motion.div>
         </motion.nav>
     )
-}
+})
 
 //Navigation Component for Mobile
 function Navigation_mobile(): ReactElement {

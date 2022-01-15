@@ -1,12 +1,9 @@
 import React, {useContext, useEffect} from 'react';
-import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
-import { MongoClient } from 'mongodb';
-import { ObjectId } from 'mongodb';
 
 
-export default function Verify_account(props: any) {
+export default function Verify_account() {
     const App_notification: any = useContext(App_notification_context)
     const router = useRouter()
 

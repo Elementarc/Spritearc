@@ -11,7 +11,7 @@ import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_n
 import { Nav_shadow } from '../components/navigation';
 import { Public_user } from '../types';
 
-export default function Login_page(props: any) {
+export default function Login_page() {
     const [loading, set_loading] = useState(false)
     
     const App_notification: any = useContext(App_notification_context)

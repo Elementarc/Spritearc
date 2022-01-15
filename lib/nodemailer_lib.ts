@@ -27,7 +27,7 @@ export function send_email_verification(to_email: string, content: string): Prom
                 subject: "Please confirm your E-mail!", // Subject line
                 text: content, // plain text body
         
-            }, (err: any, info: any) => {
+            }, (err: any) => {
                 console.log(err)
                 
                 if(err) resolve(false)

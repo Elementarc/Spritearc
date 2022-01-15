@@ -1,5 +1,5 @@
 import { MongoClient, ObjectId } from 'mongodb';
-import { Public_user, User, User_with_id } from '../types';
+import { Public_user, User } from '../types';
 import { Pack } from '../types';
 import { SHA256 } from 'crypto-js';
 import { send_email_verification } from './nodemailer_lib';
@@ -171,7 +171,7 @@ export async function delete_pack(pack_id: ObjectId, signed_user: Public_user): 
         if(!pack) return false
         if(signed_user.username === pack.username || user.role === "admin") {
             //Deleting pack
-            const delete_results = await packs_collection.deleteOne({_id: pack_id})
+            await packs_collection.deleteOne({_id: pack_id})
 
             //Updating released_packs from user Obj
             const users_collection = client.db(DATABASE).collection("users")
@@ -465,7 +465,7 @@ export async function verify_user_account(token: string): Promise<string|number>
         if(user_found.length === 0) return "Did not find account to verify"
 
         //user found & verifieng user
-        user_collection.updateOne({_id: new ObjectId(found_token.user_id)}, {$set: {verified: true}}, async(err, mres) => {
+        user_collection.updateOne({_id: new ObjectId(found_token.user_id)}, {$set: {verified: true}}, async(err) => {
             if( err ) throw err;
         })
 
@@ -538,6 +538,37 @@ export async function validate_user_credentials(email: string, password: string)
     }
 }
 
+export async function rate_pack(pack_id: string, rating: number, username: string) {
+
+    try {
+
+        await client.connect()
+
+        const packs_collection = client.db(DATABASE).collection("packs")
+        const pack = (await packs_collection.findOne({_id: new ObjectId(pack_id)}) as unknown) as Pack | null
+
+        if(!pack) return "Couldnt find pack to rate"
+
+        let user_already_rated = false
+        for(let rating of pack.ratings) {
+            
+            if(rating.user.toLowerCase() === username.toLowerCase()) {
+                user_already_rated = true
+                break
+            }
+        }
+        console.log(user_already_rated)
+        if(user_already_rated) return "Already rated this pack"
+        //User can rate
+        await packs_collection.updateOne({_id: new ObjectId(pack_id)}, {$push: {ratings: {user: username, rating: rating}}})
+
+        return {success: true, message: "Successfully added rating to pack"}
+    } catch(err) {
+        console.log(err)
+        return "Something went wrong while trying to rate a pack"
+    }
+    
+}
 export async function report_pack(pack_id: string, reason: string): Promise<string | boolean> {
     
     try {

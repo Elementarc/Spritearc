@@ -1,5 +1,5 @@
 import React, {useContext, useEffect} from 'react';
-import {AnimatePresence, motion} from "framer-motion"
+import {motion} from "framer-motion"
 import { APP_CONTEXT } from './layout';
 
 export default function Fixed_app_content_overlay({children}: any) {

@@ -196,3 +196,12 @@ export function validate_username(username: string): boolean | string {
     }
     
 }
+
+export function validate_pack_report_reason(reason: string) {
+    const report_input_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\_?! ]{25,250}$/)
+
+    const valid_reason = report_input_regex.test(reason)
+
+    if(!valid_reason) return false
+    return true
+}

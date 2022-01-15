@@ -100,7 +100,7 @@ export default function Auth_context_provider({children}: any) {
     }
 
     return (
-        <Auth_context.Provider value={Auth}>
+        <Auth_context.Provider value={{user, dispatch_user}}>
             {children}
         </Auth_context.Provider>
     );

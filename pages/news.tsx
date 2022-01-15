@@ -5,7 +5,6 @@ import Router from "next/router"
 import Footer from '../components/footer';
 import { Nav_shadow } from "../components/navigation";
 import { useEffect } from 'react';
-import { GetServerSideProps} from 'next'
 import { Patchnote } from '../types';
 import { formatDistanceStrict } from "date-fns"
 import { useParallax } from '../lib/custom_hooks';
@@ -180,9 +179,8 @@ function Patchnote_template(props: {patchnote: Patchnote}): ReactElement{
 
 import patchHandler from "../lib/patch_lib"
 import { GetStaticProps } from 'next';
-import { GetStaticPaths } from 'next';
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getStaticProps: GetStaticProps = async () => {
 	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
 	
 	return {

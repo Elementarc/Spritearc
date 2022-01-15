@@ -24,11 +24,13 @@ export default function MyApp({ Component, pageProps}: any) {
                 <meta name="theme-color" content="#111F35" />
             </Head>
             
-            <Auth_context_provider>
-                <Layout >
-                    <Component {...pageProps}/>
-                </Layout>
-            </Auth_context_provider>
+            <React.StrictMode>
+                <Auth_context_provider>
+                    <Layout >
+                        <Component {...pageProps}/>
+                    </Layout>
+                </Auth_context_provider>
+            </React.StrictMode>
         </>
     )
 }

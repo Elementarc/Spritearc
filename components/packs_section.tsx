@@ -1,6 +1,5 @@
-import React, {ReactElement, useState, useEffect} from 'react';
+import React, { useState, useEffect} from 'react';
  import { Pack } from '../types';
-import Link from 'next/link';
 import Pack_preview from './pack_preview';
 import Loader from './loading';
 
