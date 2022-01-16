@@ -7,6 +7,7 @@ const client = new MongoClient("mongodb://localhost:27017")
 const DATABASE = "pixels"
 
 const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
+const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
 //Function that returns a public user obj from db. Null if given username wasnt found
 export async function get_public_user(username: string): Promise<Public_user | null> {
 
@@ -199,6 +200,23 @@ export async function update_user_profile_picture(public_user: Public_user, file
 
         const response = await user_collection.updateOne({username: public_user.username}, {$set: {profile_picture: filename.toLowerCase()}})
         
+        return response.acknowledged
+        
+    } catch(err) {
+        console.log(err)
+        return false
+    }
+}
+
+export async function update_user_profile_banner(public_user: Public_user, filename: string): Promise<boolean> {
+    console.log("Updating user banner")
+    try {
+        await client.connect()
+
+        const user_collection = client.db(DATABASE).collection("users")
+
+        const response = await user_collection.updateOne({username: public_user.username}, {$set: {profile_banner: filename.toLowerCase()}})
+        console.log(response)
         return response.acknowledged
         
     } catch(err) {
@@ -585,6 +603,7 @@ export async function rate_pack(pack_id: string, rating: number, username: strin
     }
     
 }
+
 export async function report_pack(pack_id: string, reason: string): Promise<string | boolean> {
     
     try {

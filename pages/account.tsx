@@ -45,7 +45,7 @@ export default function Account_page(props: {user: Public_user}) {
         get_profile_upload_input.onchange = async(e: any) => {
 
             const form = new FormData()
-            form.set("profile_image", e.target.files[0], `profile_picture.${e.target.files[0].type.split("/")[1]}`)
+            form.set("file", e.target.files[0])
 
             const response = await fetch("/user/change_profile_image", {
                 method: "POST",
@@ -53,14 +53,34 @@ export default function Account_page(props: {user: Public_user}) {
             })
 
             if(response.status === 200) {
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile picture", message: "Please relog to see your changes. Other people will already see your new profile picture!", button_label: "Great"}})
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile picture", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
             } else {
                 App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
             }
         }
     }, [])
 
-    console.log(user.profile_picture)
+    useEffect(() => {
+        const get_profile_upload_input = document.getElementById("input_profile_banner") as HTMLInputElement
+        console.log(get_profile_upload_input)
+        get_profile_upload_input.onchange = async(e: any) => {
+            console.log(e.target.files[0])
+            const form = new FormData()
+            form.set("file", e.target.files[0])
+
+            const response = await fetch("/user/change_profile_banner", {
+                method: "POST",
+                body: form
+            })
+
+            if(response.status === 200) {
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile banner", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
+            } else {
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
+            }
+        }
+    }, [])
+
     return (
         <div className='account_page'>
             
@@ -68,23 +88,26 @@ export default function Account_page(props: {user: Public_user}) {
                 <Nav_shadow/>
                 <div className='user_preview_container'>
 
-                    <div className='image_container'>
-                        <Image priority={true} id="profile_banner" src={`/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                    <div className='profile_banner_container'>
+                        <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
                         <div className='blur' />
+
+                        <div className='profile_banner_hover_container'>
+                            <EditIcon/>
+                            <input id="input_profile_banner" type="file" accept="image/png, image/jpeg, image/jpg"/>
+                        </div>
                     </div>
                     
                     <div className='user_portrait_container'>
-                    
                         
-                            <div className='portrait'>
-                                <Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
-                            
-                                <div className='portrait_hover_container'>
-                                    <EditIcon/>
-                                    <input id="input_profile_picture" type="file" accept="image/png, image/jpeg, image/jpg"/>
-                                </div>
+                        <div className='portrait'>
+                            <Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                        
+                            <div className='portrait_hover_container'>
+                                <EditIcon/>
+                                <input id="input_profile_picture" type="file" accept="image/png, image/jpeg, image/jpg"/>
                             </div>
-
+                        </div>
                             
                     </div>
                 </div>

@@ -2,7 +2,7 @@ import express from "express"
 import {parse} from "url"
 import next from "next"
 import { create_number_from_page_query } from "../lib/custom_lib"
-import { create_user, add_pack_to_user, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture } from "../lib/mongo_lib"
+import { create_user, add_pack_to_user, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner } from "../lib/mongo_lib"
 import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file, validate_pack_report_reason, validate_profile_image } from "../lib/validate_lib"
 import cookieParser from "cookie-parser"
 import jwt from "jsonwebtoken"
@@ -366,9 +366,10 @@ async function main() {
         return res.status(200).send(JSON.stringify({user: user.username, rating: rating}))
     })
     server.post("/user/change_profile_image", async(req: any, res) =>{
-        
+        const directory = "./dynamic_public/profile_pictures"
+        console.log("Changing profile image")
         try {
-            const files_dir = fs.readdirSync("./dynamic_public/profile_pictures")
+            const files_dir = fs.readdirSync(directory)
             const files_length = files_dir.length + 1
             const form = new formidable.IncomingForm({maxFileSize: 1000 * 1024, allowEmptyFiles: false});
             
@@ -377,8 +378,9 @@ async function main() {
                 const valid_profile_file = validate_profile_image(file)
                 if(typeof valid_profile_file === "string") return
                 if(!file.mimetype) return
-                console.log(file.size)
-                file.filepath = `./dynamic_public/profile_pictures/profile_${files_length}.${file.mimetype.split("/")[1]}`
+                
+
+                file.filepath = `${directory}/${req.user.username.toLowerCase()}.${file.mimetype.split("/")[1]}`
             })
 
             try {
@@ -389,15 +391,15 @@ async function main() {
                         form.parse(req, async(err, fields, files) => {
                             if(err) return reject(err);
         
-                            const file = files.profile_image as Formidable_file | null
+                            const file = files.file as Formidable_file | null
                             if(!file) return resolve(false)
                             if(!file.mimetype) return resolve(false)
         
                             const valid_profile_file = validate_profile_image(file)
                             if(typeof valid_profile_file === "string") return resolve(false)
         
-                            console.log(files_length)
-                            const updated_response = await update_user_profile_picture(req.user as Public_user, `profile_${files_length}.${file.mimetype.split("/")[1]}`)
+                            
+                            const updated_response = await update_user_profile_picture(req.user as Public_user, `${req.user.username.toLowerCase()}.${file.mimetype.split("/")[1]}`)
                             
                             resolve(true)
                         })
@@ -417,7 +419,60 @@ async function main() {
         }
         
     })
+    server.post("/user/change_profile_banner", async(req: any, res) =>{
+        const directory = "./dynamic_public/profile_banners"
+        console.log("Changing profile banner")
+        try {
+            const files_dir = fs.readdirSync(directory)
+            const files_length = files_dir.length + 1
+            const form = new formidable.IncomingForm({maxFileSize: 1000 * 1024, allowEmptyFiles: false});
+            
+            form.on("fileBegin", (key, file) => {
+                
+                const valid_profile_file = validate_profile_image(file)
+                if(typeof valid_profile_file === "string") return
+                if(!file.mimetype) return
+                
+
+                file.filepath = `${directory}/${req.user.username.toLowerCase()}.${file.mimetype.split("/")[1]}`
+            })
+
+            try {
+
+                await new Promise((resolve,reject) => {
+                    try {
     
+                        form.parse(req, async(err, fields, files) => {
+                            if(err) return reject(err);
+        
+                            const file = files.file as Formidable_file | null
+                            if(!file) return resolve(false)
+                            if(!file.mimetype) return resolve(false)
+        
+                            const valid_profile_file = validate_profile_image(file)
+                            if(typeof valid_profile_file === "string") return resolve(false)
+        
+                            console.log("TEst")
+                            const updated_response = await update_user_profile_banner(req.user as Public_user, `${req.user.username.toLowerCase()}.${file.mimetype.split("/")[1]}`)
+                            
+                            resolve(true)
+                        })
+    
+                    } catch( err ) {
+                        console.log(err)
+                    }
+                })
+                
+                res.status(200).send({success:true, message: "Successfully changed profile picture"})
+            } catch(err) {
+                res.status(400).send({success: false, message: "Something went wrong while trying to upload your profile picture."})
+            }
+            
+        } catch( err ) {
+            console.log(err)
+        }
+        
+    })
     //Login
     server.post("/login", async(req, res) => {
         const cookies = req.cookies
