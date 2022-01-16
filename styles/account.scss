@@ -70,6 +70,9 @@
                     img {
                         object-fit: cover;
                         object-position: center;
+                        image-rendering: pixelated;
+                        image-rendering: -moz-crisp-edges;
+                        image-rendering: crisp-edges;
                     }
 
                     .portrait_hover_container{

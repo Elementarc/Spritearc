@@ -55,7 +55,7 @@ export default function Account_page(props: {user: Public_user}) {
             if(response.status === 200) {
                 App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile picture", message: "Please relog to see your changes. Other people will already see your new profile picture!", button_label: "Great"}})
             } else {
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Something went wrong!", message: "We couldn't upload your profile picture. Please relog and try again.", button_label: "Ok"}})
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
             }
         }
     }, [])

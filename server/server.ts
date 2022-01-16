@@ -101,7 +101,7 @@ async function main() {
         
         try {
             //Handles multiple files form.
-            const form = new formidable.IncomingForm({multiples: true});
+            const form = new formidable.IncomingForm({multiples: true, maxFileSize: 150 * 1024, allowEmptyFiles: false});
             
             //Event that validates & creates files in the correct directory with the correct strutcure based of the pack content
             form.on("fileBegin", (section_name, file) => {
@@ -152,155 +152,156 @@ async function main() {
              
             })
             
-            //Function that creates a database entry
-            function enter_pack_to_db(): Promise<boolean | string> {
-                return new Promise((resolve, reject) => {
+            try{
 
-                    //Parsing FromData Files & Fields
-                    form.parse(req, async(err, fields, files) => {
-                        if(err) return reject(err);
-                        
-                        async function handle_body() {
+                await new Promise((resolve, reject) => {
+
+                    try {
+                        //Parsing FromData Files & Fields
+                        form.parse(req, async(err, fields, files) => {
+                            if(err) return reject(err);
                             
-                            try {
-
-                                if(! fields.title) throw new Error("No Title found!")
-                                if(! fields.description) throw new Error("No Description found!")
-                                if(! fields.tags) throw new Error("No Tags found!")
-                                if(! fields.license) throw new Error("No License found!")
-                                if(! files.preview ) throw new Error("No preview file found!")
-
+                            async function handle_body() {
                                 
-                                if(typeof fields.title !== "string") throw new Error("Only 1 title allowed!")
-                                if(typeof fields.description !== "string") throw new Error("Only 1 description allowed!")
-                                if(typeof fields.tags !== "string") throw new Error("Only 1 tag key allowed!")
-                                if(typeof fields.license !== "string") throw new Error("Only 1 license allowed!")
-                                if(Array.isArray(files.preview)) throw new Error("Only 1 preview allowed!")
-                                //Validated body
-
-                                const preview_file: any = files.preview
-                                const tags = (()=> {
-                                    try {
-
-                                        let tags_none_json = (JSON.parse(fields.tags as string)as string[])
-                                        let new_tags = []
-
-                                        for(let tag of tags_none_json) {
-                                            new_tags.push(tag.toLowerCase())
-                                        } 
-
-                                        return new_tags
-
-                                    } catch ( err ) {
-                                        return null
-                                    }
+                                try {
+    
+                                    if(! fields.title) throw new Error("No Title found!")
+                                    if(! fields.description) throw new Error("No Description found!")
+                                    if(! fields.tags) throw new Error("No Tags found!")
+                                    if(! fields.license) throw new Error("No License found!")
+                                    if(! files.preview ) throw new Error("No preview file found!")
+    
                                     
-                                })();
-
-                                if(!tags) throw new Error("Please use a valid JSON Form")
-
-                                const pack_files = files as unknown
-                                
-                                const valid_files = validate_formidable_files(pack_files as Formidable_files)
-                                const valid_title = validate_pack_title(fields.title as string)
-                                const valid_description = validate_pack_description(fields.description as string)
-                                const valid_license = validate_license(fields.license as string)
-                                const valid_tags = validate_pack_tags(tags)
-                                
-                                if(typeof valid_files === "string") throw new Error(`${valid_files}`)
-                                if(typeof valid_title === "string") throw new Error(`${valid_title}`)
-                                if(typeof valid_description === "string") throw new Error(`${valid_description}`)
-                                if(typeof valid_tags === "string") throw new Error(`${valid_tags}`)
-                                if(typeof valid_license === "string") throw new Error(`${valid_license}`)
-                                //Passed validations
-                                
-                                //Array that will be the content of a pack.
-                                let pack_content: Pack_content[] = []
-                                
-                                //Checking how many props files obj has
-                                let object_props = 0
-                                for(let key in files) {
-                                    object_props ++
-                                }
-
-                                if(object_props < 2) throw new Error("Object has not enough sections")
-                                //Looping through FormData Obj Files.
-
-                                for(let key in files) {
-                                    
-                                    //Checkign if object has preview property.
-                                    const has_preview = files.hasOwnProperty("preview")
-                                    if(!has_preview) throw new Error("Couldn't find preview file")
-
-                                    const valid_section_name = validate_pack_section_name(key)
-
-                                    if(typeof valid_section_name === "string") throw new Error("Sectionname didnt pass validations")
-
-                                    
-                                    //Logic for sections besides preview.
-                                    if(key.toLocaleLowerCase() !== "preview") {
-
-                                        //Creating an array with directories to specific file in the public folder.
-                                        const section_images: string[] = []
-
-                                        const files_arr: any = files[key]
-                                        
-                                        if(files_arr.length < 1) throw new Error("Pack needs to have atleast 1 assets!")
-                                        //Looping through files of specific object property
-                                        
-                                        for(let file of files[key] as any) {
-
-                                            section_images.push(`${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`)
+                                    if(typeof fields.title !== "string") throw new Error("Only 1 title allowed!")
+                                    if(typeof fields.description !== "string") throw new Error("Only 1 description allowed!")
+                                    if(typeof fields.tags !== "string") throw new Error("Only 1 tag key allowed!")
+                                    if(typeof fields.license !== "string") throw new Error("Only 1 license allowed!")
+                                    if(Array.isArray(files.preview)) throw new Error("Only 1 preview allowed!")
+                                    //Validated body
+    
+                                    const preview_file: any = files.preview
+                                    const tags = (()=> {
+                                        try {
+    
+                                            let tags_none_json = (JSON.parse(fields.tags as string)as string[])
+                                            let new_tags = []
+    
+                                            for(let tag of tags_none_json) {
+                                                new_tags.push(tag.toLowerCase())
+                                            } 
+    
+                                            return new_tags
+    
+                                        } catch ( err ) {
+                                            return null
                                         }
-
-                                        //Pushing content to pack_content arr. that will be used
-                                        pack_content.push({
-                                            section_name: key.toLowerCase(),
-                                            section_images: section_images
-                                        })
+                                        
+                                    })();
+    
+                                    if(!tags) throw new Error("Please use a valid JSON Form")
+    
+                                    const pack_files = files as unknown
+                                    
+                                    const valid_files = validate_formidable_files(pack_files as Formidable_files)
+                                    const valid_title = validate_pack_title(fields.title as string)
+                                    const valid_description = validate_pack_description(fields.description as string)
+                                    const valid_license = validate_license(fields.license as string)
+                                    const valid_tags = validate_pack_tags(tags)
+                                    
+                                    if(typeof valid_files === "string") throw new Error(`${valid_files}`)
+                                    if(typeof valid_title === "string") throw new Error(`${valid_title}`)
+                                    if(typeof valid_description === "string") throw new Error(`${valid_description}`)
+                                    if(typeof valid_tags === "string") throw new Error(`${valid_tags}`)
+                                    if(typeof valid_license === "string") throw new Error(`${valid_license}`)
+                                    //Passed validations
+                                    
+                                    //Array that will be the content of a pack.
+                                    let pack_content: Pack_content[] = []
+                                    
+                                    //Checking how many props files obj has
+                                    let object_props = 0
+                                    for(let key in files) {
+                                        object_props ++
+                                    }
+    
+                                    if(object_props < 2) throw new Error("Object has not enough sections")
+                                    //Looping through FormData Obj Files.
+    
+                                    for(let key in files) {
+                                        
+                                        //Checkign if object has preview property.
+                                        const has_preview = files.hasOwnProperty("preview")
+                                        if(!has_preview) throw new Error("Couldn't find preview file")
+    
+                                        const valid_section_name = validate_pack_section_name(key)
+    
+                                        if(typeof valid_section_name === "string") throw new Error("Sectionname didnt pass validations")
+    
+                                        
+                                        //Logic for sections besides preview.
+                                        if(key.toLocaleLowerCase() !== "preview") {
+    
+                                            //Creating an array with directories to specific file in the public folder.
+                                            const section_images: string[] = []
+    
+                                            const files_arr: any = files[key]
+                                            
+                                            if(files_arr.length < 1) throw new Error("Pack needs to have atleast 1 assets!")
+                                            //Looping through files of specific object property
+                                            
+                                            for(let file of files[key] as any) {
+    
+                                                section_images.push(`${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`)
+                                            }
+    
+                                            //Pushing content to pack_content arr. that will be used
+                                            pack_content.push({
+                                                section_name: key.toLowerCase(),
+                                                section_images: section_images
+                                            })
+                                            
+                                        }
                                         
                                     }
+    
+                                    //Creating a pack obj. That will be created in database
+                                    const pack: Pack = {
+                                        _id: id,
+                                        username: public_user.username,
+                                        preview: `preview.${preview_file.mimetype.split("/")[1].toLowerCase()}`,
+                                        title: fields.title as string,
+                                        description: fields.description as string,
+                                        license: fields.license as string,
+                                        date: new Date(),
+                                        tags: tags,
+                                        downloads: 0,
+                                        content: pack_content,
+                                        ratings: []
+                                    } 
+    
+                                    //Creating database entry for a pack.
+                                    await add_pack_to_user(pack)
                                     
+                                    //create_user_pack()
+                                    
+                                    resolve(true)
+    
+                                } catch( err ) {
+                                    return reject(err)
                                 }
-
-                                //Creating a pack obj. That will be created in database
-                                const pack: Pack = {
-                                    _id: id,
-                                    username: public_user.username,
-                                    preview: `preview.${preview_file.mimetype.split("/")[1].toLowerCase()}`,
-                                    title: fields.title as string,
-                                    description: fields.description as string,
-                                    license: fields.license as string,
-                                    date: new Date(),
-                                    tags: tags,
-                                    downloads: 0,
-                                    content: pack_content,
-                                    ratings: []
-                                } 
-
-                                //Creating database entry for a pack.
-                                await add_pack_to_user(pack)
-                                
-                                //create_user_pack()
-                                
-                                resolve(true)
-
-                            } catch( err ) {
-                                return reject(err)
                             }
-                        }
-
-                        await handle_body()
-                    })
-                    
-
+    
+                            await handle_body()
+                        })
+                    } catch(err) {
+                        console.log(err)
+                    }
                 })
+                res.status(200).send({success: true, message: "Successfully created a pack!", pack_id: id})
+            } catch(err) {
+                console.log(err)
+                res.status(500).send("Something went wrong while trying to create your pack! Sorry")
             }
-            
-            const enter_pack_response = await enter_pack_to_db()
-            
-            if(typeof enter_pack_response === "string") return res.status(500).send("Something went wrong while trying to create your pack! Sorry")
-            res.status(200).send({success: true, message: "Successfully created a pack!", pack_id: id})
 
         } catch (err) {
             const error: any = err
@@ -368,34 +369,49 @@ async function main() {
         
         try {
             const files_dir = fs.readdirSync("./dynamic_public/profile_pictures")
-            const form = new formidable.IncomingForm();
-
+            const files_length = files_dir.length + 1
+            const form = new formidable.IncomingForm({maxFileSize: 1000 * 1024, allowEmptyFiles: false});
+            
             form.on("fileBegin", (key, file) => {
+                
                 const valid_profile_file = validate_profile_image(file)
-
                 if(typeof valid_profile_file === "string") return
                 if(!file.mimetype) return
-                file.filepath = `./dynamic_public/profile_pictures/profile_${files_dir.length + 1}.${file.mimetype.split("/")[1]}`
-                console.log(files_dir.length + 1)
+                console.log(file.size)
+                file.filepath = `./dynamic_public/profile_pictures/profile_${files_length}.${file.mimetype.split("/")[1]}`
             })
 
-            const response = await new Promise((resolve) => {
-                form.parse(req, async(err, fields, files) => {
-                    if(err) throw err;
-                    const file = files.profile_image as Formidable_file | null
-                    if(!file) return resolve(false)
-                    if(!file.mimetype) return resolve(false)
-                    const valid_profile_file = validate_profile_image(file)
-                    
-                    if(typeof valid_profile_file === "string") return resolve(false)
-                    await update_user_profile_picture(req.user as Public_user, `profile_${files_dir.length + 1}.${file.mimetype.split("/")[1]}`)
-                    resolve(true)
+            try {
+
+                await new Promise((resolve,reject) => {
+                    try {
+    
+                        form.parse(req, async(err, fields, files) => {
+                            if(err) return reject(err);
+        
+                            const file = files.profile_image as Formidable_file | null
+                            if(!file) return resolve(false)
+                            if(!file.mimetype) return resolve(false)
+        
+                            const valid_profile_file = validate_profile_image(file)
+                            if(typeof valid_profile_file === "string") return resolve(false)
+        
+                            console.log(files_length)
+                            const updated_response = await update_user_profile_picture(req.user as Public_user, `profile_${files_length}.${file.mimetype.split("/")[1]}`)
+                            
+                            resolve(true)
+                        })
+    
+                    } catch( err ) {
+                        console.log(err)
+                    }
                 })
-            })
-
-            if(!response) return res.status(200).send({success: false, message: "Something went wrong while trying to upload your profile picture."})
+                
+                res.status(200).send({success:true, message: "Successfully changed profile picture"})
+            } catch(err) {
+                res.status(400).send({success: false, message: "Something went wrong while trying to upload your profile picture."})
+            }
             
-            res.status(200).send({success:true, message: "Successfully changed profile picture"})
         } catch( err ) {
             console.log(err)
         }

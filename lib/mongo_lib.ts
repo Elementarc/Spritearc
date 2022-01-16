@@ -197,15 +197,16 @@ export async function update_user_profile_picture(public_user: Public_user, file
 
         const user_collection = client.db(DATABASE).collection("users")
 
-        await user_collection.updateOne({username: public_user.username}, {$set: {profile_picture: filename.toLowerCase()}})
-
-        return true
+        const response = await user_collection.updateOne({username: public_user.username}, {$set: {profile_picture: filename.toLowerCase()}})
+        
+        return response.acknowledged
         
     } catch(err) {
         console.log(err)
         return false
     }
 }
+
 export async function get_pack(pack_id: ObjectId): Promise<Pack | null> {
 
     try {
