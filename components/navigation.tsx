@@ -393,7 +393,7 @@ function User_profile() {
 
                 <div onClick={() => {router.push("/account", "/account", {scroll: false}); Navigation.set_nav_state(false)}} className="portrait portrait_target" id="nav_user_portrait">
                     <div className="portrait_image">
-                        <Image priority={true} src={`/profile_pictures/${user.profile_picture}`} layout="fill"/>
+                        <Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_pictures/${user.profile_picture}`} layout="fill"/>
                     </div>
                     
 

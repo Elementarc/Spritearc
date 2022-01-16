@@ -21,7 +21,7 @@ export default function Profile(props: {public_user: any}) {
                 <div className='user_preview_container'>
 
                     <div className='image_container'>
-                        <Image priority={true} id="profile_banner" src={`/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+                        <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
                         <div className='blur' />
 
                         
@@ -33,7 +33,7 @@ export default function Profile(props: {public_user: any}) {
 
                             <div className='portrait'>
                                 
-                                <Image priority={true} src={`/profile_pictures/${public_user.profile_picture}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+                                <Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_pictures/${public_user.profile_picture}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
 
                             </div>
 

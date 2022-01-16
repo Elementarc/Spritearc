@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import jwt from 'jsonwebtoken';
 import { Public_user } from '../types';
 import Footer from '../components/footer';
@@ -14,8 +14,14 @@ import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 import { Auth_context } from '../context/auth_context_provider';
 import { Nav_shadow } from '../components/navigation';
 import { useParallax } from '../lib/custom_hooks';
+import EditIcon from "../public/icons/EditIcon.svg"
+import { App_notification_context } from '../context/app_notification_context_provider';
+import { NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
+
 export default function Account_page(props: {user: Public_user}) {
+    
     const user = props.user
+    const App_notification: any = useContext(App_notification_context)
     const router = useRouter()
     function go_to(path: string) {
         router.push(path, path, {scroll: false})
@@ -32,6 +38,29 @@ export default function Account_page(props: {user: Public_user}) {
     }
 
     useParallax("profile_banner")
+
+    useEffect(() => {
+        const get_profile_upload_input = document.getElementById("input_profile_picture") as HTMLInputElement
+       
+        get_profile_upload_input.onchange = async(e: any) => {
+
+            const form = new FormData()
+            form.set("profile_image", e.target.files[0], `profile_picture.${e.target.files[0].type.split("/")[1]}`)
+
+            const response = await fetch("/user/change_profile_image", {
+                method: "POST",
+                body: form
+            })
+
+            if(response.status === 200) {
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile picture", message: "Please relog to see your changes. Other people will already see your new profile picture!", button_label: "Great"}})
+            } else {
+                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Something went wrong!", message: "We couldn't upload your profile picture. Please relog and try again.", button_label: "Ok"}})
+            }
+        }
+    }, [])
+
+    console.log(user.profile_picture)
     return (
         <div className='account_page'>
             
@@ -45,11 +74,18 @@ export default function Account_page(props: {user: Public_user}) {
                     </div>
                     
                     <div className='user_portrait_container'>
+                    
+                        
+                            <div className='portrait'>
+                                <Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                            
+                                <div className='portrait_hover_container'>
+                                    <EditIcon/>
+                                    <input id="input_profile_picture" type="file" accept="image/png, image/jpeg, image/jpg"/>
+                                </div>
+                            </div>
 
-                        <div className='portrait'>
-                            <Image priority={true} src={`/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
-                        </div>
-
+                            
                     </div>
                 </div>
 

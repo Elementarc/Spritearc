@@ -1,4 +1,4 @@
-import { useAnimation, motion, AnimatePresence } from 'framer-motion';
+import { useAnimation, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import React, {useState, useEffect, useContext} from 'react';
 import Footer from '../components/footer';
@@ -6,7 +6,6 @@ import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
-import Router from 'next/router';
 const search_context: any = React.createContext(null)
 
 export default function Search_page() {
@@ -70,13 +69,9 @@ export default function Search_page() {
 
 					<Search_recommendations/>
 
-					<AnimatePresence exitBeforeEnter>
-						{search_query &&
-							<motion.div exit={{opacity: 0, transition: {duration: .2}}}>
-								<Search_results_packs search_query={search_query}/>
-							</motion.div>
-						} 
-					</AnimatePresence>
+					{search_query &&
+						<Search_results_packs search_query={search_query}/>
+					} 
 
 					{!search_query &&
 						<div className='empty_container'>

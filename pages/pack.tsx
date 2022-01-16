@@ -488,7 +488,6 @@ const Rate_pack = React.memo((props: {user: Public_user | null, set_prev_pack_ra
             const user_rating = await response.json() as {user: string, rating: number}
             let updated_pack_ratings = [...prev_pack_ratings, {user: user_rating.user, rating: user_rating.rating}]
 
-            console.log("Success!")
             set_prev_pack_ratings(updated_pack_ratings)
         } else {
             console.log("Something went wrong!")

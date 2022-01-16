@@ -2,11 +2,11 @@ import express from "express"
 import {parse} from "url"
 import next from "next"
 import { create_number_from_page_query } from "../lib/custom_lib"
-import { create_user, create_user_pack, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack } from "../lib/mongo_lib"
-import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file, validate_pack_report_reason } from "../lib/validate_lib"
+import { create_user, add_pack_to_user, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture } from "../lib/mongo_lib"
+import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file, validate_pack_report_reason, validate_profile_image } from "../lib/validate_lib"
 import cookieParser from "cookie-parser"
 import jwt from "jsonwebtoken"
-import { Public_user , Pack, Pack_content, Formidable_files} from "../types"
+import { Public_user , Pack, Pack_content, Formidable_files, Formidable_file} from "../types"
 import cookie from "cookie"
 import { ObjectId } from "mongodb"
 import formidable from "formidable"
@@ -41,6 +41,7 @@ function with_auth(req:any, res: any, next: any) {
         
         //adding user property to req stream
         req.user = user as Public_user
+        req.token = cookies.user
         next()
     } catch ( err ) {
 
@@ -278,7 +279,7 @@ async function main() {
                                 } 
 
                                 //Creating database entry for a pack.
-                                await create_user_pack(pack)
+                                await add_pack_to_user(pack)
                                 
                                 //create_user_pack()
                                 
@@ -296,8 +297,9 @@ async function main() {
                 })
             }
             
-            await enter_pack_to_db()
+            const enter_pack_response = await enter_pack_to_db()
             
+            if(typeof enter_pack_response === "string") return res.status(500).send("Something went wrong while trying to create your pack! Sorry")
             res.status(200).send({success: true, message: "Successfully created a pack!", pack_id: id})
 
         } catch (err) {
@@ -361,6 +363,43 @@ async function main() {
         if(typeof response === "string") return res.status(400).send(response)
         console.log(user.username, rating)
         return res.status(200).send(JSON.stringify({user: user.username, rating: rating}))
+    })
+    server.post("/user/change_profile_image", async(req: any, res) =>{
+        
+        try {
+            const files_dir = fs.readdirSync("./dynamic_public/profile_pictures")
+            const form = new formidable.IncomingForm();
+
+            form.on("fileBegin", (key, file) => {
+                const valid_profile_file = validate_profile_image(file)
+
+                if(typeof valid_profile_file === "string") return
+                if(!file.mimetype) return
+                file.filepath = `./dynamic_public/profile_pictures/profile_${files_dir.length + 1}.${file.mimetype.split("/")[1]}`
+                console.log(files_dir.length + 1)
+            })
+
+            const response = await new Promise((resolve) => {
+                form.parse(req, async(err, fields, files) => {
+                    if(err) throw err;
+                    const file = files.profile_image as Formidable_file | null
+                    if(!file) return resolve(false)
+                    if(!file.mimetype) return resolve(false)
+                    const valid_profile_file = validate_profile_image(file)
+                    
+                    if(typeof valid_profile_file === "string") return resolve(false)
+                    await update_user_profile_picture(req.user as Public_user, `profile_${files_dir.length + 1}.${file.mimetype.split("/")[1]}`)
+                    resolve(true)
+                })
+            })
+
+            if(!response) return res.status(200).send({success: false, message: "Something went wrong while trying to upload your profile picture."})
+            
+            res.status(200).send({success:true, message: "Successfully changed profile picture"})
+        } catch( err ) {
+            console.log(err)
+        }
+        
     })
     
     //Login
@@ -561,8 +600,6 @@ async function main() {
             const packs_per_page = 8
             const user_search = req.params.search_query
             const page = req.query.page
-            const query = req.query
-            console.log(query)
             if(typeof user_search !== "string") return res.status(400).end()
             if(typeof page !== "string") return res.status(400).end()
 
@@ -612,7 +649,7 @@ async function main() {
             
             const title_pack: Pack | null = await get_title_pack()
             
-            if(!title_pack) res.status(500).end()
+            if(!title_pack) return res.status(500).end()
             
             if(!title_pack) return res.status(200).send({body: []})
 
@@ -673,10 +710,14 @@ async function main() {
 
     //App
     server.get("/", (req, res) => {
+        console.log("Got request /")
         app.render(req,res, "/index")
     })
     server.get("/news", (req,res) => {
         app.render(req,res, "/news")
+    })
+    server.get("/news/:patchId", (req:any,res) => {
+        app.render(req,res, "/news/patchId", req.params, req.parsed_url.query)
     })
     server.get("/browse", (req,res) => {
         app.render(req,res, "/browse")

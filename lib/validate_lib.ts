@@ -109,6 +109,29 @@ export function validate_single_formidable_file(file: Formidable_file): boolean 
 
 }
 
+export function validate_profile_image(file: Formidable_file): boolean | string {
+    
+    let passed_validation: boolean | string = false
+    
+    
+    //Checking if type of dropped files are jpg / png / jpeg
+    if(file.mimetype === "image/jpg" || file.mimetype === "image/png" || file.mimetype === "image/jpeg") {
+
+        if(file.size <= 1000000) {
+            passed_validation = true
+        } else {
+            passed_validation = `The file: '${file.originalFilename}' is to big! max. 1mb per file`
+        }
+
+    } else {
+
+        passed_validation = "Supported types: JPG, PNG, JPEG, GIF"
+    }
+
+    
+    return passed_validation
+
+}
 export function validate_pack_title(title: string): boolean | string {
     const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9 ]+)$/)
 

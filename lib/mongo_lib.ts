@@ -191,6 +191,21 @@ export async function delete_pack(pack_id: ObjectId, signed_user: Public_user): 
 
 }
 
+export async function update_user_profile_picture(public_user: Public_user, filename: string): Promise<boolean> {
+    try {
+        await client.connect()
+
+        const user_collection = client.db(DATABASE).collection("users")
+
+        await user_collection.updateOne({username: public_user.username}, {$set: {profile_picture: filename.toLowerCase()}})
+
+        return true
+        
+    } catch(err) {
+        console.log(err)
+        return false
+    }
+}
 export async function get_pack(pack_id: ObjectId): Promise<Pack | null> {
 
     try {
@@ -347,7 +362,7 @@ export async function create_user(user: User): Promise<string | boolean> {
     }
 }
 
-export async function create_user_pack(pack: Pack) {
+export async function add_pack_to_user(pack: Pack) {
 
     try {
 
