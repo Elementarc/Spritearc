@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next';
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import jwt from 'jsonwebtoken';
 import { Public_user } from '../types';
 import Footer from '../components/footer';
@@ -17,9 +17,12 @@ import { useParallax } from '../lib/custom_hooks';
 import EditIcon from "../public/icons/EditIcon.svg"
 import { App_notification_context } from '../context/app_notification_context_provider';
 import { NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
+import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
+import { AnimatePresence, motion } from 'framer-motion';
+import { validate_user_description } from '../lib/validate_lib';
 
 export default function Account_page(props: {user: Public_user}) {
-    
+    const [update_about_state, set_update_about_state] = useState(false)
     const user = props.user
     const App_notification: any = useContext(App_notification_context)
     const router = useRouter()
@@ -47,7 +50,7 @@ export default function Account_page(props: {user: Public_user}) {
             const form = new FormData()
             form.set("file", e.target.files[0])
 
-            const response = await fetch("/user/change_profile_image", {
+            const response = await fetch("/user/update_profile_image", {
                 method: "POST",
                 body: form
             })
@@ -68,7 +71,7 @@ export default function Account_page(props: {user: Public_user}) {
             const form = new FormData()
             form.set("file", e.target.files[0])
 
-            const response = await fetch("/user/change_profile_banner", {
+            const response = await fetch("/user/update_profile_banner", {
                 method: "POST",
                 body: form
             })
@@ -81,9 +84,58 @@ export default function Account_page(props: {user: Public_user}) {
         }
     }, [])
 
+    function event_valid_user_description(e: any) {
+        const valid_description = validate_user_description(e.target.value)
+        const get_description_error_message = document.getElementById("update_user_description_error_message") as HTMLParagraphElement
+        
+        if(typeof valid_description === "string") {
+            get_description_error_message.innerText = valid_description
+
+        } else {
+            get_description_error_message.innerText = ""
+        }
+    }
+
+    async function update_user_description() {
+        const get_description = document.getElementById("user_description_input") as HTMLInputElement
+
+        const response = await fetch("/user/update_user_description", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({description: get_description.value})
+        })
+
+        if(response.status === 200) {
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated description", message: "It might take a little bit to see your changes", button_label: "Great", callb: () => {set_update_about_state(false)}}})
+
+        } else {
+            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to update your description. Please try later or inform an admin.", button_label: "Ok", callb: () => {set_update_about_state(false)}}})
+
+        }
+    }
     return (
         <div className='account_page'>
             
+            <AnimatePresence>
+                {update_about_state &&
+                    
+                    <Fixed_app_content_overlay>
+                        <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}}  className='update_user_description_container'>
+
+                            <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: 0.1}}} exit={{scale: .8, transition: {duration: 0.1}}} className='update_user_description_box'>
+                                <h1>Tell us about yourself</h1>
+                                <input onKeyUp={event_valid_user_description} id="user_description_input" type="text" name="" placeholder={`${user.description}`}/>
+                                <p className='update_user_description_error_message' id="update_user_description_error_message"></p>
+                                <button onClick={update_user_description}>Ok</button>
+                            </motion.div>
+                            
+                            <div onClick={() => {set_update_about_state(false)}} className='update_user_description_background' />
+                        </motion.div>
+                    </Fixed_app_content_overlay>
+
+                }
+            </AnimatePresence>
+
             <div className='content'>
                 <Nav_shadow/>
                 <div className='user_preview_container'>
@@ -114,7 +166,21 @@ export default function Account_page(props: {user: Public_user}) {
 
                 <div className='user_info_container'>
                     <Link href={`/profile?user=${user.username.toLowerCase()}`} scroll={false}>{user.username}</Link>
-                    <p>{user.description}</p>
+
+                    <div className='user_description_container'>
+
+                        <div className='description_wrapper'>
+                            <p>{user.description}</p>
+                            
+                            <div className='svg_wrapper' onClick={() => {set_update_about_state(true)}} >
+                                <EditIcon/>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                    </div>
+
                 </div>
 
                 <div className='user_navigator_cards'>

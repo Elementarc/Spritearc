@@ -2,8 +2,8 @@ import express from "express"
 import {parse} from "url"
 import next from "next"
 import { create_number_from_page_query } from "../lib/custom_lib"
-import { create_user, add_pack_to_user, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner } from "../lib/mongo_lib"
-import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file, validate_pack_report_reason, validate_profile_image } from "../lib/validate_lib"
+import { create_user, add_pack_to_user, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner, update_user_about } from "../lib/mongo_lib"
+import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file, validate_pack_report_reason, validate_profile_image, validate_user_description } from "../lib/validate_lib"
 import cookieParser from "cookie-parser"
 import jwt from "jsonwebtoken"
 import { Public_user , Pack, Pack_content, Formidable_files, Formidable_file} from "../types"
@@ -100,13 +100,21 @@ async function main() {
         const public_user: Public_user = req.user
         
         try {
+            //Generator that is used for file names.
+            function* id_generator() {
+                let index = 0;
+
+                while(true) {
+                    yield index ++
+                }
+            }
+            const id_gen = id_generator()
             //Handles multiple files form.
             const form = new formidable.IncomingForm({multiples: true, maxFileSize: 150 * 1024, allowEmptyFiles: false});
             
             //Event that validates & creates files in the correct directory with the correct strutcure based of the pack content
             form.on("fileBegin", (section_name, file) => {
 
-                
                 //Validating file
                 const valid_file = validate_single_formidable_file(file)
                 const valid_section_name = validate_pack_section_name(section_name)
@@ -122,14 +130,20 @@ async function main() {
                     //Creating files in the correct sturcture.
                     if(section_name.toLowerCase() === "preview") {
 
-                        //Using given extention
-                        if(file.originalFilename?.includes(".")) {
-                            file.filepath = `${pack_directory}/preview.${file.originalFilename.split(".")[1]}`
-                        } else {
-                            //Creating extention
-                            file.filepath = `${pack_directory}/preview.${file.mimetype?.split("/")[1].toLowerCase()}`
+                        function upload_file() {
+                            if(!file.originalFilename) return
+                            if(file.originalFilename.split(".").length > 2) return
+
+                            //Using given extention
+                            if(file.originalFilename.includes(".")) {
+                                file.filepath = `${pack_directory}/preview.${file.originalFilename.split(".")[1]}`
+                            } else {
+                                //Creating extention
+                                file.filepath = `${pack_directory}/preview.${file.mimetype?.split("/")[1].toLowerCase()}`
+                            }
                         }
-                        
+
+                        upload_file()
     
                     } else {
                         
@@ -142,8 +156,15 @@ async function main() {
                             fs.mkdirSync(`${pack_directory}/${section_name}`)
                         }
                         
-                        //Creating file in given path.
-                        file.filepath = `${pack_directory}/${section_name.toLowerCase()}/${file.originalFilename?.toLowerCase()}.${file_extention}`
+                        function upload_file() {
+                            if(!file.originalFilename) return
+                            if(file.originalFilename.split(".").length > 2) return
+
+                            file.filepath = `${pack_directory}/${section_name.toLowerCase()}/${section_name.toLowerCase()}_${id_gen.next().value}.${file_extention}`
+                            
+                        }
+                        upload_file()
+                        
                     }
 
                 } else {
@@ -351,21 +372,28 @@ async function main() {
         
     })
     server.post("/user/rate_pack", async(req:any, res) => {
-        const {rating} = req.body as {rating: number} // 0 - 4
-        const pack_id = req.query.pack_id as string | string[] | undefined
-        const user = req.user as Public_user
-        if(rating <= 0) return res.status(400).end()
-        if(rating > 5) return res.status(400).end()
-        if(!pack_id) return res.status(400).end()
-        if(typeof pack_id !== "string") return res.status(400).end()
+        try {
+            const {rating} = req.body as {rating: number} // 0 - 4
+            const pack_id = req.query.pack_id as string | string[] | undefined
+            const user = req.user as Public_user
 
-        const response = await rate_pack(pack_id, rating, user.username) 
-        if(!response) return res.status(400).end()
-        if(typeof response === "string") return res.status(400).send(response)
-        console.log(user.username, rating)
-        return res.status(200).send(JSON.stringify({user: user.username, rating: rating}))
+            if(rating <= 0) return res.status(400).end()
+            if(rating > 5) return res.status(400).end()
+            if(!pack_id) return res.status(400).end()
+            if(typeof pack_id !== "string") return res.status(400).end()
+    
+            const response = await rate_pack(pack_id, rating, user.username) 
+            if(!response) return res.status(400).end()
+            if(typeof response === "string") return res.status(400).send(response)
+            
+            return res.status(200).send(JSON.stringify({user: user.username, rating: rating}))
+        } catch(err) {
+            console.log(err)
+            return res.status(500).send("Something went wrong")
+        }
+        
     })
-    server.post("/user/change_profile_image", async(req: any, res) =>{
+    server.post("/user/update_profile_image", async(req: any, res) =>{
         const directory = "./dynamic_public/profile_pictures"
         console.log("Changing profile image")
         try {
@@ -419,7 +447,7 @@ async function main() {
         }
         
     })
-    server.post("/user/change_profile_banner", async(req: any, res) =>{
+    server.post("/user/update_profile_banner", async(req: any, res) =>{
         const directory = "./dynamic_public/profile_banners"
         console.log("Changing profile banner")
         try {
@@ -470,6 +498,26 @@ async function main() {
             
         } catch( err ) {
             console.log(err)
+        }
+        
+    })
+    server.post("/user/update_user_description", async(req:any, res) => {
+
+        try {
+            const {description} = req.body as {description: string}
+
+            const valid_description = validate_user_description(description)
+            if(typeof valid_description === "string") return res.status(400).send(valid_description)
+
+            const response = await update_user_about(req.user, description)
+
+            if(typeof response === "string") return res.status(500).send("Something went wrong while trying to update your about")
+
+            return res.status(200).send({success: true, message: "Successfully updated about."})
+
+        } catch(err) {
+            console.log(err)
+            res.status(500).send("We had problems to update your about")
         }
         
     })

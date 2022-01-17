@@ -151,6 +151,13 @@ export function validate_pack_description(description: string): boolean | string
     return true
 }
 
+export function validate_user_description(description: string): boolean | string {
+    const title_regex = new RegExp(/^(?!(?:\S*\s){12})([a-zA-Z0-9 \.\:\?\!\,\_\-]+)$/)
+
+    if(!title_regex.test(description)) return "description didnt pass validation. Allowed are 12 words and special characters: . : , ! ? _ -"
+    return true
+}
+
 export function validate_pack_section_name(section_name: string): boolean | string {
     const section_name_regex = new RegExp(/^[a-zA-Z0-9]{3,12}$/)
 

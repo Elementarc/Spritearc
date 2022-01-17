@@ -225,6 +225,30 @@ export async function update_user_profile_banner(public_user: Public_user, filen
     }
 }
 
+export async function update_user_about(public_user: Public_user, description: string): Promise<boolean | string> {
+
+    try {
+        await client.connect()
+
+        const user_collection = client.db(DATABASE).collection("users")
+
+        const update_response = await user_collection.updateOne({username: public_user.username}, {$set: {description: description}})
+
+        console.log(update_response)
+        if(update_response.acknowledged) return true
+
+        return "Couldnt Update about"
+    } catch(err) {
+        console.log(err)
+        return "Something went wrong while trying to update about section of a user."
+    }
+    
+
+    
+
+    
+}
+
 export async function get_pack(pack_id: ObjectId): Promise<Pack | null> {
 
     try {
