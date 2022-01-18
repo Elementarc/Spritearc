@@ -16,7 +16,7 @@ export const APP_CONTEXT: any = React.createContext(null)
 export default function Layout({children}: any ) {
     const router = useRouter()
     const Auth: any = useContext(Auth_context)
-
+    let timer: NodeJS.Timeout
     //Checking if user is signed in or not. Used for whole application.
     useEffect(() => {
         async function is_auth() {
@@ -33,9 +33,20 @@ export default function Layout({children}: any ) {
             
         }
         is_auth()
+        
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
+    useEffect(() => {
+        clearTimeout(timer)
+        timer = setTimeout(() => {
+            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
+        }, 1000 * 60 * 60);
+
+        return(() => {
+            clearTimeout(timer)
+        })
+    }, [router.pathname])
     //Function that will be triggert everytime a page unmounts
     function on_unmount() {
         document.documentElement.style.scrollBehavior = "unset"

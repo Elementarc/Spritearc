@@ -50,13 +50,13 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null, App_
     //Pack ratings
     const [prev_pack_ratings, set_prev_pack_ratings] = useState<Pack_rating[]>(pack.ratings)
     //Contexts
-    const Router = useRouter()
+    const router = useRouter()
 
     function go_back() {
         const prev_path = sessionStorage.getItem("prev_path")
-        if(!prev_path) return Router.push("/browse", "/browse", {scroll: false})
+        if(!prev_path) return router.push("/browse", "/browse", {scroll: false})
         
-        Router.push(prev_path, prev_path, {scroll: false})
+        router.push(prev_path, prev_path, {scroll: false})
         
     }
     
@@ -114,7 +114,7 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null, App_
     }, [show_focus_img])
     
     async function delete_pack() {
-        const query = Router.query
+        const query = router.query
 
         const response = await fetch(`/user/delete_pack?id=${query.id}`, {
             method: "POST"
@@ -162,7 +162,7 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null, App_
         const valid_report_reason = report_pack_validation()
         const report_input = document.getElementById("report_input") as HTMLInputElement
         if(!valid_report_reason) return
-        const pack_id = Router.query.id
+        const pack_id = router.query.id
 
         if(!pack_id) return
         if(typeof pack_id !== "string") return
@@ -184,6 +184,11 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null, App_
         }
     }
 
+    async function download_pack() {
+        const pack_id = router.query.id
+        window.open(`${process.env.NEXT_PUBLIC_BASE_PATH}/download_pack?pack_id=${pack_id}`)
+
+    }
     return (
         <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
 
@@ -290,7 +295,7 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null, App_
                                 <H1_with_deco title={pack.title}/>
 
                                 <p>{pack.description}</p>
-                                <button>Download Pack</button>
+                                <button onClick={download_pack}>Download Pack</button>
                             </div>
 
                             <Rate_pack user={user} set_prev_pack_ratings={set_prev_pack_ratings} prev_pack_ratings={prev_pack_ratings}/>
@@ -588,7 +593,6 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
         </div>
     );
 }
-
 
 function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string, callb: ()=>void}) {
   return (

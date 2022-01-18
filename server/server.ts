@@ -1,8 +1,8 @@
 import express from "express"
 import {parse} from "url"
 import next from "next"
-import { create_number_from_page_query } from "../lib/custom_lib"
-import { create_user, add_pack_to_user, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner, update_user_about } from "../lib/mongo_lib"
+import { check_if_json, create_number_from_page_query } from "../lib/custom_lib"
+import { create_user, create_user_pack, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner, update_user_about, update_pack_download_count } from "../lib/mongo_lib"
 import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file, validate_pack_report_reason, validate_profile_image, validate_user_description } from "../lib/validate_lib"
 import cookieParser from "cookie-parser"
 import jwt from "jsonwebtoken"
@@ -15,6 +15,7 @@ import fs from "fs"
 import del from "del"
 import { create_default_user } from "../lib/create_lib"
 import { send_email_verification } from "../lib/nodemailer_lib"
+import AdmZip from "adm-zip"
 
 const dev = process.env.NODE_ENV !== "production"
 const server = express()
@@ -51,12 +52,56 @@ function with_auth(req:any, res: any, next: any) {
     }
     
 }
+//middleware that increases expire date of token
+async function refresh_token(req: any, res: any, next: any) {
+    const cookies = req.cookies
+    if(!cookies.user) return next()
+
+    const user = jwt.verify(cookies.user, `${process.env.JWT_PRIVATE_KEY}`)
+    if(!user) return next()
+    /* const public_user = await get_public_user(user.username)
+    if(!public_user) return next()
+    const refreshed_token = jwt.sign(public_user, process.env.JWT_PRIVATE_KEY as string) */
+
+    //Setting cookie with token as value
+    res.setHeader('Set-Cookie', cookie.serialize('user', cookies.user, {
+        expires: new Date(Date.now() + 1000 * 60 * 60),
+        httpOnly: true,
+        path: "/",
+        sameSite: "strict",
+    }));
+    
+    next()
+}
+
+//function that updates user token.
+async function update_token(req: any, res: any) {
+    const cookies = req.cookies
+    if(!cookies.user) return false
+
+    const user = jwt.verify(cookies.user, `${process.env.JWT_PRIVATE_KEY}`)
+    if(!user) return false
+    const public_user = await get_public_user(user.username)
+    if(!public_user) return false
+
+    const refreshed_token = jwt.sign(public_user, process.env.JWT_PRIVATE_KEY as string)
+
+    res.setHeader('Set-Cookie', cookie.serialize('user', refreshed_token, {
+        expires: new Date(Date.now() + 1000 * 60 * 60),
+        httpOnly: true,
+        path: "/",
+        sameSite: "strict",
+    }));
+
+    return true
+}
 
 server.use(parse_url)
 server.use(cookieParser())
 server.use(express.json())
 server.use(express.urlencoded({extended: true}))
 server.use(express.static("./dynamic_public"))
+server.use("/*",refresh_token)
 server.use("/user/*", with_auth)
 
 
@@ -73,13 +118,13 @@ async function main() {
             const user = req.user as Public_user
             const pack_id = req.query.id as string
             const pack_directory = `./dynamic_public/packs/${pack_id}`
-
+            const pack_zip_file = `./pack_zips/${pack_id}.zip`
             const delete_res = await delete_pack(new ObjectId(pack_id), user)
 
             if(!delete_res) throw "Couldnt delete file"
 
-            const deleted_paths = await del([pack_directory])
-            
+            const deleted_pack = await del([pack_directory])
+            fs.unlinkSync(pack_zip_file)
             res.status(200).send({message: "Successfully deleted pack!"})
 
         } catch (err) {
@@ -95,7 +140,6 @@ async function main() {
         const id = new ObjectId()
         //Directory where the packs will be created at
         const pack_directory = `./dynamic_public/packs/${id}`
-
         //Req user that initiated the create pack request
         const public_user: Public_user = req.user
         
@@ -109,234 +153,193 @@ async function main() {
                 }
             }
             const id_gen = id_generator()
-            //Handles multiple files form.
-            const form = new formidable.IncomingForm({multiples: true, maxFileSize: 150 * 1024, allowEmptyFiles: false});
-            
-            //Event that validates & creates files in the correct directory with the correct strutcure based of the pack content
-            form.on("fileBegin", (section_name, file) => {
 
-                //Validating file
-                const valid_file = validate_single_formidable_file(file)
-                const valid_section_name = validate_pack_section_name(section_name)
-                
-                if(valid_file === true && valid_section_name === true) {
+            let pack_content_map = new Map()
+            let pack_info: any = {}
 
-                    //Checking if pack_directory already exists.
-                    const exists = fs.existsSync(pack_directory)
+            await new Promise((resolve, reject) => {
+                //Handles multiple files form.
+                const form = new formidable.IncomingForm({multiples: true, maxFileSize: 150 * 1024, allowEmptyFiles: false});
 
-                    //Creating directory when directory is not exisiting.
-                    if(!exists) fs.mkdirSync(pack_directory)
+                form.parse(req, (err) => {
+                    if(err) return reject(err)
+                })
 
-                    //Creating files in the correct sturcture.
-                    if(section_name.toLowerCase() === "preview") {
-
-                        function upload_file() {
-                            if(!file.originalFilename) return
-                            if(file.originalFilename.split(".").length > 2) return
-
-                            //Using given extention
-                            if(file.originalFilename.includes(".")) {
-                                file.filepath = `${pack_directory}/preview.${file.originalFilename.split(".")[1]}`
-                            } else {
-                                //Creating extention
-                                file.filepath = `${pack_directory}/preview.${file.mimetype?.split("/")[1].toLowerCase()}`
-                            }
-                        }
-
-                        upload_file()
+                //Event that validates & creates files in the correct directory with the correct strutcure based of the pack content
+                form.on("fileBegin", (section_name, file) => {
     
-                    } else {
-                        
-                        //Getting the extention from the file
-                        const file_extention = `${file.mimetype?.split("/")[1].toLowerCase()}`
-
-                        //Checking if directory exists with section_name
-                        if(!fs.existsSync(`${pack_directory}/${section_name}`)) {
-                            //Creating directory when no directory with given section name exists
-                            fs.mkdirSync(`${pack_directory}/${section_name}`)
-                        }
-                        
-                        function upload_file() {
-                            if(!file.originalFilename) return
-                            if(file.originalFilename.split(".").length > 2) return
-
-                            file.filepath = `${pack_directory}/${section_name.toLowerCase()}/${section_name.toLowerCase()}_${id_gen.next().value}.${file_extention}`
-                            
-                        }
-                        upload_file()
-                        
-                    }
-
-                } else {
-                    console.log(`File: ${file.originalFilename} did not pass validations.`)
-                }
-             
-            })
-            
-            try{
-
-                await new Promise((resolve, reject) => {
-
                     try {
-                        //Parsing FromData Files & Fields
-                        form.parse(req, async(err, fields, files) => {
-                            if(err) return reject(err);
-                            
-                            async function handle_body() {
-                                
-                                try {
-    
-                                    if(! fields.title) throw new Error("No Title found!")
-                                    if(! fields.description) throw new Error("No Description found!")
-                                    if(! fields.tags) throw new Error("No Tags found!")
-                                    if(! fields.license) throw new Error("No License found!")
-                                    if(! files.preview ) throw new Error("No preview file found!")
-    
-                                    
-                                    if(typeof fields.title !== "string") throw new Error("Only 1 title allowed!")
-                                    if(typeof fields.description !== "string") throw new Error("Only 1 description allowed!")
-                                    if(typeof fields.tags !== "string") throw new Error("Only 1 tag key allowed!")
-                                    if(typeof fields.license !== "string") throw new Error("Only 1 license allowed!")
-                                    if(Array.isArray(files.preview)) throw new Error("Only 1 preview allowed!")
-                                    //Validated body
-    
-                                    const preview_file: any = files.preview
-                                    const tags = (()=> {
-                                        try {
-    
-                                            let tags_none_json = (JSON.parse(fields.tags as string)as string[])
-                                            let new_tags = []
-    
-                                            for(let tag of tags_none_json) {
-                                                new_tags.push(tag.toLowerCase())
-                                            } 
-    
-                                            return new_tags
-    
-                                        } catch ( err ) {
-                                            return null
-                                        }
-                                        
-                                    })();
-    
-                                    if(!tags) throw new Error("Please use a valid JSON Form")
-    
-                                    const pack_files = files as unknown
-                                    
-                                    const valid_files = validate_formidable_files(pack_files as Formidable_files)
-                                    const valid_title = validate_pack_title(fields.title as string)
-                                    const valid_description = validate_pack_description(fields.description as string)
-                                    const valid_license = validate_license(fields.license as string)
-                                    const valid_tags = validate_pack_tags(tags)
-                                    
-                                    if(typeof valid_files === "string") throw new Error(`${valid_files}`)
-                                    if(typeof valid_title === "string") throw new Error(`${valid_title}`)
-                                    if(typeof valid_description === "string") throw new Error(`${valid_description}`)
-                                    if(typeof valid_tags === "string") throw new Error(`${valid_tags}`)
-                                    if(typeof valid_license === "string") throw new Error(`${valid_license}`)
-                                    //Passed validations
-                                    
-                                    //Array that will be the content of a pack.
-                                    let pack_content: Pack_content[] = []
-                                    
-                                    //Checking how many props files obj has
-                                    let object_props = 0
-                                    for(let key in files) {
-                                        object_props ++
+
+                        //Validating file
+                        const valid_file = validate_single_formidable_file(file)
+                        const valid_section_name = validate_pack_section_name(section_name)
+                        
+                        if(valid_file === true && valid_section_name === true) {
+        
+                            //Checking if pack_directory already exists.
+                            const exists = fs.existsSync(pack_directory)
+        
+                            //Creating directory when directory is not exisiting.
+                            if(!exists) fs.mkdirSync(pack_directory)
+        
+                            //Creating files in the correct sturcture.
+                            if(section_name.toLowerCase() === "preview") {
+        
+                                function upload_file() {
+                                    if(!file.originalFilename) return
+                                    if(file.originalFilename.split(".").length > 2) return
+        
+                                    //Using given extention
+                                    if(file.originalFilename.includes(".")) {
+                                        file.filepath = `${pack_directory}/preview.${file.originalFilename.split(".")[1]}`
+                                    } else {
+                                        //Creating extention
+                                        file.filepath = `${pack_directory}/preview.${file.mimetype?.split("/")[1].toLowerCase()}`
                                     }
-    
-                                    if(object_props < 2) throw new Error("Object has not enough sections")
-                                    //Looping through FormData Obj Files.
-    
-                                    for(let key in files) {
-                                        
-                                        //Checkign if object has preview property.
-                                        const has_preview = files.hasOwnProperty("preview")
-                                        if(!has_preview) throw new Error("Couldn't find preview file")
-    
-                                        const valid_section_name = validate_pack_section_name(key)
-    
-                                        if(typeof valid_section_name === "string") throw new Error("Sectionname didnt pass validations")
-    
-                                        
-                                        //Logic for sections besides preview.
-                                        if(key.toLocaleLowerCase() !== "preview") {
-    
-                                            //Creating an array with directories to specific file in the public folder.
-                                            const section_images: string[] = []
-    
-                                            const files_arr: any = files[key]
-                                            
-                                            if(files_arr.length < 1) throw new Error("Pack needs to have atleast 1 assets!")
-                                            //Looping through files of specific object property
-                                            
-                                            for(let file of files[key] as any) {
-    
-                                                section_images.push(`${file.originalFilename?.toLowerCase()}.${file.mimetype?.split("/")[1].toLowerCase()}`)
-                                            }
-    
-                                            //Pushing content to pack_content arr. that will be used
-                                            pack_content.push({
-                                                section_name: key.toLowerCase(),
-                                                section_images: section_images
-                                            })
-                                            
-                                        }
-                                        
-                                    }
-    
-                                    //Creating a pack obj. That will be created in database
-                                    const pack: Pack = {
-                                        _id: id,
-                                        username: public_user.username,
-                                        preview: `preview.${preview_file.mimetype.split("/")[1].toLowerCase()}`,
-                                        title: fields.title as string,
-                                        description: fields.description as string,
-                                        license: fields.license as string,
-                                        date: new Date(),
-                                        tags: tags,
-                                        downloads: 0,
-                                        content: pack_content,
-                                        ratings: []
-                                    } 
-    
-                                    //Creating database entry for a pack.
-                                    await add_pack_to_user(pack)
-                                    
-                                    //create_user_pack()
-                                    
-                                    resolve(true)
-    
-                                } catch( err ) {
-                                    return reject(err)
+        
+                                    pack_content_map.set(`${section_name}`, `preview.${file.mimetype?.split("/")[1].toLowerCase()}`)
                                 }
+        
+                                upload_file()
+            
+                            } else {
+                                
+                                //Getting the extention from the file
+                                const file_extention = `${file.mimetype?.split("/")[1].toLowerCase()}`
+        
+                                //Checking if directory exists with section_name
+                                if(!fs.existsSync(`${pack_directory}/${section_name}`)) {
+                                    //Creating directory when no directory with given section name exists
+                                    fs.mkdirSync(`${pack_directory}/${section_name}`)
+                                }
+                                
+                                function upload_file() {
+                                    const file_id = id_gen.next().value
+                                    if(!file.originalFilename) return
+                                    if(file.originalFilename.split(".").length > 2) return
+        
+                                    file.filepath = `${pack_directory}/${section_name.toLowerCase()}/${section_name.toLowerCase()}_${file_id}.${file_extention}`
+                                    const section_images = pack_content_map.get(section_name) as string[]
+        
+                                    if(section_images) {
+                                        pack_content_map.set(`${section_name}`, [...section_images, `${section_name.toLowerCase()}_${file_id}.${file_extention}`])
+                                    } else {
+                                        pack_content_map.set(`${section_name}`, [`${section_name.toLowerCase()}_${file_id}.${file_extention}`])
+                                    }
+                                }
+                                upload_file()
+                                
                             }
-    
-                            await handle_body()
-                        })
+        
+                        } else {
+                            console.log(`File: ${file.originalFilename} did not pass validations.`)
+                        }
                     } catch(err) {
-                        console.log(err)
+                        reject(err)
                     }
                 })
-                res.status(200).send({success: true, message: "Successfully created a pack!", pack_id: id})
-            } catch(err) {
-                console.log(err)
-                res.status(500).send("Something went wrong while trying to create your pack! Sorry")
-            }
+                form.on("field", (name: string, value: string) => {
+                    try {
+                        const is_json = check_if_json(value)
+    
+                        if(is_json) {
+                            pack_info[name] = JSON.parse(value)
+                        } else {
+                            pack_info[name] = value
+                        }
+                    } catch (err ) {
+                        reject(err)
+                    }
+                    
+                    
+                })
+                form.on("end", async() => {
+                    try {
+                        if(pack_content_map.size < 2) throw new Error("Pack needs to contain atleast 1 Preview & 1 Section")
+    
+                        //Validating pack info
+                        if(! pack_info.title) throw new Error("No Title found!")
+                        if(! pack_info.description) throw new Error("No Description found!")
+                        if(! pack_info.tags) throw new Error("No Tags found!")
+                        if(! pack_info.license) throw new Error("No License found!")
+    
+                        const valid_title = validate_pack_title(pack_info.title as string)
+                        const valid_description = validate_pack_description(pack_info.description as string)
+                        const valid_license = validate_license(pack_info.license as string)
+                        const valid_tags = validate_pack_tags(pack_info.tags)
+    
+                        if(typeof valid_title === "string") throw new Error(`${valid_title}`)
+                        if(typeof valid_description === "string") throw new Error(`${valid_description}`)
+                        if(typeof valid_tags === "string") throw new Error(`${valid_tags}`)
+                        if(typeof valid_license === "string") throw new Error(`${valid_license}`)
+                        //Pack info is valid
+    
+                        let pack_content: Pack_content[] = []
+                        for(let [section_name, section_images] of pack_content_map.entries()) {
+    
+                            const valid_section_name = validate_pack_section_name(section_name)
+                            if(typeof valid_section_name === "string") throw valid_section_name
+    
+                            if(section_name !== "preview") {
+                                pack_content.push({
+                                    section_name: section_name,
+                                    section_images: section_images
+                                })
+                            }
+                            
+                        }
+    
+                        if(!pack_content_map.get("preview")) throw new Error("Pack needs to contain a preview")
+    
+                        const pack: Pack = {
+                            _id: id,
+                            username: public_user.username,
+                            preview: pack_content_map.get("preview"),
+                            title: pack_info.title as string,
+                            description: pack_info.description as string,
+                            license: pack_info.license as string,
+                            date: new Date(),
+                            tags: pack_info.tags,
+                            downloads: 0,
+                            content: pack_content,
+                            ratings: []
+                        } 
+                        
+                        await create_user_pack(pack)
+                        //Pack got created!
 
+                        //Creating Downlaodable zip file
+                        const pack_zip = new AdmZip()
+
+                        pack_zip.addLocalFolder(pack_directory)
+                        pack_zip.writeZip(`./pack_zips/${id}.zip`)
+
+                        resolve(true)
+                    } catch(err) {
+                        console.log(err)
+                        reject(err)
+                    }
+                })
+
+            }).catch((err) => {
+                throw err
+            })
+
+            res.status(200).send({success: true, message: "Successfully created a pack!", pack_id: id})
+            
         } catch (err) {
             const error: any = err
             //Deleting pack entry if something fails
             try {
-
+                const pack_zip_file = `./pack_zips/${id}.zip`
                 //Checking if part of the pack was created. Removing pack folder from filesystem.
                 if(fs.existsSync(pack_directory)) del([pack_directory]);
+                fs.unlinkSync(pack_zip_file)
                 const pack = await get_pack(id)
 
                 if(pack) await delete_pack(id, public_user)
                 
                 res.status(400).send({success: false, message:`${error.message}`})
-                console.log(error.message)
 
             } catch( err ) {
 
@@ -395,7 +398,7 @@ async function main() {
     })
     server.post("/user/update_profile_image", async(req: any, res) =>{
         const directory = "./dynamic_public/profile_pictures"
-        console.log("Changing profile image")
+        
         try {
             const files_dir = fs.readdirSync(directory)
             const files_length = files_dir.length + 1
@@ -436,7 +439,7 @@ async function main() {
                         console.log(err)
                     }
                 })
-                
+                await update_token(req,res)
                 res.status(200).send({success:true, message: "Successfully changed profile picture"})
             } catch(err) {
                 res.status(400).send({success: false, message: "Something went wrong while trying to upload your profile picture."})
@@ -490,7 +493,7 @@ async function main() {
                         console.log(err)
                     }
                 })
-                
+                await update_token(req,res)
                 res.status(200).send({success:true, message: "Successfully changed profile picture"})
             } catch(err) {
                 res.status(400).send({success: false, message: "Something went wrong while trying to upload your profile picture."})
@@ -501,7 +504,7 @@ async function main() {
         }
         
     })
-    server.post("/user/update_user_description", async(req:any, res) => {
+    server.post("/user/update_user_description", async(req:any, res, next: any) => {
 
         try {
             const {description} = req.body as {description: string}
@@ -512,15 +515,17 @@ async function main() {
             const response = await update_user_about(req.user, description)
 
             if(typeof response === "string") return res.status(500).send("Something went wrong while trying to update your about")
-
+            await update_token(req,res)
             return res.status(200).send({success: true, message: "Successfully updated about."})
 
+            
         } catch(err) {
             console.log(err)
             res.status(500).send("We had problems to update your about")
         }
         
     })
+
     //Login
     server.post("/login", async(req, res) => {
         const cookies = req.cookies
@@ -554,10 +559,10 @@ async function main() {
 
             //Setting cookie with token as value
             res.setHeader('Set-Cookie', cookie.serialize('user', token, {
+                expires: new Date(Date.now() + 1000 * 60 * 60),
                 httpOnly: true,
                 path: "/",
                 sameSite: "strict",
-                maxAge: 60 * 60
             }));
             
             res.status(200).send(public_user)
@@ -825,6 +830,22 @@ async function main() {
             res.status(500).send("Something went wrong!")
 
         }
+    })
+    server.get("/download_pack", async(req,res) => {
+        const pack_id = req.query.pack_id as string | null
+
+        try {
+            if(!pack_id) return res.status(400).send("No Pack_id found")
+            if(!ObjectId.isValid(pack_id)) return res.status(400).send("Invalid pack id")
+    
+            const pack_directory = `./pack_zips/${pack_id}.zip`
+            await update_pack_download_count(new ObjectId(pack_id))
+            res.download(pack_directory)
+        } catch (err) {
+            console.log(err)
+            res.status(500).send("Something went wrong while trying to start your download")
+        }
+        
     })
 
     //App

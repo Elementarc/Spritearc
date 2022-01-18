@@ -405,7 +405,7 @@ export async function create_user(user: User): Promise<string | boolean> {
     }
 }
 
-export async function add_pack_to_user(pack: Pack) {
+export async function create_user_pack(pack: Pack) {
 
     try {
 
@@ -424,6 +424,22 @@ export async function add_pack_to_user(pack: Pack) {
 
     }
 
+}
+
+export async function update_pack_download_count(pack_id: ObjectId): Promise<string | boolean> {
+    try {
+        await client.connect()
+
+        const packs_collection = client.db(DATABASE).collection("packs")
+        
+        const response = await packs_collection.updateOne({_id: pack_id}, {$inc: {downloads: +1}})
+
+        if(!response.acknowledged) return false
+        return true
+    } catch(err) {
+        console.log(err)
+        return "Something went wrong while trying to increase download count"
+    }
 }
 
 export async function get_user_by_email(email: string): Promise<string | {_id: ObjectId, email: string, verfied: boolean}> {

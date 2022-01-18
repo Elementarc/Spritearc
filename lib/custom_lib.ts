@@ -17,3 +17,15 @@ export function create_number_from_page_query(string: string | string[]): boolea
     }
     
 }
+
+
+export function check_if_json(value: string): boolean {
+    
+    try {
+        JSON.parse(value)
+
+        return true
+    } catch(err) {
+        return false
+    }
+}
