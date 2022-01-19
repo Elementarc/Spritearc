@@ -638,8 +638,9 @@ export async function rate_pack(pack_id: string, rating: number, username: strin
                 break
             }
         }
-        console.log(user_already_rated)
+        console.log(pack.username, username)
         if(user_already_rated) return "Already rated this pack"
+        if(pack.username === username) return "You can't rate your own pack."
         //User can rate
         await packs_collection.updateOne({_id: new ObjectId(pack_id)}, {$push: {ratings: {user: username, rating: rating}}})
 

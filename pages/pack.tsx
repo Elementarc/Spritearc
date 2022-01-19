@@ -16,7 +16,7 @@ import H1_with_deco from '../components/h1_with_deco';
 import { format_date } from '../lib/date_lib';
 import { get_pack } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
-import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
+import { capitalize_first_letter_rest_lowercase, check_if_json } from '../lib/custom_lib';
 import StarEmptyIcon from "../public/icons/StarEmptyIcon.svg"
 import StarIcon from "../public/icons/StarIcon.svg"
 import Pack_star_raiting from '../components/pack_stars_raiting';
@@ -34,10 +34,11 @@ export default function Pack_page_handler({pack, user}: {pack: Pack, user: Publi
     )
 }
 
-const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null, App_notification: any}) => {
+const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | string, App_notification: any}) => {
     //Props
     const pack: Pack = JSON.parse(`${props.pack}`)
-    const user: Public_user = JSON.parse(`${props.user}`)
+    const user: Public_user | null = typeof props.user === "string" ? JSON.parse(`${props.user}`) : null
+    const own_pack = user ? user.username === pack.username : false
     //Context
     const App_notification: any = props.App_notification
     //State that saves currently clicked asset as a url string.
@@ -298,10 +299,12 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null, App_
                                 <button onClick={download_pack}>Download Pack</button>
                             </div>
 
-                            <Rate_pack user={user} set_prev_pack_ratings={set_prev_pack_ratings} prev_pack_ratings={prev_pack_ratings}/>
+                            {!own_pack &&
+                                <Rate_pack user={user} set_prev_pack_ratings={set_prev_pack_ratings} prev_pack_ratings={prev_pack_ratings}/>
+                            }
                             
 
-                            <div className="stats_container"> 
+                            <div style={own_pack ? {marginTop: "16rem"} : {}} className="stats_container"> 
                                 <span className="top_line" />
 
                                 <div className="grid_container">
@@ -606,44 +609,40 @@ function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string,
 export const getServerSideProps: GetServerSideProps = async(context) => {
 
     try {
-    
+        console.log("Test")
         if(typeof context.query.id === "string") {
+            
             const pack = await get_pack(new ObjectId(context.query.id))
+            
+            console.log("test")
+            if(!pack) return {
 
-            try {
-                const user = jwt.verify(context.req.cookies.user, process.env.JWT_PRIVATE_KEY as string)
-
-                if(!pack) return {
-
-                    redirect: {
-                        destination: `/browse`,
-                        permanent: false,
-                    }
-        
+                redirect: {
+                    destination: `/browse`,
+                    permanent: false,
                 }
-        
-                return{
-                    props: {
-                        pack: JSON.stringify(pack),
-                        user: user ? JSON.stringify(user) : null
-                    }
-                }
+            }
 
-            } catch ( err ) {
-                return{
-                    props: {
-                        pack: JSON.stringify(pack),
-                        user: null
-                    }
+            const user_token = context.req.cookies.user
+            if(!user_token) return {
+                props: {
+                    pack: JSON.stringify(pack),
+                    user: {username: null}
                 }
-
             }
             
-
+            const user = jwt.verify(user_token, process.env.JWT_PRIVATE_KEY as string) as Public_user | null
             
+            return {
+                props: {
+                    pack: JSON.stringify(pack),
+                    user: user ? JSON.stringify(user) : {username: null}
+                }
+            }
+
             
         } else {
-
+            console.log("OMEGA")
             return {
 
                 redirect: {
@@ -656,7 +655,7 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
         }
 
     } catch( err ) {
-
+        console.log(err)
         return {
 
             redirect: {

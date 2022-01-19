@@ -96,7 +96,6 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 			const splitted_section_name = section_name.split(" ")
 			let word_arr = [""]
 			for(let i = 0; i < section_name.length; i ++) {
-				console.log(splitted_section_name[i])
 				if(splitted_section_name[i]) {
 					word_arr.push(capitalize_first_letter_rest_lowercase(splitted_section_name[i]))
 				}
