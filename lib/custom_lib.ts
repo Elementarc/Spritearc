@@ -26,8 +26,9 @@ export function create_number_from_page_query(string: string | string[]): boolea
     
 }
 
-export function sort_packs_section(packs: Pack[], sort_action: string){
+export function sort_packs_section(packs: Pack[] | null, sort_action: string){
     if(!sort_action) return packs
+    if(!packs) return null
     //Used to not mutate array that got inputted
     const new_packs_arr = [...packs]
     

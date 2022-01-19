@@ -10,53 +10,57 @@ import { capitalize_first_letter_rest_lowercase, check_if_json, SORT_ACTIONS, so
 
 export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: any, sort_action?: string | null | undefined}) {
 	/* const [state, dispatch] = useReducer(reducer, init_reducer) */
-	const [sort_action, set_sort_action] = useState<null | string | undefined>(()=>{
-		if(process.browser) {
-			return sessionStorage.getItem(`${section_name}_sort_action`) ? sessionStorage.getItem(`${section_name}_sort_action`) : null
-		}
-	})
-	const [packs, set_packs] = useState<null | Pack[] | []>()
+	const [sort_action, set_sort_action] = useState<null | string | undefined>(null)
+	const [packs, set_packs] = useState<null | Pack[] | []>(null)
 	const [page, set_page] = useState(1)
 	const [toggle_sort_by_state, set_toggle_sort_by_state] = useState(false)
 	
 
 	useEffect(() => {
+		const sort_action =  sessionStorage.getItem(`${section_name}_sort_action`) ? sessionStorage.getItem(`${section_name}_sort_action`) : null
+		set_sort_action(sort_action)
+	}, [])
+	useEffect(() => {
 		async function get_packs() {
 			
-			console.log("Got packs from api")
-			const api_response = await fetch(`${api}?page=${page}`, {
-				method: method.toUpperCase(),
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
-			})
+			setTimeout(async() => {
+			
+				const api_response = await fetch(`${api}?page=${page}`, {
+					method: method.toUpperCase(),
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
+				})
 
-			if(api_response.status === 200) {
+				if(api_response.status === 200) {
 
-				const response_packs_obj: {packs: Pack[], max_page: number} = await api_response.json()
-				
-				set_packs(response_packs_obj.packs)
-				function toggle_load_more() {
-					const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
+					const response_packs_obj: {packs: Pack[], max_page: number} = await api_response.json()
+					
+					set_packs(response_packs_obj.packs)
+					function toggle_load_more() {
+						const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
 
-					if(!counter_cointainer) return
-					if(response_packs_obj.max_page === page) {
-						
-						counter_cointainer.style.display = "none"
-					} else {
-						counter_cointainer.style.display = ""
+						if(!counter_cointainer) return
+						if(response_packs_obj.max_page === page) {
+							
+							counter_cointainer.style.display = "none"
+						} else {
+							counter_cointainer.style.display = ""
+						}
 					}
+					toggle_load_more()
+				} else {
+					set_packs([])
 				}
-				toggle_load_more()
-			} else {
-				set_packs([])
-
-			}
+			}, 25000);
 		}
 		get_packs()
 	}, [set_packs, page, api, method, body, section_name])
 	
+	useEffect(() => {
+		
+	}, [sort_action])
 	//animation for 
 	const sort_by_animation = useAnimation()
 	useEffect(() => {
@@ -108,6 +112,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 		}
 		
 	}
+	
 	return (
 		<>
 			
@@ -132,7 +137,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 				</div>
 
-				<Pack_previews packs={sort_action ? sort_packs_section(packs ? packs : [], sort_action) : packs ? packs : []}/>
+				<Pack_previews packs={sort_action ? sort_packs_section(packs ? packs : null, sort_action) : packs ? packs : null}/>
 				
 
 				{ packs &&
