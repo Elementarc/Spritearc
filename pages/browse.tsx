@@ -7,8 +7,10 @@ import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
 
+
 export default function Browse() {
 	
+
 	return (
 		<>
 			<div className="browse_page">

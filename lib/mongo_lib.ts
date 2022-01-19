@@ -6,6 +6,12 @@ import { send_email_verification } from './nodemailer_lib';
 const client = new MongoClient("mongodb://localhost:27017")
 const DATABASE = "pixels"
 
+export const SORT_ACTIONS = {
+    BY_RATING: "BY_RATING",
+    BY_DOWNLOADS: "BY_DOWNLOADS",
+    BY_DATE: "BY_DATE"
+}
+
 const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
 const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
 //Function that returns a public user obj from db. Null if given username wasnt found
@@ -294,7 +300,7 @@ export async function get_title_pack(): Promise<Pack | null> {
     
 }
 
-export async function get_recent_packs(number_of_returns: number): Promise<Pack[] | null> {
+export async function get_recent_packs(number_of_returns: number, sort_action?: string): Promise<Pack[] | null> {
 
     try {
         //Connecting to database
@@ -306,6 +312,7 @@ export async function get_recent_packs(number_of_returns: number): Promise<Pack[
         //Returning 12 Packs Ordered by Date.
         const recent_packs = (await db.collection("packs").find({}).sort({date: -1}).limit(number_of_returns).toArray() as unknown) as Pack[]
 
+        
         if(recent_packs.length > 0) {
 
             return recent_packs

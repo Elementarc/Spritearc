@@ -1,4 +1,11 @@
-//Function that returns a string with first letter as uppercase and rest lowercase
+import { Pack } from "../types";
+
+export const SORT_ACTIONS = {
+    BY_RATING: "BY_RATING",
+    BY_DOWNLOADS: "BY_DOWNLOADS",
+    BY_RECENT: "BY_RECENT"
+}
+
 export function capitalize_first_letter_rest_lowercase(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
 }
@@ -18,6 +25,53 @@ export function create_number_from_page_query(string: string | string[]): boolea
     
 }
 
+export function sort_packs_section(packs: Pack[], sort_action: string) {
+    if(!sort_action) return packs
+
+    switch( sort_action ) {
+
+        case SORT_ACTIONS.BY_DOWNLOADS : {
+
+            const sorted_packs = packs.sort((a, b) => {
+
+                return b.downloads - a.downloads
+            })
+
+            return sorted_packs
+        }
+
+        case SORT_ACTIONS.BY_RECENT : {
+            const sorted_packs = packs.sort((a, b) => {
+                
+                return   new Date(b.date).getTime() - new Date(a.date).getTime()
+            })
+            return sorted_packs
+        }
+
+        case SORT_ACTIONS.BY_RATING : {
+            const sorted_packs = packs.sort((a, b) => {
+                let a_ratings = 0
+                let b_ratings = 0
+                for(let rating of a.ratings) {
+                    a_ratings = a_ratings + rating.rating
+                }
+                for(let rating of b.ratings) {
+                    b_ratings = b_ratings + rating.rating
+                }
+                let a_avg_rating = a_ratings / 5
+                let b_avg_rating = b_ratings / 5
+
+                return b_avg_rating - a_avg_rating
+            })
+
+            return sorted_packs
+        }
+
+        default : {
+            return packs
+        }
+    }
+}
 
 export function check_if_json(value: string): boolean {
     

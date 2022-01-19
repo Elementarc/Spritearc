@@ -65,7 +65,7 @@ async function refresh_token(req: any, res: any, next: any) {
 
     //Setting cookie with token as value
     res.setHeader('Set-Cookie', cookie.serialize('user', cookies.user, {
-        expires: new Date(Date.now() + 1000 * 60 * 60),
+        expires: new Date(Date.now() + 1000 * 60 * 15),
         httpOnly: true,
         path: "/",
         sameSite: "strict",
@@ -87,7 +87,7 @@ async function update_token(req: any, res: any) {
     const refreshed_token = jwt.sign(public_user, process.env.JWT_PRIVATE_KEY as string)
 
     res.setHeader('Set-Cookie', cookie.serialize('user', refreshed_token, {
-        expires: new Date(Date.now() + 1000 * 60 * 60),
+        expires: new Date(Date.now() + 1000 * 60 * 15),
         httpOnly: true,
         path: "/",
         sameSite: "strict",
