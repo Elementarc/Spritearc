@@ -796,6 +796,7 @@ async function main() {
             if(typeof page_int !== "number") return res.status(400)
 
             const pack_id_arr = req.body as string[]
+            
             const packs = await get_released_packs_by_user(pack_id_arr)
             const max_page = Math.ceil(packs.length / packs_per_page)
 

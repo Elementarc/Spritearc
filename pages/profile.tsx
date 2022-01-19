@@ -13,6 +13,7 @@ export default function Profile(props: {public_user: any}) {
     const public_user = JSON.parse(props.public_user) as Public_user
     useParallax("profile_banner")
     
+    
     return (
         <div className='profile_page'>
 

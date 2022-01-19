@@ -18,6 +18,7 @@ export default function Browse() {
 				<div className="content">
 					<Title_pack_section/>
 					<Packs_section section_name='Recent Packs' api="/recent_packs" method='POST'/>
+					<Packs_section section_name='Most Popular' api="/recent_packs" method='POST'/>
 					<Nav_shadow/>
 				</div>
 

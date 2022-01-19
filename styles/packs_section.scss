@@ -6,6 +6,9 @@
     position: relative;
     padding: 0 2rem 2rem 2rem;
 
+    @include breakpoint(mobile) {
+        padding: 0 1rem 2rem 1rem;
+    }
     .packs_section_info{
         position: relative;
         display: flex;
@@ -26,51 +29,52 @@
             
         .drop_down_container {
             display: inline-grid;
+            
             user-select: none;
             -moz-user-select: none;
             -webkit-user-select: none;
             grid-template-columns: 1fr;
             grid-template-rows: 30px;
-            
             top: 0;
             height: 100%;
             overflow: hidden;
-            .info {
-                position: relative;
-                width: 100%;
+            .info_container {
                 display: flex;
-                align-items: center;
-        
+                .info {
+                    position: relative;
+                    display: inline-flex;
+                    align-items: center;
 
-                &:hover {
-                    cursor: pointer;
+                    &:hover {
+                        cursor: pointer;
+                        
+                        h4{
+                            color: $color_grey;
+                        }
+        
+                        svg {
+                            fill: $color_grey;
+                        }
                     
+                    }
                     h4{
-                        color: $color_grey;
+                        @include h4(medium);
+                        color: $color_dark_grey;
+                        transform: translateY(2.5px);
+                        
                     }
-    
+        
                     svg {
-                        fill: $color_grey;
+                        fill: $color_dark_grey;
+                        transform: translateY(2.5px);
                     }
-                
-                }
-                h4{
-                    @include h4(medium);
-                    color: $color_dark_grey;
-                    transform: translateY(2.5px);
-                    
-                }
-    
-                svg {
-                    fill: $color_dark_grey;
-                    transform: translateY(2.5px);
                 }
             }
-            
             .grid_sort_item {
                 display: flex;
                 align-items: center;
                 height: 30px;
+                min-width: 200px;
                 background: $color_main_blue;
                 box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.5);
                 padding: 0 .5rem;
@@ -112,14 +116,10 @@
     
     .load_more_container {
         position: relative;
-        padding-top: 1rem;
-        padding: 0 2rem;
+        padding-top: 1.5rem;
         width: 100%;
         display: grid;
         grid-template-columns: 1fr minmax(150px, .3fr) 1fr;
-        @include breakpoint(mobile) {
-            padding: 0 1rem;
-        }
         h1 {
             @include a(default);
             align-self: center;

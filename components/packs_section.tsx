@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer} from 'react';
+import React, { useState, useEffect, useCallback, useReducer} from 'react';
 import { Pack } from '../types';
 import Link from 'next/link';
 import Pack_stars_raiting from './pack_stars_raiting';
@@ -6,51 +6,42 @@ import { useAnimation , motion} from 'framer-motion';
 import Image from 'next/image';
 import Loader from './loading';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
-import { check_if_json, SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
-
+import { capitalize_first_letter_rest_lowercase, check_if_json, SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
 
 export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: any, sort_action?: string | null | undefined}) {
-	const [packs, set_packs] = useState<null | Pack[] | []>(null)
-	const [page, set_page] = useState(1)
-	const [sort_action, set_sort_action] = useState(() => {
+	/* const [state, dispatch] = useReducer(reducer, init_reducer) */
+	const [sort_action, set_sort_action] = useState<null | string | undefined>(()=>{
 		if(process.browser) {
-			const init_sort_action = sessionStorage.getItem(`${section_name.toLowerCase()}_sort_action`)
-
-			return init_sort_action ? init_sort_action : null
+			return sessionStorage.getItem(`${section_name}_sort_action`) ? sessionStorage.getItem(`${section_name}_sort_action`) : null
 		}
 	})
+	const [packs, set_packs] = useState<null | Pack[] | []>()
+	const [page, set_page] = useState(1)
 	const [toggle_sort_by_state, set_toggle_sort_by_state] = useState(false)
 	
-	//Getting Packs from server and setting it. Also checking if initial Sort_action
+
 	useEffect(() => {
 		async function get_packs() {
+			
 			console.log("Got packs from api")
-			const response_recent_pack = await fetch(`${api}?page=${page}`, {
+			const api_response = await fetch(`${api}?page=${page}`, {
 				method: method.toUpperCase(),
 				headers: {
 					"Content-Type": "application/json"
 				},
-				body: body ? check_if_json(body) ? JSON.stringify(body): null : null,
+				body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
 			})
 
-			if(response_recent_pack.status === 200) {
+			if(api_response.status === 200) {
 
-				const response_obj: {packs: Pack[], max_page: number} = await response_recent_pack.json()
-
-				if(sort_action) {
-
-					const sorted_packs = sort_packs_section(response_obj.packs, sort_action)
-					set_packs(sorted_packs)
-				} else {
-					set_packs(response_obj.packs)
-				}
+				const response_packs_obj: {packs: Pack[], max_page: number} = await api_response.json()
 				
-
+				set_packs(response_packs_obj.packs)
 				function toggle_load_more() {
-					const counter_cointainer = document.getElementById("load_more_container") as HTMLDivElement
+					const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
 
 					if(!counter_cointainer) return
-					if(response_obj.max_page === page) {
+					if(response_packs_obj.max_page === page) {
 						
 						counter_cointainer.style.display = "none"
 					} else {
@@ -60,13 +51,12 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 				toggle_load_more()
 			} else {
 				set_packs([])
+
 			}
 		}
 		get_packs()
-
-
-	}, [set_packs, page, api, method, body])
-
+	}, [set_packs, page, api, method, body, section_name])
+	
 	//animation for 
 	const sort_by_animation = useAnimation()
 	useEffect(() => {
@@ -87,51 +77,67 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 	}, [toggle_sort_by_state, sort_by_animation])
 
-	//Chaning packs order whenever sort changes
-	useEffect(() => {
-		if(!packs) return
-		if(!sort_action) return
-		const sorted_packs = sort_packs_section(packs, sort_action)
-		set_packs(sorted_packs)
+	function set_sort_action_and_session_storage(sort_action: string | null) {
 
-	}, [sort_action])
+		if(!sort_action) {
+			sessionStorage.removeItem(`${section_name}_sort_action`)
+			set_sort_action(null)
+		} else {
+			sessionStorage.setItem(`${section_name}_sort_action`, sort_action)
+			set_sort_action(sort_action)
+		}
 
-	function sort_packs(sort_action: string) {
-		if(!packs) return
-		if(packs.length < 2) return
-
-		sessionStorage.setItem(`${section_name.toLowerCase()}_sort_action`, sort_action)
-		const sorted_packs = sort_packs_section(packs, sort_action)
-		
-		set_sort_action(sort_action)
-		set_packs(sorted_packs)
+		set_toggle_sort_by_state(false)
 	}
+
+	function set_section_name(section_name: string) {
+		
+		try {
+			const splitted_section_name = section_name.split(" ")
+			let word_arr = [""]
+			for(let i = 0; i < section_name.length; i ++) {
+				console.log(splitted_section_name[i])
+				if(splitted_section_name[i]) {
+					word_arr.push(capitalize_first_letter_rest_lowercase(splitted_section_name[i]))
+				}
+				
+			}
 	
+			return word_arr.join(" ")
+		} catch( err ) {
+			return section_name
+		}
+		
+	}
 	return (
 		<>
 			
 			<div className='packs_section_container'>
 
 				<div className="packs_section_info">
-					<h1>– {section_name}</h1>
+					<h1>– {set_section_name(section_name)}</h1>
 
 					<motion.div animate={sort_by_animation} className='drop_down_container'>
-						<div onClick={() => {set_toggle_sort_by_state(!toggle_sort_by_state)}} className='info'>
-							<h4>{sort_action ? `Sort by ${sort_action.split("_")[1]}` : "Sort By"}</h4>
-							<ExpandIcon/>
+						<div className='info_container'>
+							<div onClick={() => {set_toggle_sort_by_state(!toggle_sort_by_state)}} className='info'>
+								<h4>{sort_action ? `Sort by ${sort_action.split("_")[1].toLowerCase()}` : "Sort by"}</h4>
+								<ExpandIcon/>
+							</div>
 						</div>
 
-						<div className='grid_sort_item' onClick={() => {sort_packs(SORT_ACTIONS.BY_RATING); set_toggle_sort_by_state(false)}}>Rating</div>
-						<div className='grid_sort_item' onClick={() => {sort_packs(SORT_ACTIONS.BY_RECENT); set_toggle_sort_by_state(false)}}>Recent</div>
-						<div className='grid_sort_item' onClick={() => {sort_packs(SORT_ACTIONS.BY_DOWNLOADS); set_toggle_sort_by_state(false)}}>Downloads</div>
+						<div className='grid_sort_item' onClick={() => {set_sort_action_and_session_storage(null)}}>None</div>
+						<div className='grid_sort_item' onClick={() => {set_sort_action_and_session_storage(SORT_ACTIONS.BY_RATING)}}>Rating</div>
+						<div className='grid_sort_item' onClick={() => {set_sort_action_and_session_storage(SORT_ACTIONS.BY_RECENT)}}>Recent</div>
+						<div className='grid_sort_item' onClick={() => {set_sort_action_and_session_storage(SORT_ACTIONS.BY_DOWNLOADS)}}>Downloads</div>
 					</motion.div>
 
 				</div>
 
-				<Pack_previews packs={packs}/>
+				<Pack_previews packs={sort_action ? sort_packs_section(packs ? packs : [], sort_action) : packs ? packs : []}/>
+				
 
-				{ packs && packs.length > 0 &&
-					<div className='load_more_container' id="load_more_container">
+				{ packs &&
+					<div className='load_more_container' id={`${section_name}_load_more_container`}>
 						<span />
 						<h1 onClick={() => {set_page(page + 1)}}>Load more</h1>
 						<span />

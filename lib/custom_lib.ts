@@ -3,7 +3,8 @@ import { Pack } from "../types";
 export const SORT_ACTIONS = {
     BY_RATING: "BY_RATING",
     BY_DOWNLOADS: "BY_DOWNLOADS",
-    BY_RECENT: "BY_RECENT"
+    BY_RECENT: "BY_RECENT",
+    REMOVE_SORT: null
 }
 
 export function capitalize_first_letter_rest_lowercase(string: string) {
@@ -25,14 +26,16 @@ export function create_number_from_page_query(string: string | string[]): boolea
     
 }
 
-export function sort_packs_section(packs: Pack[], sort_action: string) {
+export function sort_packs_section(packs: Pack[], sort_action: string){
     if(!sort_action) return packs
-
+    //Used to not mutate array that got inputted
+    const new_packs_arr = [...packs]
+    
     switch( sort_action ) {
 
         case SORT_ACTIONS.BY_DOWNLOADS : {
 
-            const sorted_packs = packs.sort((a, b) => {
+            const sorted_packs = new_packs_arr.sort((a, b) => {
 
                 return b.downloads - a.downloads
             })
@@ -41,7 +44,7 @@ export function sort_packs_section(packs: Pack[], sort_action: string) {
         }
 
         case SORT_ACTIONS.BY_RECENT : {
-            const sorted_packs = packs.sort((a, b) => {
+            const sorted_packs = new_packs_arr.sort((a, b) => {
                 
                 return   new Date(b.date).getTime() - new Date(a.date).getTime()
             })
@@ -49,7 +52,7 @@ export function sort_packs_section(packs: Pack[], sort_action: string) {
         }
 
         case SORT_ACTIONS.BY_RATING : {
-            const sorted_packs = packs.sort((a, b) => {
+            const sorted_packs = new_packs_arr.sort((a, b) => {
                 let a_ratings = 0
                 let b_ratings = 0
                 for(let rating of a.ratings) {
