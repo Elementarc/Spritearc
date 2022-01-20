@@ -891,6 +891,9 @@ async function main() {
     server.get("/verify_account", (req: any,res) => {
         app.render(req,res, "/verify_account", req.parsed_url.query)
     })
+    server.get("/tos", (req,res) => {
+        app.render(req, res, "/tos")
+    })
     server.all("*", (req,res) => {
         const parsed_url = parse(req.url, true)
         return handle(req, res, parsed_url)

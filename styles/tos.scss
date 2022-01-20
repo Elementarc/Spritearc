@@ -1,0 +1,41 @@
+
+.tos_page {
+    position: relative;
+    z-index: 1;
+    height: auto;
+    .content {
+        position: relative;
+        z-index: 1;
+        min-height: 600px;
+        background: $color_background_dark;
+        padding: 0 5rem;
+        padding-bottom: 2rem;
+        .tos_header {
+            padding-top: 5rem;
+            @include h1(default);
+        }
+        section {
+            width: 60%;
+            margin-bottom: 3rem;
+            h1{
+                @include h1(medium);
+            }
+            p{
+                @include p(medium);
+            }
+
+            ul {
+                padding-left: 3rem;
+                li{
+                    @include p(medium);
+                    margin: 1rem 0rem;
+                }
+            }
+
+            a {
+                @include a(medium)
+            }
+        }
+        
+    }
+}

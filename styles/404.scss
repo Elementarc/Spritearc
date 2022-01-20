@@ -16,12 +16,26 @@
 
         h1{
             @include h1;
-            color: $color_error
+            padding: 0 3rem;
+            text-align: center;
+            color: $color_error;
+            @include breakpoint(mobile) {
+                width: 100%;
+                padding: 0 1rem;
+            }
         }
         p{
             @include p;
             margin-top: 1rem;
+            padding: 0 2rem;
             width: 55%;
+            @include breakpoint(laptop) {
+                width: 80%;
+            }
+            @include breakpoint(mobile) {
+                width: 100%;
+                padding: 0 1rem;
+            }
             text-align: center;
         }
         button{
