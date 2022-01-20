@@ -15,53 +15,49 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	const [page, set_page] = useState(1)
 	const [toggle_sort_by_state, set_toggle_sort_by_state] = useState(false)
 	
-
+	//Checking sessionstorage if sort_action exists. Setting sort_action if yes
 	useEffect(() => {
 		const sort_action =  sessionStorage.getItem(`${section_name}_sort_action`) ? sessionStorage.getItem(`${section_name}_sort_action`) : null
 		set_sort_action(sort_action)
-	}, [])
+	}, [set_sort_action])
+
+	//Getting packs from server. Setting it aswell
 	useEffect(() => {
 		async function get_packs() {
 			
-			setTimeout(async() => {
-			
-				const api_response = await fetch(`${api}?page=${page}`, {
-					method: method.toUpperCase(),
-					headers: {
-						"Content-Type": "application/json"
-					},
-					body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
-				})
+			const api_response = await fetch(`${api}?page=${page}`, {
+				method: method.toUpperCase(),
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
+			})
 
-				if(api_response.status === 200) {
+			if(api_response.status === 200) {
 
-					const response_packs_obj: {packs: Pack[], max_page: number} = await api_response.json()
-					
-					set_packs(response_packs_obj.packs)
-					function toggle_load_more() {
-						const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
+				const response_packs_obj: {packs: Pack[], max_page: number} = await api_response.json()
+				
+				set_packs(response_packs_obj.packs)
+				function toggle_load_more() {
+					const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
 
-						if(!counter_cointainer) return
-						if(response_packs_obj.max_page === page) {
-							
-							counter_cointainer.style.display = "none"
-						} else {
-							counter_cointainer.style.display = ""
-						}
+					if(!counter_cointainer) return
+					if(response_packs_obj.max_page === page) {
+						
+						counter_cointainer.style.display = "none"
+					} else {
+						counter_cointainer.style.display = ""
 					}
-					toggle_load_more()
-				} else {
-					set_packs([])
 				}
-			}, 25000);
+				toggle_load_more()
+			} else {
+				set_packs([])
+			}
 		}
 		get_packs()
 	}, [set_packs, page, api, method, body, section_name])
 	
-	useEffect(() => {
-		
-	}, [sort_action])
-	//animation for 
+	//animation for when clicking Sort by button on a packsection
 	const sort_by_animation = useAnimation()
 	useEffect(() => {
 		
@@ -81,6 +77,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 	}, [toggle_sort_by_state, sort_by_animation])
 
+	//Function that sets sort_action when clicking on a sort_item
 	function set_sort_action_and_session_storage(sort_action: string | null) {
 
 		if(!sort_action) {
@@ -94,6 +91,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 		set_toggle_sort_by_state(false)
 	}
 
+	//Function that Makes section name more beautiful
 	function set_section_name(section_name: string) {
 		
 		try {
