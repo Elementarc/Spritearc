@@ -9,7 +9,6 @@ import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import { capitalize_first_letter_rest_lowercase, check_if_json, SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
 
 export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: any, sort_action?: string | null | undefined}) {
-	/* const [state, dispatch] = useReducer(reducer, init_reducer) */
 	const [sort_action, set_sort_action] = useState<null | string | undefined>(null)
 	const [packs, set_packs] = useState<null | Pack[] | []>(null)
 	const [page, set_page] = useState(1)

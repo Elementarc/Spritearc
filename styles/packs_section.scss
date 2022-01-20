@@ -18,7 +18,6 @@
         margin-bottom: .6rem;
         width: 100%;
         height: 30px;
-        
         h1{
             display: inline-block;
             @include h1(small);
@@ -29,7 +28,6 @@
             
         .drop_down_container {
             display: inline-grid;
-            
             user-select: none;
             -moz-user-select: none;
             -webkit-user-select: none;
@@ -38,6 +36,10 @@
             top: 0;
             height: 100%;
             overflow: hidden;
+            @include breakpoint(mobile) {
+                position: absolute;
+                right: 0;
+            }
             .info_container {
                 display: flex;
                 .info {
@@ -45,6 +47,10 @@
                     display: inline-flex;
                     align-items: center;
 
+                    @include breakpoint(mobile) {
+                        position: absolute;
+                        right: 0;
+                    }
                     &:hover {
                         cursor: pointer;
                         

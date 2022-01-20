@@ -132,7 +132,7 @@ export function validate_profile_image(file: Formidable_file): boolean | string 
 }
 
 export function validate_pack_title(title: string): boolean | string {
-    const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9 ]+)$/)
+    const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9 ]{3,25})$/)
 
     if(title.length < 3) return "Min. 3 characters."
     if(title.length > 25) return "Max. 25 characters."

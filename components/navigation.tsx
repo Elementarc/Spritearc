@@ -1,7 +1,7 @@
 /*eslint-disable */
 import React, {ReactElement, useContext, useEffect} from "react"
 import {motion, useAnimation, AnimatePresence } from "framer-motion";
-import { Nav_item, App_context} from "../types"
+import { Nav_item, App_context, Public_user} from "../types"
 //SVG Components (ICONS)
 import NavIcon from "../public/icons/NavIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
@@ -33,7 +33,7 @@ export default function Navigation(): ReactElement {
                 <Navigation_desktop key="Navigation_desktop" Navigation={Navigation} APP={APP} Auth={Auth}/>
             }
             {Device.is_mobile === true &&
-               <Navigation_mobile key="Navigation_mobile"/>
+               <Navigation_mobile Auth={Auth} key="Navigation_mobile"/>
             }
         </>
     )
@@ -186,11 +186,13 @@ const Navigation_desktop = React.memo((props: {Navigation: any, APP: any, Auth: 
     )
 })
 
-//Navigation Component for Mobile
-function Navigation_mobile(): ReactElement {
+const Navigation_mobile = React.memo((props: {Auth: any}) => {
     const Navigation: any = useContext(Navigation_context)
-
+    const user = props.Auth.user as any
+    const router = useRouter()
     const navContainerAnimation = useAnimation()
+    const Auth = props.Auth
+
     //Toggle Animation for navigation When NavState changes For mobile
     useEffect(() => {
         const getNavScrollContainer = document.getElementById("nav_content") as HTMLDivElement
@@ -244,6 +246,41 @@ function Navigation_mobile(): ReactElement {
 
     }, [Navigation.set_nav_state])
 
+    const profile_animation = useAnimation()
+    const nav_profile_animation = useAnimation()
+
+    useEffect(() => {
+
+        if(Navigation.nav_state) {
+            profile_animation.start({
+                transition: {duration: 0.1},
+                pointerEvents: "none",
+                opacity: 0,
+            })
+
+            nav_profile_animation.start({
+                transition: {duration: .2, delay: .3},
+                pointerEvents: "all",
+                opacity: 1,
+            })
+        } else {
+            profile_animation.start({
+                pointerEvents: "all",
+                opacity: 1,
+            })
+
+            nav_profile_animation.start({
+                transition: {duration: 0},
+                pointerEvents: "none",
+                opacity: 0,
+            })
+        }
+        
+
+
+
+    }, [Navigation])
+
     return (
         <motion.div animate={navContainerAnimation} className="nav_container_mobile" id="nav_container">
 
@@ -262,6 +299,13 @@ function Navigation_mobile(): ReactElement {
                             </motion.div>
                         }
                     </AnimatePresence>
+
+                    {user.auth &&
+                        <motion.div animate={profile_animation}>
+                            <User_profile/>
+                        </motion.div>
+                        
+                    }
                 </motion.div>
 
                 <motion.div className="nav_items_container" >
@@ -269,16 +313,28 @@ function Navigation_mobile(): ReactElement {
                         <ul>
                             <Nav_item_container label="Home" icon={HomeIcon} link="/"/>
                             <Nav_item_container label="News" icon={NewsIcon} link="/news"/>
-                            <Nav_item_container label="Packs" icon={BrowseIcon} link="/browse"/>
+                            <Nav_item_container label="Browse" icon={BrowseIcon} link="/browse"/>
                             <Nav_item_container label="Search" icon={SearchIcon} link="/search"/>
                         </ul>
                     </div>
 
-                    <div className="nav_sign_in" id="nav_button_container">
-                        <div onClick={() => {Navigation.set_nav_state(false)}}>
-                            <Nav_item_container label="Sign In" icon={SignInIcon} link="/login"/>
+                    {user.auth === null || user.auth === false && 
+                        <div className="nav_sign_in" id="nav_button_container">
+                            
+                                
+                            <div onClick={() => {Navigation.set_nav_state(false)}}>
+                                <Nav_item_container label="Sign In" icon={SignInIcon} link="/login"/>
+                            </div>
+                            
                         </div>
-                    </div>
+                    }
+                    
+                    {user.auth &&
+                        <motion.div animate={nav_profile_animation}>
+                            <User_profile/>
+                        </motion.div>
+                        
+                    }
                 </motion.div>
 
                 
@@ -287,7 +343,8 @@ function Navigation_mobile(): ReactElement {
 
         </motion.div>
     )
-}
+})
+
 
 //NavItem Component
 function Nav_item_container(props: Nav_item) {
@@ -352,7 +409,7 @@ function User_profile() {
     const user = Auth.user as any
     
     async function logout () {
-        const response = await fetch("/api/user/logout", {method: "POST"})
+        const response = await fetch("/user/logout", {method: "POST"})
 
         if(response.status === 200) {
             Navigation.set_nav_state(false)
@@ -395,7 +452,6 @@ function User_profile() {
                     <div className="portrait_image">
                         <Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_pictures/${user.profile_picture}`} layout="fill"/>
                     </div>
-                    
 
                 </div>
                 

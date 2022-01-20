@@ -101,7 +101,7 @@ server.use(cookieParser())
 server.use(express.json())
 server.use(express.urlencoded({extended: true}))
 server.use(express.static("./dynamic_public"))
-server.use("/*",refresh_token)
+server.use("*",refresh_token)
 server.use("/user/*", with_auth)
 
 
