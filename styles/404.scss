@@ -1,0 +1,32 @@
+
+.error_page {
+    position: relative;
+    z-index: 1;
+    height: auto;
+    .content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1;
+        height: 100vh;
+        min-height: 600px;
+        background: $color_background_dark;
+
+        h1{
+            @include h1;
+            color: $color_error
+        }
+        p{
+            @include p;
+            margin-top: 1rem;
+            width: 55%;
+            text-align: center;
+        }
+        button{
+            @include button;
+            margin-top: 2rem;
+        }
+    }
+}
