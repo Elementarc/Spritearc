@@ -16,8 +16,10 @@ import del from "del"
 import { create_default_user } from "../lib/create_lib"
 import { send_email_verification } from "../lib/nodemailer_lib"
 import AdmZip from "adm-zip"
+require('dotenv').config()
 
 const dev = process.env.NODE_ENV !== "production"
+console.log(process.env.NODE_ENV, dev)
 const server = express()
 const app = next({dev})
 const handle = app.getRequestHandler()
@@ -103,7 +105,6 @@ server.use(express.urlencoded({extended: true}))
 server.use(express.static("./dynamic_public"))
 server.use("*",refresh_token)
 server.use("/user/*", with_auth)
-
 
 const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,32}$/)
 
