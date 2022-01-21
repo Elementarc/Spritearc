@@ -10,6 +10,14 @@
         background: $color_background_dark;
         padding: 0 5rem;
         padding-bottom: 2rem;
+        @include breakpoint(laptop) {
+            padding: 0 4rem;
+            padding-bottom: 2rem;
+        }
+        @include breakpoint(mobile) {
+            padding: 0 1rem;
+            padding-bottom: 2rem;
+        }
         .tos_header {
             padding-top: 5rem;
             @include h1(default);
@@ -17,6 +25,13 @@
         section {
             width: 60%;
             margin-bottom: 3rem;
+            @include breakpoint(laptop) {
+                width: 85%;
+            }
+            @include breakpoint(mobile) {
+                width: 100%;
+                margin-bottom: 2.5rem;
+            }
             h1{
                 @include h1(medium);
             }

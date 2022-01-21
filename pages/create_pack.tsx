@@ -17,7 +17,7 @@ import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_n
 import { useRouter } from 'next/router';
 import jwt from "jsonwebtoken"
 import { GetServerSideProps } from 'next';
-
+import Loader from "../components/loading"
 // @ts-ignore: Unreachable code error
 
 //Context
@@ -686,7 +686,8 @@ function Step_3() {
     const device = useContext(Device_context)
     const [selection_state, set_selection_state] = useState(false)
     const [tag_jsx, set_tag_jsx] = useState<ReactElement[]>([])
-    
+    const [loading, set_loading] = useState(false)
+
     const selection_animation = useAnimation()
     
     //Animation for licens container when opening / closing
@@ -834,6 +835,7 @@ function Step_3() {
     const router = useRouter()
     
     function send_pack_to_api() {
+        set_loading(true)
         async function send_pack() {
             const Form_data = create_form_data(create_pack.create_pack_obj)
         
@@ -850,9 +852,10 @@ function Step_3() {
                 }
 
                 App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully created pack!", message: "Your pack is now live and can be viewed by everyone.", button_label: "Visit pack", callb: go_to_pack}})
+                set_loading(false)
             } else {
                 App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "We couldn't create your pack! Please relog and try again!", button_label: "Ok"}})
-
+                set_loading(false)
             }
             
         }
@@ -915,7 +918,10 @@ function Step_3() {
                     <button onClick={() => {create_pack.dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="prev_button">Prev Step</button>
                 }
 
-                <button onClick={send_pack_to_api} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Create Pack</button>
+                <button onClick={send_pack_to_api} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>
+                    <p style={loading ? {opacity: 0} : {opacity: 1}}>Create Pack</p>
+                    {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
+                </button>
             </div>
         </>
  
