@@ -79,7 +79,7 @@ async function update_token(req: any, res: any) {
     const cookies = req.cookies
     if(!cookies.user) return false
 
-    const user = jwt.verify(cookies.user, `${process.env.JWT_PRIVATE_KEY}`)
+    const user = jwt.verify(cookies.user, `${process.env.JWT_PRIVATE_KEY}`) as any
     if(!user) return false
     const public_user = await get_public_user(user.username)
     if(!public_user) return false
