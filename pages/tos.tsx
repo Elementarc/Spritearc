@@ -23,7 +23,7 @@ export default function Terms_of_service() {
                 <section>
                     <h1 className='tos_header'>Our Terms Of Service</h1>
                 </section>
-                <General_Terms/>
+                {/* <General_Terms/>
                 <Definitions_and_key_terms/>
                 <Users_and_publishers/>
                 <Acceptable_use/>
@@ -55,7 +55,7 @@ export default function Terms_of_service() {
                 <Promotions/>
                 <Typographical_errors/>
                 <Miscellaneous/>
-                <Disclaimer/>
+                <Disclaimer/> */}
 
                 <section>
                     <h1>Contact Me</h1>
@@ -70,7 +70,7 @@ export default function Terms_of_service() {
 }
 
 
-
+/* 
 function Users_and_publishers() {
     return(
         <section>
@@ -588,4 +588,4 @@ function Disclaimer() {
             </p>
         </section>
     )
-}
+} */
