@@ -436,7 +436,7 @@ export async function create_user_pack(pack: Pack) {
         await client.connect()
 
         const packs_collection = client.db(DATABASE).collection("packs")
-        packs_collection.createIndex({_id: 1}, {unique: true})
+        
         const user_collection = client.db(DATABASE).collection("users")
 
         await user_collection.updateOne({username: pack.username}, {$push: {released_packs: pack._id.toString()}})
