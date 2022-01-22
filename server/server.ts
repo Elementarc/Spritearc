@@ -2,7 +2,7 @@ import express from "express"
 import {parse} from "url"
 import next from "next"
 import { check_if_json, create_number_from_page_query } from "../lib/custom_lib"
-import { create_user, create_user_pack, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner, update_user_about, update_pack_download_count } from "../lib/mongo_lib"
+import { create_user, create_user_pack, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner, update_user_about, update_pack_download_count, create_root_user } from "../lib/mongo_lib"
 import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file, validate_pack_report_reason, validate_profile_image, validate_user_description } from "../lib/validate_lib"
 import cookieParser from "cookie-parser"
 import jwt from "jsonwebtoken"
@@ -19,7 +19,6 @@ import AdmZip from "adm-zip"
 require('dotenv').config()
 
 const dev = process.env.NODE_ENV !== "production"
-console.log(process.env.NODE_ENV, dev)
 const server = express()
 const app = next({dev})
 const handle = app.getRequestHandler()
@@ -109,6 +108,8 @@ server.use("/user/*", with_auth)
 const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,32}$/)
 
 async function main() {
+    //Creating a root user for a mongodb instance
+    await create_root_user()
     await app.prepare()
     server.listen(3000, () => {console.log("Server port: 3000")})
 
@@ -484,7 +485,6 @@ async function main() {
                             const valid_profile_file = validate_profile_image(file)
                             if(typeof valid_profile_file === "string") return resolve(false)
         
-                            console.log("TEst")
                             const updated_response = await update_user_profile_banner(req.user as Public_user, `${req.user.username.toLowerCase()}.${file.mimetype.split("/")[1]}`)
                             
                             resolve(true)
@@ -532,7 +532,6 @@ async function main() {
         const cookies = req.cookies
         if(cookies.user) return res.status(400).send("Please logout before login")
         //user is not logged in
-
         
         //Getting user Credentials from user
         const { email, password } = req.body as {email: string, password: string}

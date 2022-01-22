@@ -24,13 +24,20 @@ import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import ThrashIcon from "../public/icons/ThrashIcon.svg"
 import { App_notification_context } from "../context/app_notification_context_provider";
 import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider"
+import Head from 'next/dist/shared/lib/head'
+
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 export default function Pack_page_handler({pack, user}: {pack: Pack, user: Public_user | null}) {
     const App_notification: any = useContext(App_notification_context)
 
     return(
-        <Pack_page pack={pack} user={user} App_notification={App_notification}/>
+        <>
+            
+            <title>Browse through thousands of free and opensource Pixelart sprites and assets</title>
+            <Pack_page pack={pack} user={user} App_notification={App_notification}/>
+        </>
+        
     )
 }
 
@@ -52,7 +59,7 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
     const [prev_pack_ratings, set_prev_pack_ratings] = useState<Pack_rating[]>(pack.ratings)
     //Contexts
     const router = useRouter()
-
+    const pack_id = router.query.id as string
     function go_back() {
         const prev_path = sessionStorage.getItem("prev_path")
         if(!prev_path) return router.push("/browse", "/browse", {scroll: false})
@@ -185,11 +192,14 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
         }
     }
 
-    async function download_pack() {
-        const pack_id = router.query.id
-        window.open(`${process.env.NEXT_PUBLIC_BASE_PATH}/download_pack?pack_id=${pack_id}`)
+    const download_link = `${process.env.NEXT_PUBLIC_BASE_PATH}/download_pack?pack_id=${pack_id}`
 
+    async function download_pack() {
+        if(typeof pack_id !== "string") return
+        const a = document.getElementById("download_pack_link") as HTMLAnchorElement
+        a.click()
     }
+    
     return (
         <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
 
@@ -297,6 +307,7 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
 
                                 <p>{pack.description}</p>
                                 <button onClick={download_pack}>Download Pack</button>
+                                <a id="download_pack_link" style={{display: "none", opacity: 0, pointerEvents: "none"}} href={download_link}>download</a>
                             </div>
 
                             {!own_pack &&
@@ -609,12 +620,12 @@ function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string,
 export const getServerSideProps: GetServerSideProps = async(context) => {
 
     try {
-        console.log("Test")
+        
         if(typeof context.query.id === "string") {
             
             const pack = await get_pack(new ObjectId(context.query.id))
             
-            console.log("test")
+            
             if(!pack) return {
 
                 redirect: {

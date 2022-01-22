@@ -6,13 +6,31 @@ import { useParallax } from '../lib/custom_hooks';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
-
+import Head from 'next/head';
 
 export default function Browse() {
 	
 
 	return (
 		<>
+			<Head>
+				<title>Browse through thousands of free Pixelart assets and sprites</title>
+				<meta name="description" content="Find sprites and assets from thousands of packs and download them."/>
+
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content="Browse through thousands of free Pixelart assets and sprites"/>
+				<meta property="og:description" content="Find sprites and assets from thousands of packs and download them."/>
+				<meta property="og:image" content=""/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content=""/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content="Browse through thousands of free Pixelart assets and sprites"/>
+				<meta name="twitter:description" content="Find sprites and assets from thousands of packs and download them."/>
+				<meta name="twitter:image" content=""/>
+            </Head>
+
 			<div className="browse_page">
 				
 				<div className="content">

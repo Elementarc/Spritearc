@@ -4,7 +4,7 @@ import { Pack } from '../types';
 import { SHA256 } from 'crypto-js';
 import { send_email_verification } from './nodemailer_lib';
 const client = new MongoClient("mongodb://localhost:27017")
-const DATABASE = "pixels"
+const DATABASE = "spritearc"
 
 export const SORT_ACTIONS = {
     BY_RATING: "BY_RATING",
@@ -12,6 +12,22 @@ export const SORT_ACTIONS = {
     BY_DATE: "BY_DATE"
 }
 
+export async function create_root_user() {
+    
+    try {
+        await client.connect()
+        const username = process.env.MONGO_ROOT_USERNAME
+        const password = process.env.MONGO_ROOT_PASSWORD
+        if(!username) throw new Error("Couldnt find a username for mongo root user")
+        if(!password) throw new Error("Couldnt find a password for mongo root user")
+        const db = client.db("admin")
+
+        await db.addUser(username,  password, {roles: ["root"]})
+        console.log("successfully created root user")
+    } catch(err) {
+        console.log(err)
+    }
+}
 const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
 const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
 //Function that returns a public user obj from db. Null if given username wasnt found
@@ -55,7 +71,8 @@ export async function get_public_user(username: string): Promise<Public_user | n
         
         return public_user as Public_user
     } catch ( err ) {
-        throw err;
+        console.log(err);
+        return null
     }
     
 }
@@ -381,7 +398,7 @@ export async function create_user(user: User): Promise<string | boolean> {
 
         await client.connect()
             
-        const users_collection = client.db("pixels").collection("users")
+        const users_collection = client.db(DATABASE).collection("users")
 
         await users_collection.insertOne(user)
 
@@ -391,7 +408,7 @@ export async function create_user(user: User): Promise<string | boolean> {
 
         const user_id =  user_db._id.toString()
 
-        const account_verification_token_collection = client.db("pixels").collection("account_verification_tokens")
+        const account_verification_token_collection = client.db(DATABASE).collection("account_verification_tokens")
         account_verification_token_collection.createIndex({date: 1}, {expireAfterSeconds: 3600})
         const token = SHA256(user_id).toString()
 
@@ -454,7 +471,7 @@ export async function get_user_by_email(email: string): Promise<string | {_id: O
 
     try {
         await client.connect();
-        const collection = client.db("pixels").collection("users")
+        const collection = client.db(DATABASE).collection("users")
         const user_arr = await collection.aggregate([
             {
                 $project: {
@@ -484,7 +501,7 @@ export async function get_user_by_email(email: string): Promise<string | {_id: O
 export async function create_account_verification_token(user_id: ObjectId): Promise<string | {token: string}> {
     try {
 
-        const account_verification_token_collection = client.db("pixels").collection("account_verification_tokens")
+        const account_verification_token_collection = client.db(DATABASE).collection("account_verification_tokens")
         account_verification_token_collection.createIndex({date: 1}, {expireAfterSeconds: 3600})
         const token = SHA256(user_id.toString()).toString()
 
@@ -511,7 +528,7 @@ export async function verify_user_account(token: string): Promise<string|number>
     try {
         
         await client.connect()
-        const token_collection = client.db("pixels").collection("account_verification_tokens")
+        const token_collection = client.db(DATABASE).collection("account_verification_tokens")
         
         const found_token = await token_collection.findOne({token: token})
 
@@ -540,7 +557,7 @@ export async function verify_user_account(token: string): Promise<string|number>
         }
 
         //Token is not expired
-        const user_collection = client.db("pixels").collection("users")
+        const user_collection = client.db(DATABASE).collection("users")
 
         const user_found = await user_collection.find({_id: new ObjectId(found_token.user_id)}).toArray()
         if(user_found.length === 0) return "Did not find account to verify"
@@ -568,7 +585,7 @@ export async function validate_user_credentials(email: string, password: string)
         if(!password) return "Coulnd't find an password input"
         
         await client.connect()
-        const collection = client.db("pixels").collection("users")
+        const collection = client.db(DATABASE).collection("users")
         const user_arr = await collection.aggregate([
             {
                 $project: {
@@ -592,7 +609,6 @@ export async function validate_user_credentials(email: string, password: string)
                 }
             }
         ]).toArray()
-        
         
         if(user_arr.length === 0) return "Couldn't find Account"
         //User exists in db.

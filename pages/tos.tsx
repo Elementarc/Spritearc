@@ -1,7 +1,21 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import Footer from '../components/footer';
 
 export default function Terms_of_service() {
+    //Setting numbers for headers
+    useEffect(() => {
+        const section_headers = document.getElementsByClassName("section_header") as HTMLCollection
+
+        const headers_arr = Array.from(section_headers)
+
+        for(let i = 0; i < headers_arr.length; i++) {
+            const headers = headers_arr as HTMLHeadElement[]
+            headers[i].innerText = `${i + 1}. ${headers[i].innerText}`
+        }
+       
+    }, [])
+
+
     return (
         <div className='tos_page'>
             
@@ -9,11 +23,14 @@ export default function Terms_of_service() {
                 <section>
                     <h1 className='tos_header'>Our Terms Of Service</h1>
                 </section>
-                {`<General_Terms/>
-                <License />
+                <General_Terms/>
                 <Definitions_and_key_terms/>
-                <Restrictions/>
-                <Return_and_refund_policy/>
+                <Users_and_publishers/>
+                <Acceptable_use/>
+                <Publisher_content/>
+                <User_generated_content/>
+                
+                
                 <Your_suggestions/>
                 <Your_consent/>
                 <Links_to_other_websites/>
@@ -38,7 +55,7 @@ export default function Terms_of_service() {
                 <Promotions/>
                 <Typographical_errors/>
                 <Miscellaneous/>
-                <Disclaimer/>`}
+                <Disclaimer/>
 
                 <section>
                     <h1>Contact Me</h1>
@@ -51,18 +68,155 @@ export default function Terms_of_service() {
         </div>
     );
 }
-/* 
+
+
+
+function Users_and_publishers() {
+    return(
+        <section>
+            <h1 className='section_header'>Users and Publishers</h1>
+
+            <div className='tos_summary'>
+                <h2>{"Summary: "}</h2>
+                <p>
+                    If you download projects, you’re a User. If you upload projects, you’re a Publisher. Users must be 13 or older. Publishers must be at least 18 or have the legal right to enter into this agreement.
+                </p>
+            </div>
+
+            <ul>
+                <li>
+                    Users. If you register an account to purchase, download, or play games or other content from Spritearc.com, you agree to be bound to the terms of this Agreement as a platform user (“User”). Users affirm that they are over the age of 13, as the Service is not intended for children under 13.
+                </li>
+
+                <li>
+                Publishers. If you register an account to sell, distribute, or publish games or other content on Spritearc.com, you agree to be bound to the terms of this Agreement as a platform publisher (“Publisher”). Publishers affirm that they are either more than 18 years of age, or possess legal parental or guardian consent, and are fully able and competent to enter into the terms, conditions, obligations, affirmations, representations and warranties set forth in this Agreement.
+                </li>
+            </ul>
+        </section>
+    )
+}
+
+function Acceptable_use() {
+    return(
+        <section>
+            <h1 className='section_header'>Acceptable Use</h1>
+
+            <div className='tos_summary'>
+                <h2>{"Summary: "}</h2>
+                <p>
+                    Be excellent to each other! If you misbehave we may terminate your account.
+                </p>
+            </div>
+
+            <p>Spritearc aims to create a safe environment for users of the site and service. This requires a community that is built on goodwill and responsible behavior by its members. The posting of content or other actions that, in the Company’s sole discretion, degrades the experience of others may result in account termination without prior notice. Prohibited actions include but are not limited to:</p>
+            
+            <ul>
+                <li>
+                    Uploading viruses or malicious code or acting in any manner to restrict or inhibit any other user from using and enjoying the Service 
+                </li>
+
+                <li>
+                    Spamming or sending repeated messages, junk email, contests, surveys or any unsolicited messages
+                </li>
+
+                <li>
+                    Posting unlawful, misleading, malicious, or discriminatory content
+                </li>
+
+                <li>
+                    Bullying, intimidating, harassing, defaming, threatening others, or violating the legal rights (such as rights of privacy and publicity) of others
+                </li>
+
+                <li>
+                    Posting content that promotes or participates in racial intolerance, sexism, hate crimes, hate speech, or intolerance to any group of individuals
+
+                </li>
+
+                <li>
+                    Soliciting, harvesting or collecting information about others
+                </li>
+
+                <li>
+                    Violating copyright, trademark or other intellectual property or other legal rights of others by posting content without permission to distribute such content
+                </li>
+
+                <li>
+                    Hacking, maliciously manipulating, or misrepresenting Spritearc’s interface in any way
+                </li>
+
+                <li>
+                    Creating a false identity for the purpose or effect of misleading others
+                </li>
+
+                <li>
+                    Violating any applicable laws or regulations
+                </li>
+            </ul>
+        </section>
+    )
+}
+
+function Publisher_content() {
+    return(
+        <section>
+            <h1 className='section_header'>Publisher Content</h1>
+
+            <div className='tos_summary'>
+                <h2>{"Summary: "}</h2>
+                <p>
+                    You allow us to promote your screenshots, cover-images, videos, and other promotional material you have provided. You affirm that you have the right to upload and sell your content, and that Spritearc.com and its users can use and/or purchase your content without violating anybody else’s rights.                
+                </p>
+            </div>
+
+            <p>
+                Publishers are solely responsible for the content they upload and distribute on Spritearc.com. Publishers affirm, represent, and warrant that they own or have the rights, licenses, permissions and consents necessary to publish, duplicate, and distribute the submitted content. By submitting content to the Service for distribution, Publishers also grant a license to the Company for all patent, trademark, trade secret, copyright or other proprietary rights in and to the Content for publication on the Service, pursuant to this Agreement. The Company does not endorse copyright infringing activities or other intellectual property infringing activities and violations of may result in the removal of content if the Company is notified of such violations. Removal and termination of accounts may occur without prior notice.
+                Publishers retain all ownership rights to the submitted content, and by submitting content to the Service, Publishers hereby grant the following:
+            </p>
+
+            <ul>
+                <li>
+                    To the Company, a worldwide, non-exclusive, royalty-free, sublicensable and transferable license to use, reproduce, distribute, prepare derivative works of, display, and perform the content in connection with the Service, including without limitation for promoting, redistributing in any and all media formats. If you choose to remove your content from the Service, this license shall terminate within a commercially reasonable time after you remove your content from the Service.                
+                </li>
+                
+                <li>
+                    To Users, a non-exclusive, perpetual license to access the content and to use, reproduce, distribute, display and perform such content as permitted through the functionality of the Service. Users shall retain a license to this content even after the content is removed from the Service.
+                </li>
+            </ul>
+        </section>
+    )
+}
+
+function User_generated_content() {
+    return(
+        <section>
+            <h1 className='section_header'>User Generated Content</h1>
+
+            <div className='tos_summary'>
+                <h2>{"Summary: "}</h2>
+                <p>
+                    You agree to let us display content you have uploaded to your profile, written in a comment, left in a review, etc. If you terminate your account you can request to have your content deleted.
+                </p>
+            </div>
+
+            <p>
+                Spritearc.com provides interfaces and tools for Users to generate content and make it available to other users, including ratings, reviews, profile images, banners, and others (“User Generated Content” or “UGC”). By uploading or creating such UGC, you grant to Company the worldwide, non-exclusive, perpetual, royalty free license to use, reproduce, create derivative works, display, perform and distribute for the UGC.
+            </p>
+        </section>
+    )
+}
+
 function General_Terms() {
     return(
         <section>
-            <h1>{`General Terms`}</h1>
-            <p>{`By accessing and placing an order with Spritearc, you confirm that you are in agreement with and bound by the terms of service contained in the Terms & Conditions outlined below. These terms apply to the entire website and any email or other type of communication between you and Spritearc
+            <h1>General Terms</h1>
+            <p>By accessing and placing an order with Spritearc, you confirm that you are in agreement with and bound by the terms of service contained in the Terms & Conditions outlined below. These terms apply to the entire website and any email or other type of communication between you and Spritearc
 
                 Under no circumstances shall Spritearc team be liable for any direct, indirect, special, incidental or consequential damages, including, but not limited to, loss of data or profit, arising out of the use, or the inability to use, the materials on this site, even if Spritearc team or an authorized representative has been advised of the possibility of such damages. If your use of materials from this site results in the need for servicing, repair or correction of equipment or data, you assume any costs thereof 4
 
                 Spritearc will not be responsible for any outcome that may occur during the course of usage of our resources. We reserve the rights
 
-                to change prices and revise the resources usage policy in any moment.`}
+                to change prices and revise the resources usage policy in any moment.
+
             </p>
         </section>
     )
@@ -82,7 +236,15 @@ function License() {
 function Definitions_and_key_terms() {
     return(
         <section>
-            <h1>{`Definitions and key terms`}</h1>
+            <h1 className='section_header'>Definitions and key terms</h1>
+
+            <div className='tos_summary'>
+                <h2>{"Summary: "}</h2>
+                <p>
+                    Key terms that we're using througout this whole Terms Of Service.
+                </p>
+            </div>
+
             <p>{"For this Terms & Conditions:"}</p>
             <ul>
                 <li>
@@ -169,7 +331,15 @@ function Return_and_refund_policy() {
 function Your_suggestions() {
     return(
         <section>
-            <h1>{`Your Suggestions`}</h1>
+            <h1 className='section_header'>Your suggestions</h1>
+
+            <div className='tos_summary'>
+                <h2>{"Summary: "}</h2>
+                <p>
+                    We are allowed to use your suggestions for free and modify it without your consent.
+                </p>
+            </div>
+
             <p>Any feedback, comments, ideas, improvements or suggestions (collectively, "Suggestions") provided by you to us with respect to the service shall remain the sole and exclusive property of us. We shall be free to use, copy, modify publish, or redistribute the Suggestions for any purpose and in any way without any credit or any compensation to you
                 Your Consent
             </p>
@@ -419,4 +589,3 @@ function Disclaimer() {
         </section>
     )
 }
-*/
