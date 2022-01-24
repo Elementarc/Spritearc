@@ -2,7 +2,7 @@ import express from "express"
 import {parse} from "url"
 import next from "next"
 import { check_if_json, create_number_from_page_query } from "../lib/custom_lib"
-import { create_user, create_user_pack, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner, update_user_about, update_pack_download_count, create_root_user } from "../lib/mongo_lib"
+import { create_user_account, create_user_pack, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner, update_user_about, update_pack_download_count, create_root_user, delete_user_account, user_exists_in_db } from "../lib/mongo_lib"
 import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file, validate_pack_report_reason, validate_profile_image, validate_user_description } from "../lib/validate_lib"
 import cookieParser from "cookie-parser"
 import jwt from "jsonwebtoken"
@@ -31,16 +31,40 @@ function parse_url(req: any, res:any, next:any) {
 
     next()
 }
-function with_auth(req:any, res: any, next: any) {
+//Middleware that checks if user is authorized to do certaint things
+async function with_auth(req:any, res: any, next: any) {
 
     try {
 
+        //Checking if cookie exists
         const cookies = req.cookies
         if(!cookies.user) return res.status(403).send("Not authorized!")
+        //User cookie does exists
 
-        const user = jwt.verify(cookies.user, `${process.env.JWT_PRIVATE_KEY}`)
+        //Verifieng if user  cookie is valid
+        const user = jwt.verify(cookies.user, `${process.env.JWT_PRIVATE_KEY}`) as any
         if(!user) return res.status(403).send("Not authorized!")
-        
+        //User cookie is valid
+
+
+        //Checking if user exists in database
+        const user_exists = await user_exists_in_db(user.username)
+        if(typeof user_exists === "string") {
+            res.setHeader("Set-Cookie", cookie.serialize("user", "", {
+                maxAge: -1,
+                path: "/",
+                secure: process.env.NODE_ENV === "production" ? true : false,
+                httpOnly: true
+            }))
+            res.status(400).send(user_exists)
+            return
+        }
+        //User does exist
+
+        //Checking if user is verified
+        if(!user_exists.verified) return res.status(400).send("Please verify your account")
+        //User is verified
+
         //adding user property to req stream
         req.user = user as Public_user
         req.token = cookies.user
@@ -55,27 +79,38 @@ function with_auth(req:any, res: any, next: any) {
 }
 //middleware that increases expire date of token
 async function refresh_token(req: any, res: any, next: any) {
-    const cookies = req.cookies
-    if(!cookies.user) return next()
-
-    const user = jwt.verify(cookies.user, `${process.env.JWT_PRIVATE_KEY}`)
-    if(!user) return next()
-    /* const public_user = await get_public_user(user.username)
-    if(!public_user) return next()
-    const refreshed_token = jwt.sign(public_user, process.env.JWT_PRIVATE_KEY as string) */
-
-    //Setting cookie with token as value
-    res.setHeader('Set-Cookie', cookie.serialize('user', cookies.user, {
-        expires: new Date(Date.now() + 1000 * 60 * 15),
-        httpOnly: true,
-        path: "/",
-        sameSite: "strict",
-    }));
+    try {
+        const cookies = req.cookies
+        if(!cookies.user) return next()
     
-    next()
+        const user = jwt.verify(cookies.user, `${process.env.JWT_PRIVATE_KEY}`)
+        if(!user) return next()
+        /* const public_user = await get_public_user(user.username)
+        if(!public_user) return next()
+        const refreshed_token = jwt.sign(public_user, process.env.JWT_PRIVATE_KEY as string) */
+    
+        //Setting cookie with token as value
+        res.setHeader('Set-Cookie', cookie.serialize('user', cookies.user, {
+            expires: new Date(Date.now() + 1000 * 60 * 15),
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production" ? true : false,
+            path: "/",
+            sameSite: "strict",
+        }));
+        
+        next()
+    } catch (err) {
+        console.log(err)
+        res.setHeader("Set-Cookie", cookie.serialize("user", "", {
+            maxAge: -1,
+            path: "/",
+            httpOnly: true
+        }))
+        next()
+    }
 }
 
-//function that updates user token.
+//function that updates user token. For better ux when for example adding new profile image
 async function update_token(req: any, res: any) {
     const cookies = req.cookies
     if(!cookies.user) return false
@@ -307,7 +342,8 @@ async function main() {
                             ratings: []
                         } 
                         
-                        await create_user_pack(pack)
+                        const create_user_pack_res = await create_user_pack(pack)
+                        if(typeof create_user_pack_res === "string") throw new Error(create_user_pack_res)
                         //Pack got created!
 
                         //Creating Downlaodable zip file
@@ -360,6 +396,7 @@ async function main() {
         res.setHeader("Set-Cookie", cookie.serialize("user", "", {
             maxAge: -1,
             path: "/",
+            secure: process.env.NODE_ENV === "production" ? true : false,
             httpOnly: true
         }))
         
@@ -369,7 +406,8 @@ async function main() {
         try {
             const user = req.user
             
-            res.status(200).send({auth: true, ...user})
+            if(user) return res.status(200).send({auth: true, public_user: {...user}})
+            res.status(200).send({auth: false})
 
         } catch ( err ) {
             res.status(400).send("Wrong secret")
@@ -526,6 +564,20 @@ async function main() {
         }
         
     })
+    server.post("/user/delete_account", async(req: any,res) => {
+        try {
+            const user = req.user as Public_user
+
+            const delete_user_account_res = await delete_user_account(user.username)
+    
+            if(typeof delete_user_account_res === "string") return res.status(400).send(delete_user_account_res)
+    
+            res.status(200).send({success: true, message: "Successfully deleted your account"})
+        } catch(err) {
+            console.log(err)
+        }
+        
+    })
 
     //Login
     server.post("/login", async(req, res) => {
@@ -561,6 +613,7 @@ async function main() {
             res.setHeader('Set-Cookie', cookie.serialize('user', token, {
                 expires: new Date(Date.now() + 1000 * 60 * 60),
                 httpOnly: true,
+                secure: process.env.NODE_ENV === "production" ? true : false,
                 path: "/",
                 sameSite: "strict",
             }));
@@ -666,7 +719,7 @@ async function main() {
             //Creating user_obj from user input
             const user_obj =  create_default_user(username, email, hashed_password, salt, ocassional_emails_init)
         
-            const user_res = await create_user(user_obj)
+            const user_res = await create_user_account(user_obj)
 
             if(typeof user_res === "string") return res.status(500).send(user_res)
 

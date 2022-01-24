@@ -3,6 +3,7 @@ import { Public_user, User } from '../types';
 import { Pack } from '../types';
 import { SHA256 } from 'crypto-js';
 import { send_email_verification } from './nodemailer_lib';
+import { delete_directory, delete_file } from './node_lib';
 const client = new MongoClient("mongodb://localhost:27017")
 const DATABASE = "spritearc"
 
@@ -393,7 +394,7 @@ export async function get_packs_collection_size() {
 
 }
 
-export async function create_user(user: User): Promise<string | boolean> {
+export async function create_user_account(user: User): Promise<string | boolean> {
     try {
 
         await client.connect()
@@ -429,23 +430,98 @@ export async function create_user(user: User): Promise<string | boolean> {
     }
 }
 
-export async function create_user_pack(pack: Pack) {
+export async function delete_all_user_packs(username: string): Promise<string | boolean> {
+    try {
+        await client.connect()
+        const packs_collection = client.db(DATABASE).collection("packs")
+
+        const delete_results = await packs_collection.deleteMany({username: username})
+
+        if(!delete_results.acknowledged) return "couldnt delete packs"
+        console.log("Deleted: ", delete_results.deletedCount, "packs")
+        return true
+
+    } catch(err) {
+        return "Somethign went wrong while trying to delete your packs"
+    }
+}
+
+export async function delete_user_account(username: string): Promise<boolean|string> {
+    try {
+        await client.connect()
+
+        const users_collection = client.db(DATABASE).collection("users")
+
+        const user = (await users_collection.findOne({username}) as unknown) as User | null
+        if(!user) return "Couldnt find user to delete"
+        
+        //Deleting profile_img and profile_banner
+        if(user.profile_picture !== "default.png") {
+            delete_file(`${process.cwd()}/dynamic_public/profile_pictures/${user.profile_picture}`)
+        }
+        if(user.profile_banner !== "default.png") {
+            delete_file(`${process.cwd()}/dynamic_public/profile_banners/${user.profile_banner}`)
+        }
+        //Deleting files from filesystem
+        const user_packs = (await client.db(DATABASE).collection("packs").find({username: username}).toArray() as unknown) as Pack[]
+        for(let user_pack of user_packs) {
+            const deleted_directories = delete_directory(`${process.cwd()}/dynamic_public/packs/${user_pack._id.toString()}`)
+            delete_file(`${process.cwd()}/pack_zips/${user_pack._id.toString()}.zip`)
+            
+        }
+
+        
+        //Deleting user from db
+        const user_deleted = await users_collection.deleteOne({username: username})
+        if(!user_deleted.acknowledged) return "couldnt delete user"
+        
+        //Deleting packs from user from db
+        const delete_response = await delete_all_user_packs(username)
+        if(typeof delete_response === "string") return delete_response
+
+        return true
+
+    } catch(err) {
+        console.log(err)
+        return "Couldn't delete account"
+    }
+}
+
+export async function user_exists_in_db(username: string): Promise<{verified: boolean} | string> {
+    try {
+        await  client.connect()
+        const users_collection = client.db(DATABASE).collection("users")
+        const user = (await users_collection.findOne({username: username}) as unknown) as User | null
+        if(!user) return "Couldnt find existing user"
+
+        return {verified: user.verified}
+    } catch(err) {
+        console.log(err)
+        return "Something went wrong while trying to check if user exists"
+    }
+    
+}
+
+export async function create_user_pack(pack: Pack): Promise<string | boolean> {
 
     try {
 
         await client.connect()
-
+        
         const packs_collection = client.db(DATABASE).collection("packs")
+        const users_collection = client.db(DATABASE).collection("users")
         
-        const user_collection = client.db(DATABASE).collection("users")
-
-        await user_collection.updateOne({username: pack.username}, {$push: {released_packs: pack._id.toString()}})
+        await users_collection.updateOne({username: pack.username}, {$push: {released_packs: pack._id.toString()}})
         
-        packs_collection.insertOne(pack)
+        const inserted_res = await packs_collection.insertOne(pack)
 
+        if(!inserted_res.acknowledged) return "couldnt add pack to db"
+
+        return true
     } catch( err ) {
-        console.log("LOL")
-        throw err
+       
+        console.log(err)
+        return "Something went wrong while trying to create your pack"
 
     }
 

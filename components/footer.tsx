@@ -36,7 +36,7 @@ export default function Footer(): ReactElement {
                 
                 {/*<Background_gradient id="footer_background" page_id="app_content_container"/>*/}
                 
-                <h1>Pixepalast</h1>
+                <h1>Spritearc</h1>
 
                 <div className="socials_container">
                     <Social_item link="https://twitter.com/home" logo={Twitter} alt="Twitter Logo"/>

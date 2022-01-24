@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer"
+import * as nodemailer from "nodemailer"
 const transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
     port: 587,

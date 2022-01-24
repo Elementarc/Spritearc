@@ -23,9 +23,13 @@ export default function Layout({children}: any ) {
             const response = await fetch("/user/is_auth", {method: "POST"})
             
             if(response.status === 200) {
-                const user: Public_user = await response.json()
-                
-                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...user}}})
+                const user: {auth: boolean, public_user: Public_user} = await response.json()
+                console.log(user)
+                if(user.auth) {
+                    Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: user.auth, public_user: {...user.public_user}}})
+                } else {
+                    Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: user.auth}})
+                }
 
             } else {
                 Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
@@ -40,13 +44,17 @@ export default function Layout({children}: any ) {
     useEffect(() => {
         clearTimeout(timer)
         timer = setTimeout(() => {
-            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
+
+            if(Auth.user.auth) {
+                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
+            }
+            
         }, 1000 * 60 * 16);
 
         return(() => {
             clearTimeout(timer)
         })
-    }, [router.pathname])
+    })
     //Function that will be triggert everytime a page unmounts
     function on_unmount() {
         document.documentElement.style.scrollBehavior = "unset"

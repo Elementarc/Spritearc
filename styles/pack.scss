@@ -458,6 +458,9 @@
                 .rate_pack_container {
                     margin-top: 8rem;
                     pointer-events: all;
+                    @include breakpoint(mobile) {
+                        margin-top: 10rem;
+                    }
                     h1 {
                         @include h1(medium);
                     }
@@ -517,7 +520,7 @@
                     margin-top: 4rem;
                     
                     @include breakpoint(mobile) {
-                        margin-top: 8rem;
+                        margin-top: 3.5rem;
                         margin-bottom: 3rem
                     }
                     .top_line {
@@ -661,7 +664,7 @@
         .asset_sections_container{
             position: relative;
             @include breakpoint(mobile) {
-                padding: 1.5rem 1rem 1rem 1rem;
+                padding: 1.5rem 1rem 1.5rem 1rem;
             }
             .section_container{
                 margin-top: 1rem;

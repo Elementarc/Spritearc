@@ -9,7 +9,6 @@ import Packs_section from '../components/packs_section';
 import Head from 'next/head';
 
 export default function Browse() {
-	
 
 	return (
 		<>
@@ -79,7 +78,7 @@ function Title_pack_section() {
 				<div className="title_pack_preview_container">
 						
 					<div className="content_container">
-						<h2>Winner of this week!</h2>
+						<h2>WINNER OF THE MONTH!</h2>
 						<h1>{title_pack.title}</h1>
 						<p>{title_pack.description}</p>
 						<Link href={`/pack?id=${title_pack._id}`} scroll={false}>View Pack</Link>

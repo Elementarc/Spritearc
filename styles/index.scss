@@ -1,0 +1,315 @@
+@import "./variables.module.scss";
+
+.home_page{
+    position: relative;
+    height: auto;
+    background-color: $color_background_dark;
+
+    .content{
+        position: relative;
+        z-index: 1;
+        background: $color_background_dark;
+
+
+        .middle_container {
+            padding: 5rem 12rem;
+            height: 2000px;
+            width: 100%;
+
+            @include breakpoint(laptop) {
+                padding: 4rem 4rem;
+            }
+            @include breakpoint(mobile) {
+                padding: 4rem 1rem;
+            }
+            .middle_info{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                .h1_with_deco{
+                    @include h1_with_deco();
+                    text-align: center;
+                    width: 100%;
+                }
+                p{
+                    margin-top: 2rem;
+                    @include p();
+                    width: 70%;
+                    text-align: center;
+                    @include breakpoint(mobile) {
+                        width: 100%;
+                    }
+                }
+                button{
+                    margin-top: 3rem;
+                    @include button();
+                }
+                .arrow_container{
+                    display: flex;
+                    justify-content: center;
+                    margin-top: 3rem;
+                    width: 100%;
+                    @include breakpoint(mobile) {
+                        display: none;
+                    }
+                    .arrow_down{
+                        animation: arrow_down .7s infinite alternate-reverse;
+                        transition: 0.2s ease-in-out;
+                        fill: $color_main;
+                        transform: rotate(90deg);
+                    }
+                }
+            }
+            
+        }
+
+        .perks_container{
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+            width: 100%;
+            background: $color_main_blue;
+            padding-bottom: 12rem;
+
+            @include breakpoint(mobile) {
+                padding-bottom: 7rem;
+            }
+            h1{
+                margin-top: 5rem;
+                position: relative;
+                @include h1()
+            }
+
+            .perks_grid {
+                position: relative;
+                z-index: 3;
+                margin-top: 5rem;
+                padding: 0 12rem;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                grid-template-rows: 150px;
+                column-gap: 5rem;
+                row-gap: 5rem;
+                width: 100%;
+                @include breakpoint(laptop) {
+                    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+                    padding: 0 4rem;
+                }
+                @include breakpoint(mobile) {
+                    padding: 0 1rem;
+                    grid-template-columns: 1fr;
+                    column-gap: 1rem;
+                    row-gap: 6rem;
+                }
+
+                .perk {
+                    
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    height: 150px;
+
+                    .perk_icon_wrapper{
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        width: 100%;
+                        padding: 1rem 0;
+                        svg {
+                            fill: $color_main_bright;
+                            transform: scale(2)
+                        }
+                    }
+                    
+                    h2{
+                        @include h2()
+                    }
+
+                    p{
+                        @include p(medium);
+                        margin-top: .5rem;
+                        width: 100%;
+                        text-align: center;
+                    }
+                }
+            }
+            
+            .svg_wrapper{
+                position: absolute;
+                overflow: hidden;
+                width: 100%;
+                height: 190px;
+                bottom: -125px;
+
+                @include breakpoint(mobile) {
+                    display: none;
+                }
+                svg {
+                    transform: scale(1.15);
+                }
+            }
+            
+        }
+        
+        //All Sections
+        section{
+            height: 680px;
+            @include breakpoint(mobile){
+                height: 500px;
+            }
+            h2{
+                @include h2(medium);
+            }
+            h1{
+                margin-top: -.2rem;
+                @include h1(medium);
+                @include breakpoint(mobile) {
+                    margin-top: unset;
+                }
+            }
+            p{
+                @include p(medium);
+                margin-top: .5rem;
+                width: 50%;
+                @include breakpoint(laptop) {
+                    width: 70%;
+                }
+
+                @include breakpoint(mobile) {
+                    @include p(medium);
+                    width: 100%;
+                } 
+            }
+            a {
+                @include a(medium);
+                margin-top: 1rem;
+                
+            }
+        }
+
+        .section_one_container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            background: url("/images/fantasy_forest.jpg");
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            margin-bottom: .25rem;
+            
+            .section_one_content{
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                z-index: 1;
+                width: 100%;
+                padding-left: 12rem;
+                text-align: start;
+                
+                @include breakpoint(laptop) {
+                    padding: 0rem 4rem;
+                }
+
+                @include breakpoint(mobile) {
+                    padding-left: unset;
+                    padding:  0 1rem;
+                }
+                
+            }
+            .section_one_background_blur{
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: rgba(3, 12, 24, 0.5);
+                background: linear-gradient(120deg, $color_background_dark 10%, rgba(3,12,24,0) 85%);
+
+                @include breakpoint(mobile) {
+                    background: linear-gradient(120deg, $color_background_dark 15%, rgba(3,12,24,0) 100%);
+                }
+            }
+        }
+
+        .news_section_container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+            background: url("/images/fantasy_forest.jpg");
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            margin-bottom: .25rem;
+            
+            .news_section_content{
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                z-index: 1;
+                width: 100%;
+                padding-right: 12rem;
+                text-align: end;
+
+                @include breakpoint(laptop) {
+                    padding-right: 4rem;
+                }
+                @include breakpoint(mobile) {
+                    padding-right: unset;
+                    padding: 0 1rem
+                }
+            }
+            .news_section_background_blur{
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: rgba(3, 12, 24, 0.5);
+                background: linear-gradient(240deg, $color_background_dark 10%, rgba(3,12,24,0) 85%);
+
+                @include breakpoint(mobile) {
+                    background: linear-gradient(240deg, $color_background_dark 15%, rgba(3,12,24,0) 100%);
+                }
+            }
+        }
+
+        .signup_section_container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            background: url("/images/watefall2.png");
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            .signup_section_content{
+                z-index: 1;
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                font-family: $font_alatsi;
+                text-align: center;
+                padding: 0 1rem;
+                
+                button{ 
+                    @include button;
+                    font-size: 16px;
+                    margin-top: 1.8rem;
+                }
+            }
+            .signup_section_background_blur{
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                background: rgba(3, 12, 24, 0.5);
+                background: radial-gradient(circle, rgba(3,12,24,0) -100%, $color_background_dark 95%);
+            }
+        }
+    }
+    
+    //Footer
+}
