@@ -36,7 +36,7 @@ export default function Account_page(props: {user: Public_user}) {
         const response = await fetch("/user/logout", {method: "POST"})
 
         if(response.status === 200) {
-            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
+            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
         }
     }
 
@@ -46,7 +46,6 @@ export default function Account_page(props: {user: Public_user}) {
         const get_profile_upload_input = document.getElementById("input_profile_picture") as HTMLInputElement
        
         get_profile_upload_input.onchange = async(e: any) => {
-
             const form = new FormData()
             form.set("file", e.target.files[0])
 
@@ -56,18 +55,17 @@ export default function Account_page(props: {user: Public_user}) {
             })
 
             if(response.status === 200) {
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile picture", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile picture", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
             } else {
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
             }
         }
-    }, [])
+    }, [App_notification])
 
     useEffect(() => {
         const get_profile_upload_input = document.getElementById("input_profile_banner") as HTMLInputElement
-        console.log(get_profile_upload_input)
+
         get_profile_upload_input.onchange = async(e: any) => {
-            console.log(e.target.files[0])
             const form = new FormData()
             form.set("file", e.target.files[0])
 
@@ -77,12 +75,13 @@ export default function Account_page(props: {user: Public_user}) {
             })
 
             if(response.status === 200) {
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile banner", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile banner", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
             } else {
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
             }
         }
-    }, [])
+
+    }, [App_notification])
 
     function event_valid_user_description(e: any) {
         const valid_description = validate_user_description(e.target.value)
@@ -106,10 +105,10 @@ export default function Account_page(props: {user: Public_user}) {
         })
 
         if(response.status === 200) {
-            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated description", message: "It might take a little bit to see your changes", button_label: "Great", callb: () => {set_update_about_state(false)}}})
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated description", message: "It might take a little bit to see your changes", button_label: "Great", callb: () => {set_update_about_state(false)}}})
 
         } else {
-            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to update your description. Please try later or inform an admin.", button_label: "Ok", callb: () => {set_update_about_state(false)}}})
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to update your description. Please try later or inform an admin.", button_label: "Ok", callb: () => {set_update_about_state(false)}}})
 
         }
     }

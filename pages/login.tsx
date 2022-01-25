@@ -53,7 +53,7 @@ export default function Login_page() {
                 const body = await response.json() as Public_user
                 
                 
-                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...body}, callb: () => {router.push("/account", "/account", {scroll: false})}}})
+                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...body}, callb: () => {router.push("/account", "/account", {scroll: false})}}})
                 
                 console.log("Successfully logged in")
                 set_loading(false)
@@ -64,7 +64,7 @@ export default function Login_page() {
             else if(response.status === 401) {
                 const body = await response.json()
                 
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Please confirm your email!", message: "You have to confirm your email address to be able to login!", button_label: "Send confirmation", callb: () => {resend_email_verification(body.email)}}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Please confirm your email!", message: "You have to confirm your email address to be able to login!", button_label: "Send confirmation", callb: () => {resend_email_verification(body.email)}}})
                 set_loading(false)
 
             } else  {

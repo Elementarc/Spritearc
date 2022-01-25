@@ -5,11 +5,12 @@ import {motion} from "framer-motion";
 import { NOTIFICATION_ACTIONS } from "../context/app_notification_context_provider"
 import { App_notification_context_type } from '../types';
 import { APP_CONTEXT } from './layout';
+
 //Component that renders an App notification
 export default function App_notification() {
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     const APP: any = useContext(APP_CONTEXT)
-    const notification = App_notification.app_notification
+    const notification = App_notification.notification
      
     //Setting maxWidth and maxHeight of fixed container to page container
     useEffect(() => {
@@ -37,7 +38,7 @@ export default function App_notification() {
     //Button function
     function button_func() {
         notification.callb ? notification.callb() : () => {}
-        App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.CLOSE})
+        App_notification.dispatch({type: NOTIFICATION_ACTIONS.CLOSE, payload: null})
     }
 
     return (

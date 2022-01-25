@@ -2,7 +2,7 @@ import express from "express"
 import {parse} from "url"
 import next from "next"
 import { check_if_json, create_number_from_page_query } from "../lib/custom_lib"
-import { create_user_account, create_user_pack, delete_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner, update_user_about, update_pack_download_count, create_root_user, delete_user_account, user_exists_in_db } from "../lib/mongo_lib"
+import { create_user_account, create_user_pack, delete_user_pack, get_user_by_email, email_available, get_pack, get_packs_collection_size, get_pack_by_tag, get_public_user, get_recent_packs, get_released_packs_by_user, get_title_pack, username_available, validate_user_credentials, create_account_verification_token, verify_user_account, report_pack, rate_pack, update_user_profile_picture, update_user_profile_banner, update_user_about, update_pack_download_count, create_root_user, delete_user_account, user_exists_in_db, validate_user_credentials_by_username } from "../lib/mongo_lib"
 import { validate_formidable_files, validate_pack_tags, validate_license, validate_pack_description, validate_pack_section_name, validate_pack_tag, validate_pack_title, validate_single_formidable_file, validate_pack_report_reason, validate_profile_image, validate_user_description } from "../lib/validate_lib"
 import cookieParser from "cookie-parser"
 import jwt from "jsonwebtoken"
@@ -16,6 +16,7 @@ import del from "del"
 import { create_default_user } from "../lib/create_lib"
 import { send_email_verification } from "../lib/nodemailer_lib"
 import AdmZip from "adm-zip"
+import logger from '../lib/logger';
 require('dotenv').config()
 
 const dev = process.env.NODE_ENV !== "production"
@@ -71,7 +72,7 @@ async function with_auth(req:any, res: any, next: any) {
         next()
     } catch ( err ) {
 
-        console.log(err)
+        logger.error(err)
         res.status(500).send("Invalid secret")
 
     }
@@ -85,10 +86,7 @@ async function refresh_token(req: any, res: any, next: any) {
     
         const user = jwt.verify(cookies.user, `${process.env.JWT_PRIVATE_KEY}`)
         if(!user) return next()
-        /* const public_user = await get_public_user(user.username)
-        if(!public_user) return next()
-        const refreshed_token = jwt.sign(public_user, process.env.JWT_PRIVATE_KEY as string) */
-    
+        
         //Setting cookie with token as value
         res.setHeader('Set-Cookie', cookie.serialize('user', cookies.user, {
             expires: new Date(Date.now() + 1000 * 60 * 15),
@@ -100,7 +98,7 @@ async function refresh_token(req: any, res: any, next: any) {
         
         next()
     } catch (err) {
-        console.log(err)
+        logger.error(err)
         res.setHeader("Set-Cookie", cookie.serialize("user", "", {
             maxAge: -1,
             path: "/",
@@ -146,7 +144,7 @@ async function main() {
     //Creating a root user for a mongodb instance
     await create_root_user()
     await app.prepare()
-    server.listen(3000, () => {console.log("Server port: 3000")})
+    server.listen(3000, () => {logger.info("Server port: 3000")})
 
     //User actions. User routes are protected by middleware withauth.
     server.post("/user/delete_pack", async(req: any,res) => {
@@ -156,7 +154,7 @@ async function main() {
             const pack_id = req.query.id as string
             const pack_directory = `./dynamic_public/packs/${pack_id}`
             const pack_zip_file = `./pack_zips/${pack_id}.zip`
-            const delete_res = await delete_pack(new ObjectId(pack_id), user)
+            const delete_res = await delete_user_pack(new ObjectId(pack_id), user)
 
             if(!delete_res) throw "Couldnt delete file"
 
@@ -166,7 +164,7 @@ async function main() {
 
         } catch (err) {
 
-            console.log(err)
+            logger.error(err)
             res.status(500).send("Something went wrong!")
 
         }
@@ -269,8 +267,9 @@ async function main() {
                             }
         
                         } else {
-                            console.log(`File: ${file.originalFilename} did not pass validations.`)
+                            logger.warn(`File: ${file.originalFilename} did not pass validations.`)
                         }
+
                     } catch(err) {
                         reject(err)
                     }
@@ -354,7 +353,6 @@ async function main() {
 
                         resolve(true)
                     } catch(err) {
-                        console.log(err)
                         reject(err)
                     }
                 })
@@ -367,6 +365,7 @@ async function main() {
             
         } catch (err) {
             const error: any = err
+            
             //Deleting pack entry if something fails
             try {
                 const pack_zip_file = `./pack_zips/${id}.zip`
@@ -375,13 +374,13 @@ async function main() {
                 fs.unlinkSync(pack_zip_file)
                 const pack = await get_pack(id)
 
-                if(pack) await delete_pack(id, public_user)
+                if(pack) await delete_user_pack(id, public_user)
                 
                 res.status(400).send({success: false, message:`${error.message}`})
 
             } catch( err ) {
 
-                console.log(err)
+                logger.error(err)
                 res.status(500).send({success: false, message:"Internal server issue."})
 
             }
@@ -431,7 +430,7 @@ async function main() {
             
             return res.status(200).send(JSON.stringify({user: user.username, rating: rating}))
         } catch(err) {
-            console.log(err)
+            logger.error(err)
             return res.status(500).send("Something went wrong")
         }
         
@@ -476,7 +475,7 @@ async function main() {
                         })
     
                     } catch( err ) {
-                        console.log(err)
+                        logger.error(err)
                     }
                 })
                 await update_token(req,res)
@@ -486,13 +485,13 @@ async function main() {
             }
             
         } catch( err ) {
-            console.log(err)
+            logger.error(err)
         }
         
     })
     server.post("/user/update_profile_banner", async(req: any, res) =>{
         const directory = "./dynamic_public/profile_banners"
-        console.log("Changing profile banner")
+        
         try {
             const files_dir = fs.readdirSync(directory)
             const files_length = files_dir.length + 1
@@ -529,17 +528,20 @@ async function main() {
                         })
     
                     } catch( err ) {
-                        console.log(err)
+                        reject(err)
                     }
                 })
+
                 await update_token(req,res)
                 res.status(200).send({success:true, message: "Successfully changed profile picture"})
+
             } catch(err) {
+                logger.error(err)
                 res.status(400).send({success: false, message: "Something went wrong while trying to upload your profile picture."})
             }
             
         } catch( err ) {
-            console.log(err)
+            logger.error(err)
         }
         
     })
@@ -559,7 +561,7 @@ async function main() {
 
             
         } catch(err) {
-            console.log(err)
+            logger.error(err)
             res.status(500).send("We had problems to update your about")
         }
         
@@ -567,14 +569,20 @@ async function main() {
     server.post("/user/delete_account", async(req: any,res) => {
         try {
             const user = req.user as Public_user
+            const {password} = req.body
 
+            const user_obj = await validate_user_credentials_by_username(user.username, password)
+            if(typeof user_obj === "string") return res.status(400).send("Didnt pass validation")
+            //User has validated himself
+
+            //Deleting account
             const delete_user_account_res = await delete_user_account(user.username)
-    
             if(typeof delete_user_account_res === "string") return res.status(400).send(delete_user_account_res)
     
             res.status(200).send({success: true, message: "Successfully deleted your account"})
         } catch(err) {
-            console.log(err)
+            logger.error(err)
+            res.status(500).end()
         }
         
     })
@@ -649,7 +657,7 @@ async function main() {
 
         } catch ( err ) {
 
-            console.log(err)
+            logger.error(err)
             res.status(500).send("Something went wrong")
 
         }
@@ -674,7 +682,7 @@ async function main() {
 
         } catch ( err ) {
 
-            console.log(err)
+            logger.error(err)
             res.status(500).send("Something went wrong")
 
         }
@@ -729,7 +737,7 @@ async function main() {
 
         } catch ( err ) {
 
-            console.log(err)
+            logger.error(err)
             res.status(500).send("Something went wrong while trying to create your account.")
 
         }
@@ -754,7 +762,7 @@ async function main() {
 
         } catch ( err ) {
 
-            console.log(err)
+            logger.error(err)
             res.status(500).send("Something went wrong while trying to create your account.")
 
         }
@@ -765,7 +773,6 @@ async function main() {
         //0 = successfull 1 = token expires string = error
         const response = await verify_user_account(token as string)
 
-        console.log("response: ", response)
         if(typeof response === "string") return res.status(400).send(response)
         if(response === 0) return res.status(200).send({success: true, message: "Successfully verified account."})
         if(response === 1) return res.status(200).send({success: false, message: "Token Expired!"})
@@ -815,7 +822,7 @@ async function main() {
 
         } catch (err) {
 
-            console.log(err)
+            logger.error(err)
             res.status(500).send("Something went wrong!")
 
         }
@@ -834,7 +841,7 @@ async function main() {
 
         } catch (err) {
 
-            console.log(err)
+            logger.error(err)
             res.status(500).send("Something went wrong!")
 
         }
@@ -857,7 +864,7 @@ async function main() {
 
         } catch ( err ) {
 
-            console.log(err)
+            logger.error(err)
             res.status(500).send("something went wrong!")
 
         }
@@ -880,7 +887,7 @@ async function main() {
 
         } catch (err) {
 
-            console.log(err)
+            logger.error(err)
             res.status(500).send("Something went wrong!")
 
         }
@@ -896,7 +903,7 @@ async function main() {
             await update_pack_download_count(new ObjectId(pack_id))
             res.download(pack_directory)
         } catch (err) {
-            console.log(err)
+            logger.error(err)
             res.status(500).send("Something went wrong while trying to start your download")
         }
         
@@ -904,7 +911,6 @@ async function main() {
 
     //App
     server.get("/", (req, res) => {
-        console.log("Got request /")
         app.render(req,res, "/index")
     })
     server.get("/news", (req,res) => {

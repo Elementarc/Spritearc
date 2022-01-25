@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useReducer} from 'react';
+import React, { useState, useEffect} from 'react';
 import { Pack } from '../types';
 import Link from 'next/link';
 import Pack_stars_raiting from './pack_stars_raiting';
@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Loader from './loading';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import { capitalize_first_letter_rest_lowercase, check_if_json, SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
+import { useRouter } from 'next/router';
 
 export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: any, sort_action?: string | null | undefined}) {
 	const [sort_action, set_sort_action] = useState<null | string | undefined>(null)
@@ -18,7 +19,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	useEffect(() => {
 		const sort_action =  sessionStorage.getItem(`${section_name}_sort_action`) ? sessionStorage.getItem(`${section_name}_sort_action`) : null
 		set_sort_action(sort_action)
-	}, [set_sort_action])
+	}, [set_sort_action, section_name])
 
 	//Getting packs from server. Setting it aswell
 	useEffect(() => {
@@ -192,12 +193,12 @@ function Pack_previews(props: { packs: Pack[] | null}) {
 
 //Component that represents 1 Pack preview. Takes a Pack obj as a property.
 function Pack_preview(props: {pack: Pack}) {
+	const router = useRouter()
     const pack: Pack = props.pack
 
 	return (
-        <Link href={`/pack?id=${pack._id}`} scroll={false}>
-			
-            <div className="pack_preview_container">
+        
+            <div onClick={() => {router.push(`/pack?id=${pack._id}`, `/pack?id=${pack._id}`, {scroll: false})}} className="pack_preview_container">
 
                 <div className="content_container">
 					<Pack_stars_raiting ratings={pack.ratings}/>
@@ -212,6 +213,5 @@ function Pack_preview(props: {pack: Pack}) {
 
             </div>
 
-        </Link>
 	);
 }

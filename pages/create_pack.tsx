@@ -851,10 +851,10 @@ function Step_3() {
                     router.push(`/pack?id=${body.pack_id}`, `/pack?id=${body.pack_id}`, {scroll: false})
                 }
 
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully created pack!", message: "Your pack is now live and can be viewed by everyone.", button_label: "Visit pack", callb: go_to_pack}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully created pack!", message: "Your pack is now live and can be viewed by everyone.", button_label: "Visit pack", callb: go_to_pack}})
                 set_loading(false)
             } else {
-                App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "We couldn't create your pack! Please relog and try again!", button_label: "Ok"}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "We couldn't create your pack! Please relog and try again!", button_label: "Ok"}})
                 set_loading(false)
             }
             

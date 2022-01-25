@@ -72,7 +72,6 @@ export function create_form_data(pack: Create_pack_frontend): FormData | null {
     for(let section of pack_content) {
         
         for(let i = 0; i < section.section_assets.length; i ++) {
-            console.log(section.section_assets[i])
             form_data.append(section.section_name.toLowerCase(), section.section_assets[i], `${section.section_name.toLowerCase()}_${i}`)
         }
         

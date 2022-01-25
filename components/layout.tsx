@@ -1,6 +1,6 @@
 
 import React, {useEffect, useContext} from 'react';
-import {App_context, App_navigation_context_type, Public_user} from "../types"
+import {App_context, App_navigation_context_type, Auth_context_type, Public_user} from "../types"
 import { AnimatePresence, motion } from 'framer-motion';
 import App_notification from './app_notification';
 import { useRouter } from 'next/router';
@@ -15,8 +15,8 @@ export const APP_CONTEXT: any = React.createContext(null)
 
 export default function Layout({children}: any ) {
     const router = useRouter()
-    const Auth: any = useContext(Auth_context)
-    let timer: NodeJS.Timeout
+    const Auth: Auth_context_type = useContext(Auth_context)
+    
     //Checking if user is signed in or not. Used for whole application.
     useEffect(() => {
         async function is_auth() {
@@ -24,15 +24,15 @@ export default function Layout({children}: any ) {
             
             if(response.status === 200) {
                 const user: {auth: boolean, public_user: Public_user} = await response.json()
-                console.log(user)
+                
                 if(user.auth) {
-                    Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: user.auth, public_user: {...user.public_user}}})
+                    Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: user.public_user, callb: () => {}}})
                 } else {
-                    Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: user.auth}})
+                    Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: null})
                 }
 
             } else {
-                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
+                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: null})
             }
             
         }
@@ -42,19 +42,21 @@ export default function Layout({children}: any ) {
     },[])
 
     useEffect(() => {
+        let timer: any
         clearTimeout(timer)
         timer = setTimeout(() => {
 
             if(Auth.user.auth) {
-                Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
+                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: null})
             }
             
-        }, 1000 * 60 * 16);
+        }, 1000 * 60 * 15);
 
         return(() => {
             clearTimeout(timer)
         })
     })
+
     //Function that will be triggert everytime a page unmounts
     function on_unmount() {
         document.documentElement.style.scrollBehavior = "unset"
@@ -77,22 +79,19 @@ export default function Layout({children}: any ) {
 
                             <div className="app_content_container" id="app_content_container">
 
+
                                 <App_content_blur/>
 
-                                
-                                    <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
-                                        <motion.main key={router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
-                                            {children}
-                                        </motion.main>
-                                    </AnimatePresence>
-                                
-                                
-                                <AnimatePresence exitBeforeEnter>
-                                    
-                                    <App_notification/>
-                                    
+                                <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
+                                    <motion.main key={router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
+                                        {children}
+                                    </motion.main>
                                 </AnimatePresence>
+
+
+                                <App_notification/>
                                 
+
                             </div>
                             
                         </div>

@@ -5,333 +5,30 @@
     position: relative;
     height: auto;
 
-    .fixed_container {
+    .pack_overlay {
         position: relative;
         width: 100%;
         height: 100%;
-        .close_pack_container{
-            position: absolute;
+
+        .pack_nav_container{
+            position: relative;
+            z-index: 0;
             width: 100%;
             height: 100%;
-            @include breakpoint(mobile) {
-                display: none;
-            }
-            .icon_container{
-                pointer-events: all;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin: 4rem;
-                height: 50px;
-                width: 50px;
-                box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
-                border-radius: 50%;
-                background: $color_main;
+            
+            .close_pack_container{
                 position: absolute;
-                
-                &:hover {
-                    cursor: pointer;
-                    background: $color_main_bright;
-                    .hover_box {
-                        opacity: 1;
-                        transform: scale(1);
-                    }
-                }
-
-                .hover_box{
-                    transition: 0.1s ease-in-out;
-                    @include p(default);
-                    position: absolute;
-                    right: -110px;
-                    color: white;
-                    pointer-events: none;
-                    opacity: 0;
-                    transform: scale(0.8);
-                }
-
-                .close_icon{
-                    transform: scale(1.2);
-                    fill: $color_background_dark;
-                }
-            }
-        }
-
-        .pack_actions_fixed_container {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            @include breakpoint(mobile) {
-                display: flex;
-                justify-content: flex-end;
-            }
-            .pack_actions_container {
-                position: relative;
                 width: 100%;
-                display: flex;
-                justify-content: flex-end;
-                align-items: flex-end;
-                row-gap: 2rem;
-                padding-right: 4rem;
-                padding-top: 4rem;
-                flex-direction: column;
-                pointer-events: none;
+                height: 100%;
                 @include breakpoint(mobile) {
                     display: none;
                 }
-                .pack_action {
-                    position: relative;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    right: 0;
-                    top: 0;
-                    height: 50px;
-                    width: 50px;
-                    border-radius: 50%;
-                    background: $color_error;
-                    pointer-events: all;
-
-                    &:hover {
-                        cursor: pointer;
-                        background: $color_error_hover;
-                        p {
-                            opacity: 1;
-                            transform: scale(1)
-                        }
-                    }
-                    p {
-                        @include p;
-                        color: $color_error;
-                        opacity: 0;
-                        position: absolute;
-                        width: 150px;
-                        left: -145px;
-                        transition: .1s ease-in-out;
-                        transform: scale(.7);
-                        pointer-events: none;
-                        text-align: center;
-                    }
-                    svg {
-                        fill: $color_background_dark;
-                        transform: scale(1.1);
-                    }
-                }
-            }
-
-            
-        }
-
-        .delete_pack_confirmation_container {
-            position: absolute;
-            display: flex;
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            
-            .confirmation_content {
-                position: relative;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                width: 38%;
-                padding: 2rem 4rem;
-                background: $color_main_blue;
-                box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
-                pointer-events: all;
-                z-index: 1;
-                @include breakpoint(laptop) {
-                    width: 500px
-                }
-                @include breakpoint(mobile) {
-                    width: 90%
-                }
-                h1{
-                    @include h1(medium);
-                    color: $color_error
-                }
-                p {
-                    @include p();
-                    margin-top: 1rem;
-                    text-align: center;
-                    width: 100%;
-                }
-                button {
-                    @include button;
-                    margin-top: 2rem;
-                }
-                h4 {
-                    @include h4;
-                    margin-top: 2rem;
-                    &:hover {
-                        cursor: pointer;
-                        color: $color_grey;
-                    }
-                }
-            }
-
-            .delete_pack_confirmation_background {
-                position: absolute;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.75);
-                pointer-events: all;
-            }
-        }
-
-        .report_pack_confirmation_container {
-            position: absolute;
-            display: flex;
-            z-index: 100;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: 100%;
-            
-            .confirmation_content {
-                position: relative;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                width: 38%;
-                padding: 2rem 4rem;
-                background: $color_main_blue;
-                box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
-                pointer-events: all;
-                z-index: 1;
-                @include breakpoint(mobile) {
-                    padding: 2rem 1rem;
-                }
-                @include breakpoint(laptop) {
-                    width: 500px
-                }
-                @include breakpoint(mobile) {
-                    width: 90%
-                }
-                h1{
-                    @include h1(medium);
-                    color: $color_error
-                }
-                input {
-                    @include input;
-                    margin-top: 1.5rem;
-                    @include breakpoint(mobile) {
-                        width: 100%;
-                    }
-                }
-                .input_error {
-                    border-color: $color_error;
-                    color: $color_error
-                }
-                p {
-                    @include p();
-                    margin-top: 1rem;
-                    text-align: center;
-                    width: 100%;
-                }
-                .report_pack_error_message {
-                    @include p(small);
-                    color: $color_error;
-                    margin-top: unset
-                }
-                button {
-                    @include button;
-                    margin-top: 2rem;
-                }
-                .disabled_button {
-                    @include button(disabled);
-                }
-                h4 {
-                    @include h4;
-                    margin-top: 2rem;
-                    &:hover {
-                        cursor: pointer;
-                        color: $color_grey;
-                    }
-                }
-            }
-
-            .report_pack_confirmation_background {
-                position: absolute;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.75);
-                pointer-events: all;
-            }
-        }
-        
-    }
-    
-    .asset_fixed_container{
-        position: fixed;
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: scroll;
-        &::-webkit-scrollbar {
-            width: 0;
-            scrollbar-width: none;
-        }
-        scrollbar-width: none;
-        z-index: 200;
-        background: rgba(0, 0, 0, 0.8);
-        @include breakpoint(mobile) {
-            align-items: unset;
-            justify-content: center;
-            padding-top: 2rem;
-        }
-        .asset_fixed_image_container{
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 550px;
-            height: 550px;
-            background: $color_main_blue;
-            image-rendering: pixelated;
-            image-rendering: -moz-crisp-edges;
-            image-rendering: crisp-edges;
-            user-select: none;
-            -moz-user-select: none;
-            -khtml-user-select: none;
-            -webkit-user-select: none;
-            -o-user-select: none;
-            @include breakpoint(mobile) {
-                width: 260px;
-                height: 260px;
-            }
-            img{
-                object-fit: contain;
-                object-position: center;
-                transform: scale(.8);
-            }
-
-            .close_asset{
-                @include a(medium);
-                font-size: 18px;
-                position: absolute;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                bottom: -6rem;
-                @include breakpoint(mobile) {
-                    position: fixed;
-                    bottom: 4rem;
-                    font-size: 16px;
-                }
-                .close{
-                    position: relative;
+                .icon_container{
                     pointer-events: all;
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    margin: 4rem;
                     height: 50px;
                     width: 50px;
                     box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
@@ -347,17 +44,329 @@
                             transform: scale(1);
                         }
                     }
-                    
+    
+                    .hover_box{
+                        transition: 0.1s ease-in-out;
+                        @include p(default);
+                        position: absolute;
+                        right: -110px;
+                        color: white;
+                        pointer-events: none;
+                        opacity: 0;
+                        transform: scale(0.8);
+                    }
+    
                     .close_icon{
                         transform: scale(1.2);
-                        fill: black;
+                        fill: $color_background_dark;
                     }
                 }
             }
+    
+            .pack_actions_fixed_container {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                
+                @include breakpoint(mobile) {
+                    display: flex;
+                    justify-content: flex-end;
+                }
+                .pack_actions_container {
+                    position: relative;
+                    width: 100%;
+                    display: flex;
+                    justify-content: flex-end;
+                    align-items: flex-end;
+                    row-gap: 2rem;
+                    padding-right: 4rem;
+                    padding-top: 4rem;
+                    flex-direction: column;
+                    pointer-events: none;
+                    @include breakpoint(mobile) {
+                        display: none;
+                    }
+                    .pack_action {
+                        position: relative;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        right: 0;
+                        top: 0;
+                        height: 50px;
+                        width: 50px;
+                        border-radius: 50%;
+                        background: $color_error;
+                        pointer-events: all;
+    
+                        &:hover {
+                            cursor: pointer;
+                            background: $color_error_hover;
+                            p {
+                                opacity: 1;
+                                transform: scale(1)
+                            }
+                        }
+                        p {
+                            @include p;
+                            color: $color_error;
+                            opacity: 0;
+                            position: absolute;
+                            width: 150px;
+                            left: -145px;
+                            transition: .1s ease-in-out;
+                            transform: scale(.7);
+                            pointer-events: none;
+                            text-align: center;
+                        }
+                        svg {
+                            fill: $color_background_dark;
+                            transform: scale(1.1);
+                        }
+                    }
+                }
+    
+                
+            }
+    
+            .delete_pack_confirmation_container {
+                position: absolute;
+                display: flex;
+                z-index: 100;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                
+                .confirmation_content {
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 38%;
+                    padding: 2rem 4rem;
+                    background: $color_main_blue;
+                    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                    pointer-events: all;
+                    z-index: 1;
+                    @include breakpoint(laptop) {
+                        width: 500px
+                    }
+                    @include breakpoint(mobile) {
+                        width: 90%
+                    }
+                    h1{
+                        @include h1(medium);
+                        color: $color_error
+                    }
+                    p {
+                        @include p();
+                        margin-top: 1rem;
+                        text-align: center;
+                        width: 100%;
+                    }
+                    button {
+                        @include button;
+                        margin-top: 2rem;
+                    }
+                    h4 {
+                        @include h4;
+                        margin-top: 2rem;
+                        &:hover {
+                            cursor: pointer;
+                            color: $color_grey;
+                        }
+                    }
+                }
+    
+                .delete_pack_confirmation_background {
+                    position: absolute;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.75);
+                    pointer-events: all;
+                }
+            }
+    
+            .report_pack_confirmation_container {
+                position: absolute;
+                display: flex;
+                z-index: 100;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                
+                .confirmation_content {
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
+                    width: 38%;
+                    padding: 2rem 4rem;
+                    background: $color_main_blue;
+                    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                    pointer-events: all;
+                    z-index: 1;
+                    @include breakpoint(mobile) {
+                        padding: 2rem 1rem;
+                    }
+                    @include breakpoint(laptop) {
+                        width: 500px
+                    }
+                    @include breakpoint(mobile) {
+                        width: 90%
+                    }
+                    h1{
+                        @include h1(medium);
+                        color: $color_error
+                    }
+                    input {
+                        @include input;
+                        margin-top: 1.5rem;
+                        @include breakpoint(mobile) {
+                            width: 100%;
+                        }
+                    }
+                    .input_error {
+                        border-color: $color_error;
+                        color: $color_error
+                    }
+                    p {
+                        @include p();
+                        margin-top: 1rem;
+                        text-align: center;
+                        width: 100%;
+                    }
+                    .report_pack_error_message {
+                        @include p(small);
+                        color: $color_error;
+                        margin-top: unset
+                    }
+                    button {
+                        @include button;
+                        margin-top: 2rem;
+                    }
+                    .disabled_button {
+                        @include button(disabled);
+                    }
+                    h4 {
+                        @include h4;
+                        margin-top: 2rem;
+                        &:hover {
+                            cursor: pointer;
+                            color: $color_grey;
+                        }
+                    }
+                }
+    
+                .report_pack_confirmation_background {
+                    position: absolute;
+                    top: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0, 0, 0, 0.75);
+                    pointer-events: all;
+                }
+            }
+            
         }
-        
-    }
 
+        .focus_image_container{
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            scrollbar-width: none;
+            z-index: 1;
+            pointer-events: all;
+            background: rgba(0, 0, 0, 0.75);
+            @include breakpoint(mobile) {
+                align-items: unset;
+                justify-content: center;
+                padding-top: 2rem;
+            }
+    
+            .asset_fixed_image_container{
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 550px;
+                height: 550px;
+                background: $color_main_blue;
+                image-rendering: pixelated;
+                image-rendering: -moz-crisp-edges;
+                image-rendering: crisp-edges;
+                user-select: none;
+                -moz-user-select: none;
+                -khtml-user-select: none;
+                -webkit-user-select: none;
+                -o-user-select: none;
+                @include breakpoint(mobile) {
+                    width: 260px;
+                    height: 260px;
+                }
+                img{
+                    object-fit: contain;
+                    object-position: center;
+                    transform: scale(.8);
+                }
+    
+                .close_asset{
+                    @include a(medium);
+                    font-size: 18px;
+                    position: absolute;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    bottom: -6rem;
+                    @include breakpoint(mobile) {
+                        position: fixed;
+                        bottom: 4rem;
+                        font-size: 16px;
+                    }
+                    .close{
+                        position: relative;
+                        pointer-events: all;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 50px;
+                        width: 50px;
+                        box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                        border-radius: 50%;
+                        background: $color_main;
+                        position: absolute;
+                        
+                        &:hover {
+                            cursor: pointer;
+                            background: $color_main_bright;
+                            .hover_box {
+                                opacity: 1;
+                                transform: scale(1);
+                            }
+                        }
+                        
+                        .close_icon{
+                            transform: scale(1.2);
+                            fill: black;
+                        }
+                    }
+                }
+            }
+            &::-webkit-scrollbar {
+                width: 0;
+                scrollbar-width: none;
+            }
+        }
+    }
     
     .content {
         position: relative;

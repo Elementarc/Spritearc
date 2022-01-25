@@ -1,16 +1,25 @@
 import fs from "fs"
 import del from "del"
-
+import logger from "./logger"
 export async function delete_directory(directory_path: string): Promise<boolean | string> {
     
-    const deleted_packs = await del([directory_path])
+    try {
+        await del([directory_path])
 
-    if(deleted_packs.length === 0) return "Didnt delete any packs from filesystem"
-
-    return true
+        return true
+    } catch(err) {
+        logger.error(err)
+        return true
+    }
+    
 }
 
 export function delete_file(file_path: string) {
 
-    fs.unlinkSync(file_path)
+    try {
+        fs.unlinkSync(file_path)
+    } catch(err) {
+        logger.warn(err)
+    }
+    
 }

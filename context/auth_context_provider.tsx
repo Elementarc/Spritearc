@@ -1,6 +1,6 @@
 import React, {useReducer} from "react";
-import { Public_user } from "../types";
 import Router from "next/router"
+import { Frontend_public_user, Public_user } from "../types";
 export const Auth_context: any = React.createContext(null)
 
 export const USER_DISPATCH_ACTIONS = {
@@ -8,99 +8,57 @@ export const USER_DISPATCH_ACTIONS = {
     LOGOUT: "FAILED"
 }
 
-const user_init: any = {
+const init_public_user: Frontend_public_user = {
     auth: null,
-    username: null,
-    description: null,
-    created_at: null,
-    profile_picture: null,
-    profile_banner: null,
-    followers: null,
-    following: null,
-    released_packs: null,
+    username: "",
+    description: "",
+    created_at: new Date(),
+    profile_picture: "",
+    profile_banner: "",
+    followers: [],
+    following: [],
+    released_packs: [],
+    role: ""
 }
 
-function user_dispatch_reducer(user: any, action: {type: string, payload?: {public_user?: Public_user, callb?: () => void}}): any {
+function user_dispatch_reducer(user: Frontend_public_user, action: {type: string, payload: {auth: boolean, public_user: Public_user, callb: () => void} | null}): any {
     const { type, payload } = action
 
-    let init_public_user = {}
-
-    if(!payload) {
-        init_public_user = {
-            username: null,
-            description: null,
-            created_at: null,
-            profile_picture: null,
-            profile_banner: null,
-            followers: null,
-            following: null,
-            released_packs: null,
-        }
-        return {
-            auth: false,
-            ...init_public_user
-        }
-    }
-    if(!payload.public_user) {
-        init_public_user = {
-            username: null,
-            description: null,
-            created_at: null,
-            profile_picture: null,
-            profile_banner: null,
-            followers: null,
-            following: null,
-            released_packs: null,
-        }
-    } else {
-        init_public_user = payload.public_user
-    }
-
+    
     switch ( type ) {
 
         //Login
         case USER_DISPATCH_ACTIONS.LOGIN : {
-            //When callback call function
-            if(payload.callb) {
-                payload.callb()
-            }
-            return {
-                auth: true,
-                ...init_public_user
-            }
+            if(!payload) break
             
+            user = {auth: true, ...payload.public_user}
+            payload.callb()
+
+            break
         }
 
         //Logout
         case USER_DISPATCH_ACTIONS.LOGOUT : {
-            if(payload.callb) {
-                payload.callb()
-            }
-            return {
-                auth: false,
-                ...init_public_user
-            }
+            user = {...init_public_user, auth: false}
+            Router.push("/login", "/login", {scroll: false})
+            break
         }
 
         default : {
-            return {
-                auth: false,
-                ...init_public_user
-            }
+            user = {...init_public_user}
+            
+            break
         }
     }
+
+    return {...user}
 }
 
 export default function Auth_context_provider({children}: any) {
-    const [user, dispatch_user] = useReducer(user_dispatch_reducer, user_init)
+    const [user, dispatch] = useReducer(user_dispatch_reducer, init_public_user)
     
-    const Auth = {
-        user,
-        dispatch_user
-    }
-
     return (
-        <Auth_context.Provider value={{user, dispatch_user}}>
+        <Auth_context.Provider value={{user, dispatch}}>
             {children}
         </Auth_context.Provider>
     );

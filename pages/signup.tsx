@@ -554,17 +554,17 @@ export function Step_3() {
                 body: JSON.stringify({...PAGE_CONTEXT.signup_obj})
             })
             
-            if(response_stream.status !== 200) return App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${await response_stream.text()}`, message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+            if(response_stream.status !== 200) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${await response_stream.text()}`, message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
             
                
             
-            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup(); router.push("/login", "/login", {scroll: false})}}})
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup(); router.push("/login", "/login", {scroll: false})}}})
             set_loading(false)
 
             PAGE_CONTEXT.set_signup_obj({username: null, email: null, password: null, legal: false, occasional_emails: false})
 
         } else {
-            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
             set_loading(false)
         }
     }

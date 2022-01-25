@@ -7,8 +7,8 @@ export interface App_navigation_context_type {
     set_nav_state: React.Dispatch<React.SetStateAction<boolean>>
 }
 export interface App_notification_context_type {
-    app_notification: App_notification,
-    dispatch_app_notification: React.Dispatch<{type: string,payload?: App_dispatch_notification | undefined}>
+    notification: App_notification,
+    dispatch: React.Dispatch<{type: string, payload: App_dispatch_notification | null}>
 }
 
 export interface App_context {
@@ -38,7 +38,7 @@ export interface App_notification extends App_dispatch_notification {
 export interface App_notification_actions {
     SUCCESS: string,
     ERROR: string,
-    CLOSE: string,
+    CLOSE: string
 }
 
 //Patchnote types
@@ -183,7 +183,22 @@ export interface Public_user {
     role: string,
 }
 
+export interface Frontend_public_user extends Public_user {
+    auth: boolean | null
+}
+//Auth
 
+export interface Auth_context_type {
+    user: Frontend_public_user,
+    dispatch: React.Dispatch<{
+        type: string;
+        payload: {
+            auth: boolean;
+            public_user?: Public_user | undefined;
+            callb?: (() => void) | undefined;
+        } | null;
+    }>
+}
 //Signup
 export interface Signup_obj {
     username: string | null,

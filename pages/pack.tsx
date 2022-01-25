@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import React, {ReactElement, useEffect, useContext, useState, useCallback} from 'react';
 import Footer from '../components/footer';
-import {Pack_content, Pack, Public_user, Pack_rating} from "../types"
+import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
@@ -16,7 +16,7 @@ import H1_with_deco from '../components/h1_with_deco';
 import { format_date } from '../lib/date_lib';
 import { get_pack } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
-import { capitalize_first_letter_rest_lowercase, check_if_json } from '../lib/custom_lib';
+import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import StarEmptyIcon from "../public/icons/StarEmptyIcon.svg"
 import StarIcon from "../public/icons/StarIcon.svg"
 import Pack_star_raiting from '../components/pack_stars_raiting';
@@ -25,29 +25,32 @@ import ThrashIcon from "../public/icons/ThrashIcon.svg"
 import { App_notification_context } from "../context/app_notification_context_provider";
 import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider"
 import Head from 'next/dist/shared/lib/head'
+import { Auth_context } from '../context/auth_context_provider';
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 export default function Pack_page_handler({pack, user}: {pack: Pack, user: Public_user | null}) {
-    const App_notification: any = useContext(App_notification_context)
-
+    const App_notification: App_notification_context_type = useContext(App_notification_context)
+    const Auth: Auth_context_type = useContext(Auth_context)
+    
     return(
         <>
-            
             <title>Browse through thousands of free and opensource Pixelart sprites and assets</title>
-            <Pack_page pack={pack} user={user} App_notification={App_notification}/>
+            <Memo_pack_page pack={pack} user={user} App_notification={App_notification} Auth={Auth}/>
         </>
-        
     )
 }
 
-const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | string, App_notification: any}) => {
+function Pack_page(props: {pack: Pack, user: Public_user | null | string, App_notification: App_notification_context_type, Auth: Auth_context_type}) {
+    const router = useRouter()
+    const pack_id = router.query.id as string
     //Props
     const pack: Pack = JSON.parse(`${props.pack}`)
     const user: Public_user | null = typeof props.user === "string" ? JSON.parse(`${props.user}`) : null
     const own_pack = user ? user.username === pack.username : false
+    const download_link = `${process.env.NEXT_PUBLIC_BASE_PATH}/download_pack?pack_id=${pack_id}`
     //Context
-    const App_notification: any = props.App_notification
+    const App_notification: App_notification_context_type = props.App_notification
     //State that saves currently clicked asset as a url string.
     const [focus_img_src, set_focus_img_src] = useState("/")
     //State that toggles focus of asset.
@@ -57,17 +60,9 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
     const [report_confirmation_state, set_report_confirmation_state] = useState(false)
     //Pack ratings
     const [prev_pack_ratings, set_prev_pack_ratings] = useState<Pack_rating[]>(pack.ratings)
-    //Contexts
-    const router = useRouter()
-    const pack_id = router.query.id as string
-    function go_back() {
-        const prev_path = sessionStorage.getItem("prev_path")
-        if(!prev_path) return router.push("/browse", "/browse", {scroll: false})
-        
-        router.push(prev_path, prev_path, {scroll: false})
-        
-    }
-    
+
+    //Creating parallax effect for Image
+    useParallax("title_pack_background_image")
     //Toggling arrow svg when scrollY > 0
     useEffect(() => {
         //Function that toggles the arrow. Getting called whenever scrolling is happening.
@@ -87,11 +82,7 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
             window.removeEventListener("scroll", toggle_arrow)
         })
     }, [])
-
-    //Creating parallax effect for Image
-    useParallax("title_pack_background_image")
     
-    //Function that sets img src + toggles show_focus_img to true.
     function toggle_asset(e: any) {
         if(e.target.src) {
             set_focus_img_src(e.target.src)
@@ -100,44 +91,6 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
         }
         set_show_focus_img(true)
     }
-
-    //Setting max_height and max_width of fixed asset_fixed_image_container in page Component.
-    useEffect(() => {
-        const get_page = document.getElementById("pack_page") as HTMLDivElement
-        const get_fixed_asset = document.getElementById("asset_fixed_container") as HTMLDivElement
-
-        function set_sizes() {
-            if(show_focus_img) {
-                
-                get_fixed_asset.style.maxWidth = `${get_page.offsetWidth}px`
-                get_fixed_asset.style.maxHeight = `${get_page.offsetHeight}px`
-            }
-        }
-
-        set_sizes()
-        window.addEventListener("resize", set_sizes)
-        return(() => {
-            window.removeEventListener("resize", set_sizes)
-        })
-    }, [show_focus_img])
-    
-    async function delete_pack() {
-        const query = router.query
-
-        const response = await fetch(`/user/delete_pack?id=${query.id}`, {
-            method: "POST"
-        })
-
-        
-        if(response.status === 200) {
-            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully deleted pack!", message: `You now will be redirected.`, button_label: "Ok", callb: go_back}})
-        } else {
-            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "No Permission!", message: "You do not have the permission to delete this pack!", button_label: "Ok"}})
-        }
-
-    }
-
-    
     function report_pack_validation() {
         const report_input = document.getElementById("report_input") as HTMLInputElement
         const report_pack_error_message = document.getElementById("report_pack_error_message") as HTMLParagraphElement
@@ -165,6 +118,13 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
             return false
         }
     }
+    function go_back() {
+        const prev_path = sessionStorage.getItem("prev_path")
+        if(!prev_path) return router.push("/browse", "/browse", {scroll: false})
+        
+        router.push(prev_path, prev_path, {scroll: false})
+        
+    }
 
     async function submit_pack_report() {
         const valid_report_reason = report_pack_validation()
@@ -186,14 +146,26 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
         if(response.status === 200) {
             const response_body = await response.json() as {success:boolean, message:string}
             
-            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Thank you for helping us!", message: response_body.message, button_label: "Ok", callb: () => {set_report_confirmation_state(false)}}})
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Thank you for helping us!", message: response_body.message, button_label: "Ok", callb: () => {set_report_confirmation_state(false)}}})
         } else {
-            App_notification.dispatch_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to report this pack. We are sorry that you have to experience this.", button_label: "Ok"}})
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to report this pack. We are sorry that you have to experience this.", button_label: "Ok"}})
         }
     }
+    async function delete_pack() {
+        const query = router.query
 
-    const download_link = `${process.env.NEXT_PUBLIC_BASE_PATH}/download_pack?pack_id=${pack_id}`
+        const response = await fetch(`/user/delete_pack?id=${query.id}`, {
+            method: "POST"
+        })
 
+        
+        if(response.status === 200) {
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully deleted pack!", message: `You now will be redirected.`, button_label: "Ok", callb: go_back}})
+        } else {
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "No Permission!", message: "You do not have the permission to delete this pack!", button_label: "Ok"}})
+        }
+
+    }
     async function download_pack() {
         if(typeof pack_id !== "string") return
         const a = document.getElementById("download_pack_link") as HTMLAnchorElement
@@ -206,91 +178,92 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
             <div className="pack_page" id="pack_page">
 
                 <AnimatePresence exitBeforeEnter>
-                    {show_focus_img &&
+                    <Fixed_app_content_overlay>
 
-                        <motion.div onClick={() => {set_focus_img_src("/"), set_show_focus_img(false)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="asset_fixed_container" id="asset_fixed_container">
-                            
-                            <div className="asset_fixed_image_container">
-                                <Image src={focus_img_src} alt="Represents a bigger size of an clicked image" layout="fill" id="asset_fixed_image"></Image>
+                        <div className='pack_overlay'>
 
-                                <div className="close_asset" id="close_pack">
+                            <div className='pack_nav_container'>
+                                <div className='close_pack_container' id="close_pack">
 
-                                    <div className="close">
+                                    <div onClick={() => {go_back()}} className="icon_container">
                                         <CloseIcon className="close_icon"/>
+                                        <div className="hover_box">Close Pack</div>
                                     </div>
 
                                 </div>
-                            </div>
+                                
+                                <AnimatePresence exitBeforeEnter>
 
-                        </motion.div>
+                                    {delete_confirmation_state &&
+                                        <motion.div key="report_pack" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
+                                            <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                                <h1>Delete Pack?</h1>
+                                                <p>Do you want to delete this pack? Remember, after deleting it wont be recoverable and all stats will be lost.</p>
+                                                <button onClick={delete_pack}>Yes, delete pack!</button>
+                                                <h4 onClick={() => {set_delete_confirmation_state(false)}}>No, dont delete pack</h4>
+                                            </motion.div>
 
-                    }
-                </AnimatePresence>
+                                            <div onClick={() => {set_delete_confirmation_state(false)}} className='delete_pack_confirmation_background' />
+                                        </motion.div>
+                                    }
 
-            
+                                    {report_confirmation_state &&
+                                        <motion.div key="report_pack"initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='report_pack_confirmation_container'>
+                                            
+                                            <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                                <h1>Report Pack</h1>
+                                                <input onKeyUp={report_pack_validation} type="text" placeholder='Reason' id="report_input"/>
+                                                <p className='report_pack_error_message' id="report_pack_error_message"></p>
+                                                <button className='disabled_button' id="report_submit_button" onClick={submit_pack_report}>Report pack</button>
+                                                <h4 onClick={() => {set_report_confirmation_state(false)}}>I changed my mind.</h4>
+                                            </motion.div>
 
-                <Fixed_app_content_overlay>
+                                            <div onClick={() => {set_report_confirmation_state(false)}} className='report_pack_confirmation_background' />
 
-                    <div className='fixed_container'>
-                        <div className='close_pack_container' id="close_pack">
+                                        </motion.div>
+                                    }
 
-                            <div onClick={() => {go_back()}} className="icon_container">
-                                <CloseIcon className="close_icon"/>
-                                <div className="hover_box">Close Pack</div>
-                            </div>
+                                </AnimatePresence>
 
-                        </div>
-                        
-                        <AnimatePresence exitBeforeEnter>
+                                <div className='pack_actions_fixed_container'>
 
-                            {delete_confirmation_state &&
-                                <motion.div key="report_pack" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
-                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                        <h1>Delete Pack?</h1>
-                                        <p>Do you want to delete this pack? Remember, after deleting it wont be recoverable and all stats will be lost.</p>
-                                        <button onClick={delete_pack}>Yes, delete pack!</button>
-                                        <h4 onClick={() => {set_delete_confirmation_state(false)}}>No, dont delete pack</h4>
-                                    </motion.div>
+                                    <div className='pack_actions_container'>
 
-                                    <div onClick={() => {set_delete_confirmation_state(false)}} className='delete_pack_confirmation_background' />
-                                </motion.div>
-                            }
+                                        <Pack_action Action_icon={ReportIcon} name='Report Pack' callb={() => {set_report_confirmation_state(!delete_confirmation_state)}}/>
+                                        {user && (user.username === pack.username || user.role === "admin") &&
+                                            <Pack_action Action_icon={ThrashIcon} name='Delete Pack' callb={() => {set_delete_confirmation_state(!delete_confirmation_state)}}/>
+                                        }
 
-                            {report_confirmation_state &&
-                                <motion.div key="report_pack"initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='report_pack_confirmation_container'>
+                                    </div>
+
+                                </div>
                                     
-                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                        <h1>Report Pack</h1>
-                                        <input onKeyUp={report_pack_validation} type="text" placeholder='Reason' id="report_input"/>
-                                        <p className='report_pack_error_message' id="report_pack_error_message"></p>
-                                        <button className='disabled_button' id="report_submit_button" onClick={submit_pack_report}>Report pack</button>
-                                        <h4 onClick={() => {set_report_confirmation_state(false)}}>I changed my mind.</h4>
-                                    </motion.div>
-
-                                    <div onClick={() => {set_report_confirmation_state(false)}} className='report_pack_confirmation_background' />
-
-                                </motion.div>
-                            }
-
-                        </AnimatePresence>
-
-                        <div className='pack_actions_fixed_container'>
-
-                            <div className='pack_actions_container'>
-
-                                <Pack_action Action_icon={ReportIcon} name='Report Pack' callb={() => {set_report_confirmation_state(!delete_confirmation_state)}}/>
-                                {user && (user.username === pack.username || user.role === "admin") &&
-                                    <Pack_action Action_icon={ThrashIcon} name='Delete Pack' callb={() => {set_delete_confirmation_state(!delete_confirmation_state)}}/>
-                                }
-
                             </div>
-
-                        </div>
                             
-                    </div>
+                            <AnimatePresence exitBeforeEnter>
+                                {show_focus_img &&
+                                    
+                                    <motion.div onClick={() => {set_focus_img_src("/"), set_show_focus_img(false)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="focus_image_container">
+                                        
+                                        <div onClick={() => {set_focus_img_src("/"), set_show_focus_img(false)}} className="asset_fixed_image_container">
+                                            <Image src={focus_img_src} alt="Represents a bigger size of an clicked image" layout="fill" id="asset_fixed_image"></Image>
 
-                </Fixed_app_content_overlay>
-               
+                                            <div className="close_asset" id="close_pack">
+
+                                                <div className="close">
+                                                    <CloseIcon className="close_icon"/>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                    </motion.div>
+                                    
+                                }
+                            </AnimatePresence>
+                        </div>
+                    </Fixed_app_content_overlay>
+                </AnimatePresence>
 
                 <div className="content" id="content">
         
@@ -311,7 +284,7 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
                             </div>
 
                             {!own_pack &&
-                                <Rate_pack user={user} set_prev_pack_ratings={set_prev_pack_ratings} prev_pack_ratings={prev_pack_ratings}/>
+                                <Memo_rate_pack user={user} set_prev_pack_ratings={set_prev_pack_ratings} prev_pack_ratings={prev_pack_ratings} App_notification={App_notification}/>
                             }
                             
 
@@ -412,12 +385,11 @@ const Pack_page = React.memo((props: {pack: Pack, user: Public_user | null | str
 
         </PACK_PAGE_CONTEXT.Provider>
     );
-})
-Pack_page.displayName = "Pack_page"
-
-const Rate_pack = React.memo((props: {user: Public_user | null, set_prev_pack_ratings: any, prev_pack_ratings: any}) => {
+}
+function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any, prev_pack_ratings: any, App_notification: App_notification_context_type}) {
     const set_prev_pack_ratings = props.set_prev_pack_ratings
     const prev_pack_ratings = props.prev_pack_ratings
+    const App_notification = props.App_notification
     const user = props.user
     const router = useRouter()
     //Filled stars
@@ -430,7 +402,6 @@ const Rate_pack = React.memo((props: {user: Public_user | null, set_prev_pack_ra
         )
     }
     
-
     //Empty stars
     let empty_stars_jsx: ReactElement[] = []
     for(let i = 0; i < 5; i++) {
@@ -491,6 +462,9 @@ const Rate_pack = React.memo((props: {user: Public_user | null, set_prev_pack_ra
     }
 
     async function submit_rating(e: any) {
+        if(!user) {
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please create an Account to rate", message: "You only can rate packs when creating an account!", button_label: "ok"}})
+        }
         const rating = parseInt(e.target.id)
         
         const pack_id = router.query.id
@@ -551,9 +525,13 @@ const Rate_pack = React.memo((props: {user: Public_user | null, set_prev_pack_ra
             </div>
             
         </div>
-    );
-})
-Rate_pack.displayName = "Rate_pack"
+    );  
+}
+
+export const Memo_pack_page = React.memo(Pack_page)
+export const Memo_rate_pack = React.memo(Rate_pack)
+
+
 
 //Component that creates a section with assets
 function Pack_sprite_sections(props: {pack: Pack}): ReactElement {

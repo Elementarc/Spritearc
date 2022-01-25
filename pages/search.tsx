@@ -18,7 +18,7 @@ export default function Search_page() {
 		}
 		
 
-	}, [search_query])
+	}, [search_query, router.query])
 
 	function search() {
 		const input = document.getElementById("search_input") as HTMLInputElement

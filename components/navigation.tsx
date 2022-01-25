@@ -413,7 +413,7 @@ function User_profile() {
 
         if(response.status === 200) {
             Navigation.set_nav_state(false)
-            Auth.dispatch_user({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
+            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
         }
     }
 
