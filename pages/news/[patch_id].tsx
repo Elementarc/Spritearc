@@ -15,6 +15,7 @@ export default function Patch(props: any) {
   	const patchnote: Patchnote = JSON.parse(props.patchnote)
 	const distance = formatDistanceStrict(new Date(patchnote.info.date), new Date())
 	useParallax("patch_background_image")
+
 	return (
 		<>
 			<div className="patch_container">
@@ -83,50 +84,3 @@ return (
 
 );
 }
-
-
-
-//Serverside
-import patchHandler from '../../lib/patch_lib';
-
-export const getStaticProps: GetStaticProps = async (context) => {
-	const params: any = context.params
-	const patchnote = JSON.stringify(patchHandler.getPatchnote(params.patchId))
-
-
-	if(patchnote) {
-		return {
-			props: {
-				patchnote
-			}
-		}
-	} else {
-		return {
-			notFound: true,
-		}
-	}
-	
-}
-
-export const getStaticPaths: GetStaticPaths  = async ()  => {
-	const patchnoteList = patchHandler.patchnoteList
-    //Prerendering Paths for Patches. Function returns all paths for possible patches.
-	const paths: string [] = patchnoteList.map((patch) => {
-		
-		return `/news/${patch.id}`
-	})
-    return{
-        paths,
-        fallback: false,
-    }
-}
-
-
-
-
-
-
-
-
-
-

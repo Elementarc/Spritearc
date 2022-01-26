@@ -14,9 +14,10 @@ export default function Verify_account() {
             const token = router.query.token
             if(typeof token !== "string") return router.push("/login", "/login", {scroll: false})
             if(!token) return router.push("/login", "/login", {scroll: false})
-            const response = await fetch("/signup/verify_account", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/verify_account`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
+                credentials: "include",
                 body: JSON.stringify({token: token})
             })
 

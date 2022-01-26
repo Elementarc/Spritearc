@@ -9,7 +9,7 @@ import Packs_section from '../components/packs_section';
 import Head from 'next/head';
 
 export default function Browse() {
-
+	
 	return (
 		<>
 			<Head>
@@ -34,8 +34,7 @@ export default function Browse() {
 				
 				<div className="content">
 					<Title_pack_section/>
-					<Packs_section section_name='Recent Packs' api="/recent_packs" method='POST'/>
-					<Packs_section section_name='Most Popular' api="/recent_packs" method='POST'/>
+					<Packs_section section_name='Recent Packs' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/recent_packs`} method='POST'/>
 					<Nav_shadow/>
 				</div>
 
@@ -51,8 +50,9 @@ function Title_pack_section() {
 	useEffect(() => {
 		
 		async function get_title_pack() {
-			const response_title_pack = await fetch(`/title_pack`, {
-				method: "POST"
+			const response_title_pack = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/title_pack`, {
+				method: "POST",
+				credentials: "include",
 			})
 			
 			if(response_title_pack.status === 200) {
@@ -85,7 +85,7 @@ function Title_pack_section() {
 					</div>
 
 					<div className="background_container">
-						<Image src={`${process.env.NEXT_PUBLIC_BASE_PATH}/packs/${title_pack._id}/${title_pack.preview}`} alt="Preview image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						<Image src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${title_pack._id}/${title_pack.preview}`} alt="Preview image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
 						<div className="background_blur" />
 					</div>
 

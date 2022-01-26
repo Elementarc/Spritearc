@@ -21,7 +21,7 @@ const init_public_user: Frontend_public_user = {
     role: ""
 }
 
-function user_dispatch_reducer(user: Frontend_public_user, action: {type: string, payload: {auth: boolean, public_user: Public_user, callb: () => void} | null}): any {
+function user_dispatch_reducer(user: Frontend_public_user, action: {type: string, payload: {auth: boolean, public_user?: Public_user, callb?: () => void} | null}): any {
     const { type, payload } = action
 
     
@@ -30,17 +30,21 @@ function user_dispatch_reducer(user: Frontend_public_user, action: {type: string
         //Login
         case USER_DISPATCH_ACTIONS.LOGIN : {
             if(!payload) break
-            
+            if(!payload.public_user) break
+            if(payload.callb) payload.callb()
+
             user = {auth: true, ...payload.public_user}
-            payload.callb()
+            
 
             break
         }
 
         //Logout
         case USER_DISPATCH_ACTIONS.LOGOUT : {
+            if(!payload) break
+            if(payload.callb) payload.callb()
             user = {...init_public_user, auth: false}
-            Router.push("/login", "/login", {scroll: false})
+            
             break
         }
 

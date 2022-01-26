@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import React, {ReactElement, useEffect, useContext, useState, useCallback} from 'react';
 import Footer from '../components/footer';
-import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type} from "../types"
+import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Frontend_public_user} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
@@ -14,9 +14,8 @@ import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../components/h1_with_deco';
 import { format_date } from '../lib/date_lib';
-import { get_pack } from '../lib/mongo_lib';
 import { ObjectId } from 'mongodb';
-import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
+import { capitalize_first_letter_rest_lowercase, check_if_json } from '../spritearc_lib/custom_lib';
 import StarEmptyIcon from "../public/icons/StarEmptyIcon.svg"
 import StarIcon from "../public/icons/StarIcon.svg"
 import Pack_star_raiting from '../components/pack_stars_raiting';
@@ -29,26 +28,28 @@ import { Auth_context } from '../context/auth_context_provider';
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
-export default function Pack_page_handler({pack, user}: {pack: Pack, user: Public_user | null}) {
+export default function Pack_page_handler(props: {pack: Pack}) {
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     const Auth: Auth_context_type = useContext(Auth_context)
-    
+    const pack = props.pack
+
     return(
         <>
             <title>Browse through thousands of free and opensource Pixelart sprites and assets</title>
-            <Memo_pack_page pack={pack} user={user} App_notification={App_notification} Auth={Auth}/>
+            <Memo_pack_page pack={pack} App_notification={App_notification} Auth={Auth}/>
         </>
     )
 }
 
-function Pack_page(props: {pack: Pack, user: Public_user | null | string, App_notification: App_notification_context_type, Auth: Auth_context_type}) {
+function Pack_page(props: {pack: Pack, App_notification: App_notification_context_type, Auth: Auth_context_type}) {
     const router = useRouter()
     const pack_id = router.query.id as string
+    const Auth = props.Auth
     //Props
-    const pack: Pack = JSON.parse(`${props.pack}`)
-    const user: Public_user | null = typeof props.user === "string" ? JSON.parse(`${props.user}`) : null
-    const own_pack = user ? user.username === pack.username : false
-    const download_link = `${process.env.NEXT_PUBLIC_BASE_PATH}/download_pack?pack_id=${pack_id}`
+    const pack: Pack = props.pack
+    const user: Frontend_public_user = Auth.user
+    const own_pack = user.username.length > 0 ? user.username === pack.username : false
+    const download_link = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${pack_id}`
     //Context
     const App_notification: App_notification_context_type = props.App_notification
     //State that saves currently clicked asset as a url string.
@@ -61,6 +62,7 @@ function Pack_page(props: {pack: Pack, user: Public_user | null | string, App_no
     //Pack ratings
     const [prev_pack_ratings, set_prev_pack_ratings] = useState<Pack_rating[]>(pack.ratings)
 
+    
     //Creating parallax effect for Image
     useParallax("title_pack_background_image")
     //Toggling arrow svg when scrollY > 0
@@ -135,11 +137,12 @@ function Pack_page(props: {pack: Pack, user: Public_user | null | string, App_no
         if(!pack_id) return
         if(typeof pack_id !== "string") return
 
-        const response = await fetch(`/report_pack?pack_id=${pack_id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/report_pack?pack_id=${pack_id}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
+            credentials: "include",
             body: JSON.stringify({reason: report_input.value})
         })
 
@@ -154,8 +157,9 @@ function Pack_page(props: {pack: Pack, user: Public_user | null | string, App_no
     async function delete_pack() {
         const query = router.query
 
-        const response = await fetch(`/user/delete_pack?id=${query.id}`, {
-            method: "POST"
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_pack?id=${query.id}`, {
+            method: "POST",
+            credentials: "include",
         })
 
         
@@ -269,7 +273,7 @@ function Pack_page(props: {pack: Pack, user: Public_user | null | string, App_no
         
                     <div className="preview_container" id="preview_container">
                         <div className="background">
-						    <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH}/packs/${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						    <Image src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
                             <div className="background_blur" />
                         </div>
 
@@ -471,8 +475,9 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
 
         if(!pack_id) return
         if(typeof pack_id !== "string") return
-        const response = await fetch(`/user/rate_pack?pack_id=${pack_id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/rate_pack?pack_id=${pack_id}`, {
             method: "POST",
+            credentials: "include",
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify({rating: rating + 1})
         })
@@ -483,6 +488,7 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
 
             set_prev_pack_ratings(updated_pack_ratings)
         } else {
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please login", message: "You have to be logged in to be able to rate a pack!", button_label: "Okay"}})
             console.log("Something went wrong!")
         }
     }
@@ -574,7 +580,7 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
     for(let i = 0; i < pack_content.section_images.length; i++) {
         assets_jsx.push(
             <div onClick={show_asset} key={`${pack_content.section_images[i]}_${i}`} className="asset">
-                <Image src={`${process.env.NEXT_PUBLIC_BASE_PATH}/packs/${pack_id.toString()}/${pack_content.section_name}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
+                <Image src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_name}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
             </div>
         )
     }
@@ -585,6 +591,7 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
         </div>
     );
 }
+
 
 function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string, callb: ()=>void}) {
   return (
@@ -601,37 +608,28 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
         
         if(typeof context.query.id === "string") {
             
-            const pack = await get_pack(new ObjectId(context.query.id))
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {method: "POST"})
             
             
-            if(!pack) return {
-
-                redirect: {
-                    destination: `/browse`,
-                    permanent: false,
+            if(response.status === 200) {
+                const pack = await response.json() as string // JSON PACK
+                
+                return {
+                    props: {
+                        pack,
+                    }
+                }
+            } else {
+                return {
+                    redirect: {
+                        destination: `/browse`,
+                        permanent: false,
+                    }
                 }
             }
-
-            const user_token = context.req.cookies.user
-            if(!user_token) return {
-                props: {
-                    pack: JSON.stringify(pack),
-                    user: {username: null}
-                }
-            }
             
-            const user = jwt.verify(user_token, process.env.JWT_PRIVATE_KEY as string) as Public_user | null
-            
-            return {
-                props: {
-                    pack: JSON.stringify(pack),
-                    user: user ? JSON.stringify(user) : {username: null}
-                }
-            }
-
             
         } else {
-            console.log("OMEGA")
             return {
 
                 redirect: {

@@ -9,22 +9,23 @@ import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 import Loader from '../components/loading';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { Nav_shadow } from '../components/navigation';
-import { Public_user } from '../types';
+import { App_notification_context_type, Auth_context_type, Public_user } from '../types';
 
 export default function Login_page() {
     const [loading, set_loading] = useState(false)
     
-    const App_notification: any = useContext(App_notification_context)
-    const Auth: any = useContext(Auth_context)
+    const App_notification: App_notification_context_type = useContext(App_notification_context)
+    const Auth: Auth_context_type = useContext(Auth_context)
     const router = useRouter()
     
     async function resend_email_verification(email: string) {
-        const response = await fetch("/signup/resend_email_confirmation", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/resend_email_confirmation`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
+                credentials: "include",
                 email: email
             })
         })
@@ -37,11 +38,12 @@ export default function Login_page() {
         const password_input = document.getElementById("password_input") as HTMLInputElement
 
         try {
-            const response = await fetch("/login", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
+                credentials: "include",
                 body: JSON.stringify({
                     email: email_input.value,
                     password: password_input.value
@@ -52,6 +54,7 @@ export default function Login_page() {
 
                 const body = await response.json() as Public_user
                 
+                console.log(body)
                 
                 Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...body}, callb: () => {router.push("/account", "/account", {scroll: false})}}})
                 
@@ -68,8 +71,8 @@ export default function Login_page() {
                 set_loading(false)
 
             } else  {
-                console.log(await response.text())
                 set_loading(false)
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Wrong Credentials", message: "We couldn't find any match for your credentials", button_label: "ok"}})
             }
 
         } catch ( err ) {
@@ -86,7 +89,7 @@ export default function Login_page() {
                 <div className="login_container">
                     <H1_with_deco title="Sign In" />
                     
-                    <input type="text" placeholder="Email" id="email_input" defaultValue="king@gmail.com"/>
+                    <input type="text" placeholder="Email" id="email_input" defaultValue="arctale.work@gmail.com"/>
                     <input type="password" placeholder="Password" id="password_input" defaultValue="Hurrensohn1"/>
                     <button onClick={login}>
                         <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
@@ -123,9 +126,7 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
         }
     } else {
         return{
-            props: {
-                
-            }
+            props: {}
         }
     }
 	

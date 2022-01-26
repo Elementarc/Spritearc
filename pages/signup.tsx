@@ -36,13 +36,11 @@ interface SignupContext {
 }
 
 
-
-
 export default function Sign_up_page() {
     //Obj will be send to server to create account for user.
     const [signup_obj, set_signup_obj] = useState<Signup_obj>({
-        username: "King",
-        email: "King@gmail.com",
+        username: "Spritearc",
+        email: "arctale.work@gmail.com",
         password: "Hurrensohn1",
         legal: true,
         occasional_emails: false,
@@ -134,11 +132,12 @@ export default function Sign_up_page() {
                 const error_element = document.getElementById("input_error_message") as HTMLParagraphElement
                 const input_element = document.getElementById("input") as HTMLInputElement
                 if(email_regex.test(email) === true) {
-                    const response = await fetch(`/signup/validate_email`, {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/validate_email`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json"
                         },
+                        credentials: "include",
                         body: JSON.stringify({email: email})
                     })
                     
@@ -216,11 +215,12 @@ export default function Sign_up_page() {
                             //Finally checking if username passes the test. It should pass the test at this point of code. Else is just incase i forgot something.
                             if(username_regex.test(username) === true){
                                 //Checking if a username already exists with.
-                                const response = await fetch(`/signup/validate_username`, {
+                                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/validate_username`, {
                                     method: "POST",
                                     headers: {
                                         "Content-Type": "application/json"
                                     },
+                                    credentials: "include",
                                     body: JSON.stringify({username: username})
                                 })
 
@@ -546,11 +546,12 @@ export function Step_3() {
         set_loading(true)
         if(PAGE_CONTEXT.signup_obj.username && PAGE_CONTEXT.signup_obj.email && PAGE_CONTEXT.signup_obj.password && PAGE_CONTEXT.signup_obj.legal) {
             
-            const response_stream = await fetch("/signup/send_account_verification", {
+            const response_stream = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/create_account`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
+                credentials: "include",
                 body: JSON.stringify({...PAGE_CONTEXT.signup_obj})
             })
             

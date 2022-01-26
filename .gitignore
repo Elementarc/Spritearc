@@ -13,6 +13,7 @@ docker/
 /.next/
 /out/
 
+/spritearc_lib/
 # production
 /build
 

@@ -6,7 +6,7 @@ import { useAnimation , motion} from 'framer-motion';
 import Image from 'next/image';
 import Loader from './loading';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
-import { capitalize_first_letter_rest_lowercase, check_if_json, SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
+import { capitalize_first_letter_rest_lowercase, check_if_json, SORT_ACTIONS, sort_packs_section } from '../spritearc_lib/custom_lib';
 import { useRouter } from 'next/router';
 
 export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: any, sort_action?: string | null | undefined}) {
@@ -23,6 +23,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 	//Getting packs from server. Setting it aswell
 	useEffect(() => {
+		console.log(api)
 		async function get_packs() {
 			
 			const api_response = await fetch(`${api}?page=${page}`, {
@@ -30,6 +31,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 				headers: {
 					"Content-Type": "application/json"
 				},
+				credentials: "include",
 				body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
 			})
 			
@@ -206,7 +208,7 @@ function Pack_preview(props: {pack: Pack}) {
                 </div>
                 
                 <div className="background_container">
-					<Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/packs/${pack._id}/${pack.preview}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
+					<Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
                     <div className="background_blur" />
                     <div className="background_blur_hover" />
                 </div>

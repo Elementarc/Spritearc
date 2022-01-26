@@ -4,7 +4,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
-import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
+import { capitalize_first_letter_rest_lowercase } from '../spritearc_lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 const search_context: any = React.createContext(null)
 
@@ -90,7 +90,7 @@ function Search_results_packs({search_query}: {search_query: string}) {
 	
 	return(
 		<div className='search_results_user_container'>
-			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`/search/${search_query}`} method='POST'/>
+			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/${search_query}`} method='POST'/>
 		</div>
 	)
 }

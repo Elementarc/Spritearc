@@ -19,7 +19,7 @@ import { App_notification_context } from '../context/app_notification_context_pr
 import { NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import { AnimatePresence, motion } from 'framer-motion';
-import { validate_user_description } from '../lib/validate_lib';
+import { validate_user_description } from '../spritearc_lib/validate_lib';
 
 export default function Account_page(props: {user: Public_user}) {
     const [update_about_state, set_update_about_state] = useState(false)
@@ -33,9 +33,13 @@ export default function Account_page(props: {user: Public_user}) {
     
     
     async function logout () {
-        const response = await fetch("/user/logout", {method: "POST"})
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
+            method: "POST",
+            credentials: "include",
+        })
 
         if(response.status === 200) {
+            
             Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
         }
     }
@@ -49,8 +53,9 @@ export default function Account_page(props: {user: Public_user}) {
             const form = new FormData()
             form.set("file", e.target.files[0])
 
-            const response = await fetch("/user/update_profile_image", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_image`, {
                 method: "POST",
+                credentials: "include",
                 body: form
             })
 
@@ -69,8 +74,9 @@ export default function Account_page(props: {user: Public_user}) {
             const form = new FormData()
             form.set("file", e.target.files[0])
 
-            const response = await fetch("/user/update_profile_banner", {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_banner`, {
                 method: "POST",
+                credentials: "include",
                 body: form
             })
 
@@ -98,9 +104,10 @@ export default function Account_page(props: {user: Public_user}) {
     async function update_user_description() {
         const get_description = document.getElementById("user_description_input") as HTMLInputElement
 
-        const response = await fetch("/user/update_user_description", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_user_description`, {
             method: "POST",
             headers: {"Content-Type": "application/json"},
+            credentials: "include",
             body: JSON.stringify({description: get_description.value})
         })
 
@@ -140,7 +147,7 @@ export default function Account_page(props: {user: Public_user}) {
                 <div className='user_preview_container'>
 
                     <div className='profile_banner_container'>
-                        <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                        <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
                         <div className='blur' />
 
                         <div className='profile_banner_hover_container'>
@@ -152,7 +159,7 @@ export default function Account_page(props: {user: Public_user}) {
                     <div className='user_portrait_container'>
                         
                         <div className='portrait'>
-                            <Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                            <Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
                         
                             <div className='portrait_hover_container'>
                                 <EditIcon/>

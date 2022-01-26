@@ -20,7 +20,10 @@ export default function Layout({children}: any ) {
     //Checking if user is signed in or not. Used for whole application.
     useEffect(() => {
         async function is_auth() {
-            const response = await fetch("/user/is_auth", {method: "POST"})
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/is_auth`, {
+                method: "POST",
+                credentials: "include",
+            })
             
             if(response.status === 200) {
                 const user: {auth: boolean, public_user: Public_user} = await response.json()
@@ -28,11 +31,11 @@ export default function Layout({children}: any ) {
                 if(user.auth) {
                     Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: user.public_user, callb: () => {}}})
                 } else {
-                    Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: null})
+                    Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
                 }
 
             } else {
-                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: null})
+                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
             }
             
         }
@@ -47,7 +50,7 @@ export default function Layout({children}: any ) {
         timer = setTimeout(() => {
 
             if(Auth.user.auth) {
-                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: null})
+                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
             }
             
         }, 1000 * 60 * 15);

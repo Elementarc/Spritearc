@@ -6,7 +6,6 @@ import { Public_user } from '../types';
 import Footer from '../components/footer';
 import { useParallax } from '../lib/custom_hooks';
 import { Nav_shadow } from '../components/navigation';
-import { get_public_user } from '../lib/mongo_lib';
 import Packs_section from '../components/packs_section';
 
 export default function Profile(props: {public_user: any}) {
@@ -22,7 +21,7 @@ export default function Profile(props: {public_user: any}) {
                 <div className='user_preview_container'>
 
                     <div className='image_container'>
-                        <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+                        <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
                         <div className='blur' />
 
                         
@@ -34,7 +33,7 @@ export default function Profile(props: {public_user: any}) {
 
                             <div className='portrait'>
                                 
-                                <Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_pictures/${public_user.profile_picture}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+                                <Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
 
                             </div>
 
@@ -51,7 +50,7 @@ export default function Profile(props: {public_user: any}) {
                 </div>
                 
                 <div className='user_packs_container'>
-                    <Packs_section section_name={`Packs created by '${public_user.username}'`} api="/user_packs" method='POST' body={public_user.released_packs}/>
+                    <Packs_section section_name={`Packs created by '${public_user.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs`} method='POST' body={public_user.released_packs}/>
                 </div>
 
             </div>
@@ -78,15 +77,26 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     
     try {
 
-        const user = await get_public_user(username)
-        if(!user) return redirect
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user?user=${context.query.user}`, {
+            method: "POST",
+            credentials: "include"
+        })
+        
+        if(response.status === 200) {
+            const user = await response.json()
+            console.log(user)
+            if(!user) return redirect
 
-        return {
-            props: {
-                public_user: JSON.stringify(user),
+            return {
+                props: {
+                    public_user: JSON.stringify(user),
+                }
             }
-        }
 
+        } else {
+            return redirect
+        }
+        
     } catch( err ) {
 
         return redirect

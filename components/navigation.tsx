@@ -409,7 +409,10 @@ function User_profile() {
     const user = Auth.user as any
     
     async function logout () {
-        const response = await fetch("/user/logout", {method: "POST"})
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
+            method: "POST",
+            credentials: "include"
+        })
 
         if(response.status === 200) {
             Navigation.set_nav_state(false)
@@ -450,7 +453,7 @@ function User_profile() {
 
                 <div onClick={() => {router.push("/account", "/account", {scroll: false}); Navigation.set_nav_state(false)}} className="portrait portrait_target" id="nav_user_portrait">
                     <div className="portrait_image">
-                        <Image priority={true} src={`${process.env.NEXT_PUBLIC_BASE_PATH}/profile_pictures/${user.profile_picture}`} layout="fill"/>
+                        <Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user.profile_picture}`} layout="fill"/>
                     </div>
 
                 </div>

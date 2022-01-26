@@ -175,18 +175,3 @@ function Patchnote_template(props: {patchnote: Patchnote}): ReactElement{
 	)
 }
 
-//Serverside
-
-import patchHandler from "../lib/patch_lib"
-import { GetStaticProps } from 'next';
-
-export const getStaticProps: GetStaticProps = async () => {
-	const patchnoteList: Patchnote[] = patchHandler.patchnoteListOrdered
-	
-	return {
-		props: {
-			patchnoteList: JSON.stringify(patchnoteList)
-		}
-	}
-}
-
