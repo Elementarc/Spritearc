@@ -49,20 +49,26 @@ function Title_pack_section() {
 
 	useEffect(() => {
 		
+		
 		async function get_title_pack() {
-			const response_title_pack = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/title_pack`, {
-				method: "POST",
-				credentials: "include",
-			})
+			try {
 			
-			if(response_title_pack.status === 200) {
-				const response_obj: {pack: Pack | null} = await response_title_pack.json()
+				const response_title_pack = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/title_pack`, {
+					method: "POST",
+					credentials: "include",
+				})
+				
+				if(response_title_pack.status === 200) {
+					const response_obj: {pack: Pack | null} = await response_title_pack.json()
 
-				set_title_pack((response_obj.pack as any))
-			} else {
-				set_title_pack(false)
+					set_title_pack((response_obj.pack as any))
+				} else {
+					set_title_pack(false)
+				}
+
+			} catch(err) {
+				set_title_pack(false)	
 			}
-			
 		}
 		
 		get_title_pack()

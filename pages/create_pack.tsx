@@ -57,6 +57,7 @@ const initial_create_pack_obj: Create_pack_frontend = {
 function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {type: string, payload?: any}): Create_pack_frontend {
     const {type , payload} = action
 
+    
     //Object handler
     switch ( type ) {
         
@@ -221,7 +222,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             
             
             create_pack_obj.tags = tags_array
-            console.log(create_pack_obj.tags)
             break
         }
 
@@ -237,12 +237,15 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
 
         case ( CREATE_PACK_ACTIONS.RESET_ALL) : {
             create_pack_obj = initial_create_pack_obj
+            create_pack_obj.preview.preview_asset = null
+            create_pack_obj.preview.preview_url = null
             for(let section of create_pack_obj.content.entries()) {
                 for(let url of section[1].section_urls) {
                     URL.revokeObjectURL(url)
                 }
             }
             create_pack_obj.content = new Map()
+            break
         }
 
         //Default value
@@ -945,7 +948,7 @@ function Preview({section_name}: {section_name: string}) {
 
             <Dropzone type='preview' section_name='preview'>
                 
-                {create_pack.create_pack_obj.preview.preview_asset &&
+                {create_pack.create_pack_obj.preview.preview_asset && create_pack.create_pack_obj.preview.preview_url &&
                     <div className='asset'>
                         <Image  src={`${create_pack.create_pack_obj.preview.preview_url}`} alt='An image that will preview this pack.' layout='fill'></Image>
                     </div>

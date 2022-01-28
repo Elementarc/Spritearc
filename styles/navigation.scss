@@ -168,7 +168,6 @@
                                     height: 85%;
                                     border-radius: 50%;
                                     background: $color_main_blue_hover;
-                                   
                                     &:hover {
                                         cursor: pointer;
                                         .portrait_image{
@@ -191,7 +190,7 @@
                                     img {
                                         object-fit: cover;
                                         object-position: center;
-                                        background: $color_main_blue;
+                                        background: $color_background_dark;
                                     }
                                     
                                 }

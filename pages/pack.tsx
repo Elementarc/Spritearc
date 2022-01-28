@@ -176,6 +176,15 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
         a.click()
     }
     
+    function pack_tags_jsx() {
+        const tags = pack.tags
+
+        const tags_jsx = tags.map((tag) => {
+            return <h4 className='tag_link' onClick={() => {router.push(`/search?query=${tag.toLowerCase()}`,`/search?query=${tag.toLowerCase()}`, {scroll: false})}}>{tag.toUpperCase()}</h4>
+        })
+
+        return tags_jsx
+    }
     return (
         <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
 
@@ -356,7 +365,7 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
                                             <p>Tags:</p>
                                         </div>
 
-                                        <div className="item_2">{pack.tags.join(", ").toUpperCase()}</div>
+                                        <div className="item_2">{pack_tags_jsx()}</div>
                                     </div>
 
 

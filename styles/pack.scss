@@ -602,6 +602,17 @@
                                     height: 100%;
                                     padding: 0 .5rem;
                                 }
+                                .tag_link{
+                                    font-weight: unset;
+                                    text-decoration: underline;
+                                    padding: 0 .3rem;
+
+                                    &:hover {
+                                        cursor: pointer;
+                                        font-weight: 700;
+                                    }
+                                    
+                                }
                                 @include breakpoint(mobile) {
                                     align-self: flex-start;
                                     justify-self: center;

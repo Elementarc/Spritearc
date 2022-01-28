@@ -23,40 +23,48 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 	//Getting packs from server. Setting it aswell
 	useEffect(() => {
-		console.log(api)
 		async function get_packs() {
-			
-			const api_response = await fetch(`${api}?page=${page}`, {
-				method: method.toUpperCase(),
-				headers: {
-					"Content-Type": "application/json"
-				},
-				credentials: "include",
-				body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
-			})
-			
-			if(api_response.status === 200) {
-				const response_packs_obj: {packs: Pack[], max_page: number} = await api_response.json()
-				
-				set_packs(response_packs_obj.packs)
+			function display_load_more(toggle: boolean) {
+				const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
 
-				function toggle_load_more() {
-
-					
-					const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
-
-					if(!counter_cointainer) return
-					if(response_packs_obj.max_page === page || response_packs_obj.packs.length === 0) {
-						
-						counter_cointainer.style.display = "none"
-					} else {
-						counter_cointainer.style.display = ""
-					}
+				if(!counter_cointainer) return
+				if(toggle === true) {
+					counter_cointainer.style.display = ""
+				} else {
+					counter_cointainer.style.display = "none"
 				}
-				toggle_load_more()
-			} else {
+			}
+			try {
+			
+				const api_response = await fetch(`${api}?page=${page}`, {
+					method: method.toUpperCase(),
+					headers: {
+						"Content-Type": "application/json"
+					},
+					credentials: "include",
+					body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
+				})
 				
+				if(api_response.status === 200) {
+					const response_packs_obj: {packs: Pack[], max_page: number} = await api_response.json()
+					
+					set_packs(response_packs_obj.packs)
+
+					if(response_packs_obj.max_page === page || response_packs_obj.packs.length === 0) {
+							
+						display_load_more(false)
+					} else {
+						display_load_more(true)
+					}
+				} else {
+					
+					set_packs([])
+					display_load_more(false)
+				}
+
+			} catch(err) {
 				set_packs([])
+				display_load_more(false)
 			}
 		}
 		get_packs()

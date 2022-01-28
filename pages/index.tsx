@@ -14,7 +14,6 @@ export default function Home(): ReactElement {
 	useParallax("intro_image")
     const router = useRouter()
     
-
     return (
         <>
             <div className="home_page">

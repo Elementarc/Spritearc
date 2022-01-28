@@ -8,14 +8,18 @@ import Image from "next/image"
 import {formatDistanceStrict} from "date-fns"
 import Markdown from 'markdown-to-jsx';
 import { useParallax } from '../../lib/custom_hooks';
+import { useRouter } from 'next/router';
 
 
 //Frontend
-export default function Patch(props: any) {
-  	const patchnote: Patchnote = JSON.parse(props.patchnote)
-	const distance = formatDistanceStrict(new Date(patchnote.info.date), new Date())
+export default function Patch(props: {patchnote: Patchnote | null}) {
+	const router = useRouter()
+  	const patchnote = props.patchnote 
+	
+	
 	useParallax("patch_background_image")
-
+	if(!patchnote) return router.push("/news", "/news", {scroll: false})
+	const distance = formatDistanceStrict(new Date(patchnote.info.date), new Date())
 	return (
 		<>
 			<div className="patch_container">
@@ -65,22 +69,65 @@ function Forward_container(): ReactElement {
 }
 //Creating a Forward item. Used by Forward_container
 function Forward_item(props: any) {
-return (
-	<>
-		<div className="patch_forward_content_container">
+	return (
+		<>
+			<div className="patch_forward_content_container">
 
-			<div className="patch_forward_img_container">
-				<Image className="patch_forward_image" layout="fill" src={props.img} alt="" />
+				<div className="patch_forward_img_container">
+					<Image className="patch_forward_image" layout="fill" src={props.img} alt="" />
+				</div>
+				
+				<div className="patch_forward_info_content">
+					<h2>{props.header}</h2>
+					<p>{props.description}</p>
+				</div>
+				
 			</div>
-			
-			<div className="patch_forward_info_content">
-				<h2>{props.header}</h2>
-				<p>{props.description}</p>
-			</div>
-			
-		</div>
-		<span />
-	</>
+			<span />
+		</>
 
-);
+	);
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+	const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote_list`)
+
+	const patchnoteList: Patchnote[] = await response.json()
+
+	const paths = patchnoteList.map((patchnote) => {
+
+		return {params: {id: `${patchnote.id}`}}
+	})
+	
+	return {
+	  paths,
+	  fallback: false,
+	};
+};
+
+
+
+export const getStaticProps: GetStaticProps = async (context) => {
+	try {
+		if(!context.params) return { props: {patchnote: null}}
+		const patch_id = context.params.id
+		if(typeof patch_id !== "string") return { props: {patchnote: null}}
+		const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote/${patch_id}`, {method: "GET"})
+
+
+		const patchnote = await response.json()
+		
+		
+		return{
+			props: {patchnote: patchnote},
+		}
+
+		
+
+	} catch(err) {
+		console.log(err)
+		return { props: {patchnote: null}}
+	}
+	
+	
 }
