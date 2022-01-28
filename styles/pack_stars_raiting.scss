@@ -1,15 +1,36 @@
 .pack_stars_container{
+    position: relative;
     width: 100%;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    svg{
-        width: 30px;
-        transform: scale(1.1);
-        fill: $color_main_bright;
-        @include breakpoint(mobile) {
-            width: 25px;
-            transform: scale(1);
+    display: grid;
+    grid-template-columns: 150px auto;
+    
+    @include breakpoint(mobile) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        column-gap: .5rem;
+    }
+    .stars {
+        display: flex;
+        align-items: center;
+        
+        svg{
+            width: 30px;
+            transform: scale(1.1);
+            fill: $color_main_bright;
+            @include breakpoint(mobile) {
+                width: 25px;
+                transform: scale(1);
+            }
         }
+    }
+    
+       
+    .pack_rating_count {
+        display: block;
+        //Needed
+        text-align: start;
+        position: relative;
+        @include p(small);
     }
 }

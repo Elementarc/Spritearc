@@ -335,9 +335,6 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
 
                                         <div className="item_2">
                                             <Pack_star_raiting ratings={prev_pack_ratings}/>
-                                            <div className='pack_rating_count_container'>
-                                                <p className='pack_rating_count'>{`(${prev_pack_ratings.length})`}</p>
-                                            </div>
                                         </div>
                                     </div>
 
@@ -365,7 +362,11 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
                                             <p>Tags:</p>
                                         </div>
 
-                                        <div className="item_2">{pack_tags_jsx()}</div>
+                                        <div className="item_2">
+                                            <div className='tags_container'>
+                                                {pack_tags_jsx()}
+                                            </div>
+                                        </div>
                                     </div>
 
 

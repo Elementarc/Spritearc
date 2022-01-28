@@ -42,7 +42,12 @@ export default function Pack_stars_raiting(props: {ratings: Pack_rating[]}) {
     const stars = create_stars(avg_rating)
     return (
         <div className="pack_stars_container">
-            {stars}
+            <div className="stars">
+                {stars}
+            </div>
+            
+
+            <h4 className='pack_rating_count'>{`(${ratings.length})`}</h4>
         </div>
     );
 }

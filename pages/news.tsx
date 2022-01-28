@@ -11,6 +11,8 @@ import { useParallax } from '../lib/custom_hooks';
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import Loader from '../components/loading';
 
+
+
 function navigateTo(path: string): void {
     Router.push(`${path}`, `${path}` , {scroll: false})
 }
@@ -21,12 +23,14 @@ export default  function News(): ReactElement {
 	const [page, set_page] = useState(1)
 
 	useEffect(() => {
+		const controller = new AbortController()
+		const {signal} = controller
+		
 		async function fetch_patchnotes() {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote_list?page=${page}`)
 
 			function display_load_more(state: boolean) {
 				const load_more = document.getElementById("news_load_more_button_container") as HTMLDivElement
-
+				if(!load_more) return
 				if(state === true) {
 					load_more.style.display = ""
 				} else {
@@ -34,27 +38,41 @@ export default  function News(): ReactElement {
 				}
 			}
 
-			if(response.status === 200) {
-				const patchnote_obj: {patchnotes: Patchnote[], max_page: number} = await response.json()
-				const patchnotes: Patchnote[] = patchnote_obj.patchnotes
-				const max_pages: number = patchnote_obj.max_page
-
-				if( page >= max_pages) {
-					display_load_more(false)
-					
-				} else {
-					display_load_more(true)
-					console.log("test")
-				}
+			try {
+				display_load_more(false)
+				const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote_list?page=${page}`, {signal})
 				
-				set_patchnotes(patchnotes)
-			} else {
-				set_patchnotes([])
+
+				if(response.status === 200) {
+					const patchnote_obj: {patchnotes: Patchnote[], max_page: number} = await response.json()
+					const patchnotes: Patchnote[] = patchnote_obj.patchnotes
+					const max_pages: number = patchnote_obj.max_page
+
+					if( page >= max_pages) {
+						display_load_more(false)
+						
+					} else {
+						display_load_more(true)
+						console.log("test")
+					}
+					
+					set_patchnotes(patchnotes)
+				} else {
+					set_patchnotes([])
+					display_load_more(false)
+				}
+
+			} catch(err) {
+				controller.abort()
 				display_load_more(false)
 			}
 		}
 
 		fetch_patchnotes()
+
+		return(() => {
+			controller.abort()
+		})
 	}, [page, set_patchnotes])
 	
 	//Creating Parallax for img

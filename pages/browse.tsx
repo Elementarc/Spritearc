@@ -48,13 +48,15 @@ function Title_pack_section() {
 	const [title_pack, set_title_pack] = useState<Pack | null | false>(null)
 
 	useEffect(() => {
-		
+		const controller = new AbortController()
+		const {signal} = controller
 		
 		async function get_title_pack() {
 			try {
 			
 				const response_title_pack = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/title_pack`, {
 					method: "POST",
+					signal,
 					credentials: "include",
 				})
 				
@@ -67,11 +69,16 @@ function Title_pack_section() {
 				}
 
 			} catch(err) {
-				set_title_pack(false)	
+				
 			}
 		}
 		
 		get_title_pack()
+
+
+		return(() => {
+			controller.abort()
+		})
 	}, [set_title_pack])
 	
 	useParallax("title_pack_background_image", title_pack)

@@ -20,6 +20,7 @@ export default function Patch(props: {patchnote: Patchnote | null}) {
 	useParallax("patch_background_image")
 	if(!patchnote) return router.push("/news", "/news", {scroll: false})
 	const distance = formatDistanceStrict(new Date(patchnote.info.date), new Date())
+	
 	return (
 		<>
 			<div className="patch_container">
@@ -90,19 +91,29 @@ function Forward_item(props: any) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-	const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote_list`)
 
-	const patchnoteList: Patchnote[] = await response.json()
-
-	const paths = patchnoteList.map((patchnote) => {
-
-		return {params: {id: `${patchnote.id}`}}
-	})
+	try {
 	
-	return {
-	  paths,
-	  fallback: false,
-	};
+		const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote_list`)
+
+		const patchnoteList: Patchnote[] = await response.json()
+
+		const paths = patchnoteList.map((patchnote) => {
+
+			return {params: {id: `${patchnote.id}`}}
+		})
+		
+		return {
+			paths,
+			fallback: false,
+		};
+
+	} catch(err) {
+		return {
+			paths: [],
+			fallback: false,
+		};
+	}
 };
 
 

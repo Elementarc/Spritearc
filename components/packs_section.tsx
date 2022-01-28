@@ -23,6 +23,9 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 	//Getting packs from server. Setting it aswell
 	useEffect(() => {
+		const controller = new AbortController()
+		const {signal} = controller
+
 		async function get_packs() {
 			function display_load_more(toggle: boolean) {
 				const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
@@ -38,6 +41,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 			
 				const api_response = await fetch(`${api}?page=${page}`, {
 					method: method.toUpperCase(),
+					signal,
 					headers: {
 						"Content-Type": "application/json"
 					},
@@ -63,11 +67,16 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 				}
 
 			} catch(err) {
-				set_packs([])
+				
 				display_load_more(false)
+				
 			}
 		}
 		get_packs()
+
+		return(() => {
+			controller.abort()
+		})
 	}, [set_packs, page, api, method, body, section_name])
 	
 	//animation for when clicking Sort by button on a packsection
