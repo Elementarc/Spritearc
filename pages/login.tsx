@@ -19,17 +19,21 @@ export default function Login_page() {
     const router = useRouter()
     
     async function resend_email_verification(email: string) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/resend_email_confirmation`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                credentials: "include",
-                email: email
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/resend_email_confirmation`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    credentials: "include",
+                    email: email
+                })
             })
-        })
-        console.log(await response.text())
+        } catch(err) {
+            //Couldnt reach server
+        }
+        
     }
 
     async function login() {
@@ -76,8 +80,7 @@ export default function Login_page() {
             }
 
         } catch ( err ) {
-            console.log(err)
-            set_loading(false)
+            //Couldnt reach server
         }
     }
 

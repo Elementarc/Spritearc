@@ -15,6 +15,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	const [page, set_page] = useState(1)
 	const [toggle_sort_by_state, set_toggle_sort_by_state] = useState(false)
 	
+
 	//Checking sessionstorage if sort_action exists. Setting sort_action if yes
 	useEffect(() => {
 		const sort_action =  sessionStorage.getItem(`${section_name}_sort_action`) ? sessionStorage.getItem(`${section_name}_sort_action`) : null
@@ -24,8 +25,6 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	//Getting packs from server. Setting it aswell
 	useEffect(() => {
 		const controller = new AbortController()
-		const {signal} = controller
-
 		async function get_packs() {
 			function display_load_more(toggle: boolean) {
 				const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
@@ -41,11 +40,11 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 			
 				const api_response = await fetch(`${api}?page=${page}`, {
 					method: method.toUpperCase(),
-					signal,
 					headers: {
 						"Content-Type": "application/json"
 					},
 					credentials: "include",
+					signal: controller.signal,
 					body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
 				})
 				
@@ -60,10 +59,12 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 					} else {
 						display_load_more(true)
 					}
+
 				} else {
 					
 					set_packs([])
 					display_load_more(false)
+					
 				}
 
 			} catch(err) {

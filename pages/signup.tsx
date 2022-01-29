@@ -546,23 +546,28 @@ export function Step_3() {
         set_loading(true)
         if(PAGE_CONTEXT.signup_obj.username && PAGE_CONTEXT.signup_obj.email && PAGE_CONTEXT.signup_obj.password && PAGE_CONTEXT.signup_obj.legal) {
             
-            const response_stream = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/create_account`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({...PAGE_CONTEXT.signup_obj})
-            })
+            try {
+                const response_stream = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/create_account`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({...PAGE_CONTEXT.signup_obj})
+                })
+                
+                if(response_stream.status !== 200) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${await response_stream.text()}`, message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+                
+                   
+                
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup(); router.push("/login", "/login", {scroll: false})}}})
+                set_loading(false)
+    
+                PAGE_CONTEXT.set_signup_obj({username: null, email: null, password: null, legal: false, occasional_emails: false})
+            } catch(err) {
+                //Coudltn reach server
+            }
             
-            if(response_stream.status !== 200) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${await response_stream.text()}`, message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
-            
-               
-            
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup(); router.push("/login", "/login", {scroll: false})}}})
-            set_loading(false)
-
-            PAGE_CONTEXT.set_signup_obj({username: null, email: null, password: null, legal: false, occasional_emails: false})
 
         } else {
             App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})

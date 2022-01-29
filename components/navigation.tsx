@@ -407,19 +407,35 @@ function User_profile() {
     const user_info_animation = useAnimation()
     const router = useRouter()
     const user = Auth.user as any
-    
-    async function logout () {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
-            method: "POST",
-            credentials: "include"
-        })
+    const controller = new AbortController()
 
-        if(response.status === 200) {
-            Navigation.set_nav_state(false)
-            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
+    async function logout () {
+
+        try {
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
+                method: "POST",
+                signal: controller.signal,
+                credentials: "include"
+            })
+    
+            if(response.status === 200) {
+                Navigation.set_nav_state(false)
+                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
+            }
+
+        } catch(err) {
+            //Coulndt reach server
         }
+        
     }
 
+
+    useEffect(() => {
+      return () => {
+        controller.abort()
+      };
+    }, [controller])
     //Showing Labels of Profile info when toggling navState
     useEffect(() => {
         if(Navigation.nav_state === true) {

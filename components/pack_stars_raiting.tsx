@@ -46,8 +46,10 @@ export default function Pack_stars_raiting(props: {ratings: Pack_rating[]}) {
                 {stars}
             </div>
             
-
-            <h4 className='pack_rating_count'>{`(${ratings.length})`}</h4>
+            <div className="pack_rating_count_container">
+                <h4 className='pack_rating_count'>{`(${ratings.length})`}</h4>
+            </div>
+            
         </div>
     );
 }

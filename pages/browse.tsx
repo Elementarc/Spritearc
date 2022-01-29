@@ -35,6 +35,8 @@ export default function Browse() {
 				<div className="content">
 					<Title_pack_section/>
 					<Packs_section section_name='Recent Packs' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/recent_packs`} method='POST'/>
+					<Packs_section section_name='Most Popular' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/most_popular_packs`} method='POST'/>
+
 					<Nav_shadow/>
 				</div>
 
@@ -46,17 +48,18 @@ export default function Browse() {
 
 function Title_pack_section() {
 	const [title_pack, set_title_pack] = useState<Pack | null | false>(null)
+	
+
 
 	useEffect(() => {
 		const controller = new AbortController()
-		const {signal} = controller
 		
 		async function get_title_pack() {
 			try {
 			
 				const response_title_pack = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/title_pack`, {
 					method: "POST",
-					signal,
+					signal: controller.signal,
 					credentials: "include",
 				})
 				
@@ -69,16 +72,16 @@ function Title_pack_section() {
 				}
 
 			} catch(err) {
-				
+				//Couldnt reach server
 			}
 		}
 		
 		get_title_pack()
 
-
 		return(() => {
 			controller.abort()
 		})
+		
 	}, [set_title_pack])
 	
 	useParallax("title_pack_background_image", title_pack)

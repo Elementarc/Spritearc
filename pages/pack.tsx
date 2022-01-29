@@ -48,7 +48,7 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
     //Props
     const pack: Pack = props.pack
     const user: Frontend_public_user = Auth.user
-    const own_pack = user.username.length > 0 ? user.username === pack.username : false
+    const own_pack = user.username.length > 0 ? user.username.toLowerCase() === pack.username.toLowerCase() : false
     const download_link = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${pack_id}`
     //Context
     const App_notification: App_notification_context_type = props.App_notification
@@ -62,7 +62,8 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
     //Pack ratings
     const [prev_pack_ratings, set_prev_pack_ratings] = useState<Pack_rating[]>(pack.ratings)
 
-    
+ 
+
     //Creating parallax effect for Image
     useParallax("title_pack_background_image")
     //Toggling arrow svg when scrollY > 0
@@ -84,6 +85,7 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
             window.removeEventListener("scroll", toggle_arrow)
         })
     }, [])
+  
     
     function toggle_asset(e: any) {
         if(e.target.src) {
@@ -129,6 +131,7 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
     }
 
     async function submit_pack_report() {
+        
         const valid_report_reason = report_pack_validation()
         const report_input = document.getElementById("report_input") as HTMLInputElement
         if(!valid_report_reason) return
@@ -136,51 +139,63 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
 
         if(!pack_id) return
         if(typeof pack_id !== "string") return
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/report_pack?pack_id=${pack_id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify({reason: report_input.value})
+            })
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/report_pack?pack_id=${pack_id}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify({reason: report_input.value})
-        })
+            if(response.status === 200) {
+                const response_body = await response.json() as {success:boolean, message:string}
+                
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Thank you for helping us!", message: response_body.message, button_label: "Ok", callb: () => {set_report_confirmation_state(false)}}})
+            } else {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to report this pack. We are sorry that you have to experience this.", button_label: "Ok"}})
+            }
 
-        if(response.status === 200) {
-            const response_body = await response.json() as {success:boolean, message:string}
-            
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Thank you for helping us!", message: response_body.message, button_label: "Ok", callb: () => {set_report_confirmation_state(false)}}})
-        } else {
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to report this pack. We are sorry that you have to experience this.", button_label: "Ok"}})
+        } catch(err) {
+            //Couldnt reach server
         }
     }
+
     async function delete_pack() {
         const query = router.query
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_pack?id=${query.id}`, {
-            method: "POST",
-            credentials: "include",
-        })
-
-        
-        if(response.status === 200) {
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully deleted pack!", message: `You now will be redirected.`, button_label: "Ok", callb: go_back}})
-        } else {
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "No Permission!", message: "You do not have the permission to delete this pack!", button_label: "Ok"}})
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_pack?id=${query.id}`, {
+                method: "POST",
+                credentials: "include",
+            })
+    
+            
+            if(response.status === 200) {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully deleted pack!", message: `You now will be redirected.`, button_label: "Ok", callb: go_back}})
+            } else {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "No Permission!", message: "You do not have the permission to delete this pack!", button_label: "Ok"}})
+            }
+        } catch(err) {
+            //Coudlnt reach server
         }
+        
 
     }
+
     async function download_pack() {
         if(typeof pack_id !== "string") return
         const a = document.getElementById("download_pack_link") as HTMLAnchorElement
         a.click()
     }
     
+    
     function pack_tags_jsx() {
         const tags = pack.tags
 
         const tags_jsx = tags.map((tag) => {
-            return <h4 className='tag_link' onClick={() => {router.push(`/search?query=${tag.toLowerCase()}`,`/search?query=${tag.toLowerCase()}`, {scroll: false})}}>{tag.toUpperCase()}</h4>
+            return <h4 key={`tag_${tag}`} className='tag_link' onClick={() => {router.push(`/search?query=${tag.toLowerCase()}`,`/search?query=${tag.toLowerCase()}`, {scroll: false})}}>{tag.toUpperCase()}</h4>
         })
 
         return tags_jsx
@@ -476,6 +491,7 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
     }
 
     async function submit_rating(e: any) {
+        
         if(!user) {
             App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please create an Account to rate", message: "You only can rate packs when creating an account!", button_label: "ok"}})
         }
@@ -485,21 +501,25 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
 
         if(!pack_id) return
         if(typeof pack_id !== "string") return
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/rate_pack?pack_id=${pack_id}`, {
-            method: "POST",
-            credentials: "include",
-            headers: {"Content-Type": "application/json"},
-            body: JSON.stringify({rating: rating + 1})
-        })
 
-        if(response.status === 200) {
-            const user_rating = await response.json() as {user: string, rating: number}
-            let updated_pack_ratings = [...prev_pack_ratings, {user: user_rating.user, rating: user_rating.rating}]
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/rate_pack?pack_id=${pack_id}`, {
+                method: "POST",
+                credentials: "include",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({rating: rating + 1})
+            })
 
-            set_prev_pack_ratings(updated_pack_ratings)
-        } else {
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please login", message: "You have to be logged in to be able to rate a pack!", button_label: "Okay"}})
-            console.log("Something went wrong!")
+            if(response.status === 200) {
+                const user_rating = await response.json() as {user: string, rating: number}
+                let updated_pack_ratings = [...prev_pack_ratings, {user: user_rating.user, rating: user_rating.rating}]
+
+                set_prev_pack_ratings(updated_pack_ratings)
+            } else {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please login", message: "You have to be logged in to be able to rate a pack!", button_label: "Okay"}})
+            }
+        } catch(err) {
+            //Couldnt reach server
         }
     }
 
@@ -618,18 +638,28 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
         
         if(typeof context.query.id === "string") {
             
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {method: "POST"})
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {method: "POST"})
             
             
-            if(response.status === 200) {
-                const pack = await response.json() as string // JSON PACK
-                
-                return {
-                    props: {
-                        pack,
+                if(response.status === 200) {
+                    const pack = await response.json() as string // JSON PACK
+                    
+                    return {
+                        props: {
+                            pack,
+                        }
+                    }
+                } else {
+                    return {
+                        redirect: {
+                            destination: `/browse`,
+                            permanent: false,
+                        }
                     }
                 }
-            } else {
+            } catch(err) {
+                console.log("Couldnt reach server")
                 return {
                     redirect: {
                         destination: `/browse`,
@@ -637,6 +667,7 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
                     }
                 }
             }
+            
             
             
         } else {

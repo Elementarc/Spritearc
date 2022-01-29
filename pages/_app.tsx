@@ -47,26 +47,7 @@ export default function MyApp({ Component, pageProps}: any) {
 
 
 
-/* export function Wrapped_myApp(Component: any) {
-    
 
-    const New_component = (pageProps: any) => {
-        return <Component {...pageProps}/>
-    }
 
-    New_component.getInitialProps = async({req}: any) => {
-        const response = await fetch("http://localhost:3000/api/verify_user_session", {method: "POST"})
-        const auth = await response.json()
-        
-        console.log(auth)
-        return {
-            user: auth
-        }
-    }
-
-    return New_component
-}
-
-export default Wrapped_myApp(MyApp) */
 
 

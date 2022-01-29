@@ -26,22 +26,31 @@ export default function Account_page(props: {user: Public_user}) {
     const user = props.user
     const App_notification: any = useContext(App_notification_context)
     const router = useRouter()
+    const Auth: any = useContext(Auth_context)
+    const controller = new AbortController()
+
     function go_to(path: string) {
         router.push(path, path, {scroll: false})
     }
-    const Auth: any = useContext(Auth_context)
-    
     
     async function logout () {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
-            method: "POST",
-            credentials: "include",
-        })
+        
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
+                method: "POST",
+                signal: controller.signal,
+                credentials: "include",
+            })
+    
+            if(response.status === 200) {
+                
+                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
+            }
 
-        if(response.status === 200) {
-            
-            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
+        } catch(err) {
+            //Couldnt logout
         }
+        
     }
 
     useParallax("profile_banner")
@@ -53,40 +62,54 @@ export default function Account_page(props: {user: Public_user}) {
             const form = new FormData()
             form.set("file", e.target.files[0])
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_image`, {
-                method: "POST",
-                credentials: "include",
-                body: form
-            })
-
-            if(response.status === 200) {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile picture", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
-            } else {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_image`, {
+                    method: "POST",
+                    credentials: "include",
+                    body: form
+                })
+    
+                if(response.status === 200) {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile picture", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
+                } else {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
+                }
+            } catch(err) {
+                //Couldnt update profile
             }
+
         }
     }, [App_notification])
 
     useEffect(() => {
+        const controller = new AbortController()
         const get_profile_upload_input = document.getElementById("input_profile_banner") as HTMLInputElement
 
         get_profile_upload_input.onchange = async(e: any) => {
             const form = new FormData()
             form.set("file", e.target.files[0])
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_banner`, {
-                method: "POST",
-                credentials: "include",
-                body: form
-            })
-
-            if(response.status === 200) {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile banner", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
-            } else {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_banner`, {
+                    method: "POST",
+                    credentials: "include",
+                    body: form
+                })
+    
+                if(response.status === 200) {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile banner", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
+                } else {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
+                }
+            } catch(err) {
+                //Couldnt update profile banner
             }
+            
         }
 
+        return(() => {
+            controller.abort()
+        })
     }, [App_notification])
 
     function event_valid_user_description(e: any) {
@@ -104,20 +127,25 @@ export default function Account_page(props: {user: Public_user}) {
     async function update_user_description() {
         const get_description = document.getElementById("user_description_input") as HTMLInputElement
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_user_description`, {
-            method: "POST",
-            headers: {"Content-Type": "application/json"},
-            credentials: "include",
-            body: JSON.stringify({description: get_description.value})
-        })
-
-        if(response.status === 200) {
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated description", message: "It might take a little bit to see your changes", button_label: "Great", callb: () => {set_update_about_state(false)}}})
-
-        } else {
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to update your description. Please try later or inform an admin.", button_label: "Ok", callb: () => {set_update_about_state(false)}}})
-
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_user_description`, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                credentials: "include",
+                body: JSON.stringify({description: get_description.value})
+            })
+    
+            if(response.status === 200) {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated description", message: "It might take a little bit to see your changes", button_label: "Great", callb: () => {set_update_about_state(false)}}})
+    
+            } else {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to update your description. Please try later or inform an admin.", button_label: "Ok", callb: () => {set_update_about_state(false)}}})
+    
+            }
+        } catch(err) {
+            //Couldnt update userdescription
         }
+
     }
     return (
         <div className='account_page'>

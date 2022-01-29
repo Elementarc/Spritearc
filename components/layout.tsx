@@ -19,10 +19,13 @@ export default function Layout({children}: any ) {
     
     //Checking if user is signed in or not. Used for whole application.
     useEffect(() => {
+        const controller = new AbortController()
         async function is_auth() {
+
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/is_auth`, {
                     method: "POST",
+                    signal: controller.signal,
                     credentials: "include",
                 })
                 
@@ -41,15 +44,18 @@ export default function Layout({children}: any ) {
 
             } catch(err) {
                 //Couldnt reach server
-                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
             }
             
         }
         is_auth()
         
+        return (() => {
+            controller.abort()
+        })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
+    
     useEffect(() => {
         let timer: any
         clearTimeout(timer)

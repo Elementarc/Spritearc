@@ -14,22 +14,28 @@ export default function Verify_account() {
             const token = router.query.token
             if(typeof token !== "string") return router.push("/login", "/login", {scroll: false})
             if(!token) return router.push("/login", "/login", {scroll: false})
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/verify_account`, {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                credentials: "include",
-                body: JSON.stringify({token: token})
-            })
-
-            if(response.status === 200) {
-                const status = await response.json() as {success: boolean, message: string}
-
-                if(status.success === true) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully verified!", message: "Thank you for verifying your account! We will now redirect you to our login page.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Token has been expired!", message: "Your token has been expired. Please login to resend you a verification email.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
-
-            } else {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong while trying to verify your account!", message: "Please relog and try again!", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
+            
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/verify_account`, {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    credentials: "include",
+                    body: JSON.stringify({token: token})
+                })
+    
+                if(response.status === 200) {
+                    const status = await response.json() as {success: boolean, message: string}
+    
+                    if(status.success === true) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully verified!", message: "Thank you for verifying your account! We will now redirect you to our login page.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Token has been expired!", message: "Your token has been expired. Please login to resend you a verification email.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
+    
+                } else {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong while trying to verify your account!", message: "Please relog and try again!", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
+                }
+            } catch(err) {
+                //Couldnt reach server
             }
+            
         }
         verify_account()
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -60,6 +60,7 @@ export interface Pack {
     _id: ObjectId,
     username: string,
     preview: string,
+    popularity: number,
     title: string,
     license: string,
     description: string,

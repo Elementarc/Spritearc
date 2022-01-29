@@ -24,7 +24,6 @@ export default  function News(): ReactElement {
 
 	useEffect(() => {
 		const controller = new AbortController()
-		const {signal} = controller
 		
 		async function fetch_patchnotes() {
 
@@ -40,7 +39,10 @@ export default  function News(): ReactElement {
 
 			try {
 				display_load_more(false)
-				const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote_list?page=${page}`, {signal})
+				const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote_list?page=${page}`, {
+					method: "GET",
+					signal: controller.signal,
+				})
 				
 
 				if(response.status === 200) {
@@ -63,7 +65,7 @@ export default  function News(): ReactElement {
 				}
 
 			} catch(err) {
-				controller.abort()
+				//Coudlnt reach server
 				display_load_more(false)
 			}
 		}

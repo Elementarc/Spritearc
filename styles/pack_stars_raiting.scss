@@ -25,12 +25,16 @@
         }
     }
     
-       
-    .pack_rating_count {
-        display: block;
-        //Needed
-        text-align: start;
-        position: relative;
-        @include p(small);
+    .pack_rating_count_container{
+        height: 100%;
+        display: flex;
+        align-items: center;
+        .pack_rating_count {
+            //Needed
+            text-align: start;
+            position: relative;
+            @include p(small);
+        }
     }
+    
 }
