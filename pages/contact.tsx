@@ -6,18 +6,7 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 
 export default function Terms_of_service() {
-    //Setting numbers for headers
-    useEffect(() => {
-        const section_headers = document.getElementsByClassName("section_header") as HTMLCollection
-
-        const headers_arr = Array.from(section_headers)
-
-        for(let i = 0; i < headers_arr.length; i++) {
-            const headers = headers_arr as HTMLHeadElement[]
-            headers[i].innerText = `${i + 1}. ${headers[i].innerText}`
-        }
-       
-    }, [])
+    
 
 
     return (
@@ -26,47 +15,21 @@ export default function Terms_of_service() {
             <div className='content'>
                 <div className='legal_content_container'>
                     <section>
-                        <h1 className='tos_header'>TERMS OF SERVICE</h1>
-                        <h4 className='tos_update_date'>{`Last updated: 30/01/2022`}</h4>
+                        <h1 className='tos_header'>CONTACT ME</h1>
                     </section>
-                    <General_Terms/>
-                    <Definitions_and_key_terms/>
-                    <Users_and_publishers/>
-                    <Acceptable_use/>
-                    <Publisher_content/>
-                    <User_generated_content/>
-                    
-                    
-                    <Your_suggestions/>
-                    <Your_consent/>
-                    <Links_to_other_websites/>
-                    <Cookies/>
-                    <Changes_to_our_tos/>
-                    <Modifications_to_our_service/>
-                    <Updates_to_our_service/>
-                    <Third_party_services/>
-                    <Term_and_termination/>
-                    <Copyright_infringement_notice/>
-                    <Indemnification/>
-                    <No_warranties/>
-                    <Limitation_of_liability/>
-                    <Waiver/>
-                    <Amendments_to_this_agreement/>
-                    <Entire_agreement/>
-                    <Updates_to_our_terms/>
-                    <Intellectual_property/>
-                    <Agreement_to_arbitrate/>
-                    <Notice_of_dispute/>
-                    <Promotions/>
-                    <Typographical_errors/>
-                    <Miscellaneous/>
-                    <Disclaimer/>
 
                     <section>
-                        <h1>Contact Me</h1>
-
+                        <h1>Details</h1>
+                        <br />
+                        <p>Spritearc.com</p>
+                        <p>Hamit Kiziltas</p>
+                        <p>Obere Str. 19</p>
+                        <p>74369 Löchgau</p>
+                        <p>Germany</p>
+                        <br />
                         <p>Dont hesitate to contact me if you have any questions Via Email:</p>
                         <a href={`mailto: arctale.work@gmail.com`}>{"Arctale.work@gmail.com"}</a>
+                        
                     </section>
                 </div>
                 <Qick_legal_navigation />

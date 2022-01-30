@@ -95,7 +95,7 @@ export default  function News(): ReactElement {
 						<div className="patch_list">
 							<h2>Recent Updates</h2>
 							<h1>Everything New About {process.env.NEXT_PUBLIC_APP_NAME}</h1>
-							<p>We will occasionally release updates for PixelPalast. Here you can find our newest upcoming features that you might be interested in. Take a look!</p>
+							<p>We will occasionally release updates for {process.env.NEXT_PUBLIC_APP_NAME}. Here you can find our newest upcoming features that you might be interested in. Take a look!</p>
 							<span />
 						</div>
 

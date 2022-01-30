@@ -49,7 +49,7 @@ export default function Footer(): ReactElement {
                     <Link href="/cookies" scroll={false}><a>Cookies</a></Link>
                 </div>
 
-                <h5>©2021 By Hamit Kiziltas. ALL RIGHTS RESERVED. All trademarks referenced herein are the properties of their respective owners.</h5>
+                <h5>©2021 By Hamit Kiziltas. ALL RIGHTS RESERVED.</h5>
                 
             </div>
         </>
