@@ -21,7 +21,6 @@ export default function Terms_of_service() {
                     <section>
                         <h1>Details</h1>
                         <br />
-                        <p>Spritearc.com</p>
                         <p>Hamit Kiziltas</p>
                         <p>Obere Str. 19</p>
                         <p>74369 Löchgau</p>

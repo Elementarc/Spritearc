@@ -10,6 +10,7 @@ import Device_context_provider from '../context/device_context_provider';
 import App_notification_context_provider from '../context/app_notification_context_provider';
 import Navigation_context_provider, {Navigation_context} from '../context/navigation_context_provider';
 import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
+import Cookie_alert from './cookie_alert';
 
 export const APP_CONTEXT: any = React.createContext(null)
 
@@ -109,6 +110,7 @@ export default function Layout({children}: any ) {
 
                             </div>
                             
+                            <Cookie_alert/>
                         </div>
 
                     </App_notification_context_provider>
