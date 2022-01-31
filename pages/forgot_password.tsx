@@ -14,8 +14,8 @@ export default function Forgot_password_page() {
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     
     function set_error_message(message: string) {
-        const error_message_text = document.getElementById("reset_password_error_message") as HTMLParagraphElement
-
+        const error_message_text = document.getElementById("forgot_password_error_message") as HTMLParagraphElement
+        if(!error_message_text) return
         error_message_text.innerText = message
     }
 
@@ -44,22 +44,21 @@ export default function Forgot_password_page() {
             return set_error_message("")
 
         } catch(err) {
-            set_error_message("Something went wrong while trying to reset you password")
-            setloading(false)
+            //Couldnt reach server
         }
 
     }
 
     return (
-        <div className="reset_password_page">
+        <div className="forgot_password_page">
 
             <div className="content">
                 <Nav_shadow/>
-                <div className="reset_password_container">
+                <div className="forgot_password_container">
                     <H1_with_deco title="Reset password" />
                     
                     <input type="text" placeholder="Email" id="email_input" defaultValue="arctale.work@gmail.com"/>
-                    <p className='reset_password_error_message' id="reset_password_error_message"></p>
+                    <p className='forgot_password_error_message' id="forgot_password_error_message"></p>
                     <button onClick={send_password_token}>
                         <p style={loading ? {opacity: 0} : {opacity: 1}}>Request Password Reset</p>
                         {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}

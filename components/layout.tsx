@@ -45,6 +45,7 @@ export default function Layout({children}: any ) {
 
             } catch(err) {
                 //Couldnt reach server
+                
             }
             
         }
