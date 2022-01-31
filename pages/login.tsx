@@ -103,7 +103,7 @@ export default function Login_page() {
 
                         <span className="bottom_section_line" />
                         <div className="items">
-                            <p>{"Did you forget your password? "}<Link href="/signup" scroll={false}>Reset Password</Link></p>
+                            <p>{"Did you forget your password? "}<Link href="/forgot_password" scroll={false}>Reset Password</Link></p>
                             <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
                         </div>
                         
