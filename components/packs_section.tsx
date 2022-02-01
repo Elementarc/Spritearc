@@ -114,33 +114,13 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 		set_toggle_sort_by_state(false)
 	}
 
-	//Function that Makes section name more beautiful
-	function set_section_name(section_name: string) {
-		
-		try {
-			const splitted_section_name = section_name.split(" ")
-			let word_arr = [""]
-			for(let i = 0; i < section_name.length; i ++) {
-				if(splitted_section_name[i]) {
-					word_arr.push(capitalize_first_letter_rest_lowercase(splitted_section_name[i]))
-				}
-				
-			}
-	
-			return word_arr.join(" ")
-		} catch( err ) {
-			return section_name
-		}
-		
-	}
-	
 	return (
 		<>
 			
 			<div className='packs_section_container'>
 
 				<div className="packs_section_info">
-					<h1>– {set_section_name(section_name)}</h1>
+					<h1>– {section_name}</h1>
 
 					<motion.div animate={sort_by_animation} className='drop_down_container'>
 						<div className='info_container'>

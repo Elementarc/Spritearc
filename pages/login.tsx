@@ -58,11 +58,9 @@ export default function Login_page() {
 
                 const body = await response.json() as Public_user
                 
-                console.log(body)
                 
                 Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...body}, callb: () => {router.push("/account", "/account", {scroll: false})}}})
                 
-                console.log("Successfully logged in")
                 set_loading(false)
 
                 

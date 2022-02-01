@@ -22,7 +22,6 @@ export default function Reset_account_password() {
     function input_e_password(e: any) {
         const input_value = e.target.value as string
         
-        console.log(input_value)
         set_password(input_value)
     }
     function input_e_password_repeat(e: any) {
@@ -50,7 +49,6 @@ export default function Reset_account_password() {
         const valid_password = validate_password(password)
         const valid_password_repeat = validate_password(password_repeat)
 
-        console.log(valid_password, valid_password_repeat)
         if(!valid_password) {
             button.classList.add("disabled_button")
             return set_error_messsage("input_error_message_password", "Password needs to be atleast 8 characters long. One uppercase / lowercase and one number. Max. 32 characters")
@@ -72,7 +70,6 @@ export default function Reset_account_password() {
     }, [password, password_repeat])
     
     async function reset_password() {
-        console.log(password, password_repeat)
         if(password !== password_repeat) return
         if(!validate_password(password)) return
 
