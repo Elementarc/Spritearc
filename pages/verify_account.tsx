@@ -19,20 +19,20 @@ export default function Verify_account({status, message}: {status: boolean, mess
     return (
         <>
             <Head>
-                <title>{`Spritearc - Signup`}</title>
-                <meta name="description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
+                <title>{`Spritearc - Verify Account`}</title>
+                <meta name="description" content={`Verify your account.`}/>
 
                 <meta property="og:url" content="https://Spritearc.com/"/>
                 <meta property="og:type" content="website" />
-                <meta property="og:title" content={`Spritearc - Signup`}/>
-                <meta property="og:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
+                <meta property="og:title" content={`Spritearc - Verify Account`}/>
+                <meta property="og:description" content={`Verify your account.`}/>
                 <meta property="og:image" content={``}/>
 
                 <meta name="twitter:card" content="summary_large_image"/>
                 <meta property="twitter:domain" content="Spritearc.com"/>
                 <meta property="twitter:url" content="https://Spritearc.com/"/>
-                <meta name="twitter:title" content={`Spritearc - Login`}/>
-                <meta name="twitter:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
+                <meta name="twitter:title" content={`Spritearc - Verify Account`}/>
+                <meta name="twitter:description" content={`Verify your account.`}/>
                 <meta name="twitter:image" content={``}/>
             </Head>
 
