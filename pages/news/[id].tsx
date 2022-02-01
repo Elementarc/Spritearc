@@ -9,7 +9,7 @@ import {formatDistanceStrict} from "date-fns"
 import Markdown from 'markdown-to-jsx';
 import { useParallax } from '../../lib/custom_hooks';
 import { useRouter } from 'next/router';
-
+import Head from 'next/head';
 
 //Frontend
 export default function Patch(props: {patchnote: Patchnote | null}) {
@@ -23,6 +23,23 @@ export default function Patch(props: {patchnote: Patchnote | null}) {
 	
 	return (
 		<>
+			<Head>
+				<title>{`Spritearc - ${patchnote.info.title}`}</title>
+				<meta name="description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
+
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - Home`}/>
+				<meta property="og:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
+				<meta property="og:image" content={``}/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - Home`}/>
+				<meta name="twitter:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
+				<meta name="twitter:image" content={``}/>
+            </Head>
 			<div className="patch_container">
 				
 				<div className="patch_header_container">

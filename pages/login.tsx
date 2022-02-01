@@ -10,6 +10,7 @@ import Loader from '../components/loading';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { Nav_shadow } from '../components/navigation';
 import { App_notification_context_type, Auth_context_type, Public_user } from '../types';
+import Head from 'next/head';
 
 export default function Login_page() {
     const [loading, set_loading] = useState(false)
@@ -83,35 +84,55 @@ export default function Login_page() {
     }
 
     return (
-        <div className="login_page">
+        <>
+            <Head>
+				<title>{`Spritearc - Login`}</title>
+				<meta name="description" content={`Login into your account to rate Pixelart packs or to create your own unqiue packs that can be shared throughout the world.`}/>
 
-            <div className="content">
-                <Nav_shadow/>
-                <div className="login_container">
-                    <H1_with_deco title="Sign In" />
-                    
-                    <input type="text" placeholder="Email" id="email_input" defaultValue="arctale.work@gmail.com"/>
-                    <input type="password" placeholder="Password" id="password_input" defaultValue="Hurrensohn1"/>
-                    <button onClick={login}>
-                        <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
-                        {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
-                    </button>
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - Login`}/>
+				<meta property="og:description" content={`Login into your account to rate Pixelart packs or to create your own unqiue packs that can be shared throughout the world.`}/>
+				<meta property="og:image" content={``}/>
 
-                    <div className="forward_container">
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - Login`}/>
+				<meta name="twitter:description" content={`Login into your account to rate Pixelart packs or to create your own unqiue packs that can be shared throughout the world.`}/>
+				<meta name="twitter:image" content={``}/>
+            </Head>
+        
+            <div className="login_page">
 
-                        <span className="bottom_section_line" />
-                        <div className="items">
-                            <p>{"Did you forget your password? "}<Link href="/forgot_password" scroll={false}>Reset Password</Link></p>
-                            <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
-                        </div>
+                <div className="content">
+                    <Nav_shadow/>
+                    <div className="login_container">
+                        <H1_with_deco title="Sign In" />
                         
+                        <input type="text" placeholder="Email" id="email_input" defaultValue="arctale.work@gmail.com"/>
+                        <input type="password" placeholder="Password" id="password_input" defaultValue="Hurrensohn1"/>
+                        <button onClick={login}>
+                            <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
+                            {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
+                        </button>
+
+                        <div className="forward_container">
+
+                            <span className="bottom_section_line" />
+                            <div className="items">
+                                <p>{"Did you forget your password? "}<Link href="/forgot_password" scroll={false}>Reset Password</Link></p>
+                                <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
+                            </div>
+                            
+                        </div>
+
                     </div>
 
                 </div>
-
+                <Footer />
             </div>
-            <Footer />
-        </div>
+        </>
     );
 }
 

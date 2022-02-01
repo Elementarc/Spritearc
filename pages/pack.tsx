@@ -33,9 +33,28 @@ export default function Pack_page_handler(props: {pack: Pack}) {
     const Auth: Auth_context_type = useContext(Auth_context)
     const pack = props.pack
 
+    console.log(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/dynamic_public/packs/${pack._id}/${pack.preview}`)
     return(
         <>
-            <title>Browse through thousands of free and opensource Pixelart sprites and assets</title>
+            <Head>
+				<title>{`${pack.title}`}</title>
+				<meta name="description" content={`${pack.description}`}/>
+                <meta name='keywords' content={`${pack.tags.join(",")}`}/>
+
+				<meta property="og:url" content={`https://Spritearc.com/`}/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`${pack.title}`}/>
+				<meta property="og:description" content={`${pack.description}`}/>
+				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`}/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`${pack.title}`}/>
+				<meta name="twitter:description" content={`${pack.description}`} />
+				<meta name="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`}/>
+            </Head>
+
             <Memo_pack_page pack={pack} App_notification={App_notification} Auth={Auth}/>
         </>
     )

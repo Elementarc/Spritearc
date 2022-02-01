@@ -6,6 +6,7 @@ import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
 import { capitalize_first_letter_rest_lowercase } from '../spritearc_lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
+import Head from 'next/head';
 const search_context: any = React.createContext(null)
 
 export default function Search_page() {
@@ -53,36 +54,57 @@ export default function Search_page() {
 	}, [])
 	
 	return (
-		<search_context.Provider value={{search, set_input_value}}>
-			<div className='search_page'>
+		<>
+			<Head>
+				<title>{`Spritearc - Search packs`}</title>
+				<meta name="description" content={`Find Pixelart assets and sprites with just one click. You can search by tags to find specific genres.`}/>
 
-				<div className='content'>
-					<Nav_shadow/>
-					<div className='searching_container'>
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - Search packs`}/>
+				<meta property="og:description" content={`Find Pixelart assets and sprites with just one click. You can search by tags to find specific genres.`}/>
+				<meta property="og:image" content={``}/>
 
-						<div className='search_input_container'>
-							<input type="text" placeholder='Search Tags' id="search_input"/>
-							<button onClick={search} id="search_button">Search</button>
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - Search packs`}/>
+				<meta name="twitter:description" content={`Find Pixelart assets and sprites with just one click. You can search by tags to find specific genres.`}/>
+				<meta name="twitter:image" content={``}/>
+            </Head>
+		
+			<search_context.Provider value={{search, set_input_value}}>
+				<div className='search_page'>
+
+					<div className='content'>
+						<Nav_shadow/>
+						<div className='searching_container'>
+
+							<div className='search_input_container'>
+								<input type="text" placeholder='Search Tags' id="search_input"/>
+								<button onClick={search} id="search_button">Search</button>
+							</div>
+
 						</div>
 
+						<Search_recommendations/>
+
+						{search_query &&
+							<Search_results_packs search_query={search_query}/>
+						} 
+
+						{!search_query &&
+							<div className='empty_container'>
+								<h1>It looks empty in here :(</h1>
+							</div>
+						}
 					</div>
 
-					<Search_recommendations/>
-
-					{search_query &&
-						<Search_results_packs search_query={search_query}/>
-					} 
-
-					{!search_query &&
-						<div className='empty_container'>
-							<h1>It looks empty in here :(</h1>
-						</div>
-					}
+					<Footer />
 				</div>
+			</search_context.Provider>
 
-				<Footer />
-			</div>
-		</search_context.Provider>
+		</>
 	);
 }
 

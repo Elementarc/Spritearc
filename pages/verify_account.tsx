@@ -2,6 +2,7 @@ import React, {useContext, useEffect} from 'react';
 import { useRouter } from 'next/router';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { GetServerSideProps } from 'next';
+import Head from 'next/head';
 
 export default function Verify_account({status, message}: {status: boolean, message: string}) {
     const App_notification: any = useContext(App_notification_context)
@@ -9,7 +10,6 @@ export default function Verify_account({status, message}: {status: boolean, mess
 
     //verifieng account
     useEffect(() => {
-            
         if(status === true) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully verified!", message: "Thank you for verifying your account! We will now redirect you to our login page.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
         App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Token has been expired!", message: "Your token has been expired. Please login to resend you a verification email.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
         
@@ -17,10 +17,31 @@ export default function Verify_account({status, message}: {status: boolean, mess
     }, [status, message])
 
     return (
-        <div style={{height: "100vh"}} className="verification_page">
+        <>
+            <Head>
+                <title>{`Spritearc - Signup`}</title>
+                <meta name="description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
 
-        </div>
-    );
+                <meta property="og:url" content="https://Spritearc.com/"/>
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={`Spritearc - Signup`}/>
+                <meta property="og:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
+                <meta property="og:image" content={``}/>
+
+                <meta name="twitter:card" content="summary_large_image"/>
+                <meta property="twitter:domain" content="Spritearc.com"/>
+                <meta property="twitter:url" content="https://Spritearc.com/"/>
+                <meta name="twitter:title" content={`Spritearc - Login`}/>
+                <meta name="twitter:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
+                <meta name="twitter:image" content={``}/>
+            </Head>
+
+            <div style={{height: "100vh"}} className="verification_page">
+
+            </div>
+    
+        </>
+    );  
 }
 
 export const getServerSideProps: GetServerSideProps = async(context) => {

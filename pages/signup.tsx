@@ -11,6 +11,7 @@ import Loader from "../components/loading";
 import router from "next/router";
 import { Device_context } from "../context/device_context_provider";
 import { App_notification_context } from "../context/app_notification_context_provider";
+import Head from "next/head";
 
 const SIGNUP_CONTEXT: any = React.createContext(null)
 
@@ -265,41 +266,61 @@ export default function Sign_up_page() {
 
     
     return (
-        <SIGNUP_CONTEXT.Provider value={PAGE_CONTEXT}>
-            <div className="signup_page" id="signup_page">
-                
-                <div className="content">
-                    <Nav_shadow/>
-                    <div className="steps">
-                        <AnimatePresence exitBeforeEnter>
+        <>
+            <Head>
+                <title>{`Spritearc - Signup`}</title>
+                <meta name="description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
 
-                            {current_step === 1 &&
-                                <Step_1 key="step_1"/>
-                            } : {current_step === 2 &&
-                                <Step_2 key="step_2"/>
-                            } : { current_step === 3 &&
-                                <Step_3 key="step_3"/>
-                            }
+                <meta property="og:url" content="https://Spritearc.com/"/>
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={`Spritearc - Signup`}/>
+                <meta property="og:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
+                <meta property="og:image" content={``}/>
 
-                        </AnimatePresence>
+                <meta name="twitter:card" content="summary_large_image"/>
+                <meta property="twitter:domain" content="Spritearc.com"/>
+                <meta property="twitter:url" content="https://Spritearc.com/"/>
+                <meta name="twitter:title" content={`Spritearc - Login`}/>
+                <meta name="twitter:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
+                <meta name="twitter:image" content={``}/>
+            </Head>
+       
+            <SIGNUP_CONTEXT.Provider value={PAGE_CONTEXT}>
+                <div className="signup_page" id="signup_page">
+                    
+                    <div className="content">
+                        <Nav_shadow/>
+                        <div className="steps">
+                            <AnimatePresence exitBeforeEnter>
 
-                        <Step_displayer />
+                                {current_step === 1 &&
+                                    <Step_1 key="step_1"/>
+                                } : {current_step === 2 &&
+                                    <Step_2 key="step_2"/>
+                                } : { current_step === 3 &&
+                                    <Step_3 key="step_3"/>
+                                }
 
-                        <div className="forward_container">
+                            </AnimatePresence>
 
-                            <span className="bottom_section_line" />
-                            <div className="items">
-                                <p>{"Already a member? "}<Link href="/login" scroll={false}>Sign In</Link></p>
+                            <Step_displayer />
+
+                            <div className="forward_container">
+
+                                <span className="bottom_section_line" />
+                                <div className="items">
+                                    <p>{"Already a member? "}<Link href="/login" scroll={false}>Sign In</Link></p>
+                                </div>
+                                
                             </div>
-                            
                         </div>
-                    </div>
 
+                    </div>
+                    
+                    <Footer />
                 </div>
-                
-                <Footer />
-            </div>
-        </SIGNUP_CONTEXT.Provider>
+            </SIGNUP_CONTEXT.Provider>
+        </>
     );
 }
 

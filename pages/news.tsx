@@ -10,7 +10,7 @@ import { formatDistanceStrict } from "date-fns"
 import { useParallax } from '../lib/custom_hooks';
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import Loader from '../components/loading';
-
+import Head from 'next/head';
 
 
 function navigateTo(path: string): void {
@@ -81,6 +81,24 @@ export default  function News(): ReactElement {
 	useParallax("news_background_image")
 	return (
 		<>
+			<Head>
+				<title>{`Spritearc - News`}</title>
+				<meta name="description" content={`Read about our newest updates and features. Here you can find occasionally release updates for Spritearc.com.`}/>
+
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - News`}/>
+				<meta property="og:description" content={`Read about our newest updates and features. Here you can find occasionally release updates for Spritearc.com.`}/>
+				<meta property="og:image" content={``}/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - News`}/>
+				<meta name="twitter:description" content={`Read about our newest updates and features. Here you can find occasionally release updates for Spritearc.com.`}/>
+				<meta name="twitter:image" content={``}/>
+            </Head>
+			
 			<div className="news_page">
 
 				<div className="content">

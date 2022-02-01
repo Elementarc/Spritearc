@@ -13,7 +13,7 @@ export default function Browse() {
 	return (
 		<>
 			<Head>
-				<title>Browse through thousands of free Pixelart assets and sprites</title>
+				<title>{`Spritearc - Browse through thousands of free Pixelart assets and sprites`}</title>
 				<meta name="description" content="Find sprites and assets from thousands of packs and download them."/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
@@ -23,7 +23,7 @@ export default function Browse() {
 				<meta property="og:image" content=""/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
-				<meta property="twitter:domain" content=""/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content="Browse through thousands of free Pixelart assets and sprites"/>
 				<meta name="twitter:description" content="Find sprites and assets from thousands of packs and download them."/>

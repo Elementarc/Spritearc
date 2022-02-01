@@ -9,6 +9,7 @@ import ArrowIcon from "../public/icons/ArrowIcon.svg"
 import Transition_1 from "../public/images/transition_1.svg"
 import AddIcon from "../public/icons/AddIcon.svg"
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export default function Home(): ReactElement {
 	useParallax("intro_image")
@@ -16,6 +17,24 @@ export default function Home(): ReactElement {
     
     return (
         <>
+            <Head>
+				<title>{`Spritearc - Home`}</title>
+				<meta name="description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
+
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - Home`}/>
+				<meta property="og:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
+				<meta property="og:image" content={``}/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - Home`}/>
+				<meta name="twitter:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
+				<meta name="twitter:image" content={``}/>
+            </Head>
+
             <div className="home_page">
                 
                 <div className="content">

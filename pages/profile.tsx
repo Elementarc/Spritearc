@@ -7,6 +7,7 @@ import Footer from '../components/footer';
 import { useParallax } from '../lib/custom_hooks';
 import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
+import Head from 'next/head';
 
 export default function Profile(props: {public_user: any}) {
     const public_user = JSON.parse(props.public_user) as Public_user
@@ -14,48 +15,68 @@ export default function Profile(props: {public_user: any}) {
     
     
     return (
-        <div className='profile_page'>
+        <>
+            <Head>
+				<title>{`${public_user.username}`}</title>
+				<meta name="description" content={`${public_user.description}`}/>
 
-            <div className='content'>
-                <Nav_shadow/>
-                <div className='user_preview_container'>
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`${public_user.username}`}/>
+				<meta property="og:description" content={`${public_user.description}`}/>
+				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
 
-                    <div className='image_container'>
-                        <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
-                        <div className='blur' />
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`${public_user.username}`}/>
+				<meta name="twitter:description" content={`${public_user.description}`}/>
+				<meta name="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
+            </Head>
+       
+            <div className='profile_page'>
 
+                <div className='content'>
+                    <Nav_shadow/>
+                    <div className='user_preview_container'>
+
+                        <div className='image_container'>
+                            <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+                            <div className='blur' />
+
+                            
+                        </div>
                         
-                    </div>
-                    
-                    <div className='header'>
+                        <div className='header'>
 
-                        <div className='user_portrait_container'>
+                            <div className='user_portrait_container'>
 
-                            <div className='portrait'>
-                                
-                                <Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+                                <div className='portrait'>
+                                    
+                                    <Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+
+                                </div>
 
                             </div>
 
+                            <div className='user_info_container'>
+                                <Link href={`/profile?user=${public_user.username}`} scroll={false}>{`${public_user.username}`}</Link>
+                                <p>{`${public_user.description}`}</p>
+                            </div>
                         </div>
 
-                        <div className='user_info_container'>
-                            <Link href={`/profile?user=${public_user.username}`} scroll={false}>{`${public_user.username}`}</Link>
-                            <p>{`${public_user.description}`}</p>
-                        </div>
+
+
+                    </div>
+                    
+                    <div className='user_packs_container'>
+                        <Packs_section section_name={`Packs created by '${public_user.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs`} method='POST' body={public_user.released_packs}/>
                     </div>
 
-
-
                 </div>
-                
-                <div className='user_packs_container'>
-                    <Packs_section section_name={`Packs created by '${public_user.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs`} method='POST' body={public_user.released_packs}/>
-                </div>
-
+                <Footer/>
             </div>
-            <Footer/>
-        </div>
+        </>
     );
 }
 
