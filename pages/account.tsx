@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import React, {useContext, useEffect, useState} from 'react';
 import jwt from 'jsonwebtoken';
-import { Public_user } from '../types';
+import { App_notification_context_type, Public_user } from '../types';
 import Footer from '../components/footer';
 import Image from "next/image"
 import Link from 'next/dist/client/link';
@@ -24,7 +24,7 @@ import { validate_user_description } from '../spritearc_lib/validate_lib';
 export default function Account_page(props: {user: Public_user}) {
     const [update_about_state, set_update_about_state] = useState(false)
     const user = props.user
-    const App_notification: any = useContext(App_notification_context)
+    const App_notification: App_notification_context_type = useContext(App_notification_context)
     const router = useRouter()
     const Auth: any = useContext(Auth_context)
     const controller = new AbortController()
@@ -79,7 +79,7 @@ export default function Account_page(props: {user: Public_user}) {
             }
 
         }
-    }, [App_notification])
+    }, [App_notification.dispatch])
 
     useEffect(() => {
         const controller = new AbortController()
