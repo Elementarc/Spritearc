@@ -247,7 +247,7 @@ export default function Account_page(props: {user: Public_user}) {
                         <p>Create your own Pixelart pack! Make yourself a name.</p>
                     </div>
 
-                    <div className='card'>
+                    <div onClick={() => go_to(`/account/settings`)} className='card'>
 
                         <div className='icon_container'>
 

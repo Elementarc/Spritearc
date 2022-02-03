@@ -33,7 +33,6 @@ export default function Pack_page_handler(props: {pack: Pack}) {
     const Auth: Auth_context_type = useContext(Auth_context)
     const pack = props.pack
 
-    console.log(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/dynamic_public/packs/${pack._id}/${pack.preview}`)
     return(
         <>
             <Head>
@@ -242,7 +241,7 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
                                 <AnimatePresence exitBeforeEnter>
 
                                     {delete_confirmation_state &&
-                                        <motion.div key="report_pack" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
+                                        <motion.div key="delete_pack" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
                                             <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
                                                 <h1>Delete Pack?</h1>
                                                 <p>Do you want to delete this pack? Remember, after deleting it wont be recoverable and all stats will be lost.</p>

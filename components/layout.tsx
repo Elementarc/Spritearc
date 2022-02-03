@@ -67,7 +67,7 @@ export default function Layout({children}: any ) {
                 Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
             }
             
-        }, 1000 * 60 * 15);
+        }, 1000 * 60 * 15.5);
 
         return(() => {
             clearTimeout(timer)
