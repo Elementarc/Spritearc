@@ -9,6 +9,7 @@ import Fixed_app_content_overlay from '../../components/fixed_app_content_overla
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { Auth_context, USER_DISPATCH_ACTIONS } from '../../context/auth_context_provider';
+import { validate_email } from '../../spritearc_lib/validate_lib';
 
 
 export default function Account_settings(props: {public_user: Public_user}) {
@@ -17,6 +18,7 @@ export default function Account_settings(props: {public_user: Public_user}) {
     const Auth: Auth_context_type = useContext(Auth_context)
     const [account_delete_warning, set_account_delete_warning] = useState(false)
     const [delete_account, set_delete_account] = useState(false)
+    const [update_email, set_update_email] = useState(false)
     const [settings_state, set_settings_state] = useState("account")
     const router = useRouter()
     const user = props.public_user
@@ -71,45 +73,106 @@ export default function Account_settings(props: {public_user: Public_user}) {
             //COuldnt reach server
         }
     }
+
+    async function update_new_email() {
+        
+        try {
+            const password_input = document.getElementById("account_password_input") as HTMLInputElement
+            if(!password_input) return
+            const new_email_input = document.getElementById("new_email_input") as HTMLInputElement
+            if(!new_email_input) return
+            
+            
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_email`, {
+                method: "POST",
+                credentials: "include",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({new_email: new_email_input.value, password: password_input.value})
+            })
+            
+            if(response.status === 200) {
+                const response_obj = await response.json() as {success: boolean, message: string}
+
+                if(response_obj.success) {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your email!", message: "You have successfully updated your email. You can now login with your new email address.", button_label: "Okay", callb: () => {set_update_email(false); new_email_input.value = ""}}})
+                } else {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${response_obj.message}`, message: `We could'nt update what you wanted because: ${response_obj.message}`, button_label: "Okay"}})
+                }
+            } else {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "For some reason we couldn't delete your account! We are sorry that you have to experience this. Please contact an admin or try again later.", button_label: "Okay"}})
+            }
+        } catch(err) {
+            //COuldnt reach server
+        }
+    }
+
+    function onKeyUp(e: any) {
+        const get_update_email_button = document.getElementById("update_email_button") as HTMLButtonElement
+        if(!get_update_email_button) return
+
+        const valid_email = validate_email(e.target.value)
+        if(typeof valid_email === "string") {
+            get_update_email_button.classList.remove("active_button")
+            get_update_email_button.classList.add("disabled_button")
+            return
+        }
+
+        get_update_email_button.classList.add("active_button")
+        get_update_email_button.classList.remove("disabled_button")
+    }
     return (
         <div className='account_settings_page'>
-
             
-                <Fixed_app_content_overlay>
-                    <div className='fixed_account_settings_container'>
-                        <AnimatePresence exitBeforeEnter>
-                            { account_delete_warning &&
+            <Fixed_app_content_overlay>
+                <div className='fixed_account_settings_container'>
+                    <AnimatePresence exitBeforeEnter>
+                        { account_delete_warning &&
 
-                                <motion.div key="delete_account_warning" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_confirmation_container'>
-                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                        <h1>Delete Account</h1>
-                                        <p>Remember, all your packs will be deleted and they wont be recoverable anymore. There is no going back afterwards!</p>
-                                        <button onClick={() => {set_account_delete_warning(false); set_delete_account(true)}}>Yes, delete account!</button>
-                                        <h4 onClick={() => {set_account_delete_warning(false)}}>No, dont delete account</h4>
-                                    </motion.div>
-
-                                    <div onClick={() => {set_account_delete_warning(false)}} className='delete_account_confirmation_background' />
+                            <motion.div key="delete_account_warning" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_confirmation_container'>
+                                <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                    <h1>Delete Account</h1>
+                                    <p>Remember, all your packs will be deleted and they wont be recoverable anymore. There is no going back afterwards!</p>
+                                    <button onClick={() => {set_account_delete_warning(false); set_delete_account(true)}}>Yes, delete account!</button>
+                                    <h4 onClick={() => {set_account_delete_warning(false)}}>No, dont delete account</h4>
                                 </motion.div>
-                            }
 
-                            { delete_account &&
+                                <div onClick={() => {set_account_delete_warning(false)}} className='delete_account_confirmation_background' />
+                            </motion.div>
+                        }
 
-                                <motion.div key="delete_account" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_container'>
-                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='delete_account_content'>
-                                        <h1>Please enter your password</h1>
-                                        <p>To delete your account please enter your account password as your final step.</p>
-                                        <input id="account_password_input" type="password" placeholder='Password'/>
-                                        <button onClick={delete_account_call}>DELETE ACCOUNT</button>
-                                        <h4 onClick={() => {set_delete_account(false)}}>I changed my mind.</h4>
-                                    </motion.div>
+                        { delete_account &&
 
-                                    <div onClick={() => {set_delete_account(false)}} className='delete_account_background' />
+                            <motion.div key="delete_account" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_container'>
+                                <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='delete_account_content'>
+                                    <h1>Please enter your password</h1>
+                                    <p>To delete your account please enter your account password as your final step.</p>
+                                    <input id="account_password_input" type="password" placeholder='Password'/>
+                                    <button onClick={delete_account_call}>DELETE ACCOUNT</button>
+                                    <h4 onClick={() => {set_delete_account(false)}}>I changed my mind.</h4>
                                 </motion.div>
-                            }
 
-                        </AnimatePresence>
-                    </div>
-                </Fixed_app_content_overlay>
+                                <div onClick={() => {set_delete_account(false)}} className='delete_account_background' />
+                            </motion.div>
+                        }
+
+                        { update_email &&
+
+                            <motion.div key="update_email" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='update_email_container'>
+                                <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='update_email_content'>
+                                    <h1>Please enter your password</h1>
+                                    <p>To Verify that you are verified to update your account information, please enter your password!</p>
+                                    <input id="account_password_input" type="password" placeholder='Password'/>
+                                    <button onClick={update_new_email}>Update Email</button>
+                                    <h4 onClick={() => {set_update_email(false)}}>I changed my mind.</h4>
+                                </motion.div>
+
+                                <div onClick={() => {set_update_email(false)}} className='update_email_background' />
+                            </motion.div>
+                        }
+
+                    </AnimatePresence>
+                </div>
+            </Fixed_app_content_overlay>
             
             
 
@@ -161,6 +224,17 @@ export default function Account_settings(props: {public_user: Public_user}) {
 
                         { settings_state === "email" && 
                             <div className='email_content'>
+                                <h1>Email</h1>
+                                <div className='grid_item'>
+                                    <div className='item_1'>Current Email:</div>
+                                    <div className='item_2'>{safe_email}</div>
+                                </div>
+
+                                <div className='update_email_container'>
+                                    <h1>Update Email</h1>
+                                    <input onKeyUp={onKeyUp} id="new_email_input" type="text" placeholder='New Email'/>
+                                    <button id="update_email_button" onClick={() => {set_update_email(true)}} className='disabled_button'>Update Email</button>
+                                </div>
                                 
                             </div>
                         }

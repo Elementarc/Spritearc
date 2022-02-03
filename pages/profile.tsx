@@ -105,7 +105,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         
         if(response.status === 200) {
             const user = await response.json()
-            console.log(user)
             if(!user) return redirect
 
             return {
