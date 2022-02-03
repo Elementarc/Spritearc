@@ -126,6 +126,7 @@
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
+
             .patch_forward_content_container{
                 display: flex;
                 width: 100%;
@@ -136,8 +137,10 @@
                 .patch_forward_img_container{
                     position: relative;
                     width: 200px;
+                    min-width: 200px;
                     height: 100%;
                     @include breakpoint(mobile) {
+                        min-width: unset;
                         width: 80%;
                         height: 100%;
                     }

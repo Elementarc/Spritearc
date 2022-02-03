@@ -18,65 +18,10 @@ function navigateTo(path: string): void {
 }
 
 //News Component
-export default  function News(): ReactElement {
-	const [patchnotes, set_patchnotes] = useState<null | Patchnote[] | []>(null)
-	const [page, set_page] = useState(1)
+export default  function News(props: {patchnoteListOrdered: string}): ReactElement {
+	const patchnoteListOrderd = check_if_json(props.patchnoteListOrdered) ? JSON.parse(props.patchnoteListOrdered) : null
+	const [patchnotes, set_patchnotes] = useState<null | Patchnote[] | []>(patchnoteListOrderd)
 
-	useEffect(() => {
-		const controller = new AbortController()
-		
-		async function fetch_patchnotes() {
-
-			function display_load_more(state: boolean) {
-				const load_more = document.getElementById("news_load_more_button_container") as HTMLDivElement
-				if(!load_more) return
-				if(state === true) {
-					load_more.style.display = ""
-				} else {
-					load_more.style.display = "none"
-				}
-			}
-
-			try {
-				display_load_more(false)
-				const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote_list?page=${page}`, {
-					method: "GET",
-					signal: controller.signal,
-				})
-				
-
-				if(response.status === 200) {
-					const patchnote_obj: {patchnotes: Patchnote[], max_page: number} = await response.json()
-					const patchnotes: Patchnote[] = patchnote_obj.patchnotes
-					const max_pages: number = patchnote_obj.max_page
-
-					if( page >= max_pages) {
-						display_load_more(false)
-						
-					} else {
-						display_load_more(true)
-						console.log("test")
-					}
-					
-					set_patchnotes(patchnotes)
-				} else {
-					set_patchnotes([])
-					display_load_more(false)
-				}
-
-			} catch(err) {
-				//Coudlnt reach server
-				display_load_more(false)
-			}
-		}
-
-		fetch_patchnotes()
-
-		return(() => {
-			controller.abort()
-		})
-	}, [page, set_patchnotes])
-	
 	//Creating Parallax for img
 	useParallax("news_background_image")
 	return (
@@ -129,9 +74,6 @@ export default  function News(): ReactElement {
 								<Loader loading={true} main_color={true}/>
 							}
 
-							<div className="news_load_more_button_container" id="news_load_more_button_container">
-								<button onClick={() => {set_page(page + 1)}} id="increment_page_button">Load More</button>
-							</div>
 						</div>
 
 					</div>
@@ -177,5 +119,23 @@ function Patchnote_templates(props: {patchnotes: Patchnote[]}): ReactElement{
 			{patchnote_templates}
 		</>
 	)
+}
+
+import patchHandler from '../lib/patch_lib';
+import { check_if_json } from '../spritearc_lib/custom_lib';
+export const getStaticProps: GetStaticProps = async (context) => {
+	try {
+		const patchnoteListOrderd = patchHandler.patchnoteListOrdered
+
+		return{
+			props: {patchnoteListOrdered: JSON.stringify(patchnoteListOrderd)},
+		}
+
+	} catch(err) {
+		console.log(err)
+		return { props: {patchnote: null}}
+	}
+	
+	
 }
 

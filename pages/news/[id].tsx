@@ -12,9 +12,10 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 //Frontend
-export default function Patch(props: {patchnote: Patchnote | null}) {
+export default function Patch(props: {patchnote: string | null}) {
 	const router = useRouter()
-  	const patchnote = props.patchnote 
+	if(!props.patchnote) return router.push("/news", "/news", {scroll: false})
+  	const patchnote = check_if_json(props.patchnote) ? JSON.parse(props.patchnote) : props.patchnote
 	
 	
 	useParallax("patch_background_image")
@@ -76,20 +77,19 @@ export default function Patch(props: {patchnote: Patchnote | null}) {
 //Container That Renders all Forward_items
 function Forward_container(): ReactElement {
 	return (
-	  <div className="patch_forward_container">
-  
-		  <Forward_item img={"/images/patch1.jpg"} header="Plans for the future" description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."/>
-		  <Forward_item img={"/images/patch1.jpg"} header="Plans for the future" description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."/>
-  
-	  </div>
+		<div className="patch_forward_container">
+	
+			<Forward_item img={"/images/patch1.jpg"} header="Follow us on Twitter" description="We occasionally post something on Twitter, you can follow us if you are interested" link='https://twitter.com/Spritearc' />
+	
+		</div>
 	);
 
 }
 //Creating a Forward item. Used by Forward_container
-function Forward_item(props: any) {
+function Forward_item(props: {img: string, header: string, description: string, link: string}) {
 	return (
 		<>
-			<div className="patch_forward_content_container">
+			<a href={`${props.link}`} target={"_blank"} className="patch_forward_content_container">
 
 				<div className="patch_forward_img_container">
 					<Image className="patch_forward_image" layout="fill" src={props.img} alt="" />
@@ -100,25 +100,30 @@ function Forward_item(props: any) {
 					<p>{props.description}</p>
 				</div>
 				
-			</div>
+			</a>
 			<span />
 		</>
 
 	);
 }
 
+import patchHandler from '../../lib/patch_lib';
+import { check_if_json } from '../../spritearc_lib/custom_lib';
 export const getStaticPaths: GetStaticPaths = async () => {
 
 	try {
-	
-		const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote_list`)
-
-		const patchnoteList: Patchnote[] = await response.json()
+		const patchnoteList: Patchnote[] = patchHandler.patchnoteList
+		const paths = patchnoteList.map((patchnote) => {
+			return {params: {id: `${patchnote.id}`}}
+		})
+		/* const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote_list`) */
+		
+		/* const patchnoteList: Patchnote[] = await response.json()
 
 		const paths = patchnoteList.map((patchnote) => {
 
 			return {params: {id: `${patchnote.id}`}}
-		})
+		}) */
 		
 		return {
 			paths,
@@ -140,14 +145,14 @@ export const getStaticProps: GetStaticProps = async (context) => {
 		if(!context.params) return { props: {patchnote: null}}
 		const patch_id = context.params.id
 		if(typeof patch_id !== "string") return { props: {patchnote: null}}
-		const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_patchnote/${patch_id}`, {method: "GET"})
 
+		const patchnote = patchHandler.getPatchnote(patch_id)
+		if(!patchnote) return { props: {patchnote: null}}
 
-		const patchnote = await response.json()
-		
-		
+		console.log(patchnote)
+
 		return{
-			props: {patchnote: patchnote},
+			props: {patchnote: JSON.stringify(patchnote)},
 		}
 
 		

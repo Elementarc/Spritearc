@@ -77,7 +77,7 @@ export function sort_packs_section(packs: Pack[] | null, sort_action: string){
     }
 }
 
-export function check_if_json(value: string): boolean {
+export function check_if_json(value: any): boolean {
     
     try {
         JSON.parse(value)
