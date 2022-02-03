@@ -12,9 +12,8 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 //Frontend
-export default function Patch(props: {patchnote: string | null}) {
+export default function Patch(props: {patchnote: string}) {
 	const router = useRouter()
-	if(!props.patchnote) return router.push("/news", "/news", {scroll: false})
   	const patchnote = check_if_json(props.patchnote) ? JSON.parse(props.patchnote) : props.patchnote
 	
 	
@@ -89,7 +88,7 @@ function Forward_container(): ReactElement {
 function Forward_item(props: {img: string, header: string, description: string, link: string}) {
 	return (
 		<>
-			<a href={`${props.link}`} target={"_blank"} className="patch_forward_content_container">
+			<a href={`${props.link}`} target="_blank" rel='noreferrer' className="patch_forward_content_container">
 
 				<div className="patch_forward_img_container">
 					<Image className="patch_forward_image" layout="fill" src={props.img} alt="" />
@@ -138,8 +137,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	}
 };
 
-
-
 export const getStaticProps: GetStaticProps = async (context) => {
 	try {
 		if(!context.params) return { props: {patchnote: null}}
@@ -148,8 +145,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 
 		const patchnote = patchHandler.getPatchnote(patch_id)
 		if(!patchnote) return { props: {patchnote: null}}
-
-		console.log(patchnote)
 
 		return{
 			props: {patchnote: JSON.stringify(patchnote)},
@@ -161,6 +156,5 @@ export const getStaticProps: GetStaticProps = async (context) => {
 		console.log(err)
 		return { props: {patchnote: null}}
 	}
-	
 	
 }

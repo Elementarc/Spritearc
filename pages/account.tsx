@@ -57,7 +57,6 @@ export default function Account_page(props: {user: Public_user}) {
 
     useEffect(() => {
         const get_profile_upload_input = document.getElementById("input_profile_picture") as HTMLInputElement
-       
         get_profile_upload_input.onchange = async(e: any) => {
             const form = new FormData()
             form.set("file", e.target.files[0])
@@ -78,8 +77,9 @@ export default function Account_page(props: {user: Public_user}) {
                 //Couldnt update profile
             }
 
+            
         }
-    }, [App_notification.dispatch])
+    }, [App_notification])
 
     useEffect(() => {
         const controller = new AbortController()

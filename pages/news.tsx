@@ -1,14 +1,13 @@
-import React, { ReactElement, useState, useMemo} from 'react';
+import React, { ReactElement, useState} from 'react';
 import Image from "next/image"
 import Eclipse from "../public/images/eclipse.jpg"
 import Router from "next/router"
 import Footer from '../components/footer';
 import { Nav_shadow } from "../components/navigation";
-import { useEffect } from 'react';
 import { Patchnote } from '../types';
 import { formatDistanceStrict } from "date-fns"
 import { useParallax } from '../lib/custom_hooks';
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
+import { GetStaticProps} from 'next'
 import Loader from '../components/loading';
 import Head from 'next/head';
 
@@ -19,8 +18,7 @@ function navigateTo(path: string): void {
 
 //News Component
 export default  function News(props: {patchnoteListOrdered: string}): ReactElement {
-	const patchnoteListOrderd = check_if_json(props.patchnoteListOrdered) ? JSON.parse(props.patchnoteListOrdered) : null
-	const [patchnotes, set_patchnotes] = useState<null | Patchnote[] | []>(patchnoteListOrderd)
+	const patchnoteListOrdered = check_if_json(props.patchnoteListOrdered) ? JSON.parse(props.patchnoteListOrdered) : null
 
 	//Creating Parallax for img
 	useParallax("news_background_image")
@@ -67,10 +65,10 @@ export default  function News(props: {patchnoteListOrdered: string}): ReactEleme
 					<div className="content_container">
 
 						<div className="news_all_patch_container">
-							{patchnotes && patchnotes.length > 0 &&
-								<Patchnote_templates patchnotes={patchnotes}/>
+							{patchnoteListOrdered && patchnoteListOrdered.length > 0 &&
+								<Patchnote_templates patchnotes={patchnoteListOrdered}/>
 							}
-							{patchnotes === null &&
+							{patchnoteListOrdered === null &&
 								<Loader loading={true} main_color={true}/>
 							}
 

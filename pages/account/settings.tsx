@@ -43,7 +43,7 @@ export default function Account_settings(props: {public_user: Public_user}) {
         }
         get_account_safe_email()
         
-    }, [])
+    }, [user])
 
     async function delete_account_call() {
         try {
