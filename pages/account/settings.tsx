@@ -9,7 +9,7 @@ import Fixed_app_content_overlay from '../../components/fixed_app_content_overla
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { Auth_context, USER_DISPATCH_ACTIONS } from '../../context/auth_context_provider';
-import { validate_email } from '../../spritearc_lib/validate_lib';
+import { validate_email, validate_password } from '../../spritearc_lib/validate_lib';
 
 
 export default function Account_settings(props: {public_user: Public_user}) {
@@ -73,7 +73,6 @@ export default function Account_settings(props: {public_user: Public_user}) {
             //COuldnt reach server
         }
     }
-
     async function update_new_email() {
         
         try {
@@ -105,8 +104,40 @@ export default function Account_settings(props: {public_user: Public_user}) {
             //COuldnt reach server
         }
     }
+    async function update_password() {
+        
+        try {
+            const current_password_input = document.getElementById("current_password_input") as HTMLInputElement
+            if(!current_password_input) return
+            const new_password_input = document.getElementById("new_password_input") as HTMLInputElement
+            if(!new_password_input) return
+            
+            
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_password`, {
+                method: "POST",
+                credentials: "include",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({current_password: current_password_input.value, new_password: new_password_input.value})
+            })
+            
+            if(response.status === 200) {
+                const response_obj = await response.json() as {success: boolean, message: string}
 
-    function onKeyUp(e: any) {
+                if(response_obj.success) {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your Password!", message: "You have successfully updated your Password.", button_label: "Okay", callb: () => {reset_password_inputs()}}})
+                } else {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${response_obj.message}`, message: `We could'nt update what you wanted because: ${response_obj.message}`, button_label: "Okay"}})
+                }
+
+            } else {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "For some reason we couldn't delete your account! We are sorry that you have to experience this. Please contact an admin or try again later.", button_label: "Okay"}})
+            }
+        } catch(err) {
+            //COuldnt reach server
+        }
+    }
+
+    function on_key_up_email_validation(e: any) {
         const get_update_email_button = document.getElementById("update_email_button") as HTMLButtonElement
         if(!get_update_email_button) return
 
@@ -120,6 +151,86 @@ export default function Account_settings(props: {public_user: Public_user}) {
         get_update_email_button.classList.add("active_button")
         get_update_email_button.classList.remove("disabled_button")
     }
+    function on_key_up_password_validation(e: any) {
+        const update_password_button = document.getElementById("update_password_button") as HTMLButtonElement
+
+        const current_password_input = document.getElementById("current_password_input") as HTMLInputElement
+        if(!current_password_input) {
+            update_password_button.classList.remove("active_button")
+            update_password_button.classList.add("disabled_button")
+            return
+        }
+
+        const new_password_input = document.getElementById("new_password_input") as HTMLInputElement
+        if(!new_password_input) {
+            update_password_button.classList.remove("active_button")
+            update_password_button.classList.add("disabled_button")
+            return
+        }
+
+        const new_password_repeat_input = document.getElementById("new_password_repeat_input") as HTMLInputElement
+        if(!new_password_repeat_input) {
+            update_password_button.classList.remove("active_button")
+            update_password_button.classList.add("disabled_button")
+            return
+        }
+
+
+        const valid_current_password = validate_password(current_password_input.value)
+        if(!valid_current_password) {
+            update_password_button.classList.remove("active_button")
+            update_password_button.classList.add("disabled_button")
+            return
+        }
+        
+        const valid_new_password = validate_password(new_password_input.value)
+        if(!valid_new_password) {
+            update_password_button.classList.remove("active_button")
+            update_password_button.classList.add("disabled_button")
+            return
+        }
+
+        const valid_new_password_repeat = validate_password(new_password_repeat_input.value)
+        if(!valid_new_password_repeat) {
+            update_password_button.classList.remove("active_button")
+            update_password_button.classList.add("disabled_button")
+            return
+        }
+
+        const same_passwords = compare_both_passwords()
+        if(!same_passwords) {
+            update_password_button.classList.remove("active_button")
+            update_password_button.classList.add("disabled_button")
+            return
+        }
+
+        update_password_button.classList.add("active_button")
+        update_password_button.classList.remove("disabled_button")
+    }
+    function compare_both_passwords() {
+        const new_password_input = document.getElementById("new_password_input") as HTMLInputElement
+        if(!new_password_input) return
+        const new_password_repeat_input = document.getElementById("new_password_repeat_input") as HTMLInputElement
+        if(!new_password_repeat_input) return
+
+
+        if(new_password_input.value === new_password_repeat_input.value) return true
+        return false
+    }
+
+    function reset_password_inputs() {
+        const current_password_input = document.getElementById("current_password_input") as HTMLInputElement
+        if(!current_password_input) return
+        const new_password_input = document.getElementById("new_password_input") as HTMLInputElement
+        if(!new_password_input) return
+        const new_password_repeat_input = document.getElementById("new_password_repeat_input") as HTMLInputElement
+        if(!new_password_repeat_input) return
+
+        current_password_input.value = ""
+        new_password_input.value = ""
+        new_password_repeat_input.value = ""
+    }
+    
     return (
         <div className='account_settings_page'>
             
@@ -211,6 +322,16 @@ export default function Account_settings(props: {public_user: Public_user}) {
                                     </div>
 
                                     <div className='grid_item'>
+                                        <div className='item_1'>Role:</div>
+                                        <div className='item_2'>{`${user.role}`}</div>
+                                    </div>
+
+                                    <div className='grid_item'>
+                                        <div className='item_1'>Released Packs:</div>
+                                        <div className='item_2'>{`${user.released_packs.length}`}</div>
+                                    </div>
+
+                                    <div className='grid_item'>
                                         <div className='item_1'>User since:</div>
                                         <div className='item_2'>{format_date(user.created_at)}</div>
                                     </div>
@@ -224,24 +345,24 @@ export default function Account_settings(props: {public_user: Public_user}) {
 
                         { settings_state === "email" && 
                             <div className='email_content'>
-                                <h1>Email</h1>
-                                <div className='grid_item'>
-                                    <div className='item_1'>Current Email:</div>
-                                    <div className='item_2'>{safe_email}</div>
-                                </div>
+                                <h1>Update Email</h1>
 
                                 <div className='update_email_container'>
-                                    <h1>Update Email</h1>
-                                    <input onKeyUp={onKeyUp} id="new_email_input" type="text" placeholder='New Email'/>
+                                    <input onKeyUp={on_key_up_email_validation} id="new_email_input" type="text" placeholder='New Email'/>
                                     <button id="update_email_button" onClick={() => {set_update_email(true)}} className='disabled_button'>Update Email</button>
                                 </div>
                                 
                             </div>
                         }
 
-                        { settings_state === "account" && 
+                        { settings_state === "password" && 
                             <div className='password_content'>
-                                
+                                <h1>Update Password</h1>
+                                <input onKeyUp={on_key_up_password_validation} id="current_password_input" type="password" placeholder='Current Password'/>
+                                <input onKeyUp={on_key_up_password_validation} id="new_password_input" type="password" placeholder='New Password'/>
+                                <input onKeyUp={on_key_up_password_validation} id="new_password_repeat_input" type="password" placeholder='New Password Repeat'/>
+                                <button onClick={update_password} id="update_password_button" className='disabled_button'>Update Password</button>
+                                <h4>{`Password needs to be atleast 8 characters long. One uppercase / lowercase and one number. Max. 32 characters`}</h4>
                             </div>
                         }
                     </div>
