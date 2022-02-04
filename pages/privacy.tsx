@@ -1,8 +1,7 @@
 import React, {useEffect} from 'react';
 import Footer from '../components/footer';
-import Image from "next/image"
-import WaveSvg from "../public/images/wave.svg"
 import { Qick_legal_navigation } from './tos';
+import Head from 'next/head';
 
 export default function Privacy_policy() {
     //Setting numbers for headers
@@ -20,37 +19,57 @@ export default function Privacy_policy() {
 
 
     return (
-        <div className='tos_page'>
-            
-            <div className='content'>
-                <div className='legal_content_container'>
-                    <section>
-                        <h1 className='tos_header'>{`PRIVACY POLICY`}</h1>
-                        <h4 className='tos_update_date'>{`Last updated: 30/01/2022`}</h4>
-                    </section>
-                    
-                    <Introduction/>
-                    <Children_under_age_of_13/>
-                    <Information_we_collect_and_how_we_collect_it/>
-                    <Information_you_provide_to_us/>
-                    <Automatic_information_collection_and_tracking/>
-                    <Information_collection_and_tracking_technologies/>
-                    <Third_party_information_collection/>
-                    <How_we_use_your_information/>
-                    <Disclosure_of_your_information/>
-                    <Data_security/>
-                    <Changes_to_our_privacy_policy/>
-                    <section>
-                        <h1>Contact Me</h1>
+        <>
+            <Head>
+				<title>{`Spritearc - Privacy`}</title>
+				<meta name="description" content={`Spritearc Privacy.`}/>
 
-                        <p>Dont hesitate to contact me if you have any questions Via Email:</p>
-                        <a href={`mailto: arctale.work@gmail.com`}>{"Arctale.work@gmail.com"}</a>
-                    </section>
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - TOS`}/>
+				<meta property="og:description" content={`Spritearc Terms Of Service. Our Rules and Services.`}/>
+				<meta property="og:image" content={``}/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - Privacy`}/>
+				<meta name="twitter:description" content={`Spritearc Privacy.`}/>
+				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+            </Head>
+        
+            <div className='tos_page'>
+                
+                <div className='content'>
+                    <div className='legal_content_container'>
+                        <section>
+                            <h1 className='tos_header'>{`PRIVACY POLICY`}</h1>
+                            <h4 className='tos_update_date'>{`Last updated: 30/01/2022`}</h4>
+                        </section>
+                        
+                        <Introduction/>
+                        <Children_under_age_of_13/>
+                        <Information_we_collect_and_how_we_collect_it/>
+                        <Information_you_provide_to_us/>
+                        <Automatic_information_collection_and_tracking/>
+                        <Information_collection_and_tracking_technologies/>
+                        <Third_party_information_collection/>
+                        <How_we_use_your_information/>
+                        <Disclosure_of_your_information/>
+                        <Data_security/>
+                        <Changes_to_our_privacy_policy/>
+                        <section>
+                            <h1>Contact Me</h1>
+
+                            <p>Dont hesitate to contact me if you have any questions Via Email:</p>
+                            <a href={`mailto: arctale.work@gmail.com`}>{"Arctale.work@gmail.com"}</a>
+                        </section>
+                    </div>
+                    <Qick_legal_navigation/>
                 </div>
-                <Qick_legal_navigation/>
+                <Footer />
             </div>
-            <Footer />
-        </div>
+        </>
     );
 }
 

@@ -27,14 +27,14 @@ export default function Home(): ReactElement {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Home`}/>
 				<meta property="og:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
-				<meta property="og:image" content={``}/>
+				<meta property="og:image" content={`/images/wallpaper.png`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Home`}/>
 				<meta name="twitter:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
-				<meta name="twitter:image" content={``}/>
+				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
             </Head>
 
             <div className="home_page">
@@ -100,9 +100,9 @@ export default function Home(): ReactElement {
                         <div className="section_one_content">
                             <h2>News</h2>
                             <h1>Our Recent Updates</h1>
-                            <p>Are you curiouse about our newest features? You can visit our news page and read all about our changes and updates there. We're keeping it updated. </p>
+                            <p>Are you curiouse about our newest features? You can visit our news page and read all about the changes and updates we made. We're keeping it updated. </p>
                             <Link href="/news" scroll={false}>
-                                <a>Learn more</a>
+                                <a>Read Updates</a>
                             </Link>
                         </div>
 
@@ -111,11 +111,11 @@ export default function Home(): ReactElement {
 
                     <section className="news_section_container">
                         <div className="news_section_content">
-                            <h2>News</h2>
-                            <h1>Our Recent Updates</h1>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque. Sed scelerisque sit faucibus imperdiet. Leo senectus diam volutpat arcu.</p>
-                            <Link href="/news" scroll={false}>
-                                <a>Learn more</a>
+                            <h2>Your Desires</h2>
+                            <h1>Find Whatever You Need!</h1>
+                            <p>Our searching tool provides you a way to look for specific tags in packs. That way whenever you exactly know what you need, you will find it.</p>
+                            <Link href="/search" scroll={false}>
+                                <a>Search Packs</a>
                             </Link>
                         </div>
 
@@ -125,7 +125,7 @@ export default function Home(): ReactElement {
                     <section className="signup_section_container">
                         <div className="signup_section_content">
                             <h1>Create Account</h1>
-                            <p>Are you interested in releasing your own pixelart packs? Create your account now and build yourself a community that will support you through your pixels. </p>
+                            <p>Are you interested in releasing your own pixelart packs? Create your account now and build yourself a community that will support you through all pixels. </p>
                             <Link href="/signup" scroll={false}>
                                 <button>Create Account</button>
                             </Link>

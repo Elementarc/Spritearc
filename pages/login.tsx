@@ -100,7 +100,7 @@ export default function Login_page() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Login`}/>
 				<meta name="twitter:description" content={`Login into your account to rate Pixelart packs or to create your own unqiue packs that can be shared throughout the world.`}/>
-				<meta name="twitter:image" content={``}/>
+				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
             </Head>
         
             <div className="login_page">

@@ -20,6 +20,7 @@ import { NOTIFICATION_ACTIONS } from '../context/app_notification_context_provid
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import { AnimatePresence, motion } from 'framer-motion';
 import { validate_user_description } from '../spritearc_lib/validate_lib';
+import Head from 'next/head';
 
 export default function Account_page(props: {user: Public_user}) {
     const [update_about_state, set_update_about_state] = useState(false)
@@ -148,140 +149,160 @@ export default function Account_page(props: {user: Public_user}) {
 
     }
     return (
-        <div className='account_page'>
-            
-            <AnimatePresence>
-                {update_about_state &&
-                    
-                    <Fixed_app_content_overlay>
-                        <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}}  className='update_user_description_container'>
+        <>
+            <Head>
+				<title>{`Spritearc - Account`}</title>
+				<meta name="description" content="Navigate through your account. Edit your account settings or visit your public profile."/>
 
-                            <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: 0.1}}} exit={{scale: .8, transition: {duration: 0.1}}} className='update_user_description_box'>
-                                <h1>Tell us about yourself</h1>
-                                <input onKeyUp={event_valid_user_description} id="user_description_input" type="text" name="" placeholder={`${user.description}`}/>
-                                <p className='update_user_description_error_message' id="update_user_description_error_message"></p>
-                                <button onClick={update_user_description}>Ok</button>
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content="Spritearc - Account"/>
+				<meta property="og:description" content="Navigate through your account. Edit your account settings or visit your public profile."/>
+				<meta property="og:image" content="/images/wallpaper.png"/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content="Spritearc - Account"/>
+				<meta name="twitter:description" content="Navigate through your account. Edit your account settings or visit your public profile."/>
+				<meta name="twitter:image" content="/images/wallpaper.png"/>
+            </Head>
+        
+            <div className='account_page'>
+                
+                <AnimatePresence>
+                    {update_about_state &&
+                        
+                        <Fixed_app_content_overlay>
+                            <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}}  className='update_user_description_container'>
+
+                                <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: 0.1}}} exit={{scale: .8, transition: {duration: 0.1}}} className='update_user_description_box'>
+                                    <h1>Tell us about yourself</h1>
+                                    <input onKeyUp={event_valid_user_description} id="user_description_input" type="text" name="" placeholder={`${user.description}`}/>
+                                    <p className='update_user_description_error_message' id="update_user_description_error_message"></p>
+                                    <button onClick={update_user_description}>Ok</button>
+                                </motion.div>
+                                
+                                <div onClick={() => {set_update_about_state(false)}} className='update_user_description_background' />
                             </motion.div>
-                            
-                            <div onClick={() => {set_update_about_state(false)}} className='update_user_description_background' />
-                        </motion.div>
-                    </Fixed_app_content_overlay>
+                        </Fixed_app_content_overlay>
 
-                }
-            </AnimatePresence>
+                    }
+                </AnimatePresence>
 
-            <div className='content'>
-                <Nav_shadow/>
-                <div className='user_preview_container'>
+                <div className='content'>
+                    <Nav_shadow/>
+                    <div className='user_preview_container'>
 
-                    <div className='profile_banner_container'>
-                        <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
-                        <div className='blur' />
+                        <div className='profile_banner_container'>
+                            <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                            <div className='blur' />
 
-                        <div className='profile_banner_hover_container'>
-                            <EditIcon/>
-                            <input id="input_profile_banner" type="file" accept="image/png, image/jpeg, image/jpg"/>
-                        </div>
-                    </div>
-                    
-                    <div className='user_portrait_container'>
-                        
-                        <div className='portrait'>
-                            <Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
-                        
-                            <div className='portrait_hover_container'>
+                            <div className='profile_banner_hover_container'>
                                 <EditIcon/>
-                                <input id="input_profile_picture" type="file" accept="image/png, image/jpeg, image/jpg"/>
+                                <input id="input_profile_banner" type="file" accept="image/png, image/jpeg, image/jpg"/>
                             </div>
                         </div>
+                        
+                        <div className='user_portrait_container'>
                             
-                    </div>
-                </div>
-
-                <div className='user_info_container'>
-                    <Link href={`/profile?user=${user.username.toLowerCase()}`} scroll={false}>{user.username}</Link>
-
-                    <div className='user_description_container'>
-
-                        <div className='description_wrapper'>
-                            <p>{user.description}</p>
+                            <div className='portrait'>
+                                <Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
                             
-                            <div className='svg_wrapper' onClick={() => {set_update_about_state(true)}} >
-                                <EditIcon/>
+                                <div className='portrait_hover_container'>
+                                    <EditIcon/>
+                                    <input id="input_profile_picture" type="file" accept="image/png, image/jpeg, image/jpg"/>
+                                </div>
                             </div>
+                                
                         </div>
-                        
-                        
-                        
                     </div>
+
+                    <div className='user_info_container'>
+                        <Link href={`/profile?user=${user.username.toLowerCase()}`} scroll={false}>{user.username}</Link>
+
+                        <div className='user_description_container'>
+
+                            <div className='description_wrapper'>
+                                <p>{user.description}</p>
+                                
+                                <div className='svg_wrapper' onClick={() => {set_update_about_state(true)}} >
+                                    <EditIcon/>
+                                </div>
+                            </div>
+                            
+                            
+                            
+                        </div>
+
+                    </div>
+
+                    <div className='user_navigator_cards'>
+
+                        <div onClick={() => go_to(`/profile?user=${user.username}`)} className='card'>
+
+                            <div className='icon_container'>
+
+                                <div className='icon_background'>
+                                    <ProfileIcon className="icon"/>
+                                </div>
+
+                            </div>
+
+                            <h1>Profile</h1>
+                            <p>Visit your public profile and checkout what others will see when visiting your account!</p>
+                        </div>
+
+                        <div onClick={() => go_to(`/create_pack`)} className='card'>
+
+                            <div className='icon_container'>
+
+                                <div className='icon_background'>
+                                    <AddIcon className="icon"/>
+                                </div>
+
+                            </div>
+
+                            <h1>Create Pack</h1>
+                            <p>Create your own Pixelart pack! Make yourself a name.</p>
+                        </div>
+
+                        <div onClick={() => go_to(`/account/settings`)} className='card'>
+
+                            <div className='icon_container'>
+
+                                <div className='icon_background'>
+                                    <SettingsIcon className="icon"/>
+                                </div>
+
+                            </div>
+
+                            <h1>Account Settings</h1>
+                            <p>Change important account informations of your account. </p>
+                        </div>
+
+                        <div onClick={() => logout()} className='card'>
+
+                            <div className='icon_container'>
+
+                                <div style={{transform: "rotate(180deg)"}} className='icon_background'>
+                                    <LogoutIcon className="icon"/>
+                                </div>
+
+                            </div>
+
+                            <h1>Logout</h1>
+                            <p>Logout from your account.</p>
+                        </div>
+
+                    </div>
+
 
                 </div>
 
-                <div className='user_navigator_cards'>
-
-                    <div onClick={() => go_to(`/profile?user=${user.username}`)} className='card'>
-
-                        <div className='icon_container'>
-
-                            <div className='icon_background'>
-                                <ProfileIcon className="icon"/>
-                            </div>
-
-                        </div>
-
-                        <h1>Profile</h1>
-                        <p>Visit your public profile and checkout what others will see when visiting your account!</p>
-                    </div>
-
-                    <div onClick={() => go_to(`/create_pack`)} className='card'>
-
-                        <div className='icon_container'>
-
-                            <div className='icon_background'>
-                                <AddIcon className="icon"/>
-                            </div>
-
-                        </div>
-
-                        <h1>Create Pack</h1>
-                        <p>Create your own Pixelart pack! Make yourself a name.</p>
-                    </div>
-
-                    <div onClick={() => go_to(`/account/settings`)} className='card'>
-
-                        <div className='icon_container'>
-
-                            <div className='icon_background'>
-                                <SettingsIcon className="icon"/>
-                            </div>
-
-                        </div>
-
-                        <h1>Account Settings</h1>
-                        <p>Change important account informations of your account. </p>
-                    </div>
-
-                    <div onClick={() => logout()} className='card'>
-
-                        <div className='icon_container'>
-
-                            <div style={{transform: "rotate(180deg)"}} className='icon_background'>
-                                <LogoutIcon className="icon"/>
-                            </div>
-
-                        </div>
-
-                        <h1>Logout</h1>
-                        <p>Logout from your account.</p>
-                    </div>
-
-                </div>
-
-
-            </div>
-
-            <Footer />
-        </ div>
+                <Footer />
+            </ div>
+        </>
     );
 }
 

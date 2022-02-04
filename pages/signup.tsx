@@ -275,14 +275,14 @@ export default function Sign_up_page() {
                 <meta property="og:type" content="website" />
                 <meta property="og:title" content={`Spritearc - Signup`}/>
                 <meta property="og:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
-                <meta property="og:image" content={``}/>
+                <meta property="og:image" content={`/images/wallpaper.png`}/>
 
                 <meta name="twitter:card" content="summary_large_image"/>
                 <meta property="twitter:domain" content="Spritearc.com"/>
                 <meta property="twitter:url" content="https://Spritearc.com/"/>
                 <meta name="twitter:title" content={`Spritearc - Login`}/>
                 <meta name="twitter:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
-                <meta name="twitter:image" content={``}/>
+                <meta name="twitter:image" content={`/images/wallpaper.png`}/>
             </Head>
        
             <SIGNUP_CONTEXT.Provider value={PAGE_CONTEXT}>

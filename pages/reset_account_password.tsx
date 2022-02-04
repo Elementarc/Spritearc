@@ -6,6 +6,7 @@ import H1_with_deco from '../components/h1_with_deco';
 import Footer from '../components/footer';
 import { validate_password } from '../spritearc_lib/validate_lib';
 import { App_notification_context_type } from '../types';
+import Head from 'next/head';
 
 export default function Reset_account_password() {
     const [password, set_password] = useState<string>("")
@@ -89,19 +90,39 @@ export default function Reset_account_password() {
     }
 
     return (
-        <div className="reset_password_page">
-            <div className='content'>
-                <div className='reset_password_container'>
-                    <H1_with_deco title='Enter new password'></H1_with_deco>
-                    <input onKeyUp={input_e_password}  type="password" placeholder={"Password"} id="input_password" />
-                    <p className="input_error_message" id="input_error_message_password"></p>
-                    <input onKeyUp={input_e_password_repeat} type="password" placeholder={"Password-repeat"} id="input_password_repeat" />
-                    <p className="input_error_message" id="input_error_message_password_repeat"></p>
-                    <button onClick={reset_password} id="password_reset_button">Reset Password</button>
+        <>
+            <Head>
+				<title>{`Spritearc - Reset Account Password`}</title>
+				<meta name="description" content={`Reset your account password.`}/>
+
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - Reset Account Password`}/>
+				<meta property="og:description" content={`Reset your account password.`}/>
+				<meta property="og:image" content={`/images/wallpaper.png`}/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - Reset Account Password`}/>
+				<meta name="twitter:description" content={`Reset your account password.`}/>
+				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+            </Head>
+        
+            <div className="reset_password_page">
+                <div className='content'>
+                    <div className='reset_password_container'>
+                        <H1_with_deco title='Enter new password'></H1_with_deco>
+                        <input onKeyUp={input_e_password}  type="password" placeholder={"Password"} id="input_password" />
+                        <p className="input_error_message" id="input_error_message_password"></p>
+                        <input onKeyUp={input_e_password_repeat} type="password" placeholder={"Password-repeat"} id="input_password_repeat" />
+                        <p className="input_error_message" id="input_error_message_password_repeat"></p>
+                        <button onClick={reset_password} id="password_reset_button">Reset Password</button>
+                    </div>
                 </div>
+                <Footer/>
             </div>
-            <Footer/>
-        </div>
+        </>
     );
 }
 
@@ -114,7 +135,6 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
     }
     try {
         const token = context.query.token
-        console.log(token)
         if(typeof token !== "string") return redirect
     
         try {

@@ -10,7 +10,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { Auth_context, USER_DISPATCH_ACTIONS } from '../../context/auth_context_provider';
 import { validate_email, validate_password } from '../../spritearc_lib/validate_lib';
-
+import Head from 'next/head';
 
 export default function Account_settings(props: {public_user: Public_user}) {
     const [safe_email, set_safe_email] = useState<null | string>(null)
@@ -232,145 +232,168 @@ export default function Account_settings(props: {public_user: Public_user}) {
     }
     
     return (
-        <div className='account_settings_page'>
-            
-            <Fixed_app_content_overlay>
-                <div className='fixed_account_settings_container'>
-                    <AnimatePresence exitBeforeEnter>
-                        { account_delete_warning &&
 
-                            <motion.div key="delete_account_warning" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_confirmation_container'>
-                                <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                    <h1>Delete Account</h1>
-                                    <p>Remember, all your packs will be deleted and they wont be recoverable anymore. There is no going back afterwards!</p>
-                                    <button onClick={() => {set_account_delete_warning(false); set_delete_account(true)}}>Yes, delete account!</button>
-                                    <h4 onClick={() => {set_account_delete_warning(false)}}>No, dont delete account</h4>
+        <>
+            <Head>
+				<title>{`Spritearc - Account Settings`}</title>
+				<meta name="description" content="Edit important account information."/>
+
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content="Spritearc - Account Settings"/>
+				<meta property="og:description" content="Edit important account information."/>
+				<meta property="og:image" content="/images/wallpaper.png"/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content="Spritearc - Account Settings"/>
+				<meta name="twitter:description" content="Edit important account information."/>
+				<meta name="twitter:image" content="/images/wallpaper.png"/>
+            </Head>
+        
+        
+            <div className='account_settings_page'>
+                
+                <Fixed_app_content_overlay>
+                    <div className='fixed_account_settings_container'>
+                        <AnimatePresence exitBeforeEnter>
+                            { account_delete_warning &&
+
+                                <motion.div key="delete_account_warning" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_confirmation_container'>
+                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                        <h1>Delete Account</h1>
+                                        <p>Remember, all your packs will be deleted and they wont be recoverable anymore. There is no going back afterwards!</p>
+                                        <button onClick={() => {set_account_delete_warning(false); set_delete_account(true)}}>Yes, delete account!</button>
+                                        <h4 onClick={() => {set_account_delete_warning(false)}}>No, dont delete account</h4>
+                                    </motion.div>
+
+                                    <div onClick={() => {set_account_delete_warning(false)}} className='delete_account_confirmation_background' />
                                 </motion.div>
+                            }
 
-                                <div onClick={() => {set_account_delete_warning(false)}} className='delete_account_confirmation_background' />
-                            </motion.div>
-                        }
+                            { delete_account &&
 
-                        { delete_account &&
+                                <motion.div key="delete_account" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_container'>
+                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='delete_account_content'>
+                                        <h1>Please enter your password</h1>
+                                        <p>To delete your account please enter your account password as your final step.</p>
+                                        <input id="account_password_input" type="password" placeholder='Password'/>
+                                        <button onClick={delete_account_call}>DELETE ACCOUNT</button>
+                                        <h4 onClick={() => {set_delete_account(false)}}>I changed my mind.</h4>
+                                    </motion.div>
 
-                            <motion.div key="delete_account" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_container'>
-                                <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='delete_account_content'>
-                                    <h1>Please enter your password</h1>
-                                    <p>To delete your account please enter your account password as your final step.</p>
-                                    <input id="account_password_input" type="password" placeholder='Password'/>
-                                    <button onClick={delete_account_call}>DELETE ACCOUNT</button>
-                                    <h4 onClick={() => {set_delete_account(false)}}>I changed my mind.</h4>
+                                    <div onClick={() => {set_delete_account(false)}} className='delete_account_background' />
                                 </motion.div>
+                            }
 
-                                <div onClick={() => {set_delete_account(false)}} className='delete_account_background' />
-                            </motion.div>
-                        }
+                            { update_email &&
 
-                        { update_email &&
+                                <motion.div key="update_email" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='update_email_container'>
+                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='update_email_content'>
+                                        <h1>Please enter your password</h1>
+                                        <p>To Verify that you are verified to update your account information, please enter your password!</p>
+                                        <input id="account_password_input" type="password" placeholder='Password'/>
+                                        <button onClick={update_new_email}>Update Email</button>
+                                        <h4 onClick={() => {set_update_email(false)}}>I changed my mind.</h4>
+                                    </motion.div>
 
-                            <motion.div key="update_email" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='update_email_container'>
-                                <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='update_email_content'>
-                                    <h1>Please enter your password</h1>
-                                    <p>To Verify that you are verified to update your account information, please enter your password!</p>
-                                    <input id="account_password_input" type="password" placeholder='Password'/>
-                                    <button onClick={update_new_email}>Update Email</button>
-                                    <h4 onClick={() => {set_update_email(false)}}>I changed my mind.</h4>
+                                    <div onClick={() => {set_update_email(false)}} className='update_email_background' />
                                 </motion.div>
+                            }
 
-                                <div onClick={() => {set_update_email(false)}} className='update_email_background' />
-                            </motion.div>
-                        }
+                        </AnimatePresence>
+                    </div>
+                </Fixed_app_content_overlay>
+                
+                
 
-                    </AnimatePresence>
-                </div>
-            </Fixed_app_content_overlay>
-            
-            
+                <div className='content'>
+                    <div className='account_settings_header'>
+                        <h1>Account Settings</h1>
+                        <p>Change important account informations</p>
+                    </div>
 
-            <div className='content'>
-                <div className='account_settings_header'>
-                    <h1>Account Settings</h1>
-                    <p>Change important account informations</p>
-                </div>
+                    <div className='settings_container'>
+                        <div className='settings_navigator'>
+                            <Settings_navigation_item name='Account' current_state={settings_state} set_current_state={set_settings_state}/>
+                            <Settings_navigation_item name='Email' current_state={settings_state} set_current_state={set_settings_state}/>
+                            <Settings_navigation_item name='Password' current_state={settings_state} set_current_state={set_settings_state}/>
 
-                <div className='settings_container'>
-                    <div className='settings_navigator'>
-                        <Settings_navigation_item name='Account' current_state={settings_state} set_current_state={set_settings_state}/>
-                        <Settings_navigation_item name='Email' current_state={settings_state} set_current_state={set_settings_state}/>
-                        <Settings_navigation_item name='Password' current_state={settings_state} set_current_state={set_settings_state}/>
-
-                        <div className='deco_container'>
-                            <span></span>
+                            <div className='deco_container'>
+                                <span></span>
+                            </div>
+                        
                         </div>
-                    
-                    </div>
 
-                    <div className='settings_content'>
-                        { settings_state === "account" && 
-                            <div className='account_content'>
-                                <h1>General info</h1>
-                                
-                                <div className='general_info_container'>
-                                    <div className='grid_item'>
-                                        <div className='item_1'>Username:</div>
-                                        <div className='item_2'>{user.username}</div>
+                        <div className='settings_content'>
+                            { settings_state === "account" && 
+                                <div className='account_content'>
+                                    <h1>General info</h1>
+                                    
+                                    <div className='general_info_container'>
+                                        <div className='grid_item'>
+                                            <div className='item_1'>Username:</div>
+                                            <div className='item_2'>{user.username}</div>
+                                        </div>
+
+                                        <div className='grid_item'>
+                                            <div className='item_1'>Email:</div>
+                                            <div className='item_2'>{`${safe_email}`}</div>
+                                        </div>
+
+                                        <div className='grid_item'>
+                                            <div className='item_1'>Role:</div>
+                                            <div className='item_2'>{`${user.role}`}</div>
+                                        </div>
+
+                                        <div className='grid_item'>
+                                            <div className='item_1'>Released Packs:</div>
+                                            <div className='item_2'>{`${user.released_packs.length}`}</div>
+                                        </div>
+
+                                        <div className='grid_item'>
+                                            <div className='item_1'>User since:</div>
+                                            <div className='item_2'>{format_date(user.created_at)}</div>
+                                        </div>
                                     </div>
 
-                                    <div className='grid_item'>
-                                        <div className='item_1'>Email:</div>
-                                        <div className='item_2'>{`${safe_email}`}</div>
-                                    </div>
-
-                                    <div className='grid_item'>
-                                        <div className='item_1'>Role:</div>
-                                        <div className='item_2'>{`${user.role}`}</div>
-                                    </div>
-
-                                    <div className='grid_item'>
-                                        <div className='item_1'>Released Packs:</div>
-                                        <div className='item_2'>{`${user.released_packs.length}`}</div>
-                                    </div>
-
-                                    <div className='grid_item'>
-                                        <div className='item_1'>User since:</div>
-                                        <div className='item_2'>{format_date(user.created_at)}</div>
-                                    </div>
+                                    <div className='delete_account_container'>
+                                            <p onClick={() => {set_account_delete_warning(true)}} className='delete_account'>DELETE ACCOUNT</p>
+                                        </div>
                                 </div>
+                            }
 
-                                <div className='delete_account_container'>
-                                        <p onClick={() => {set_account_delete_warning(true)}} className='delete_account'>DELETE ACCOUNT</p>
+                            { settings_state === "email" && 
+                                <div className='email_content'>
+                                    <h1>Update Email</h1>
+
+                                    <div className='update_email_container'>
+                                        <input onKeyUp={on_key_up_email_validation} id="new_email_input" type="text" placeholder='New Email'/>
+                                        <button id="update_email_button" onClick={() => {set_update_email(true)}} className='disabled_button'>Update Email</button>
                                     </div>
-                            </div>
-                        }
-
-                        { settings_state === "email" && 
-                            <div className='email_content'>
-                                <h1>Update Email</h1>
-
-                                <div className='update_email_container'>
-                                    <input onKeyUp={on_key_up_email_validation} id="new_email_input" type="text" placeholder='New Email'/>
-                                    <button id="update_email_button" onClick={() => {set_update_email(true)}} className='disabled_button'>Update Email</button>
+                                    
                                 </div>
-                                
-                            </div>
-                        }
+                            }
 
-                        { settings_state === "password" && 
-                            <div className='password_content'>
-                                <h1>Update Password</h1>
-                                <input onKeyUp={on_key_up_password_validation} id="current_password_input" type="password" placeholder='Current Password'/>
-                                <input onKeyUp={on_key_up_password_validation} id="new_password_input" type="password" placeholder='New Password'/>
-                                <input onKeyUp={on_key_up_password_validation} id="new_password_repeat_input" type="password" placeholder='New Password Repeat'/>
-                                <button onClick={update_password} id="update_password_button" className='disabled_button'>Update Password</button>
-                                <h4>{`Password needs to be atleast 8 characters long. One uppercase / lowercase and one number. Max. 32 characters`}</h4>
-                            </div>
-                        }
+                            { settings_state === "password" && 
+                                <div className='password_content'>
+                                    <h1>Update Password</h1>
+                                    <input onKeyUp={on_key_up_password_validation} id="current_password_input" type="password" placeholder='Current Password'/>
+                                    <input onKeyUp={on_key_up_password_validation} id="new_password_input" type="password" placeholder='New Password'/>
+                                    <input onKeyUp={on_key_up_password_validation} id="new_password_repeat_input" type="password" placeholder='New Password Repeat'/>
+                                    <button onClick={update_password} id="update_password_button" className='disabled_button'>Update Password</button>
+                                    <h4>{`Password needs to be atleast 8 characters long. One uppercase / lowercase and one number. Max. 32 characters`}</h4>
+                                </div>
+                            }
+                        </div>
                     </div>
                 </div>
+                <Footer/>
+                
             </div>
-            <Footer/>
-            
-        </div>
+
+        </>
     );
 }
 

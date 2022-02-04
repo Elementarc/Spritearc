@@ -18,6 +18,8 @@ import { useRouter } from 'next/router';
 import jwt from "jsonwebtoken"
 import { GetServerSideProps } from 'next';
 import Loader from "../components/loading"
+import Head from 'next/head';
+
 // @ts-ignore: Unreachable code error
 
 //Context
@@ -333,36 +335,57 @@ function Create_page() {
     }
 
     return (
-        <create_pack_context.Provider value={create_pack}>
-            <div className='create_pack_page'>
+        <>
+            <Head>
+				<title>{`Spritearc - Create Pack`}</title>
+				<meta name="description" content={`Create a pack that you can share around the world. People will be able to download & rate your art. It only takes you 3 steps to finish a Pixelart pack.`}/>
 
-                <div className='content'>
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - Create Pack`}/>
+				<meta property="og:description" content={`Create a pack that you can share around the world. People will be able to download & rate your art. It only takes you 3 steps to finish a Pixelart pack.`}/>
+				<meta property="og:image" content={`/images/wallpaper.png`}/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - Create Pack`}/>
+				<meta name="twitter:description" content={`Create a pack that you can share around the world. People will be able to download & rate your art. It only takes you 3 steps to finish a Pixelart pack.`}/>
+				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+            </Head>
+
+        
+            <create_pack_context.Provider value={create_pack}>
+                <div className='create_pack_page'>
+
+                    <div className='content'>
+                        
+                        <AnimatePresence exitBeforeEnter>
+
+                            {create_pack_obj.current_step === 0 &&
+                            
+                                <Step_1 key={"step_1"} />
+                            
+                            } 
+
+                            {create_pack_obj.current_step === 1 &&
+                                <Step_2 key="step_2"/>
+                            }
+
+                            {create_pack_obj.current_step === 2 &&
+                                <Step_3 key="step_3"/>
+                            }
+                        </AnimatePresence>
+
+                        <Steps steps={3} current_step={create_pack_obj.current_step} steps_available={create_pack_obj.steps_available}/>
+
+                    </div>
                     
-                    <AnimatePresence exitBeforeEnter>
-
-                        {create_pack_obj.current_step === 0 &&
-                        
-                            <Step_1 key={"step_1"} />
-                        
-                        } 
-
-                        {create_pack_obj.current_step === 1 &&
-                            <Step_2 key="step_2"/>
-                        }
-
-                        {create_pack_obj.current_step === 2 &&
-                            <Step_3 key="step_3"/>
-                        }
-                    </AnimatePresence>
-
-                    <Steps steps={3} current_step={create_pack_obj.current_step} steps_available={create_pack_obj.steps_available}/>
-
+                    <Footer/>
                 </div>
-                
-                <Footer/>
-            </div>
 
-        </create_pack_context.Provider>
+            </create_pack_context.Provider>
+        </>
     );
 }
 

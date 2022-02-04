@@ -38,7 +38,7 @@ export default function Pack_page_handler(props: {pack: Pack}) {
             <Head>
 				<title>{`${pack.title}`}</title>
 				<meta name="description" content={`${pack.description}`}/>
-                <meta name='keywords' content={`${pack.tags.join(",")}`}/>
+                <meta name='keywords' content={`pixelart,${pack.tags.join(",")}`}/>
 
 				<meta property="og:url" content={`https://Spritearc.com/`}/>
 				<meta property="og:type" content="website" />

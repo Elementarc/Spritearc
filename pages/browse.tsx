@@ -14,20 +14,20 @@ export default function Browse() {
 		<>
 			<Head>
 				<title>{`Spritearc - Browse through thousands of free Pixelart assets and sprites`}</title>
-				<meta name="description" content="Find sprites and assets from thousands of packs and download them."/>
+				<meta name="description" content="Find free and opensource sprites and assets from thousands of packs and download them. We have high quality assets for your pixelart game."/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Browse through thousands of free Pixelart assets and sprites"/>
 				<meta property="og:description" content="Find sprites and assets from thousands of packs and download them."/>
-				<meta property="og:image" content=""/>
+				<meta property="og:image" content="/images/wallpaper.png"/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content="Browse through thousands of free Pixelart assets and sprites"/>
 				<meta name="twitter:description" content="Find sprites and assets from thousands of packs and download them."/>
-				<meta name="twitter:image" content=""/>
+				<meta name="twitter:image" content="/images/wallpaper.png"/>
             </Head>
 
 			<div className="browse_page">

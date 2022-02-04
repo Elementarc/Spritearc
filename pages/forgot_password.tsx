@@ -8,6 +8,7 @@ import { Nav_shadow } from '../components/navigation';
 import { validate_email } from '../spritearc_lib/validate_lib';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { App_notification_context_type } from '../types';
+import Head from 'next/head';
 
 export default function Forgot_password_page() {
     const [loading, setloading] = useState(false)
@@ -50,35 +51,55 @@ export default function Forgot_password_page() {
     }
 
     return (
-        <div className="forgot_password_page">
+        <>
+            <Head>
+				<title>{`Spritearc - Forgot Password`}</title>
+				<meta name="description" content={`Did you forgett your password? You can request a password reset and we will send you a token to your email that will allow you to reset your password!`}/>
 
-            <div className="content">
-                <Nav_shadow/>
-                <div className="forgot_password_container">
-                    <H1_with_deco title="Reset password" />
-                    
-                    <input type="text" placeholder="Email" id="email_input" defaultValue="arctale.work@gmail.com"/>
-                    <p className='forgot_password_error_message' id="forgot_password_error_message"></p>
-                    <button onClick={send_password_token}>
-                        <p style={loading ? {opacity: 0} : {opacity: 1}}>Request Password Reset</p>
-                        {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
-                    </button>
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - Forgot Password`}/>
+				<meta property="og:description" content={`Did you forgett your password? You can request a password reset and we will send you a token to your email that will allow you to reset your password!`}/>
+				<meta property="og:image" content={`/images/wallpaper.png`}/>
 
-                    <div className="forward_container">
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - Forgot Password`}/>
+				<meta name="twitter:description" content={`Did you forgett your password? You can request a password reset and we will send you a token to your email that will allow you to reset your password!`}/>
+				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+            </Head>
+        
+            <div className="forgot_password_page">
 
-                        <span className="bottom_section_line" />
-                        <div className="items">
-                            <p>{"Already have an account? "}<Link href="/login" scroll={false}>Login</Link></p>
-                            <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
-                        </div>
+                <div className="content">
+                    <Nav_shadow/>
+                    <div className="forgot_password_container">
+                        <H1_with_deco title="Reset password" />
                         
+                        <input type="text" placeholder="Email" id="email_input" defaultValue="arctale.work@gmail.com"/>
+                        <p className='forgot_password_error_message' id="forgot_password_error_message"></p>
+                        <button onClick={send_password_token}>
+                            <p style={loading ? {opacity: 0} : {opacity: 1}}>Request Password Reset</p>
+                            {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
+                        </button>
+
+                        <div className="forward_container">
+
+                            <span className="bottom_section_line" />
+                            <div className="items">
+                                <p>{"Already have an account? "}<Link href="/login" scroll={false}>Login</Link></p>
+                                <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
+                            </div>
+                            
+                        </div>
+
                     </div>
 
                 </div>
-
+                <Footer />
             </div>
-            <Footer />
-        </div>
+        </>
     );
 }
 

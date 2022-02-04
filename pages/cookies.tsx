@@ -3,6 +3,7 @@ import Footer from '../components/footer';
 import Image from "next/image"
 import WaveSvg from "../public/images/wave.svg"
 import { Qick_legal_navigation } from './tos';
+import Head from 'next/head';
 
 export default function Terms_of_service() {
     //Setting numbers for headers
@@ -20,30 +21,51 @@ export default function Terms_of_service() {
 
 
     return (
-        <div className='tos_page'>
-            
-            <div className='content'>
-                <div className='legal_content_container'>
-                    <section>
-                        <h1 className='tos_header'>COOKIE POLICY</h1>
-                        <h4 className='tos_update_date'>{`Last updated: 30/01/2022`}</h4>
-                    </section>
-                    <General_cookie/>
-                    <Cookie_usage/>
+        <>
+            <Head>
+				<title>{`Spritearc - Cookies`}</title>
+				<meta name="description" content={`Read about our cookie policy so you exactly know what informations Spritearc safe from you.`}/>
 
-                    <What_information_is_collected_about_me/>
-                    <How_do_i_restrict_cookies/>
-                    <section>
-                        <h1>Contact Me</h1>
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - Cookies`}/>
+				<meta property="og:description" content={`Read about our cookie policy so you exactly know what informations Spritearc safe from you.`}/>
+				<meta property="og:image" content={`/images/wallpaper.png`}/>
 
-                        <p>Dont hesitate to contact me if you have any questions Via Email:</p>
-                        <a href={`mailto: arctale.work@gmail.com`}>{"Arctale.work@gmail.com"}</a>
-                    </section>
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - Cookies`}/>
+				<meta name="twitter:description" content={`Read about our cookie policy so you exactly know what informations Spritearc safe from you.`}/>
+				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+            </Head>
+        
+            <div className='tos_page'>
+                
+                <div className='content'>
+                    <div className='legal_content_container'>
+                        <section>
+                            <h1 className='tos_header'>COOKIE POLICY</h1>
+                            <h4 className='tos_update_date'>{`Last updated: 30/01/2022`}</h4>
+                        </section>
+                        <General_cookie/>
+                        <Cookie_usage/>
+
+                        <What_information_is_collected_about_me/>
+                        <How_do_i_restrict_cookies/>
+                        <section>
+                            <h1>Contact Me</h1>
+
+                            <p>Dont hesitate to contact me if you have any questions Via Email:</p>
+                            <a href={`mailto: arctale.work@gmail.com`}>{"Arctale.work@gmail.com"}</a>
+                        </section>
+                    </div>
+                    <Qick_legal_navigation/>
                 </div>
-                <Qick_legal_navigation/>
+                <Footer />
             </div>
-            <Footer />
-        </div>
+
+        </>
     );
 }
 

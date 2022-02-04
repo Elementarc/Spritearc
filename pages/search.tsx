@@ -63,14 +63,14 @@ export default function Search_page() {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Search packs`}/>
 				<meta property="og:description" content={`Find Pixelart assets and sprites with just one click. You can search by tags to find specific genres.`}/>
-				<meta property="og:image" content={``}/>
+				<meta property="og:image" content={`/images/wallpaper.png`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Search packs`}/>
 				<meta name="twitter:description" content={`Find Pixelart assets and sprites with just one click. You can search by tags to find specific genres.`}/>
-				<meta name="twitter:image" content={``}/>
+				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
             </Head>
 		
 			<search_context.Provider value={{search, set_input_value}}>
