@@ -8,6 +8,8 @@ import H1_with_deco from "../components/h1_with_deco";
 import ArrowIcon from "../public/icons/ArrowIcon.svg"
 import Transition_1 from "../public/images/transition_1.svg"
 import AddIcon from "../public/icons/AddIcon.svg"
+import WorldIcon from "../public/icons/WorldIcon.svg"
+import HighQuality from "../public/icons/HighQuality.svg"
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -67,23 +69,23 @@ export default function Home(): ReactElement {
                                 </div>
                                 
                                 <h2>Creating Packs</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nibh nulla aliquet at egestas ut sodales.</p>
+                                <p>We made creating packs an enjoyment. Create your pixelart packs easily with only 3 steps!</p>
                             </div>
                            
                             <div className="perk">
                                 <div className="perk_icon_wrapper">
-                                    <AddIcon/>
+                                    <WorldIcon/>
                                 </div>
                                 <h2>Public</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nibh nulla aliquet at egestas ut sodales.</p>
+                                <p>Your recently released packs will be displayed on the front page which makes it easier to grow your audience.</p>
                             </div>
                             
                             <div className="perk">
                                 <div className="perk_icon_wrapper">
-                                    <AddIcon/>
+                                    <HighQuality/>
                                 </div>
-                                <h2>Public</h2>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nibh nulla aliquet at egestas ut sodales.</p>
+                                <h2>High Quality</h2>
+                                <p>You can download thousands of high quality pixelart assets on Spritearc.</p>
                             </div>
 
                         </div>
@@ -98,7 +100,7 @@ export default function Home(): ReactElement {
                         <div className="section_one_content">
                             <h2>News</h2>
                             <h1>Our Recent Updates</h1>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque. Sed scelerisque sit faucibus imperdiet. Leo senectus diam volutpat arcu.</p>
+                            <p>Are you curiouse about our newest features? You can visit our news page and read all about our changes and updates there. We're keeping it updated. </p>
                             <Link href="/news" scroll={false}>
                                 <a>Learn more</a>
                             </Link>
@@ -123,7 +125,7 @@ export default function Home(): ReactElement {
                     <section className="signup_section_container">
                         <div className="signup_section_content">
                             <h1>Create Account</h1>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque. Sed scelerisque sit faucibus imperdiet. Leo senectus diam volutpat arcu.</p>
+                            <p>Are you interested in releasing your own pixelart packs? Create your account now and build yourself a community that will support you through your pixels. </p>
                             <Link href="/signup" scroll={false}>
                                 <button>Create Account</button>
                             </Link>

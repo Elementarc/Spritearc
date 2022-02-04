@@ -9,7 +9,6 @@ export default function Device_context_provider({children}: any) {
     
     //Checks if Application IsDesktop or not
     useEffect(() => {
-        history.scrollRestoration = "manual"
 
         function checkApplicationWidth(){
             const deviceWidth = window.innerWidth

@@ -12,12 +12,21 @@ import Navigation_context_provider, {Navigation_context} from '../context/naviga
 import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 import Cookie_alert from './cookie_alert';
 
+
 export const APP_CONTEXT: any = React.createContext(null)
 
 export default function Layout({children}: any ) {
     const router = useRouter()
     const Auth: Auth_context_type = useContext(Auth_context)
     
+    //Disabling auto scroll when going back history
+    useEffect(() => {
+        history.scrollRestoration = 'manual'
+        router.beforePopState((state) => {
+            state.options.scroll = false;
+            return true;
+        });
+    }, [])
     //Checking if user is signed in or not. Used for whole application.
     useEffect(() => {
         const controller = new AbortController()
@@ -57,7 +66,6 @@ export default function Layout({children}: any ) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
-    
     useEffect(() => {
         let timer: any
         clearTimeout(timer)
@@ -99,7 +107,7 @@ export default function Layout({children}: any ) {
 
                                 <App_content_blur/>
 
-                                <AnimatePresence exitBeforeEnter>
+                                <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
                                     <motion.main key={router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
                                         {children}
                                     </motion.main>
