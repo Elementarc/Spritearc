@@ -41,22 +41,38 @@ export default function Home(): ReactElement {
                 
                 <div className="content">
 
+                    <div className="intro_container">
+                        <div className="intro_content">
+                            <h2>Pixelart on the Horizon</h2>
+                            <h1>Welcome to Spritearc!</h1>
+                        </div>
+                        
+                        
+                        
+                        <Image src={"/images/wallpaper.png"} id="intro_image" layout="fill"></Image>
+                        <div className="background_blur"></div>
+                    </div>
 
                     <div className="middle_container">
 
-                        <div className="middle_info">
+                        <div className="spritearc_info">
                             <H1_with_deco title="Explore Spritearc"></H1_with_deco>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque. t lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut imperdiet tristique amet scelerisque.</p>
+                            <p>Discover more than thousands of pixelart assets and sprites that you can freely use in your projects. Start to improve your game design by using sprites that people publish to Spritearc.</p>
                             <button onClick={() => {router.push("/browse", "/browse", {scroll: false})}}>Browse Packs</button>
                             <div className="arrow_container">
                                 <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
                             </div>
                         </div>
-                        
 
 
+                        <div className="blob_container">
+                            <Image src={"/blobs/blob_3.svg"} layout="fill"></Image>
+                        </div>
                     </div>
 
+                    
+
+                    
 
                     <div className="perks_container">
 
@@ -124,7 +140,7 @@ export default function Home(): ReactElement {
 
                     <section className="signup_section_container">
                         <div className="signup_section_content">
-                            <h1>Create Account</h1>
+                            <h1>Publish Your Pixelart</h1>
                             <p>Are you interested in releasing your own pixelart packs? Create your account now and build yourself a community that will support you through all pixels. </p>
                             <Link href="/signup" scroll={false}>
                                 <button>Create Account</button>

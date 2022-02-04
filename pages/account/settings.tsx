@@ -11,6 +11,7 @@ import { useRouter } from 'next/router';
 import { Auth_context, USER_DISPATCH_ACTIONS } from '../../context/auth_context_provider';
 import { validate_email, validate_password } from '../../spritearc_lib/validate_lib';
 import Head from 'next/head';
+import { Nav_shadow } from '../../components/navigation';
 
 export default function Account_settings(props: {public_user: Public_user}) {
     const [safe_email, set_safe_email] = useState<null | string>(null)
@@ -309,6 +310,7 @@ export default function Account_settings(props: {public_user: Public_user}) {
                 
 
                 <div className='content'>
+                    <Nav_shadow />
                     <div className='account_settings_header'>
                         <h1>Account Settings</h1>
                         <p>Change important account informations</p>
