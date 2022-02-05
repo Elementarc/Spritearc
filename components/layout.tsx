@@ -5,11 +5,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import App_notification from './app_notification';
 import { useRouter } from 'next/router';
 import Navigation from './navigation';
-import { Auth_context } from "../context/auth_context_provider";
 import Device_context_provider from '../context/device_context_provider';
 import App_notification_context_provider from '../context/app_notification_context_provider';
 import Navigation_context_provider, {Navigation_context} from '../context/navigation_context_provider';
-import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 import Cookie_alert from './cookie_alert';
 
 
@@ -17,7 +15,6 @@ export const APP_CONTEXT: any = React.createContext(null)
 
 export default function Layout({children}: any ) {
     const router = useRouter()
-    const Auth: Auth_context_type = useContext(Auth_context)
     
     //Disabling auto scroll when going back history
     useEffect(() => {
@@ -27,86 +24,6 @@ export default function Layout({children}: any ) {
             return true;
         });
     }, [])
-    //Checking if user is signed in or not. Used for whole application.
-    useEffect(() => {
-        const controller = new AbortController()
-        async function is_auth() {
-
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/is_auth`, {
-                    method: "POST",
-                    signal: controller.signal,
-                    credentials: "include",
-                })
-                
-                if(response.status === 200) {
-                    const user: {auth: boolean, public_user: Public_user} = await response.json()
-                    
-                    if(user.auth) {
-                        Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: user.public_user, callb: () => {}}})
-                    } else {
-                        Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
-                    }
-
-                } else {
-                    Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
-                }
-
-            } catch(err) {
-                //Couldnt reach server
-            }
-            
-        }
-        is_auth()
-        
-        return (() => {
-            controller.abort()
-        })
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    },[])
-
-    useEffect(() => {
-        const controller = new AbortController()
-        let timer: any
-        clearTimeout(timer)
-        async function is_auth() {
-            
-            timer = setTimeout(async() => {
-                
-                try {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/is_auth`, {
-                        method: "POST",
-                        signal: controller.signal,
-                        credentials: "include",
-                    })
-                    
-                    if(response.status === 200) {
-                        const user: {auth: boolean, public_user: Public_user} = await response.json()
-                        
-                        Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: user.public_user, callb: () => {}}})
-                        
-                    } else {
-                        if(Auth.user.auth === true) {
-                            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false,  callb: () => {router.push("/login", "/login", {scroll: false})}}})
-                        } else {
-                            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
-                        }
-                    }
-    
-                } catch(err) {
-                    //Couldnt reach server
-                }
-                
-            }, 1000 * 60 * 15.1);
-            
-        }
-        is_auth()
-
-        return(() => {
-            controller.abort()
-            clearTimeout(timer)
-        })
-    },[Auth])
 
     //Function that will be triggert everytime a page unmounts
     function on_unmount() {

@@ -65,7 +65,7 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
     const Auth = props.Auth
     //Props
     const pack: Pack = props.pack
-    const user: Frontend_public_user = Auth.user
+    const user: Public_user = Auth.user.public_user
     const own_pack = user.username.length > 0 ? user.username.toLowerCase() === pack.username.toLowerCase() : false
     const download_link = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${pack_id}`
     //Context
@@ -186,6 +186,9 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_pack?id=${query.id}`, {
                 method: "POST",
+                headers: {
+                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                },
                 credentials: "include",
             })
     
@@ -523,8 +526,11 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/rate_pack?pack_id=${pack_id}`, {
                 method: "POST",
+                headers: {
+                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "Content-Type": "application/json"
+                },
                 credentials: "include",
-                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({rating: rating + 1})
             })
 

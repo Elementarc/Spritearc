@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import React, {useContext, useEffect, useState} from 'react';
 import jwt from 'jsonwebtoken';
-import { App_notification_context_type, Public_user } from '../types';
+import { App_notification_context_type, Auth_context_type, Public_user } from '../types';
 import Footer from '../components/footer';
 import Image from "next/image"
 import Link from 'next/dist/client/link';
@@ -20,14 +20,28 @@ import { NOTIFICATION_ACTIONS } from '../context/app_notification_context_provid
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import { AnimatePresence, motion } from 'framer-motion';
 import { validate_user_description } from '../spritearc_lib/validate_lib';
+import Protected_route from '../components/protected_route';
 import Head from 'next/head';
 
-export default function Account_page(props: {user: Public_user}) {
+export default function Account_page_handler() {
+
+    return(
+        <>
+
+            <Protected_route>
+                <Account_page/>
+            </Protected_route>
+            
+        </>
+    )
+}
+
+export function Account_page() {
     const [update_about_state, set_update_about_state] = useState(false)
-    const user = props.user
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     const router = useRouter()
-    const Auth: any = useContext(Auth_context)
+    const Auth: Auth_context_type = useContext(Auth_context)
+    const user = Auth.user.public_user
     const controller = new AbortController()
 
     function go_to(path: string) {
@@ -39,13 +53,16 @@ export default function Account_page(props: {user: Public_user}) {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
                 method: "POST",
+                headers: {
+                    "x-access-token": `${sessionStorage.getItem("user")}`
+                },
                 signal: controller.signal,
                 credentials: "include",
             })
     
             if(response.status === 200) {
                 
-                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
+                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
             }
 
         } catch(err) {
@@ -94,6 +111,9 @@ export default function Account_page(props: {user: Public_user}) {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_banner`, {
                     method: "POST",
+                    headers: {
+                        "x-access-token": `${sessionStorage.getItem("user")}`
+                    },
                     credentials: "include",
                     body: form
                 })
@@ -132,7 +152,10 @@ export default function Account_page(props: {user: Public_user}) {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_user_description`, {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "Content-Type": "application/json"
+                },
                 credentials: "include",
                 body: JSON.stringify({description: get_description.value})
             })
@@ -149,6 +172,7 @@ export default function Account_page(props: {user: Public_user}) {
         }
 
     }
+
     return (
         <>
             <Head>
@@ -308,7 +332,7 @@ export default function Account_page(props: {user: Public_user}) {
 }
 
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
+/* export const getServerSideProps: GetServerSideProps = async (context: any) => {
     const redirect = {redirect: {
         permanent: false,
         destination: "/login"
@@ -330,4 +354,4 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     } catch (err) {
         return redirect
     }
-}
+} */

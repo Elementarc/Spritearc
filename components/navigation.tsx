@@ -1,7 +1,7 @@
 /*eslint-disable */
 import React, {ReactElement, useContext, useEffect} from "react"
 import {motion, useAnimation, AnimatePresence } from "framer-motion";
-import { Nav_item, App_context, Public_user} from "../types"
+import { Nav_item, App_context, Public_user, Auth_context_type} from "../types"
 //SVG Components (ICONS)
 import NavIcon from "../public/icons/NavIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
@@ -25,7 +25,7 @@ export default function Navigation(): ReactElement {
     const Device = useContext(Device_context)
     const Navigation: any = useContext(Navigation_context)
     const APP: App_context = useContext(APP_CONTEXT)
-    const Auth: any = useContext(Auth_context)
+    const Auth: Auth_context_type = useContext(Auth_context)
 
     return(
         <>
@@ -47,7 +47,7 @@ export function Nav_shadow(): ReactElement {
 }
 
 //Navigation Component for Desktop
-const Navigation_desktop = React.memo((props: {Navigation: any, APP: any, Auth: any}) => {
+const Navigation_desktop = React.memo((props: {Navigation: any, APP: any, Auth: Auth_context_type}) => {
     const Navigation: any = props.Navigation
     const APP: App_context = props.APP
     const nav_content_container_animations = useAnimation()
@@ -186,7 +186,7 @@ const Navigation_desktop = React.memo((props: {Navigation: any, APP: any, Auth: 
     )
 })
 
-const Navigation_mobile = React.memo((props: {Auth: any}) => {
+const Navigation_mobile = React.memo((props: {Auth: Auth_context_type}) => {
     const Navigation: any = useContext(Navigation_context)
     const user = props.Auth.user as any
     const router = useRouter()
@@ -402,11 +402,11 @@ function Nav_item_container(props: Nav_item) {
 }
 
 function User_profile() {
-    const Auth: any = useContext(Auth_context)
+    const Auth: Auth_context_type = useContext(Auth_context)
     const Navigation: any = useContext(Navigation_context)
     const user_info_animation = useAnimation()
     const router = useRouter()
-    const user = Auth.user as any
+    const user = Auth.user.public_user
     const controller = new AbortController()
 
     async function logout () {
@@ -415,13 +415,16 @@ function User_profile() {
 
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
                 method: "POST",
+                headers: {
+                    "x-access-token": `${sessionStorage.getItem("user")}`
+                },
                 signal: controller.signal,
                 credentials: "include"
             })
     
             if(response.status === 200) {
                 Navigation.set_nav_state(false)
-                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {callb: () => {router.push("/login", "/login", {scroll: false})}}})
+                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
             }
 
         } catch(err) {
@@ -436,6 +439,7 @@ function User_profile() {
         controller.abort()
       };
     }, [controller])
+
     //Showing Labels of Profile info when toggling navState
     useEffect(() => {
         if(Navigation.nav_state === true) {

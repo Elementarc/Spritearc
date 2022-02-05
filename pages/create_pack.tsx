@@ -19,6 +19,7 @@ import jwt from "jsonwebtoken"
 import { GetServerSideProps } from 'next';
 import Loader from "../components/loading"
 import Head from 'next/head';
+import Protected_route from '../components/protected_route';
 
 // @ts-ignore: Unreachable code error
 
@@ -311,8 +312,18 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
     return {...create_pack_obj}
 }
 
-//Page Component
-function Create_page() {
+
+export default function Create_pack_page_handler() {
+    return (
+        <>
+            <Protected_route>
+                <Create_pack_page/>
+            </Protected_route>
+        </>
+    );
+}
+
+function Create_pack_page() {
     const [create_pack_obj, dispatch] = useReducer(create_pack_reducer, initial_create_pack_obj)
     
     useEffect(() => {
@@ -849,6 +860,9 @@ function Step_3() {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/create_pack`, {
                     method: "POST",
+                    headers: {
+                        "x-access-token": `${sessionStorage.getItem("user")}`,
+                    },
                     credentials: "include",
                     body: Form_data
                 })
@@ -1114,33 +1128,4 @@ function Dropzone({children, section_name, type}: {children: any, section_name: 
 
         
     );
-}
-
-
-
-export default Create_page
-
-
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-    const redirect = {redirect: {
-        permanent: false,
-        destination: "/login"
-    }}
-
-    try {
-        const user = jwt.verify(context.req.cookies.user, process.env.JWT_PRIVATE_KEY as string)
-
-        if(user) {
-            return {
-                props: {
-                    user: user
-                }
-            }
-        } else {
-            return redirect
-        }
-
-    } catch (err) {
-        return redirect
-    }
 }

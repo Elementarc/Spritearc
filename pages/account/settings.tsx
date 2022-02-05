@@ -12,8 +12,18 @@ import { Auth_context, USER_DISPATCH_ACTIONS } from '../../context/auth_context_
 import { validate_email, validate_password } from '../../spritearc_lib/validate_lib';
 import Head from 'next/head';
 import { Nav_shadow } from '../../components/navigation';
+import Protected_route from '../../components/protected_route';
 
-export default function Account_settings(props: {public_user: Public_user}) {
+
+export default function Account_settings_page_handler() {
+    return (
+        <Protected_route>
+            <Account_settings_page/>
+        </Protected_route>
+    );
+}
+
+export function Account_settings_page() {
     const [safe_email, set_safe_email] = useState<null | string>(null)
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     const Auth: Auth_context_type = useContext(Auth_context)
@@ -22,7 +32,7 @@ export default function Account_settings(props: {public_user: Public_user}) {
     const [update_email, set_update_email] = useState(false)
     const [settings_state, set_settings_state] = useState("account")
     const router = useRouter()
-    const user = props.public_user
+    const user = Auth.user.public_user
 
     useEffect(() => {
 
@@ -30,6 +40,10 @@ export default function Account_settings(props: {public_user: Public_user}) {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_email`,{
                     method: "POST",
+                    headers: {
+                        "x-access-token": `${sessionStorage.getItem("user")}`,
+                        "Content-Type": "application/json"
+                    },
                     credentials: "include",
                     body: JSON.stringify({user: user.username})
                 })
@@ -54,7 +68,10 @@ export default function Account_settings(props: {public_user: Public_user}) {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_account`, {
                 method: "POST",
                 credentials: "include",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({password: password_input.value})
             })
 
@@ -86,7 +103,10 @@ export default function Account_settings(props: {public_user: Public_user}) {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_email`, {
                 method: "POST",
                 credentials: "include",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({new_email: new_email_input.value, password: password_input.value})
             })
             
@@ -117,7 +137,10 @@ export default function Account_settings(props: {public_user: Public_user}) {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_password`, {
                 method: "POST",
                 credentials: "include",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({current_password: current_password_input.value, new_password: new_password_input.value})
             })
             
@@ -406,33 +429,4 @@ export function Settings_navigation_item({name, current_state, set_current_state
             <p style={current_state.toLowerCase() === name.toLowerCase() ? {color: "white"} : {}}>{name}</p>
         </div>
     );
-}
-
-
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-    const redirect = {redirect: {
-        permanent: false,
-        destination: "/login"
-    }}
-
-    try {
-        const user = jwt.verify(context.req.cookies.user, process.env.JWT_PRIVATE_KEY as string) as Public_user
-
-        if(user) {
-            
-
-            return {
-                props: {
-                    public_user: user,
-                }
-            }
-            
-            
-        } else {
-            return redirect
-        }
-
-    } catch (err) {
-        return redirect
-    }
 }

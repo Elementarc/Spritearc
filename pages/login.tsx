@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import Footer from '../components/footer';
 import H1_with_deco from '../components/h1_with_deco';
 import Link from 'next/link';
@@ -12,12 +12,42 @@ import { Nav_shadow } from '../components/navigation';
 import { App_notification_context_type, Auth_context_type, Public_user } from '../types';
 import Head from 'next/head';
 
-export default function Login_page() {
-    const [loading, set_loading] = useState(false)
-    
-    const App_notification: App_notification_context_type = useContext(App_notification_context)
-    const Auth: Auth_context_type = useContext(Auth_context)
+export default function Login_page_handler() {
+    const [user_logged_in, set_user_logged_in] = useState<null | boolean>(null)
     const router = useRouter()
+
+    useEffect(() => {
+        function check_auth() {
+            const user_token = sessionStorage.getItem("user")
+            if(user_token) { 
+                router.push("/account", "/account", {scroll: false})
+                return set_user_logged_in(true)
+            } else {
+                return set_user_logged_in(false)
+            }
+        }
+        check_auth()
+    }, [])
+    const Auth: Auth_context_type = useContext(Auth_context)
+    const App_notification: App_notification_context_type = useContext(App_notification_context)
+
+    return(
+        <>
+            {user_logged_in === false &&
+                <Login_page Auth={Auth} App_notification={App_notification}/>
+            }
+            
+        </>
+    )
+}
+
+export function Login_page(props: { Auth: Auth_context_type, App_notification: App_notification_context_type}) {
+    const [loading, set_loading] = useState(false)
+    const router = useRouter()
+    const App_notification = props.App_notification
+    const Auth = props.Auth
+
+    
     
     async function resend_email_verification(email: string) {
         try {
@@ -46,7 +76,8 @@ export default function Login_page() {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/login`, {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "x-access-token": `${sessionStorage.getItem("user")}`
                 },
                 credentials: "include",
                 body: JSON.stringify({
@@ -57,13 +88,10 @@ export default function Login_page() {
 
             if(response.status === 200) {
 
-                const body = await response.json() as Public_user
+                const body = await response.json() as {public_user: Public_user, token: string}
                 
-                
-                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...body}, callb: () => {router.push("/account", "/account", {scroll: false})}}})
-                
+                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...body.public_user}, token: body.token, callb: () => {router.push("/account", "/account", {scroll: false})}}})
                 set_loading(false)
-
                 
             } 
             //Account needs to be verified
@@ -135,24 +163,5 @@ export default function Login_page() {
         </>
     );
 }
-
-export const getServerSideProps: GetServerSideProps = async(context) => {
-	const cookies = context.req.cookies
-    
-    if(cookies.user) {
-        return {
-            redirect: {
-                destination: "/account",
-                permanent: false,
-            }
-        }
-    } else {
-        return{
-            props: {}
-        }
-    }
-	
-} 
-
 
 

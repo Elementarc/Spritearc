@@ -184,8 +184,9 @@ export interface Public_user {
     role: string,
 }
 
-export interface Frontend_public_user extends Public_user {
+export interface Frontend_public_user {
     auth: boolean | null
+    public_user: Public_user
 }
 //Auth
 
@@ -196,6 +197,7 @@ export interface Auth_context_type {
         payload: {
             auth: boolean;
             public_user?: Public_user | undefined;
+            token?: string | undefined;
             callb?: (() => void) | undefined;
         } | null;
     }>
