@@ -54,7 +54,6 @@ export default function Layout({children}: any ) {
 
             } catch(err) {
                 //Couldnt reach server
-                
             }
             
         }
@@ -67,20 +66,47 @@ export default function Layout({children}: any ) {
     },[])
 
     useEffect(() => {
+        const controller = new AbortController()
         let timer: any
         clearTimeout(timer)
-        timer = setTimeout(() => {
-
-            if(Auth.user.auth) {
-                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
-            }
+        async function is_auth() {
             
-        }, 1000 * 60 * 15.5);
+            timer = setTimeout(async() => {
+                
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/is_auth`, {
+                        method: "POST",
+                        signal: controller.signal,
+                        credentials: "include",
+                    })
+                    
+                    if(response.status === 200) {
+                        const user: {auth: boolean, public_user: Public_user} = await response.json()
+                        
+                        Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: user.public_user, callb: () => {}}})
+                        
+                    } else {
+                        if(Auth.user.auth === true) {
+                            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false,  callb: () => {router.push("/login", "/login", {scroll: false})}}})
+                        } else {
+                            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
+                        }
+                    }
+    
+                } catch(err) {
+                    //Couldnt reach server
+                }
+                
+            }, 1000 * 60 * 15.1);
+            
+        }
+        is_auth()
 
         return(() => {
+            controller.abort()
             clearTimeout(timer)
         })
-    })
+    },[Auth])
 
     //Function that will be triggert everytime a page unmounts
     function on_unmount() {

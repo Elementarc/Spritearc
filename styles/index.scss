@@ -82,7 +82,7 @@
             position: relative;
             overflow: hidden;
             padding: 5rem 12rem;
-            height: 2000px;
+            height: 1900px;
             width: 100%;
 
             @include breakpoint(laptop) {
@@ -90,6 +90,7 @@
             }
             @include breakpoint(mobile) {
                 padding: 4rem 1rem;
+                height: 700px;
             }
             
             .spritearc_info{
@@ -130,6 +131,231 @@
                         fill: $color_main;
                         transform: rotate(90deg);
                     }
+                }
+            }
+
+            .create_pack_home_container{
+                position: relative;
+                display: flex;
+                justify-content: flex-end;
+                width: 100%;
+                height: auto;
+                margin-top: 25rem;
+                padding: 0 2rem;
+                @include breakpoint(mobile) {
+                    display: none;
+                    margin-top: 15rem;
+                }
+                
+                .create_pack_home_content{
+                    position: relative;
+                    width: 50%;
+                    @include breakpoint(laptop) {
+                        
+                    }
+                    @include breakpoint(mobile) {
+                        width: 100%;
+                    }
+                    .preview_packs_home{
+                        position: absolute;
+                        top: -80px;
+                        right: 140%;
+                        height: 200px;
+                        width: 340px;
+                        transform: scale(1.4);
+
+                        .pack_1 {
+                            position: absolute;
+                            top: 0;
+                            width: 100%;
+                            height: 100%;
+                            opacity: .4;
+                            .pack_1_image_wrapper {
+                                position: relative;
+                                width: 100%;
+                                height: 100%;
+                                
+                            }
+                        }
+                        .pack_2 {
+                            position: absolute;
+                            top: 0;
+                            transform: translateX(35px) translateY(35px);
+                            width: 100%;
+                            height: 100%;
+                            box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                            .pack_2_content {
+                                position: absolute;
+                                bottom: 0;
+                                padding: 1rem 2rem;
+                                z-index: 10;
+                                h1 {
+                                    @include h1(small)
+                                }
+                                img {
+                                    object-fit: cover;
+                                    object-position: center;
+                                }
+                            }
+
+                            .pack_2_image_wrapper {
+                                position: relative;
+                                width: 100%;
+                                height: 100%;
+                                img {
+                                    transform: scale(1.6);
+                                    object-fit: cover;
+                                    object-position: 0px 0px;
+                                }
+                                .pack_2_image_background{
+                                    position: absolute;
+                                    top: 0;
+                                    width: 100%;
+                                    height: 100%;
+                                    opacity: .5;
+                                    background: $color_background_dark;
+                                }
+                            }
+                        }
+                        @include breakpoint(laptop) {
+                            right: 100%;
+                            opacity: .4;
+                            transform: scale(1.2);
+                        }
+
+                        @include breakpoint(mobile) {
+                            transform: scale(.8);
+                            top: -140px;
+                            opacity: .3;
+                            right: 0%;
+                        }
+                    }
+                    
+                    .text_wrapper_home {
+                        position: relative;
+                        z-index: 100;
+                        h1{
+                            @include h1();
+                        }
+                        p {
+                            @include p();
+                        }
+                        a {
+                            display: inline-block;
+                            @include a();
+                            margin-top: .7rem;
+                        }
+                    }
+                    
+                }
+            }
+
+            .create_pack_home_container_left{
+                position: relative;
+                display: flex;
+                justify-content: flex-start;
+                width: 100%;
+                height: auto;
+                margin-top: 25rem;
+                padding: 0 2rem;
+                @include breakpoint(mobile) {
+                    display: none;
+                    margin-top: 15rem;
+                }
+                .create_pack_home_content{
+                    position: relative;
+                    width: 50%;
+                    
+                    @include breakpoint(laptop) {
+                        width: 50%;
+                    }
+                    @include breakpoint(mobile) {
+                        width: 100%;
+                    }
+                    .preview_packs_home{
+                        position: absolute;
+                        top: -80px;
+                        left: 140%;
+                        height: 200px;
+                        width: 340px;
+                        transform: scale(1.4);
+
+                        .pack_1 {
+                            position: absolute;
+                            top: 0;
+                            width: 100%;
+                            height: 100%;
+                            opacity: .4;
+                            .pack_1_image_wrapper {
+                                position: relative;
+                                width: 100%;
+                                height: 100%;
+                            }
+                        }
+                        .pack_2 {
+                            position: absolute;
+                            top: 0;
+                            transform: translateX(35px) translateY(35px);
+                            width: 100%;
+                            height: 100%;
+                            box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.25);
+                            .pack_2_content {
+                                position: absolute;
+                                bottom: 0;
+                                padding: 1rem 2rem;
+                                z-index: 10;
+                                h1 {
+                                    @include h1(small)
+                                }
+                                img {
+                                    object-fit: cover;
+                                    object-position: center;
+                                }
+                            }
+
+                            .pack_2_image_wrapper {
+                                position: relative;
+                                width: 100%;
+                                height: 100%;
+                                img {
+                                    object-fit: cover;
+                                    object-position: center;
+                                }
+                                .pack_2_image_background{
+                                    position: absolute;
+                                    top: 0;
+                                    width: 100%;
+                                    height: 100%;
+                                    opacity: .5;
+                                    background: $color_background_dark;
+                                }
+                            }
+                        }
+                        @include breakpoint(laptop) {
+                            left: 100%;
+                            opacity: .4;
+                            transform: scale(1.2);
+                        }
+
+                        @include breakpoint(mobile) {
+                            transform: scale(.8);
+                            top: -140px;
+                            opacity: .3;
+                            left: 0%;
+                        }
+                    }
+                    
+                    .text_wrapper_home {
+                        position: relative;
+                        z-index: 100;
+                        h1{
+                            @include h1();
+                        }
+                        p {
+                            @include p();
+                        }
+                    }
+                    
                 }
             }
 

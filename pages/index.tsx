@@ -12,6 +12,7 @@ import WorldIcon from "../public/icons/WorldIcon.svg"
 import HighQuality from "../public/icons/HighQuality.svg"
 import { useRouter } from "next/router";
 import Head from "next/head";
+import Pack_stars_raiting from "../components/pack_stars_raiting";
 
 export default function Home(): ReactElement {
 	useParallax("intro_image")
@@ -47,9 +48,7 @@ export default function Home(): ReactElement {
                             <h1>Welcome to Spritearc!</h1>
                         </div>
                         
-                        
-                        
-                        <Image src={"/images/wallpaper.png"} id="intro_image" layout="fill"></Image>
+                        <Image src={"/images/front_page.jpg"} id="intro_image" layout="fill"></Image>
                         <div className="background_blur"></div>
                     </div>
 
@@ -64,6 +63,74 @@ export default function Home(): ReactElement {
                             </div>
                         </div>
 
+                        <div className="create_pack_home_container">
+
+                            <div className="create_pack_home_content">
+                                <div className="text_wrapper_home">
+                                    <h1>Create a Pack</h1>
+                                    <p>You can create your own Pixelart packs and make yourself a name by joining Spritearc! Share your pack with the world.</p>
+                                    <Link href={"/signup"} scroll={false}>Signup</Link>
+                                </div>
+                                
+                                
+                                <div className="preview_packs_home">
+                                    <div className="pack_1">
+
+                                        <div className="pack_1_image_wrapper">
+                                            <Image src={"/images/example_preview_2.png"} layout="fill"></Image>
+                                        </div>
+                                    </div>
+
+                                    <div className="pack_2">
+
+                                        <div className="pack_2_content">
+                                            <Pack_stars_raiting ratings={[{rating: 4, user: "Lol"}]}/>
+                                            <h1>Pack</h1>
+                                        </div>
+
+                                        <div className="pack_2_image_wrapper">
+                                            <Image src={"/images/example_preview.png"} layout="fill"></Image>
+                                            <div className="pack_2_image_background"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div className="create_pack_home_container_left">
+
+                            <div className="create_pack_home_content">
+                                <div className="text_wrapper_home">
+                                    <h1>Create a Pack</h1>
+                                    <p>If you create an Account on Pixelart you will be able to create your own unqiue Pixelart packs that people can download and use. </p>
+                                </div>
+                                
+                                
+                                <div className="preview_packs_home">
+                                    <div className="pack_1">
+
+                                        <div className="pack_1_image_wrapper">
+                                            <Image src={"/images/wallpaper.png"} layout="fill"></Image>
+                                        </div>
+                                    </div>
+
+                                    <div className="pack_2">
+
+                                        <div className="pack_2_content">
+                                            <Pack_stars_raiting ratings={[{rating: 4, user: "Lol"}]}/>
+                                            <h1>Unique Pack</h1>
+                                        </div>
+
+                                        <div className="pack_2_image_wrapper">
+                                            <Image src={"/images/wallpaper.png"} layout="fill"></Image>
+                                            <div className="pack_2_image_background"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
 
                         <div className="blob_container">
                             <Image src={"/blobs/blob_3.svg"} layout="fill"></Image>
@@ -116,7 +183,7 @@ export default function Home(): ReactElement {
                         <div className="section_one_content">
                             <h2>News</h2>
                             <h1>Our Recent Updates</h1>
-                            <p>Are you curiouse about our newest features? You can visit our news page and read all about the changes and updates we made. We're keeping it updated. </p>
+                            <p>{`Are you curiouse about our newest features? You can visit our news page and read all about the changes and updates we made. We're keeping it updated. `}</p>
                             <Link href="/news" scroll={false}>
                                 <a>Read Updates</a>
                             </Link>

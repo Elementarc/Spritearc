@@ -57,6 +57,7 @@ export default function Account_page(props: {user: Public_user}) {
     useParallax("profile_banner")
 
     useEffect(() => {
+        
         const get_profile_upload_input = document.getElementById("input_profile_picture") as HTMLInputElement
         get_profile_upload_input.onchange = async(e: any) => {
             const form = new FormData()
