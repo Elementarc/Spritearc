@@ -78,19 +78,22 @@ function Forward_container(): ReactElement {
 	return (
 		<div className="patch_forward_container">
 	
-			<Forward_item img={"/images/patch1.jpg"} header="Follow us on Twitter" description="We occasionally post something on Twitter, you can follow us if you are interested" link='https://twitter.com/Spritearc' />
+			<Forward_item img={"/logos/twitter.png"} header="Follow us on Twitter" description="We occasionally post something on Twitter, you can follow us if you are interested" link='https://twitter.com/Spritearc' background_color='#26A3F3'/>
 	
 		</div>
 	);
 
 }
 //Creating a Forward item. Used by Forward_container
-function Forward_item(props: {img: string, header: string, description: string, link: string}) {
+function Forward_item(props: {img: string, header: string, description: string, link: string, background_color?: string}) {
 	return (
 		<>
 			<a href={`${props.link}`} target="_blank" rel='noreferrer' className="patch_forward_content_container">
 
 				<div className="patch_forward_img_container">
+					{props.background_color &&
+						<div style={{backgroundColor: props.background_color}} className='patch_forward_img_background'></div>
+					}
 					<Image className="patch_forward_image" layout="fill" src={props.img} alt="" />
 				</div>
 				

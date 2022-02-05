@@ -110,8 +110,8 @@ export default function Login_page() {
                     <div className="login_container">
                         <H1_with_deco title="Sign In" />
                         
-                        <input type="text" placeholder="Email" id="email_input" defaultValue="arctale.work@gmail.com"/>
-                        <input type="password" placeholder="Password" id="password_input" defaultValue="Hurrensohn1"/>
+                        <input type="text" placeholder="Email" id="email_input"/>
+                        <input type="password" placeholder="Password" id="password_input"/>
                         <button onClick={login}>
                             <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
                             {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}

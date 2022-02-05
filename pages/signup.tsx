@@ -40,10 +40,10 @@ interface SignupContext {
 export default function Sign_up_page() {
     //Obj will be send to server to create account for user.
     const [signup_obj, set_signup_obj] = useState<Signup_obj>({
-        username: "Spritearc",
-        email: "arctale.work@gmail.com",
-        password: "Hurrensohn1",
-        legal: true,
+        username: null,
+        email: null,
+        password: null,
+        legal: false,
         occasional_emails: false,
     })
     //Used to navigate between steps.
