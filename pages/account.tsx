@@ -24,26 +24,27 @@ import Protected_route from '../components/protected_route';
 import Head from 'next/head';
 
 export default function Account_page_handler() {
+    const App_notification: App_notification_context_type = useContext(App_notification_context)
+    const Auth: Auth_context_type = useContext(Auth_context)
 
     return(
         <>
 
             <Protected_route>
-                <Account_page/>
+                <Account_page Auth={Auth} App_notification={App_notification}/>
             </Protected_route>
             
         </>
     )
 }
 
-export function Account_page() {
+export function Account_page(props: {Auth: Auth_context_type, App_notification: App_notification_context_type}) {
     const [update_about_state, set_update_about_state] = useState(false)
-    const App_notification: App_notification_context_type = useContext(App_notification_context)
     const router = useRouter()
-    const Auth: Auth_context_type = useContext(Auth_context)
+    const Auth = props.Auth
     const user = Auth.user.public_user
-    const controller = new AbortController()
-
+    const App_notification = props.App_notification
+    
     function go_to(path: string) {
         router.push(path, path, {scroll: false})
     }

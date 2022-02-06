@@ -22,7 +22,7 @@ export default function Protected_route({children}: any) {
 
     return (
         <>
-            {is_auth === true &&
+            {is_auth === true && Auth.user.auth === true &&
                 <>
                     {children}
                 </>
