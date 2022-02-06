@@ -31,7 +31,7 @@ export default function Navigation(): ReactElement {
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     
     useEffect(() => {
-        App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "SPRITEARC ALPHA", message: "Welcome to Spritearc! Please keep in mind that this is the alpha version of our application. Everything will be resetted to 0 on release. All your informations will be lost on release day. Have fun exploring!", button_label: "Alright"}})
+        App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Spritearc Alpha", message: "Welcome to Spritearc! We are currently in Alpha phase. That means we will reset everything and delete all data we have collected from you before release. Have fun exploring :)", button_label: "Okay"}})
     }, [])
     return(
         <>
