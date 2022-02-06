@@ -187,7 +187,7 @@ function Pack_page(props: {pack: Pack, App_notification: App_notification_contex
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_pack?id=${query.id}`, {
                 method: "POST",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                 },
                 credentials: "include",
             })
@@ -527,7 +527,7 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/rate_pack?pack_id=${pack_id}`, {
                 method: "POST",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 credentials: "include",

@@ -861,7 +861,7 @@ function Step_3() {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/create_pack`, {
                     method: "POST",
                     headers: {
-                        "x-access-token": `${sessionStorage.getItem("user")}`,
+                        "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     },
                     credentials: "include",
                     body: Form_data

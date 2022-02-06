@@ -12,16 +12,24 @@
         
         .intro_container {
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             width: 100%;
-            min-height: 450px;
+            min-height: 650px;
+            height: 100vh;
+            max-height: 1350px;
 
             @include breakpoint(mobile) {
                 height: 100vh;
             }
             .intro_content{
-                position: absolute;
-                bottom: 0;
-                padding: 4rem 8rem;
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                margin-top: 10rem;
                 z-index: 2;
                 @include breakpoint(laptop) {
                     padding: 3rem 5rem;
@@ -42,6 +50,7 @@
                     font-size: 24px;
                     @include breakpoint(laptop) {
                         font-size: 20px;
+                        text-align: center;
                     }
                     @include breakpoint(mobile) {
                         text-align: center
@@ -49,7 +58,7 @@
                 }
                 h1{
                     @include h1();
-                    font-size: 64px;
+                    font-size: 84px;
                     @include breakpoint(laptop) {
                         font-size: 52px;
                     }
@@ -58,7 +67,24 @@
                     }
                 }
             }
-
+            .arrow_container{
+                position: absolute;
+                bottom: 3rem;
+                z-index: 2;
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                @include breakpoint(mobile) {
+                    transform: scale(.7);
+                    margin-top: 2rem;
+                }
+                .arrow_down{
+                    animation: arrow_down .7s infinite alternate-reverse;
+                    transition: 0.2s ease-in-out;
+                    fill: $color_main;
+                    transform: rotate(90deg);
+                }
+            }
             img {
                 image-rendering: pixelated;
                 object-fit:cover;
@@ -71,12 +97,9 @@
                 top: 0;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(40deg, $color_background_dark 0%, rgba(3,12,24,0) 75%);
+                background: linear-gradient(40deg, $color_background_dark 5%, rgba(3,12,24,0) 100%);
             }
         }
-
-        
-        
         
         .middle_container {
             position: relative;
@@ -116,22 +139,7 @@
                     margin-top: 3rem;
                     @include button();
                 }
-                .arrow_container{
-                    display: flex;
-                    justify-content: center;
-                    margin-top: 3rem;
-                    width: 100%;
-                    @include breakpoint(mobile) {
-                        transform: scale(.7);
-                        margin-top: 2rem;
-                    }
-                    .arrow_down{
-                        animation: arrow_down .7s infinite alternate-reverse;
-                        transition: 0.2s ease-in-out;
-                        fill: $color_main;
-                        transform: rotate(90deg);
-                    }
-                }
+                
             }
 
             .create_pack_home_container{
@@ -354,6 +362,11 @@
                         p {
                             @include p();
                         }
+                        a {
+                            display: inline-block;
+                            @include a();
+                            margin-top: .7rem;
+                        }
                     }
                     
                 }
@@ -501,6 +514,13 @@
                 margin-top: 1rem;
                 
             }
+
+            .img_wrapper {
+                img {
+                    object-fit: cover;
+                    object-position: center;
+                }
+            }
         }
 
         .section_one_container {
@@ -508,11 +528,12 @@
             display: flex;
             align-items: center;
             width: 100%;
-            background: url("/images/fantasy_forest.jpg");
             background-size: cover;
             background-position: center;
             overflow: hidden;
             margin-bottom: .25rem;
+            
+            
             
             .section_one_content{
                 display: flex;
@@ -533,8 +554,10 @@
                 }
                 
             }
+            
             .section_one_background_blur{
                 position: absolute;
+                z-index: 0;
                 width: 100%;
                 height: 100%;
                 background: rgba(3, 12, 24, 0.5);
@@ -579,7 +602,7 @@
                 width: 100%;
                 height: 100%;
                 background: rgba(3, 12, 24, 0.5);
-                background: linear-gradient(240deg, $color_background_dark 10%, rgba(3,12,24,0) 85%);
+                background: linear-gradient(240deg, $color_background_dark 10%, rgba(3,12,24,0) 150%);
 
                 @include breakpoint(mobile) {
                     background: linear-gradient(240deg, $color_background_dark 15%, rgba(3,12,24,0) 100%);

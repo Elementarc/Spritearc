@@ -72,7 +72,7 @@ export default function Auth_context_provider({children}: any) {
         
         async function is_auth() {
             try {
-                const user_token = sessionStorage.getItem("user")
+                const user_token = sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""
                 if(!user_token) {
                     dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})
                     return

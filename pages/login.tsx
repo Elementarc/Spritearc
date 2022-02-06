@@ -18,7 +18,7 @@ export default function Login_page_handler() {
 
     useEffect(() => {
         function check_auth() {
-            const user_token = sessionStorage.getItem("user")
+            const user_token = sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""
             if(user_token) { 
                 router.push("/account", "/account", {scroll: false})
                 return set_user_logged_in(true)
@@ -46,8 +46,6 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
     const router = useRouter()
     const App_notification = props.App_notification
     const Auth = props.Auth
-
-    
     
     async function resend_email_verification(email: string) {
         try {
@@ -77,7 +75,7 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "x-access-token": `${sessionStorage.getItem("user")}`
+                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`
                 },
                 credentials: "include",
                 body: JSON.stringify({

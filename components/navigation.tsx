@@ -1,7 +1,7 @@
 /*eslint-disable */
 import React, {ReactElement, useContext, useEffect} from "react"
 import {motion, useAnimation, AnimatePresence } from "framer-motion";
-import { Nav_item, App_context, Public_user, Auth_context_type} from "../types"
+import { Nav_item, App_context, Public_user, Auth_context_type, App_notification_context_type} from "../types"
 //SVG Components (ICONS)
 import NavIcon from "../public/icons/NavIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
@@ -19,6 +19,7 @@ import { Navigation_context } from "../context/navigation_context_provider";
 import Image from "next/image"
 import Link from "next/link"
 import { format_date } from "../lib/date_lib";
+import { App_notification_context, NOTIFICATION_ACTIONS } from "../context/app_notification_context_provider";
 
 
 export default function Navigation(): ReactElement {
@@ -27,6 +28,11 @@ export default function Navigation(): ReactElement {
     const APP: App_context = useContext(APP_CONTEXT)
     const Auth: Auth_context_type = useContext(Auth_context)
 
+    const App_notification: App_notification_context_type = useContext(App_notification_context)
+    
+    useEffect(() => {
+        App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "SPRITEARC ALPHA", message: "Welcome to Spritearc! Please keep in mind that this is the alpha version of our application. Everything will be resetted to 0 on release. All your informations will be lost on release day. Have fun exploring!", button_label: "Alright"}})
+    }, [])
     return(
         <>
             {Device.is_mobile === false &&
@@ -416,7 +422,7 @@ function User_profile() {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
                 method: "POST",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user")}`
+                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`
                 },
                 signal: controller.signal,
                 credentials: "include"

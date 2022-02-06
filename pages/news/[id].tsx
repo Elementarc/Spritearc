@@ -78,7 +78,7 @@ function Forward_container(): ReactElement {
 	return (
 		<div className="patch_forward_container">
 	
-			<Forward_item img={"/logos/twitter.png"} header="Follow us on Twitter" description="We occasionally post something on Twitter, you can follow us if you are interested" link='https://twitter.com/Spritearc' background_color='#26A3F3'/>
+			<Forward_item img={"/logos/twitter.png"} header="Follow us on Twitter" description="You also can follow us on twitter to get notified whenever we release a new update!" link='https://twitter.com/Spritearc' background_color='#26A3F3'/>
 	
 		</div>
 	);

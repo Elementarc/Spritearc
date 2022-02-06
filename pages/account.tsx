@@ -49,26 +49,7 @@ export function Account_page() {
     }
     
     async function logout () {
-        
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
-                method: "POST",
-                headers: {
-                    "x-access-token": `${sessionStorage.getItem("user")}`
-                },
-                signal: controller.signal,
-                credentials: "include",
-            })
-    
-            if(response.status === 200) {
-                
-                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
-            }
-
-        } catch(err) {
-            //Couldnt logout
-        }
-        
+        Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
     }
 
     useParallax("profile_banner")
@@ -83,6 +64,9 @@ export function Account_page() {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_image`, {
                     method: "POST",
+                    headers: {
+                        "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`
+                    },
                     credentials: "include",
                     body: form
                 })
@@ -112,7 +96,7 @@ export function Account_page() {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_banner`, {
                     method: "POST",
                     headers: {
-                        "x-access-token": `${sessionStorage.getItem("user")}`
+                        "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`
                     },
                     credentials: "include",
                     body: form
@@ -153,7 +137,7 @@ export function Account_page() {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_user_description`, {
                 method: "POST",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 credentials: "include",
@@ -330,28 +314,3 @@ export function Account_page() {
         </>
     );
 }
-
-
-/* export const getServerSideProps: GetServerSideProps = async (context: any) => {
-    const redirect = {redirect: {
-        permanent: false,
-        destination: "/login"
-    }}
-
-    try {
-        const user = jwt.verify(context.req.cookies.user, process.env.JWT_PRIVATE_KEY as string)
-
-        if(user) {
-            return {
-                props: {
-                    user: user
-                }
-            }
-        } else {
-            return redirect
-        }
-
-    } catch (err) {
-        return redirect
-    }
-} */

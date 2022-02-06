@@ -10,7 +10,7 @@ export default function Protected_route({children}: any) {
     
     useEffect(() => {
         function check_auth() {
-            const user_token = sessionStorage.getItem("user")
+            const user_token = sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""
             if(!user_token) {
                 Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
                 return

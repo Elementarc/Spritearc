@@ -41,7 +41,7 @@ export function Account_settings_page() {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_email`,{
                     method: "POST",
                     headers: {
-                        "x-access-token": `${sessionStorage.getItem("user")}`,
+                        "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                         "Content-Type": "application/json"
                     },
                     credentials: "include",
@@ -69,7 +69,7 @@ export function Account_settings_page() {
                 method: "POST",
                 credentials: "include",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({password: password_input.value})
@@ -104,7 +104,7 @@ export function Account_settings_page() {
                 method: "POST",
                 credentials: "include",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({new_email: new_email_input.value, password: password_input.value})
@@ -138,7 +138,7 @@ export function Account_settings_page() {
                 method: "POST",
                 credentials: "include",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user")}`,
+                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({current_password: current_password_input.value, new_password: new_password_input.value})

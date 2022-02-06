@@ -1,6 +1,6 @@
 
 import React, {useEffect, useContext} from 'react';
-import {App_context, App_navigation_context_type, Auth_context_type, Public_user} from "../types"
+import {App_context, App_navigation_context_type} from "../types"
 import { AnimatePresence, motion } from 'framer-motion';
 import App_notification from './app_notification';
 import { useRouter } from 'next/router';
@@ -17,6 +17,7 @@ export default function Layout({children}: any ) {
     const router = useRouter()
     
     //Disabling auto scroll when going back history
+
     useEffect(() => {
         history.scrollRestoration = 'manual'
         router.beforePopState((state) => {

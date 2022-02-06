@@ -47,8 +47,10 @@ export default function Home(): ReactElement {
                             <h2>Pixelart on the Horizon</h2>
                             <h1>Welcome to Spritearc!</h1>
                         </div>
-                        
-                        <Image src={"/images/front_page.jpg"} id="intro_image" layout="fill"></Image>
+                        <div className="arrow_container">
+                            <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
+                        </div>
+                        <Image priority={true} src={"/images/wallpaper.png"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         <div className="background_blur"></div>
                     </div>
 
@@ -56,20 +58,18 @@ export default function Home(): ReactElement {
 
                         <div className="spritearc_info">
                             <H1_with_deco title="Explore Spritearc"></H1_with_deco>
-                            <p>Discover more than thousands of pixelart assets and sprites that you can freely use in your projects. Start to improve your game design by using sprites that people publish to Spritearc.</p>
+                            <p>Discover more than thousands of pixelart assets and sprites that you can freely use in your projects. Start to improve your game with high quality pixelart assets that people publish to Spritearc.</p>
                             <button onClick={() => {router.push("/browse", "/browse", {scroll: false})}}>Browse Packs</button>
-                            <div className="arrow_container">
-                                <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
-                            </div>
+                            
                         </div>
 
                         <div className="create_pack_home_container">
 
                             <div className="create_pack_home_content">
                                 <div className="text_wrapper_home">
-                                    <h1>Create a Pack</h1>
-                                    <p>You can create your own Pixelart packs and make yourself a name by joining Spritearc! Share your pack with the world.</p>
-                                    <Link href={"/signup"} scroll={false}>Signup</Link>
+                                    <h1>Discover Pixelart</h1>
+                                    <p>You can find Pixelart assets and sprites within just a few clicks! Download, find and share your art on Spritearc.</p>
+                                    <Link href={"/search"} scroll={false}>Search Packs</Link>
                                 </div>
                                 
                                 
@@ -104,6 +104,7 @@ export default function Home(): ReactElement {
                                 <div className="text_wrapper_home">
                                     <h1>Create a Pack</h1>
                                     <p>If you create an Account on Pixelart you will be able to create your own unqiue Pixelart packs that people can download and use. </p>
+                                    <Link href={"/signup"} scroll={false}>Signup</Link>
                                 </div>
                                 
                                 
@@ -123,7 +124,7 @@ export default function Home(): ReactElement {
                                         </div>
 
                                         <div className="pack_2_image_wrapper">
-                                            <Image src={"/images/wallpaper.png"} layout="fill"></Image>
+                                            <Image src={"/images/wallpaper_5.jpg"} layout="fill"></Image>
                                             <div className="pack_2_image_background"></div>
                                         </div>
                                     </div>
@@ -184,11 +185,17 @@ export default function Home(): ReactElement {
                             <h2>News</h2>
                             <h1>Our Recent Updates</h1>
                             <p>{`Are you curiouse about our newest features? You can visit our news page and read all about the changes and updates we made. We're keeping it updated. `}</p>
+                            
+                            
+
                             <Link href="/news" scroll={false}>
                                 <a>Read Updates</a>
                             </Link>
                         </div>
 
+                        <div className="img_wrapper">
+                            <Image src={"/images/wallpaper_4.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                        </div>
                         <div className="section_one_background_blur" />
                     </section>
 
@@ -201,7 +208,9 @@ export default function Home(): ReactElement {
                                 <a>Search Packs</a>
                             </Link>
                         </div>
-
+                        <div className="img_wrapper">
+                            <Image src={"/images/wallpaper_5.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                        </div>
                         <div className="news_section_background_blur" />
                     </section>
 
@@ -214,6 +223,9 @@ export default function Home(): ReactElement {
                             </Link>
                         </div>
 
+                        <div className="img_wrapper">
+                            <Image src={"/images/wallpaper_3.png"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                        </div>
                         <div className="signup_section_background_blur" />
                     </section>
                     <Nav_shadow/>

@@ -1,14 +1,17 @@
 import '../styles/global.scss'
-import React, {useEffect} from 'react'
+import React, {useEffect, useContext} from 'react'
 import Layout from '../components/layout'
 import Head from 'next/dist/shared/lib/head'
 import Auth_context_provider from '../context/auth_context_provider'
 import { useRouter } from 'next/router'
+import {App_notification_context_type} from "../types"
 import Script from 'next/script'
+import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider'
 
 export default function MyApp({ Component, pageProps}: any) {
     const router = useRouter()
-
+    
+    
     //Setting prev_path to session storage
     useEffect(() => {
         
