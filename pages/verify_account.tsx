@@ -26,6 +26,7 @@ export default function Verify_account_page_handler() {
                 if(response.status === 200) {
                     const response_obj = await response.json() as {status: boolean, message: string} // JSON PACK
                     
+                    console.log(response_obj)
                     set_verification_obj(response_obj)
                     
                 } else {
@@ -62,7 +63,7 @@ export function Verify_account({status, message}: {status: boolean, message: str
     //verifieng account
     useEffect(() => {
         if(status === true) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully verified!", message: "Thank you for verifying your account! We will now redirect you to our login page.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
-        App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Token has been expired!", message: "Your token has been expired. Please login to resend you a verification email.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
+        if(status === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Token has been expired!", message: "Your token has been expired. Please login to resend you a verification email.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
         
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, message])

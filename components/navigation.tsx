@@ -31,7 +31,10 @@ export default function Navigation(): ReactElement {
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     
     useEffect(() => {
+        if(localStorage.getItem("warned_alpha")) return
         App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Spritearc Alpha", message: "Welcome to Spritearc! We are currently in Alpha phase. That means we will reset everything and delete all data we have collected from you before release. Have fun exploring :)", button_label: "Okay"}})
+
+        localStorage.setItem("warned_alpha", "true")
     }, [])
     return(
         <>
