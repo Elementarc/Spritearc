@@ -664,11 +664,11 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
             
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {method: "POST"})
-            
-            
+                console.log(context.query.id)
+                console.log(response.status)
                 if(response.status === 200) {
                     const pack = await response.json() as string // JSON PACK
-                    
+                    console.log(pack)
                     return {
                         props: {
                             pack,
