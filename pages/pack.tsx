@@ -663,7 +663,12 @@ export const getServerSideProps: GetServerSideProps = async(context) => {
         if(typeof context.query.id === "string") {
             
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {method: "POST"})
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
                 console.log(context.query.id)
                 console.log(response.status)
                 if(response.status === 200) {
