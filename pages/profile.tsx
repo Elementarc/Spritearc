@@ -1,5 +1,4 @@
-import React from 'react';
-import { GetServerSideProps } from 'next';
+import React, {useState, useEffect} from 'react';
 import Image from "next/image"
 import Link from "next/link"
 import { Public_user } from '../types';
@@ -8,9 +7,58 @@ import { useParallax } from '../lib/custom_hooks';
 import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
-export default function Profile(props: {public_user: any}) {
-    const public_user = JSON.parse(props.public_user) as Public_user
+
+export default function Profile_page_handler() {
+    const [public_user, set_public_user] = useState<null | Public_user>(null)
+    const router = useRouter()
+
+    useEffect(() => {
+        const controller = new AbortController()
+
+        async function get_pack() {
+            if(!router.query.user) return
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user?user=${router.query.user}`, {
+                    method: "POST",
+                    signal: controller.signal,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+
+                if(response.status === 200) {
+                    const public_user_obj = await response.json() as Public_user // JSON PACK
+                    set_public_user(public_user_obj)
+                    
+                } else {
+                    //router.push("/browse", "/browse", {scroll: false})
+                }
+
+            } catch(err) {
+                //Couldnt reach server
+                //router.push("/browse", "/browse", {scroll: false})
+            }
+        }
+        get_pack()
+        return(() => {
+            controller.abort()
+        })
+        
+    }, [router])
+
+    return (
+        <div>
+            {public_user &&
+                <Profile_page public_user={public_user}/>
+            }
+        </div>
+    );
+}
+
+function Profile_page(props: {public_user: Public_user}) {
+    const public_user = props.public_user
     useParallax("profile_banner")
     
     
@@ -85,49 +133,3 @@ export default function Profile(props: {public_user: any}) {
 
 
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    const redirect = {redirect: {
-        permanent: false,
-        destination: "/browse"
-    }}
-    const username = context.query.user
-    
-    if(!username) return redirect
-    if(typeof username !== "string") return redirect
-    //user query exist and is type of string
-    
-    try {
-
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user?user=${context.query.user}`, {
-            method: "POST",
-            credentials: "include"
-        })
-        
-        if(response.status === 200) {
-            const user = await response.json()
-            if(!user) return redirect
-
-            return {
-                props: {
-                    public_user: JSON.stringify(user),
-                }
-            }
-
-        } else {
-            return redirect
-        }
-        
-    } catch( err ) {
-
-        return redirect
-
-    }
-    
-    
-    //User was found in the databse
-    
-    
-    
-    
-    
-}

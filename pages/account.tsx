@@ -1,7 +1,6 @@
-import { GetServerSideProps } from 'next';
 import React, {useContext, useEffect, useState} from 'react';
 import jwt from 'jsonwebtoken';
-import { App_notification_context_type, Auth_context_type, Public_user } from '../types';
+import { App_notification_context_type, Auth_context_type } from '../types';
 import Footer from '../components/footer';
 import Image from "next/image"
 import Link from 'next/dist/client/link';

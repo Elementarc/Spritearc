@@ -1,14 +1,61 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/router';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
-import { GetServerSideProps } from 'next';
 import H1_with_deco from '../components/h1_with_deco';
 import Footer from '../components/footer';
 import { validate_password } from '../spritearc_lib/validate_lib';
 import { App_notification_context_type } from '../types';
 import Head from 'next/head';
 
-export default function Reset_account_password() {
+export default function Reset_account_password_page_handler() {
+    const [success, set_success] = useState<null | boolean>(null)
+    const router = useRouter()
+
+    useEffect(() => {
+        const controller = new AbortController()
+
+        async function reset_account_password() {
+            if(!router.query.token) return
+            
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/password_token_exists`, {
+                    method: "POST",
+                    signal: controller.signal,
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({token: router.query.token})
+                })
+                
+                if(response.status === 200) {
+                    
+                    set_success(true)
+                    
+                } else {
+                    router.push("/login", "/login", {scroll: false})
+                }
+
+            } catch(err) {
+                //Couldnt reach server
+                //router.push("/browse", "/browse", {scroll: false})
+            }
+        }
+        reset_account_password()
+        return(() => {
+            controller.abort()
+        })
+        
+    }, [router])
+
+    return (
+        <div style={{height: "100vh"}}>
+            {success &&
+                <Reset_account_password/>
+            }
+            
+        </div>
+    );
+}
+
+export function Reset_account_password() {
     const [password, set_password] = useState<string>("")
     const [password_repeat, set_password_repeat] = useState<string>("")
     const App_notification: App_notification_context_type = useContext(App_notification_context)
@@ -126,43 +173,7 @@ export default function Reset_account_password() {
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async(context) => {
-    const redirect = {
-        redirect: {
-            destination: `/browse`,
-            permanent: false,
-        }
-    }
-    try {
-        const token = context.query.token
-        if(typeof token !== "string") return redirect
-    
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/password_token_exists`, {
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({token: token})
-            })
-        
-            console.log(response.status)
-            if(response.status !== 200) return redirect
-            
-            return {
-                props: {}
-            }
 
-
-        } catch(err) {
-            return redirect
-        }
-
-    } catch( err ) {
-        console.log(err)
-        return redirect
-
-    }
-
-} 
 
 
 

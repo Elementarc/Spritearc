@@ -2,7 +2,6 @@ import React, {useContext, useState, useEffect} from 'react';
 import Footer from '../components/footer';
 import H1_with_deco from '../components/h1_with_deco';
 import Link from 'next/link';
-import { GetServerSideProps } from 'next'
 import { Auth_context } from '../context/auth_context_provider';
 import { useRouter } from 'next/router';
 import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';

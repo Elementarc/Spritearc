@@ -1,7 +1,6 @@
-import { GetServerSideProps } from 'next';
 import React, {ReactElement, useEffect, useContext, useState, useCallback} from 'react';
 import Footer from '../components/footer';
-import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Frontend_public_user} from "../types"
+import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
@@ -9,13 +8,12 @@ import { useParallax } from '../lib/custom_hooks';
 import ArrowIcon from "../public/icons/ArrowIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
 import ReportIcon from "../public/icons/ReportIcon.svg"
-import jwt from 'jsonwebtoken';
 import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../components/h1_with_deco';
 import { format_date } from '../lib/date_lib';
 import { ObjectId } from 'mongodb';
-import { capitalize_first_letter_rest_lowercase, check_if_json } from '../spritearc_lib/custom_lib';
+import { capitalize_first_letter_rest_lowercase } from '../spritearc_lib/custom_lib';
 import StarEmptyIcon from "../public/icons/StarEmptyIcon.svg"
 import StarIcon from "../public/icons/StarIcon.svg"
 import Pack_star_raiting from '../components/pack_stars_raiting';
@@ -28,11 +26,56 @@ import { Auth_context } from '../context/auth_context_provider';
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
-export default function Pack_page_handler(props: {pack: Pack}) {
+
+export default function Pack_page_handler() {
+    const router = useRouter()
+    const [pack, set_pack] = useState<null | Pack>(null)
+
+    useEffect(() => {
+        const controller = new AbortController()
+        async function get_pack() {
+            if(!router.query.id) return
+
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${router.query.id}`, {
+                    method: "POST",
+                    signal: controller.signal,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+
+                if(response.status === 200) {
+                    const pack_obj = await response.json() as Pack // JSON PACK
+                    set_pack(pack_obj)
+                } else {
+                    router.push("/browse", "/browse", {scroll: false})
+                }
+
+            } catch(err) {
+                //Couldnt reach server
+            }
+        }
+        get_pack()
+        return(() => {
+            controller.abort()
+        })
+        
+    }, [router])
+    
+    return (
+        <div>
+            {pack &&
+                <Pack_page pack={pack} />
+            }
+        </div>
+    );
+}
+
+function Pack_page(props: {pack: Pack}) {
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     const Auth: Auth_context_type = useContext(Auth_context)
     const pack = props.pack
-
     return(
         <>
             <Head>
@@ -54,12 +97,11 @@ export default function Pack_page_handler(props: {pack: Pack}) {
 				<meta name="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`}/>
             </Head>
 
-            <Memo_pack_page pack={pack} App_notification={App_notification} Auth={Auth}/>
+            <Memo_user_pack pack={pack} App_notification={App_notification} Auth={Auth}/>
         </>
     )
 }
-
-function Pack_page(props: {pack: Pack, App_notification: App_notification_context_type, Auth: Auth_context_type}) {
+function User_pack(props: {pack: Pack, App_notification: App_notification_context_type, Auth: Auth_context_type}) {
     const router = useRouter()
     const pack_id = router.query.id as string
     const Auth = props.Auth
@@ -588,7 +630,7 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
     );  
 }
 
-export const Memo_pack_page = React.memo(Pack_page)
+export const Memo_user_pack = React.memo(User_pack)
 export const Memo_rate_pack = React.memo(Rate_pack)
 
 
@@ -646,7 +688,6 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
     );
 }
 
-
 function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string, callb: ()=>void}) {
   return (
     <div className='pack_action' onClick={callb}>
@@ -655,73 +696,3 @@ function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string,
     </div>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async(context) => {
-
-    try {
-        
-        if(typeof context.query.id === "string") {
-            
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-                console.log(context.query.id)
-                console.log(response.status)
-                if(response.status === 200) {
-                    const pack = await response.json() as string // JSON PACK
-                    console.log(pack)
-                    return {
-                        props: {
-                            pack,
-                        }
-                    }
-                } else {
-                    return {
-                        redirect: {
-                            destination: `/browse`,
-                            permanent: false,
-                        }
-                    }
-                }
-            } catch(err) {
-                console.log("Couldnt reach server")
-                return {
-                    redirect: {
-                        destination: `/browse`,
-                        permanent: false,
-                    }
-                }
-            }
-            
-            
-            
-        } else {
-            return {
-
-                redirect: {
-                    destination: `/browse`,
-                    permanent: false,
-                }
-
-            }
-
-        }
-
-    } catch( err ) {
-        console.log(err)
-        return {
-
-            redirect: {
-                destination: `/browse`,
-                permanent: false,
-            }
-
-        }
-
-    }
-
-} 

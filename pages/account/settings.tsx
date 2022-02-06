@@ -1,7 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { GetServerSideProps } from 'next';
-import jwt from "jsonwebtoken"
-import { Public_user, App_notification_context_type, Auth_context_type } from '../../types';
+import { App_notification_context_type, Auth_context_type } from '../../types';
 import Footer from '../../components/footer';
 import { format_date } from '../../lib/date_lib';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../../context/app_notification_context_provider';

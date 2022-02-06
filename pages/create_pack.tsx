@@ -16,7 +16,6 @@ import { create_form_data as create_form_data } from '../lib/create_lib';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { useRouter } from 'next/router';
 import jwt from "jsonwebtoken"
-import { GetServerSideProps } from 'next';
 import Loader from "../components/loading"
 import Head from 'next/head';
 import Protected_route from '../components/protected_route';

@@ -2,7 +2,6 @@ import React, {useContext, useState} from 'react';
 import Footer from '../components/footer';
 import H1_with_deco from '../components/h1_with_deco';
 import Link from 'next/link';
-import { GetServerSideProps } from 'next'
 import Loader from '../components/loading';
 import { Nav_shadow } from '../components/navigation';
 import { validate_email } from '../spritearc_lib/validate_lib';
@@ -103,23 +102,6 @@ export default function Forgot_password_page() {
     );
 }
 
-export const getServerSideProps: GetServerSideProps = async(context) => {
-	const cookies = context.req.cookies
-    
-    if(cookies.user) {
-        return {
-            redirect: {
-                destination: "/account",
-                permanent: false,
-            }
-        }
-    } else {
-        return{
-            props: {}
-        }
-    }
-	
-} 
 
 
 

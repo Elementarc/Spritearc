@@ -1,10 +1,61 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/router';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
-import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 
-export default function Verify_account({status, message}: {status: boolean, message: string}) {
+
+export default function Verify_account_page_handler() {
+    const [verification_obj, set_verification_obj] = useState<null | {status: boolean, message: string}>(null)
+    const router = useRouter()
+
+    useEffect(() => {
+        const controller = new AbortController()
+
+        async function verify_account() {
+            if(!router.query.token) return
+            
+            try {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/verify_account`, {
+                    method: "POST",
+                    signal: controller.signal,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({token: router.query.token})
+                })
+                if(response.status === 200) {
+                    const response_obj = await response.json() as {status: boolean, message: string} // JSON PACK
+                    
+                    set_verification_obj(response_obj)
+                    
+                } else {
+                    set_verification_obj({status: false, message: "Something went wrong!"})
+                    router.push("/login", "/login", {scroll: false})
+                }
+
+            } catch(err) {
+                //Couldnt reach server
+                //router.push("/browse", "/browse", {scroll: false})
+            }
+        }
+        verify_account()
+        return(() => {
+            controller.abort()
+        })
+        
+    }, [router])
+
+    return (
+        <div style={{height: "100vh"}}>
+            {verification_obj && verification_obj.message &&
+                <Verify_account status={verification_obj.status} message={verification_obj.message}/>
+            }
+            
+        </div>
+    );
+}
+
+export function Verify_account({status, message}: {status: boolean, message: string}) {
     const App_notification: any = useContext(App_notification_context)
     const router = useRouter()
 
@@ -43,59 +94,3 @@ export default function Verify_account({status, message}: {status: boolean, mess
         </>
     );  
 }
-
-export const getServerSideProps: GetServerSideProps = async(context) => {
-    const redirect = {
-        redirect: {
-            destination: `/browse`,
-            permanent: false,
-        }
-    }
-    try {
-        
-        if(typeof context.query.token === "string") {
-            
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/verify_account`, {
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    credentials: "include",
-                    body: JSON.stringify({token: context.query.token})
-                })
-            
-            
-                console.log(response.status)
-                if(response.status === 200) {
-                    const response_obj = await response.json() as {success: boolean, message: string} // JSON PACK
-                    
-                    return {
-                        props: {
-                            status: response_obj.success,
-                            message: response_obj.message
-                        }
-                    }
-                } else {
-                    return redirect
-                }
-            } catch(err) {
-                return redirect
-            }
-            
-            
-            
-        } else {
-            return redirect
-
-        }
-
-    } catch( err ) {
-        console.log(err)
-        return redirect
-
-    }
-
-} 
-
-
-
-
