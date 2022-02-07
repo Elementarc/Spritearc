@@ -27,7 +27,7 @@ export default function Browse() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content="Browse through thousands of free Pixelart assets and sprites"/>
 				<meta name="twitter:description" content="Find sprites and assets from thousands of packs and download them."/>
-				<meta name="twitter:image" content="/images/wallpaper.png"/>
+				<meta name="twitter:image:src" content="/images/wallpaper.png"/>
             </Head>
 
 			<div className="browse_page">

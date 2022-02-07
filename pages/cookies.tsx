@@ -37,7 +37,7 @@ export default function Terms_of_service() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Cookies`}/>
 				<meta name="twitter:description" content={`Read about our cookie policy so you exactly know what informations Spritearc safe from you.`}/>
-				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
             </Head>
         
             <div className='tos_page'>

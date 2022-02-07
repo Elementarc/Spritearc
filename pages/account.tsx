@@ -174,7 +174,7 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content="Spritearc - Account"/>
 				<meta name="twitter:description" content="Navigate through your account. Edit your account settings or visit your public profile."/>
-				<meta name="twitter:image" content="/images/wallpaper.png"/>
+				<meta name="twitter:image:src" content="/images/wallpaper.png"/>
             </Head>
         
             <div className='account_page'>

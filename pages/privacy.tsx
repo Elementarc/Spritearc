@@ -35,7 +35,7 @@ export default function Privacy_policy() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Privacy`}/>
 				<meta name="twitter:description" content={`Spritearc Privacy.`}/>
-				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
             </Head>
         
             <div className='tos_page'>

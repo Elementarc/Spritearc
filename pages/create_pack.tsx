@@ -361,7 +361,7 @@ function Create_pack_page() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Create Pack`}/>
 				<meta name="twitter:description" content={`Create a pack that you can share around the world. People will be able to download & rate your art. It only takes you 3 steps to finish a Pixelart pack.`}/>
-				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
             </Head>
 
         

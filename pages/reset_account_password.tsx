@@ -153,7 +153,7 @@ export function Reset_account_password() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Reset Account Password`}/>
 				<meta name="twitter:description" content={`Reset your account password.`}/>
-				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
             </Head>
         
             <div className="reset_password_page">

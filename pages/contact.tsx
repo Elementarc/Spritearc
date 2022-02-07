@@ -23,7 +23,7 @@ export default function Terms_of_service() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Contact`}/>
 				<meta name="twitter:description" content={`Do you have any question or maybe a suggestion that you would like to have? Get in contact with us and let us know how we can help you.`}/>
-				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
             </Head>
         
             <div className='tos_page'>

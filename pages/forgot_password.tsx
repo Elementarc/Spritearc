@@ -66,7 +66,7 @@ export default function Forgot_password_page() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Forgot Password`}/>
 				<meta name="twitter:description" content={`Did you forgett your password? You can request a password reset and we will send you a token to your email that will allow you to reset your password!`}/>
-				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
             </Head>
         
             <div className="forgot_password_page">

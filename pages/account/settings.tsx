@@ -271,7 +271,7 @@ export function Account_settings_page() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content="Spritearc - Account Settings"/>
 				<meta name="twitter:description" content="Edit important account information."/>
-				<meta name="twitter:image" content="/images/wallpaper.png"/>
+				<meta name="twitter:image:src" content="/images/wallpaper.png"/>
             </Head>
         
         

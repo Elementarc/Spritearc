@@ -27,15 +27,15 @@ export default function Home(): ReactElement {
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Home`}/>
-				<meta property="og:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
+				<meta property="og:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be around with the world!`}/>
 				<meta property="og:image" content={`/images/wallpaper.png`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Home`}/>
-				<meta name="twitter:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
-				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+				<meta name="twitter:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be around the world!`}/>
+				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
             </Head>
 
             <div className="home_page">

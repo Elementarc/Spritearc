@@ -70,7 +70,7 @@ export default function Search_page() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Search packs`}/>
 				<meta name="twitter:description" content={`Find Pixelart assets and sprites with just one click. You can search by tags to find specific genres.`}/>
-				<meta name="twitter:image" content={`/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
             </Head>
 		
 			<search_context.Provider value={{search, set_input_value}}>

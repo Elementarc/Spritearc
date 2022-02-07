@@ -88,7 +88,7 @@ export function Verify_account({verification_obj}: {verification_obj: {success: 
                 <meta property="twitter:url" content="https://Spritearc.com/"/>
                 <meta name="twitter:title" content={`Spritearc - Verify Account`}/>
                 <meta name="twitter:description" content={`Verify your account.`}/>
-                <meta name="twitter:image" content={``}/>
+                <meta name="twitter:image:src" content={``}/>
             </Head>
 
             <div style={{height: "100vh"}} className="verification_page">

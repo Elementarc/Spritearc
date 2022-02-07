@@ -79,7 +79,7 @@ function Profile_page(props: {public_user: Public_user}) {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`${public_user.username}`}/>
 				<meta name="twitter:description" content={`${public_user.description}`}/>
-				<meta name="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
             </Head>
        
             <div className='profile_page'>

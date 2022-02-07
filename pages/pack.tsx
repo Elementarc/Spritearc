@@ -94,7 +94,7 @@ function Pack_page(props: {pack: Pack}) {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`${pack.title}`}/>
 				<meta name="twitter:description" content={`${pack.description}`} />
-				<meta name="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`}/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`}/>
             </Head>
 
             <Memo_user_pack pack={pack} App_notification={App_notification} Auth={Auth}/>

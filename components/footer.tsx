@@ -39,7 +39,7 @@ export default function Footer(): ReactElement {
                 <h1>Spritearc</h1>
 
                 <div className="socials_container">
-                    <Social_item link="https://twitter.com/home" logo={Twitter} alt="Twitter Logo"/>
+                    <Social_item link="https://twitter.com/Spritearc" logo={Twitter} alt="Twitter Logo"/>
                 </div>
 
                 <div className="legal_container">
