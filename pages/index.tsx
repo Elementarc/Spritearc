@@ -27,14 +27,14 @@ export default function Home(): ReactElement {
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Home`}/>
-				<meta property="og:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be around with the world!`}/>
+				<meta property="og:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be shared with the world!`}/>
 				<meta property="og:image" content={`/images/wallpaper.png`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Home`}/>
-				<meta name="twitter:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be around the world!`}/>
+				<meta name="twitter:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be shared with the world!`}/>
 				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
             </Head>
 
@@ -58,7 +58,7 @@ export default function Home(): ReactElement {
 
                         <div className="spritearc_info">
                             <H1_with_deco title="Explore Spritearc"></H1_with_deco>
-                            <p>Discover more than thousands of pixelart assets and sprites that you can freely use in your projects. Start to improve your game with high quality pixelart assets that people publish to Spritearc.</p>
+                            <p>{`Discover thousands of pixel art assets that you can use for free in your projects. Start improving your game's visuals with high-quality character sprites, item art, backgrounds and more! You can browse art packs by tags to find the exact kind of assets you're looking for.`}</p>
                             <button onClick={() => {router.push("/browse", "/browse", {scroll: false})}}>Browse Packs</button>
                             
                         </div>

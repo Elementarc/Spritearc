@@ -1,11 +1,9 @@
 .app_notification_container{
-    position: fixed;
-    top: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     z-index: 100;
     background: rgba(0, 0, 0, 0.75);
     @include breakpoint(mobile) {
@@ -13,6 +11,7 @@
     }
     .notification_container {
         position: relative;
+        pointer-events: all;
         background: $color_main_blue;
         display: flex;
         flex-direction: column;

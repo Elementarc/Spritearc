@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import Footer from '../components/footer';
 import H1_with_deco from '../components/h1_with_deco';
 import Link from 'next/link';
@@ -10,8 +10,11 @@ import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_n
 import { Nav_shadow } from '../components/navigation';
 import { App_notification_context_type, Auth_context_type, Public_user } from '../types';
 import Head from 'next/head';
-
+import VisibilityIcon from "../public/icons/VisibilityIcon.svg"
+import VisibilityOffIcon from "../public/icons/VisibilityOffIcon.svg"
 export default function Login_page_handler() {
+    const Auth: Auth_context_type = useContext(Auth_context)
+    const App_notification: App_notification_context_type = useContext(App_notification_context)
     const [user_logged_in, set_user_logged_in] = useState<null | boolean>(null)
     const router = useRouter()
 
@@ -27,8 +30,6 @@ export default function Login_page_handler() {
         }
         check_auth()
     }, [])
-    const Auth: Auth_context_type = useContext(Auth_context)
-    const App_notification: App_notification_context_type = useContext(App_notification_context)
 
     return(
         <>
@@ -42,6 +43,8 @@ export default function Login_page_handler() {
 
 export function Login_page(props: { Auth: Auth_context_type, App_notification: App_notification_context_type}) {
     const [loading, set_loading] = useState(false)
+    const [password_visibility, set_password_visibility] = useState(false)
+    const refs = useRef<any>([])
     const router = useRouter()
     const App_notification = props.App_notification
     const Auth = props.Auth
@@ -63,12 +66,12 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
         }
         
     }
-
     async function login() {
+        
         set_loading(true)
         const email_input = document.getElementById("email_input") as HTMLInputElement
         const password_input = document.getElementById("password_input") as HTMLInputElement
-
+        
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/login`, {
                 method: "POST",
@@ -95,12 +98,12 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
             else if(response.status === 401) {
                 const body = await response.json()
                 
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Please confirm your email!", message: "You have to confirm your email address to be able to login!", button_label: "Send confirmation", callb: () => {resend_email_verification(body.email)}}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Please confirm your email!", message: "You have to confirm your email address to be able to login!", button_label: "Send confirmation", callb: () => {resend_email_verification(body.email); refs.current["email"].focus()}}})
                 set_loading(false)
 
             } else  {
                 set_loading(false)
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Wrong Credentials", message: "We couldn't find any match for your credentials", button_label: "ok"}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Wrong Credentials", message: "We couldn't find any match for your credentials", button_label: "ok", callb: () => {refs.current["email"].focus()}}})
             }
 
         } catch ( err ) {
@@ -108,6 +111,36 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
         }
     }
 
+    //Eventlistener to login when pressing enter
+    useEffect(() => {
+        let timer: any
+        function click_login_button(e: any) {
+            
+            if(document.activeElement === refs.current["email"] || document.activeElement == refs.current["password"]) {
+                
+                if(e.keyCode !== 13) return
+                refs.current["email"].blur()
+                refs.current["password"].blur()
+                refs.current["button"].click()
+            }
+        }
+
+        window.addEventListener("keyup", click_login_button)
+        return(() => {
+            window.removeEventListener("keyup", click_login_button)
+            clearTimeout(timer)
+        })
+    }, [])
+
+    function toggle_password_type() {
+        if(refs.current["password"].type === "password") {
+            refs.current["password"].type = "text"
+            set_password_visibility(true)
+        } else {
+            refs.current["password"].type = "password"
+            set_password_visibility(false)
+        }
+    }
     return (
         <>
             <Head>
@@ -135,9 +168,25 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
                     <div className="login_container">
                         <H1_with_deco title="Sign In" />
                         
-                        <input type="text" placeholder="Email" id="email_input"/>
-                        <input type="password" placeholder="Password" id="password_input"/>
-                        <button onClick={login}>
+                        <input ref={(el) => {return refs.current["email"] = el}} type="text" placeholder="Email" id="email_input"/>
+                        
+                        <div className='password_input_container'>
+                            <input ref={(el) => {return refs.current["password"] = el}} type="password" placeholder="Password" id="password_input"/>
+                            
+                            {!password_visibility &&
+                                <div onClick={toggle_password_type} className='password_visibility_icon_container'>
+                                    <VisibilityOffIcon/>
+                                </div>
+                            }
+                            {password_visibility &&
+                                <div onClick={toggle_password_type} className='password_visibility_icon_container'>
+                                    <VisibilityIcon/>
+                                </div>
+                            }
+                            
+                        </div>
+
+                        <button ref={(el) => {return refs.current["button"] = el}} onClick={login}>
                             <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
                             {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
                         </button>

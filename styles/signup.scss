@@ -34,6 +34,7 @@
                 padding-bottom: 4rem;
                 height: auto;
             }
+
             .step_container{
                 display: flex;
                 width: 100%;
@@ -51,6 +52,7 @@
                     }
                 }
     
+                
                 input {
                     @include p;
                     background: unset;
@@ -77,6 +79,64 @@
                     padding: 0 1rem;
                     color: #F75E5E;
                 }
+                .password_input_container {
+                    position: relative;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    width: 30%;
+                    @include breakpoint(laptop) {
+                        width: 60%;
+                    }
+                    @include breakpoint(mobile) {
+                        width: 90%;
+                    }
+                    input {
+                        @include p;
+                        background: unset;
+                        border-bottom: 1px solid $color_grey;
+                        margin-bottom: .5rem;
+                        width: 100%;
+                        color: white;
+                        outline: none;
+                        text-align: center;
+                        
+                        &::placeholder {
+                            color: $color_dark_grey;
+                        }
+                    }
+                    .input_error_message{
+                        margin-bottom: 1.5rem;
+                        @include p(medium);
+                        text-align: center;
+                        padding: 0 1rem;
+                        color: #F75E5E;
+                    }
+    
+                    .password_visibility_icon_container {
+                        position: absolute;
+                        margin-bottom: .3rem;
+                        top: 0;
+                        right: .5rem;
+    
+                        svg {
+                            fill: $color_grey;
+                            
+                            @include breakpoint(mobile) {
+                                transform: scale(.8);
+                            }
+                        }
+
+                        &:hover {
+                            svg {
+                                fill: white;
+                            }
+                            cursor: pointer;
+                            fill: white;
+                        }
+                    }
+                }
+                
                 
                 .legal_container {
                     display: grid;
@@ -132,7 +192,6 @@
                         }
                     }
                 }
-                
                 
 
                 .button_container{

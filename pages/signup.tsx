@@ -1,5 +1,5 @@
 import { AnimatePresence, motion} from "framer-motion";
-import React, { useState, useEffect, useContext} from "react";
+import React, { useState, useEffect, useContext, useRef} from "react";
 import Footer from "../components/footer";
 import Link from "next/dist/client/link";
 import { Signup_obj } from "../types";
@@ -12,6 +12,8 @@ import router from "next/router";
 import { Device_context } from "../context/device_context_provider";
 import { App_notification_context } from "../context/app_notification_context_provider";
 import Head from "next/head";
+import VisibilityIcon from "../public/icons/VisibilityIcon.svg"
+import VisibilityOffIcon from "../public/icons/VisibilityOffIcon.svg"
 
 const SIGNUP_CONTEXT: any = React.createContext(null)
 
@@ -521,7 +523,8 @@ export function Step_3() {
     const Device = useContext(Device_context)
     const App_notification: any = useContext(App_notification_context)
     const [loading, set_loading] = useState(false)
-
+    const [password_visibility, set_password_visibility] = useState(false)
+    const refs = useRef<any>([])
     //Validating passwort also calling validate_password_repeat.
     function validate_password() {
         const password = document.getElementById("input_password") as HTMLInputElement
@@ -652,15 +655,46 @@ export function Step_3() {
         })
     }, [Device.is_mobile])
 
+    function toggle_password_type() {
+
+        if(refs.current["password"].type === "password") {
+            refs.current["password"].type = "text"
+            refs.current["password_repeat"].type = "text"
+            set_password_visibility(true)
+        } else {
+            refs.current["password"].type = "password"
+            refs.current["password_repeat"].type = "password"
+            set_password_visibility(false)
+        }
+    }
+
+    
     return (
         <motion.div className="step_container" initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .3, delay: 0.2}}} exit={{opacity: 0, y: 50, transition: {duration: 0.2,  type: "tween"}}}>
                         
             <H1_with_deco title="Please create a password"/>
                 
-            <input onKeyUp={validate_password} type="password" placeholder={"Password"} id="input_password" />
-            <p className="input_error_message" id="input_error_message_password"></p>
-            <input onKeyUp={validate_password_repeat} type="password" placeholder={"Password-repeat"} id="input_password_repeat" />
+
+            <div className='password_input_container'>
+                <input ref={(el) => refs.current["password"] = el} onKeyUp={validate_password} type="password" placeholder={"Password"} id="input_password" />
+                <p className="input_error_message" id="input_error_message_password"></p>
+
+                {password_visibility &&
+                    <div key={"Visibility_off_icon"} onClick={toggle_password_type} className='password_visibility_icon_container'>
+                        <VisibilityIcon/>
+                    </div>
+                }
+                {!password_visibility &&
+                    <div key={"Visibility_onn_icon"} onClick={toggle_password_type} className='password_visibility_icon_container'>
+                        <VisibilityOffIcon/>
+                    </div>
+                }
+            </div>
+            
+            <input ref={(el) => refs.current["password_repeat"] = el} onKeyUp={validate_password_repeat} type="password" placeholder={"Password-repeat"} id="input_password_repeat" />
             <p className="input_error_message" id="input_error_message_password_repeat"></p>
+            
+            
             
             <div className="legal_container">
                 
@@ -688,7 +722,7 @@ export function Step_3() {
 
                     </div>
 
-                    <p>I want to get occasional E-mails from PixelPalast</p>
+                    <p>I want to get occasional E-mails from {`${process.env.NEXT_PUBLIC_APP_NAME}.com`}</p>
 
                 </div>
 

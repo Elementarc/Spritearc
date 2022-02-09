@@ -528,8 +528,6 @@
             display: flex;
             align-items: center;
             width: 100%;
-            background-size: cover;
-            background-position: center;
             overflow: hidden;
             margin-bottom: .25rem;
             
@@ -574,7 +572,6 @@
             display: flex;
             align-items: center;
             width: 100%;
-            background: url("/images/fantasy_forest.jpg");
             background-size: cover;
             background-position: center;
             overflow: hidden;
@@ -615,9 +612,6 @@
             display: flex;
             justify-content: center;
             width: 100%;
-            background: url("/images/watefall2.png");
-            background-size: cover;
-            background-position: center;
             overflow: hidden;
             .signup_section_content{
                 z-index: 1;

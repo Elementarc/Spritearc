@@ -39,6 +39,11 @@
     .socials_container{
         display: flex;
         margin: 5rem 0rem 5rem 0rem;
+
+        img {
+            object-fit: contain;
+            object-position: center;
+        }
     }
     h5{
         @include h5;

@@ -41,10 +41,48 @@
                 width: 30%;
                 @include breakpoint(mobile) {
                     width: 100%;
-                    
                 }
             }
             
+            .password_input_container {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                width: 30%;
+                @include breakpoint(mobile) {
+                    width: 100%;
+                }
+                input {
+                    width: 100%;
+                }
+                @include breakpoint(mobile) {
+                    width: 100%;
+                    
+                }
+
+                .password_visibility_icon_container {
+                    position: absolute;
+                    margin-bottom: .3rem;
+                    bottom: 0;
+                    right: .5rem;
+
+                    svg {
+                        fill: $color_grey;
+                        
+                        @include breakpoint(mobile) {
+                            transform: scale(.8);
+                        }
+                    }
+
+                    &:hover {
+                        svg {
+                            fill: white;
+                        }
+                        cursor: pointer;
+                        
+                    }
+                }
+            }
             button {
                 @include button();
                 margin-top: 5rem;

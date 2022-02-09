@@ -198,11 +198,11 @@ export function validate_pack_section_name(section_name: string): boolean | stri
 }
 
 export function validate_pack_tag(tag_name: string): boolean | string {
-    const tag_regex = new RegExp(/^[a-zA-Z]{3,10}$/)
+    const tag_regex = new RegExp(/^[a-zA-Z]{3,12}$/)
 
     if(tag_name.length === 0) return ""
     if(tag_name.length < 3) return "Min. 3 characters"
-    if(tag_name.length > 10) return "Max. 10 characters"
+    if(tag_name.length > 10) return "Max. 12 characters"
     else {
         if(tag_regex.test(tag_name) === false) {
             return "Allowed characters: a-z A-Z"
@@ -214,7 +214,7 @@ export function validate_pack_tag(tag_name: string): boolean | string {
 }
 
 export function validate_pack_tags(tags: string[]): boolean | string {
-    const tag_regex = new RegExp(/^[a-zA-Z]{3,10}$/)
+    const tag_regex = new RegExp(/^[a-zA-Z]{3,12}$/)
 
     if(tags.length === 0) return ""
     if(tags.length < 3) return "Min. 3 Tags"

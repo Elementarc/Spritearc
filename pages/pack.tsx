@@ -113,19 +113,16 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
     //Context
     const App_notification: App_notification_context_type = props.App_notification
     //State that saves currently clicked asset as a url string.
-    const [focus_img_src, set_focus_img_src] = useState("/")
-    //State that toggles focus of asset.
-    const [show_focus_img, set_show_focus_img] = useState(false)
+    const [focus_img_src, set_focus_img_src] = useState<null | string>(null)
     //State to toggle delete pack confirmation container
     const [delete_confirmation_state, set_delete_confirmation_state] = useState(false)
     const [report_confirmation_state, set_report_confirmation_state] = useState(false)
     //Pack ratings
     const [prev_pack_ratings, set_prev_pack_ratings] = useState<Pack_rating[]>(pack.ratings)
 
- 
-
     //Creating parallax effect for Image
     useParallax("title_pack_background_image")
+
     //Toggling arrow svg when scrollY > 0
     useEffect(() => {
         //Function that toggles the arrow. Getting called whenever scrolling is happening.
@@ -147,13 +144,12 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
     }, [])
   
     
-    function toggle_asset(e: any) {
-        if(e.target.src) {
-            set_focus_img_src(e.target.src)
+    function toggle_asset(src: string) {
+        if(src) {
+            set_focus_img_src(src)
         } else {
-            set_focus_img_src("/")
+            set_focus_img_src(null)
         }
-        set_show_focus_img(true)
     }
     function report_pack_validation() {
         const report_input = document.getElementById("report_input") as HTMLInputElement
@@ -189,9 +185,17 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         router.push(prev_path, prev_path, {scroll: false})
         
     }
+    function pack_tags_jsx() {
+        const tags = pack.tags
+
+        const tags_jsx = tags.map((tag) => {
+            return <h4 key={`tag_${tag}`} className='tag_link' onClick={() => {router.push(`/search?query=${tag.toLowerCase()}`,`/search?query=${tag.toLowerCase()}`, {scroll: false})}}>{tag.toUpperCase()}</h4>
+        })
+
+        return tags_jsx
+    }
 
     async function submit_pack_report() {
-        
         const valid_report_reason = report_pack_validation()
         const report_input = document.getElementById("report_input") as HTMLInputElement
         if(!valid_report_reason) return
@@ -213,6 +217,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                 const response_body = await response.json() as {success:boolean, message:string}
                 
                 App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Thank you for helping us!", message: response_body.message, button_label: "Ok", callb: () => {set_report_confirmation_state(false)}}})
+            
             } else {
                 App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to report this pack. We are sorry that you have to experience this.", button_label: "Ok"}})
             }
@@ -221,7 +226,6 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
             //Couldnt reach server
         }
     }
-
     async function delete_pack() {
         const query = router.query
 
@@ -246,23 +250,12 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         
 
     }
-
     async function download_pack() {
         if(typeof pack_id !== "string") return
         const a = document.getElementById("download_pack_link") as HTMLAnchorElement
         a.click()
     }
     
-    
-    function pack_tags_jsx() {
-        const tags = pack.tags
-
-        const tags_jsx = tags.map((tag) => {
-            return <h4 key={`tag_${tag}`} className='tag_link' onClick={() => {router.push(`/search?query=${tag.toLowerCase()}`,`/search?query=${tag.toLowerCase()}`, {scroll: false})}}>{tag.toUpperCase()}</h4>
-        })
-
-        return tags_jsx
-    }
     return (
         <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
 
@@ -332,12 +325,12 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                             </div>
                             
                             <AnimatePresence exitBeforeEnter>
-                                {show_focus_img &&
+                                {typeof focus_img_src === "string" &&
                                     
-                                    <motion.div onClick={() => {set_focus_img_src("/"), set_show_focus_img(false)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="focus_image_container">
+                                    <motion.div onClick={() => {set_focus_img_src(null)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="focus_image_container">
                                         
-                                        <div onClick={() => {set_focus_img_src("/"), set_show_focus_img(false)}} className="asset_fixed_image_container">
-                                            <Image src={focus_img_src} alt="Represents a bigger size of an clicked image" layout="fill" id="asset_fixed_image"></Image>
+                                        <div onClick={() => {set_focus_img_src("/")}} className="asset_fixed_image_container">
+                                            <Image src={focus_img_src} alt="Represents a pack assets but bigger in size." layout="fill" id="asset_fixed_image"></Image>
 
                                             <div className="close_asset" id="close_pack">
 
@@ -661,21 +654,20 @@ function Pack_sprite_sections(props: {pack: Pack}): ReactElement {
         </div>
     );
 }
-
 //Component that creates assets from pack.
 function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): ReactElement {
     const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
     const pack_id = props.pack_id
     const pack_content = props.pack_content
 
-    const show_asset = PACK_PAGE.toggle_asset as () => void
+    const show_asset = PACK_PAGE.toggle_asset as (src: string) => void
     
     
     //Array of assets as jsx
     const assets_jsx = []
     for(let i = 0; i < pack_content.section_images.length; i++) {
         assets_jsx.push(
-            <div onClick={show_asset} key={`${pack_content.section_images[i]}_${i}`} className="asset">
+            <div onClick={() => {show_asset(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_name}/${pack_content.section_images[i]}`)}} key={`${pack_content.section_images[i]}_${i}`} className="asset">
                 <Image src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_name}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
             </div>
         )
@@ -687,7 +679,7 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
         </div>
     );
 }
-
+//Compontent that represents an icon for the pack navigation
 function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string, callb: ()=>void}) {
   return (
     <div className='pack_action' onClick={callb}>
