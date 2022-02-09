@@ -39,9 +39,14 @@
                 color: white;
                 margin-top: 2rem;
                 width: 30%;
+                @include breakpoint(laptop) {
+                    width: 60%;
+                    
+                }
                 @include breakpoint(mobile) {
                     width: 100%;
                 }
+                
             }
             
             .password_input_container {
@@ -49,16 +54,17 @@
                 display: flex;
                 justify-content: center;
                 width: 30%;
+                @include breakpoint(laptop) {
+                    width: 60%;
+                    
+                }
                 @include breakpoint(mobile) {
                     width: 100%;
                 }
                 input {
                     width: 100%;
                 }
-                @include breakpoint(mobile) {
-                    width: 100%;
-                    
-                }
+                
 
                 .password_visibility_icon_container {
                     position: absolute;
