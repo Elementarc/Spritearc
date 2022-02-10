@@ -8,7 +8,7 @@ import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 import Loader from '../components/loading';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { Nav_shadow } from '../components/navigation';
-import { App_notification_context_type, Auth_context_type, Public_user } from '../types';
+import { App_notification_context_type, Auth_context_type, Public_user, Server_response, Server_response_login } from '../types';
 import Head from 'next/head';
 import VisibilityIcon from "../public/icons/VisibilityIcon.svg"
 import VisibilityOffIcon from "../public/icons/VisibilityOffIcon.svg"
@@ -86,25 +86,30 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
                 })
             })
 
-            if(response.status === 200) {
+            const response_obj = await response.json() as Server_response_login
+            const email = response_obj.email
+            const public_user = response_obj.public_user
+            const token = response_obj.token
 
-                const body = await response.json() as {public_user: Public_user, token: string}
-                
-                Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...body.public_user}, token: body.token, callb: () => {router.push("/account", "/account", {scroll: false})}}})
-                set_loading(false)
-                
-            } 
-            //Account needs to be verified
-            else if(response.status === 401) {
-                const body = await response.json()
-                
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Please confirm your email!", message: "You have to confirm your email address to be able to login!", button_label: "Send confirmation", callb: () => {resend_email_verification(body.email); refs.current["email"].focus()}}})
-                set_loading(false)
-
-            } else  {
+            if(!response_obj.success) {
                 set_loading(false)
                 App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Wrong Credentials", message: "We couldn't find any match for your credentials", button_label: "ok", callb: () => {refs.current["email"].focus()}}})
+                return
+            } 
+
+            if(response_obj.verified === false) {
+                
+                if(!email) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Something went wrong!", message: "Something went wrong while trying to log you int", button_label: "Retry"}})
+                
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Please confirm your email!", message: "You have to confirm your email address to be able to login!", button_label: "Send confirmation", callb: () => {resend_email_verification(email); refs.current["email"].focus()}}})
+                set_loading(false)
+                return
             }
+
+            if(!public_user) return 
+            if(!token) return
+            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...public_user}, token: token, callb: () => {router.push("/account", "/account", {scroll: false})}}})
+            set_loading(false)
 
         } catch ( err ) {
             //Couldnt reach server

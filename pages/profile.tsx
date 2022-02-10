@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Image from "next/image"
 import Link from "next/link"
-import { Public_user } from '../types';
+import { Public_user, Server_response, Server_response_public_user } from '../types';
 import Footer from '../components/footer';
 import { useParallax } from '../lib/custom_hooks';
 import { Nav_shadow } from '../components/navigation';
@@ -28,13 +28,12 @@ export default function Profile_page_handler() {
                     }
                 })
 
-                if(response.status === 200) {
-                    const public_user_obj = await response.json() as Public_user // JSON PACK
-                    set_public_user(public_user_obj)
+                const response_obj = await response.json() as Server_response_public_user
+
+                if(!response_obj.success) return router.push("/browse", "/browse", {scroll: false})
+
+                set_public_user(response_obj.public_user)
                     
-                } else {
-                    //router.push("/browse", "/browse", {scroll: false})
-                }
 
             } catch(err) {
                 //Couldnt reach server

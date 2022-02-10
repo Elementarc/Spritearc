@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react';
-import { App_notification_context_type, Auth_context_type } from '../../types';
+import { App_notification_context_type, Auth_context_type, Server_response, Server_response_email } from '../../types';
 import Footer from '../../components/footer';
 import { format_date } from '../../lib/date_lib';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../../context/app_notification_context_provider';
@@ -46,10 +46,11 @@ export function Account_settings_page() {
                     body: JSON.stringify({user: user.username})
                 })
 
-                if(response.status === 200) {
-                    const safe_email = await response.json() as {email: string}
-                    set_safe_email(safe_email.email)
-                }
+                const response_obj = await response.json() as Server_response_email
+
+                if(!response_obj.success) return set_safe_email("undefined")
+                set_safe_email(response_obj.email)
+
             } catch(err) {
                 //COuldnt reach server
             }
@@ -73,18 +74,12 @@ export function Account_settings_page() {
                 body: JSON.stringify({password: password_input.value})
             })
 
+            const response_obj = await response.json() as Server_response
 
-            if(response.status === 200) {
-                const response_obj = await response.json() as {success: boolean, message: string}
+            if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: response_obj.message, button_label: "Okay"}})
 
-                if(response_obj.success) {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully deleted your account!", message: "We have successfully deleted your account. We are sorry that we could'nt reach your expectations! We will work on to improve our service. Thank you for trying!", button_label: "Okay", callb: () => {router.push("/", "/", {scroll: false}); Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})}}})
-                } else {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Wrong password!", message: "We couldn't delete your account because you have entered the wrong password!", button_label: "Okay"}})
-                }
-            } else {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "For some reason we couldn't delete your account! We are sorry that you have to experience this. Please contact an admin or try again later.", button_label: "Okay"}})
-            }
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully deleted your account!", message: "We have successfully deleted your account. We are sorry that we could'nt reach your expectations! We will work on to improve our service. Thank you for trying!", button_label: "Okay", callb: () => {router.push("/", "/", {scroll: false}); Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})}}})
+
         } catch(err) {
             //COuldnt reach server
         }
@@ -108,19 +103,15 @@ export function Account_settings_page() {
                 body: JSON.stringify({new_email: new_email_input.value, password: password_input.value})
             })
             
-            if(response.status === 200) {
-                const response_obj = await response.json() as {success: boolean, message: string}
+            const response_obj = await response.json() as Server_response
 
-                if(response_obj.success) {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your email!", message: "You have successfully updated your email. You can now login with your new email address.", button_label: "Okay", callb: () => {set_update_email(false); new_email_input.value = ""}}})
-                } else {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${response_obj.message}`, message: `We could'nt update what you wanted because: ${response_obj.message}`, button_label: "Okay"}})
-                }
-            } else {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "For some reason we couldn't delete your account! We are sorry that you have to experience this. Please contact an admin or try again later.", button_label: "Okay"}})
-            }
+            if(response.status !== 200) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: response_obj.message, button_label: "Okay"}})
+
+            if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Email is already in use!", message: "Please choose an email that is not in use! Make sure that you are the owner of that email address!", button_label: "Okay", callb: () => {set_update_email(false); new_email_input.value = ""}}})
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your email!", message: "You have successfully updated your email. You can now login with your new email address.", button_label: "Okay", callb: () => {set_update_email(false); new_email_input.value = ""}}})
+
         } catch(err) {
-            //COuldnt reach server
+            //Couldnt reach server
         }
     }
     async function update_password() {
@@ -370,10 +361,6 @@ export function Account_settings_page() {
                                             <div className='item_2'>{`${user.role}`}</div>
                                         </div>
 
-                                        <div className='grid_item'>
-                                            <div className='item_1'>Released Packs:</div>
-                                            <div className='item_2'>{`${user.released_packs.length}`}</div>
-                                        </div>
 
                                         <div className='grid_item'>
                                             <div className='item_1'>User since:</div>

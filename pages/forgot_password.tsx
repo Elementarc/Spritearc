@@ -76,7 +76,7 @@ export default function Forgot_password_page() {
                     <div className="forgot_password_container">
                         <H1_with_deco title="Reset password" />
                         
-                        <input type="text" placeholder="Email" id="email_input" defaultValue="arctale.work@gmail.com"/>
+                        <input type="text" placeholder="Email" id="email_input" defaultValue=""/>
                         <p className='forgot_password_error_message' id="forgot_password_error_message"></p>
                         <button onClick={send_password_token}>
                             <p style={loading ? {opacity: 0} : {opacity: 1}}>Request Password Reset</p>

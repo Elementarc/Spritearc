@@ -180,7 +180,6 @@ export interface Public_user {
     profile_banner: string,
     following: [],
     followers: [],
-    released_packs: string[] | [],
     role: string,
 }
 
@@ -228,6 +227,22 @@ export interface Server_response_pack{
 export interface Server_response_packs extends Server_response{
     packs: Pack[] | [],
     available_pages: number,
+}
+export interface Server_response_login extends Server_response{
+    public_user: Public_user | null, 
+    token: string | null,
+    verified: boolean,
+    email: string | undefined | null,
+}
+export interface Server_response_pack_rating extends Server_response{
+    user: string,
+    rating: number,
+}
+export interface Server_response_email extends Server_response{
+    email: string,
+}
+export interface Server_response_public_user extends Server_response{
+    public_user: Public_user
 }
 export interface Server_response {
     success: boolean,

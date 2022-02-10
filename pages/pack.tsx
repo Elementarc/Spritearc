@@ -1,6 +1,6 @@
-import React, {ReactElement, useEffect, useContext, useState, useCallback, useLayoutEffect} from 'react';
+import React, {ReactElement, useEffect, useContext, useState, useCallback} from 'react';
 import Footer from '../components/footer';
-import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Server_response, Server_response_pack} from "../types"
+import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Server_response, Server_response_pack, Server_response_pack_rating} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
@@ -31,7 +31,7 @@ export default function Pack_page_handler() {
     const router = useRouter()
     const [pack, set_pack] = useState<null | Pack>(null)
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         const controller = new AbortController()
         async function get_pack() {
             if(!router.query.id) return
@@ -566,14 +566,13 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
                 body: JSON.stringify({rating: rating + 1})
             })
 
-            if(response.status === 200) {
-                const user_rating = await response.json() as {user: string, rating: number}
-                let updated_pack_ratings = [...prev_pack_ratings, {user: user_rating.user, rating: user_rating.rating}]
-
-                set_prev_pack_ratings(updated_pack_ratings)
-            } else {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please login", message: "You have to be logged in to be able to rate a pack!", button_label: "Okay"}})
-            }
+            const response_obj = await response.json() as Server_response_pack_rating
+            console.log(response_obj)
+            if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: response_obj.message, button_label: "Okay"}})
+            
+            let updated_pack_ratings = [...prev_pack_ratings, {user: response_obj.user, rating: response_obj.rating}]
+            set_prev_pack_ratings(updated_pack_ratings)
+            
         } catch(err) {
             //Couldnt reach server
         }

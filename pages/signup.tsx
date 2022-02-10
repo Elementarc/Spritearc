@@ -538,7 +538,7 @@ export function Step_3() {
                 
                    
                 
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {router.push("/login", "/login", {scroll: false})}}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Confirm Your Email!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {router.push("/login", "/login", {scroll: false})}}})
                 set_loading(false)
     
             } catch(err) {

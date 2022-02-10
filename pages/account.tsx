@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import jwt from 'jsonwebtoken';
-import { App_notification_context_type, Auth_context_type } from '../types';
+import { App_notification_context_type, Auth_context_type, Server_response } from '../types';
 import Footer from '../components/footer';
 import Image from "next/image"
 import Link from 'next/dist/client/link';
@@ -71,11 +71,11 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
                     body: form
                 })
     
-                if(response.status === 200) {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile picture", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
-                } else {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
-                }
+                const response_obj = await response.json() as Server_response
+
+                console.log(response_obj)
+                if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: response_obj.message, button_label: "Ok"}})
+                return App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile picture", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
             } catch(err) {
                 //Couldnt update profile
             }
@@ -102,11 +102,10 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
                     body: form
                 })
     
-                if(response.status === 200) {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile banner", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
-                } else {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "File to Big!", message: "Please make sure your profile pictures is 1 MB or smaller.", button_label: "Ok"}})
-                }
+                const response_obj = await response.json() as Server_response
+
+                if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: response_obj.message, button_label: "Ok"}})
+                return App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully changed profile banner", message: "It might take a little bit to update your profile picture.", button_label: "Great"}})
             } catch(err) {
                 //Couldnt update profile banner
             }

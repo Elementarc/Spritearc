@@ -7,7 +7,7 @@ import {Create_pack_frontend, Create_pack_context_type} from "../types"
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import Image from 'next/image';
-import { validate_files , validate_pack_title, validate_pack_description, validate_pack_tag} from '../spritearc_lib/validate_lib';
+import { validate_files , validate_pack_title, validate_pack_description, validate_pack_tag, validate_pack_section_name} from '../spritearc_lib/validate_lib';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import ThrashIcon from "../public/icons/ThrashIcon.svg"
@@ -444,43 +444,30 @@ function Step_1() {
             
             const error_message = document.getElementById("section_name_error_message") as HTMLParagraphElement
             
-            if(input.value.length < 1) {
+            const valid_sectionname = validate_pack_section_name(input.value)
+            if(typeof valid_sectionname === "string") {
 
-                error_message.innerText = "Sectioname must be atleast 3 characters long!"
+                error_message.innerText = valid_sectionname
+                style_error_items(true)
+                return
+            } 
+            
+            let exists = false
+            for(let [key] of create_pack_obj.content.entries()) {
+    
+                if(key.toLowerCase() === input.value.toLowerCase()) {
+                    exists = true
+                }
+            }
+
+            if(exists) {
                 style_error_items(true)
                 resolve(false)
-
-            }
-            else {
-                
-                if(section_name_regex.test(input.value) === true) {
-
-                    let exists = false
-                    for(let [key] of create_pack_obj.content.entries()) {
-            
-                        if(key.toLowerCase() === input.value.toLowerCase()) {
-                            exists = true
-                        }
-                    }
-
-                    if(exists) {
-                        style_error_items(true)
-                        resolve(false)
-                        error_message.innerText = "Sectioname already exists!"
-                    } else {
-                        style_error_items(false)
-                        resolve(true)
-                        error_message.innerText = ""
-                    }
-                    
-                    
-                } 
-                else {
-                    style_error_items(true)
-                    resolve(false)
-                    error_message.innerText = "You can only use characters a-z A-Z or numbers 1-9. Max. 12 Characters"
-                }
-
+                error_message.innerText = "Sectioname already exists!"
+            } else {
+                style_error_items(false)
+                resolve(true)
+                error_message.innerText = ""
             }
     
         })

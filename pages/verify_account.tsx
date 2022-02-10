@@ -2,6 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/router';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import Head from 'next/head';
+import { Server_response } from '../types';
 
 
 export default function Verify_account_page_handler() {
@@ -25,18 +26,13 @@ export default function Verify_account_page_handler() {
                     body: JSON.stringify({token: router.query.token})
                 })
 
-                if(response.status === 200) {
-                    const response_obj = await response.json() as {success: boolean, message: string} // JSON PACK
-                    set_verification_obj(response_obj)
-                    
-                } else {
-                    set_verification_obj({success: false, message: "Something went wrong!"})
-                    //router.push("/login", "/login", {scroll: false})
-                }
+                const response_obj = await response.json() as Server_response
+
+                if(!response_obj.success) set_verification_obj({success: response_obj.success, message: response_obj.message})
+                set_verification_obj(response_obj)
 
             } catch(err) {
                 //Couldnt reach server
-                //router.push("/browse", "/browse", {scroll: false})
             }
         }
         verify_account()
@@ -64,7 +60,6 @@ export function Verify_account({verification_obj}: {verification_obj: {success: 
     //verifieng account
     useEffect(() => {
         if(!verification_obj) return
-        console.log(verification_obj)
         if(verification_obj.success === true) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully verified!", message: "Thank you for verifying your account! We will now redirect you to our login page.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
         if(verification_obj.success === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Token has been expired!", message: "Your token has been expired. Please login to resend you a verification email.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
         

@@ -18,7 +18,6 @@ const init_public_user: Frontend_public_user = {
         profile_banner: "",
         followers: [],
         following: [],
-        released_packs: [],
         role: ""
     }
 
@@ -95,7 +94,9 @@ export default function Auth_context_provider({children}: any) {
                 }
 
             } catch(err){
-                console.log(err)
+                sessionStorage.removeItem("user")
+                router.push("/login", "/login", {scroll: false})
+                //console.log(err)
             }
             
 
