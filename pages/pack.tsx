@@ -544,8 +544,9 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
 
     async function submit_rating(e: any) {
         
-        if(!user) {
+        if(user?.username.length === 0) {
             App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please create an Account to rate", message: "You only can rate packs when creating an account!", button_label: "ok"}})
+            return
         }
         const rating = parseInt(e.target.id)
         
