@@ -5,7 +5,7 @@ import H1_with_deco from '../components/h1_with_deco';
 import Steps from '../components/steps';
 import {Create_pack_frontend, Create_pack_context_type} from "../types"
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
-import { capitalize_first_letter_rest_lowercase } from '../spritearc_lib/custom_lib';
+import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import Image from 'next/image';
 import { validate_files , validate_pack_title, validate_pack_description, validate_pack_tag} from '../spritearc_lib/validate_lib';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';

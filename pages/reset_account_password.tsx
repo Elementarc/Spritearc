@@ -83,9 +83,9 @@ export function Reset_account_password() {
         const valid_password = validate_password(password)
         const button = document.getElementById("password_reset_button") as HTMLButtonElement
 
-        if(!valid_password) {
+        if(typeof valid_password === "string") {
             button.classList.add("disabled_button")
-            return set_error_messsage("input_error_message_password", "Password needs to be atleast 8 characters long. One uppercase / lowercase and one number. Max. 32 characters")
+            return set_error_messsage("input_error_message_password", valid_password)
         }
         set_error_messsage("input_error_message_password", "")
         button.classList.remove("disabled_button")
@@ -97,19 +97,20 @@ export function Reset_account_password() {
         const valid_password = validate_password(password)
         const valid_password_repeat = validate_password(password_repeat)
 
-        if(!valid_password) {
+        if(typeof valid_password === "string") {
             button.classList.add("disabled_button")
-            return set_error_messsage("input_error_message_password", "Password needs to be atleast 8 characters long. One uppercase / lowercase and one number. Max. 32 characters")
+            return set_error_messsage("input_error_message_password", valid_password)
         }
-        if(!valid_password_repeat) {
+        if(typeof valid_password_repeat === "string") {
             button.classList.add("disabled_button")
-            return set_error_messsage("input_error_message_password_repeat", "Password needs to be atleast 8 characters long. One uppercase / lowercase and one number. Max. 32 characters")
+            return set_error_messsage("input_error_message_password_repeat", valid_password_repeat)
         }
 
         if(password_repeat !== password) {
             button.classList.add("disabled_button")
             return set_error_messsage("input_error_message_password_repeat", "Passwords do not match")
         }
+
         set_error_messsage("input_error_message_password_repeat", "")
         set_error_messsage("input_error_message_password", "")
 
@@ -119,7 +120,7 @@ export function Reset_account_password() {
     
     async function reset_password() {
         if(password !== password_repeat) return
-        if(!validate_password(password)) return
+        if(typeof validate_password(password) === "string") return
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/reset_account_password`, {

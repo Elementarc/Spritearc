@@ -4,7 +4,7 @@ import React, {useState, useEffect, useContext} from 'react';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
-import { capitalize_first_letter_rest_lowercase } from '../spritearc_lib/custom_lib';
+import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import Head from 'next/head';
 const search_context: any = React.createContext(null)

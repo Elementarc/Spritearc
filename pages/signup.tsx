@@ -14,7 +14,7 @@ import { App_notification_context } from "../context/app_notification_context_pr
 import Head from "next/head";
 import VisibilityIcon from "../public/icons/VisibilityIcon.svg"
 import VisibilityOffIcon from "../public/icons/VisibilityOffIcon.svg"
-
+import { validate_email, validate_password, validate_username } from "../spritearc_lib/validate_lib";
 const SIGNUP_CONTEXT: any = React.createContext(null)
 
 const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
@@ -31,9 +31,9 @@ interface SignupContext {
     set_error_message: (error: boolean, message: string, element: HTMLParagraphElement, input_element: HTMLInputElement) => void,
     set_step: React.Dispatch<React.SetStateAction<number>>,
     // eslint-disable-next-line no-unused-vars
-    validate_email: (email: string) => Promise<boolean>,
+    email_available: (email: string) => Promise<boolean>,
     // eslint-disable-next-line no-unused-vars
-    validate_username: (username: string) => Promise<boolean>,
+    username_available: (username: string) => Promise<boolean>,
     // eslint-disable-next-line no-unused-vars
     update_signup_informations: (specific_key: string, value: string | null | boolean) => void,
 }
@@ -50,7 +50,6 @@ export default function Sign_up_page() {
     })
     //Used to navigate between steps.
     const [current_step, set_step] = useState(1)
-
     
     //Constants for whole page.
     const PAGE_CONTEXT: SignupContext = { 
@@ -60,8 +59,8 @@ export default function Sign_up_page() {
         set_error_message,
         set_signup_obj,
         set_step,
-        validate_email,
-        validate_username,
+        email_available,
+        username_available,
         update_signup_informations,
     }
 
@@ -129,133 +128,82 @@ export default function Sign_up_page() {
     }
     
     //Function that validates email also sends a call to backend to verifiy if email already exist
-    async function validate_email(email: string): Promise<boolean> {
-        return new Promise(async(resolve) => {
-            try {
-                const error_element = document.getElementById("input_error_message") as HTMLParagraphElement
-                const input_element = document.getElementById("input") as HTMLInputElement
-                if(email_regex.test(email) === true) {
-                    const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/validate_email`, {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        credentials: "include",
-                        body: JSON.stringify({email: email})
-                    })
-                    
-
-                    if(response.status === 200) {
-
-                        set_error_message(false, "", error_element, input_element)
-                        resolve(true)
-                        
-                    } else {
-
-                        set_error_message(true, "Email is already in use.", error_element, input_element)
-                        resolve(false)
-                        
-                    }
-                    
-                    
-                } else {
-                    set_error_message(true, "Please enter a valid Email.", error_element, input_element)
-                    resolve(false)
-                }
-                
-            } catch ( err ) {
-                console.log(err)
+    async function email_available(email: string): Promise<boolean> {
+        try {
+            const error_element = document.getElementById("input_error_message") as HTMLParagraphElement
+            const input_element = document.getElementById("input") as HTMLInputElement
+            const valid_email = validate_email(email)
+            if(typeof valid_email === "string") {
+                set_error_message(true, "Please enter a valid Email.", error_element, input_element)
+                return false
             }
             
-        })
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/validate_email`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({email: email})
+            })
+            
+            const response_obj = await response.json() as {success: boolean, message: string}
+
+            if(response_obj.success === true) {
+                set_error_message(false, "", error_element, input_element)
+                return true
+            } else {
+                set_error_message(true, response_obj.message, error_element, input_element)
+                return false
+            }
+            
+        } catch ( err ) {
+            console.log(err)
+            return false
+        }
+            
     }
 
     //Validating username sends a call to backend to verifiy if username already exist
-    async function validate_username(username: string): Promise<boolean> {
-        return new Promise(async(resolve) => {
+    async function username_available(username: string): Promise<boolean> {
+        const error_element = document.getElementById("input_error_message") as HTMLParagraphElement
+        const input_element = document.getElementById("input") as HTMLInputElement
+
+        try {
+           
             
-            try {
-                const error_element = document.getElementById("input_error_message") as HTMLParagraphElement
-                const input_element = document.getElementById("input") as HTMLInputElement
-                
-                if(username.length === 0) {
-
-                    set_error_message(true, "Please enter a username.", error_element, input_element)
-                    resolve(false)
-
-                } else if(username.length < 3) {
-
-                    set_error_message(true, "Username is to short. Min. 3 characters.", error_element, input_element)
-                    resolve(false)
-
-                } else if(username.length > 16) {
-
-                    set_error_message(true, "Username is to long. Max. 16 characters.", error_element, input_element)
-                    resolve(false)
-
-                } else {
-
-                    const beginning_regex = new RegExp(/^[\.\_]+/)
-                    const end_regex = new RegExp(/[\.\_]+$/)
-
-                    //Checking if username has a special character at the beginning or end.
-                    if(beginning_regex.test(username) === true || end_regex.test(username) === true) {
-
-                        set_error_message(true, "You can't use special characters at the beginning or end of your username.", error_element, input_element)
-                        resolve(false)
-
-                    } else {
-                        const look_double_special_characters_regex = new RegExp(/(?<=[\.\_])[\.\_]/)
-
-                        //Checking if username contains 2 special characters after eachother
-                        if(look_double_special_characters_regex.test(username)) {
-
-                            set_error_message(true, "Username cannot contain 2 special characters after each other.", error_element, input_element)
-                            resolve(false)
-
-                        } else {
-
-                            //Finally checking if username passes the test. It should pass the test at this point of code. Else is just incase i forgot something.
-                            if(username_regex.test(username) === true){
-                                //Checking if a username already exists with.
-                                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/validate_username`, {
-                                    method: "POST",
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    },
-                                    credentials: "include",
-                                    body: JSON.stringify({username: username})
-                                })
-
-                                if(response.status === 200) {
-                                    set_error_message(false, "", error_element, input_element)
-                                    resolve(true)
-                                } else {
-                                    set_error_message(true, "Username is already taken.", error_element, input_element)
-                                    resolve(false)
-                                }
-
-                            } else {
-
-                                set_error_message(true, "Special characters that are allowed: . _", error_element, input_element)
-                                resolve(false)
-
-                            }
-        
-
-                        }
-                        
-                    }
-                        
-                }
-                
-            } catch ( err ) {
-
-                console.log(err)
-                resolve(false)
+            const valid_username = validate_username(username)
+            if(typeof valid_username === "string") {
+                set_error_message(true, valid_username, error_element, input_element)
+                return false
             }
+
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/validate_username`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({username: username})
+            })
+
+            const response_obj = await response.json() as {success: boolean, message: string}
+
+            if(response_obj.success === true) {
+                set_error_message(false, "", error_element, input_element)
+                return true
+            } else {
+                set_error_message(true, response_obj.message, error_element, input_element)
+                return false
+            }
+            
+        } catch ( err ) {
+
+            console.log(err)
+            set_error_message(true, "Something went wrong while trying to validate your username!", error_element, input_element)
+            return false
+        }
              
-        })
     }
 
     //Adding smooth scroll to page.
@@ -265,7 +213,6 @@ export default function Sign_up_page() {
             document.documentElement.style.scrollBehavior = "unset"
         };
     }, [])
-
     
     return (
         <>
@@ -337,7 +284,7 @@ export function Step_1() {
         clearTimeout(timer)
         timer = setTimeout(async () => {
             
-            const username_available = await PAGE_CONTEXT.validate_username(e.target.value)
+            const username_available = await PAGE_CONTEXT.username_available(e.target.value)
             
 
             if(username_available) {
@@ -353,7 +300,7 @@ export function Step_1() {
     //Increasing page when signup_obj.username is not null.
     async function next_page() {
         const get_input = document.getElementById("input") as HTMLInputElement
-        const username_available = await PAGE_CONTEXT.validate_username(get_input.value)
+        const username_available = await PAGE_CONTEXT.username_available(get_input.value)
         
         if(username_available && PAGE_CONTEXT.current_step === 1) {
             PAGE_CONTEXT.update_signup_informations("username", get_input.value as string)
@@ -429,13 +376,12 @@ export function Step_2() {
     const Device = useContext(Device_context)
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
     let timer: any
-   
 
     //Gets username from input. Setting signup_obj to null if validating fails.
     async function get_input_value(e: any) {
         clearTimeout(timer)
         timer = setTimeout(async() => {
-            const email_available = await PAGE_CONTEXT.validate_email(e.target.value)
+            const email_available = await PAGE_CONTEXT.email_available(e.target.value)
 
             if(email_available) {
                 PAGE_CONTEXT.update_signup_informations("email", e.target.value as string)
@@ -449,7 +395,7 @@ export function Step_2() {
     //Increasing page when signup_obj.email is not null.
     async function next_page() {
         const get_input = document.getElementById("input") as HTMLInputElement
-        const email_available = await PAGE_CONTEXT.validate_email(get_input.value)
+        const email_available = await PAGE_CONTEXT.email_available(get_input.value)
         
         if(PAGE_CONTEXT.signup_obj.email && email_available) {
             PAGE_CONTEXT.update_signup_informations("email", get_input.value as string)
@@ -526,43 +472,51 @@ export function Step_3() {
     const [password_visibility, set_password_visibility] = useState(false)
     const refs = useRef<any>([])
     //Validating passwort also calling validate_password_repeat.
-    function validate_password() {
-        const password = document.getElementById("input_password") as HTMLInputElement
-        const password_repeat = document.getElementById("input_password_repeat") as HTMLInputElement
+    
+    
+    //PAGE_CONTEXT.update_signup_informations
+    function toggle_password_type() {
 
-        const input_error_message_password = document.getElementById("input_error_message_password") as HTMLParagraphElement
-
-        
-        if(password_regex.test(password.value)) {
-            PAGE_CONTEXT.set_error_message(false, "", input_error_message_password, password)
-            PAGE_CONTEXT.set_error_message(false, "", input_error_message_password, password_repeat)
-            validate_password_repeat()
-            return true
+        if(refs.current["password"].type === "password") {
+            refs.current["password"].type = "text"
+            refs.current["password_repeat"].type = "text"
+            set_password_visibility(true)
         } else {
-            
-            PAGE_CONTEXT.set_error_message(true, "Password needs to be atleast 8 characters long. One uppercase / lowercase and one number. Max. 32 characters", input_error_message_password, password)
+            refs.current["password"].type = "password"
+            refs.current["password_repeat"].type = "password"
+            set_password_visibility(false)
+        }
+    }
+    
+    function passwords_match() {
+        if(refs.current["password"].value !== refs.current["password_repeat"].value) {
+            PAGE_CONTEXT.set_error_message(true, "Passwords do not match!", refs.current["error_message_password_repeat"], refs.current["password_repeat"])
             return false
         }
-        
+        PAGE_CONTEXT.set_error_message(false, "", refs.current["error_message_password_repeat"], refs.current["password_repeat"])
+        return true
     }
 
-    //Validating password_repeat if successfull: Setting signup_obj password property
-    function validate_password_repeat() {
-        const password = document.getElementById("input_password") as HTMLInputElement
-        const password_repeat = document.getElementById("input_password_repeat") as HTMLInputElement
-
-        const input_error_message_password_repeat = document.getElementById("input_error_message_password_repeat") as HTMLParagraphElement
+    function can_use_password(e: any) {
+        PAGE_CONTEXT.update_signup_informations("password", null)
+        const valid_password = validate_password(refs.current["password"].value)
         
-        if(password.value === password_repeat.value) {
-            PAGE_CONTEXT.update_signup_informations("password", password.value)
-            PAGE_CONTEXT.set_error_message(false, "", input_error_message_password_repeat, password_repeat)
-            return true
-        } else {
-            PAGE_CONTEXT.update_signup_informations("password", null)
-            PAGE_CONTEXT.set_error_message(true, "Passwords do not match.", input_error_message_password_repeat, password_repeat)
-            return false
-        }
-            
+        if(typeof valid_password === "string") return PAGE_CONTEXT.set_error_message(true, valid_password, refs.current["error_message_password"], refs.current["password"])
+        PAGE_CONTEXT.set_error_message(false, "", refs.current["error_message_password"], refs.current["password"])
+        const passwords_do_match = passwords_match()
+        if(!passwords_do_match) return
+        PAGE_CONTEXT.update_signup_informations("password", refs.current["password"].value)
+    }
+
+    function can_use_password_repeat(e: any) {
+        PAGE_CONTEXT.update_signup_informations("password", null)
+        const valid_password_repeat = validate_password(refs.current["password_repeat"].value)
+        if(typeof valid_password_repeat === "string") return PAGE_CONTEXT.set_error_message(true, valid_password_repeat, refs.current["error_message_password_repeat"], refs.current["password_repeat"])
+        PAGE_CONTEXT.set_error_message(false, "", refs.current["error_message_password_repeat"], refs.current["password_repeat"])
+        //Paswords are valid
+        const passwords_do_match = passwords_match()
+        if(!passwords_do_match) return
+        PAGE_CONTEXT.update_signup_informations("password", refs.current["password"].value)
     }
 
     //Function that validates signup_obj if successful sends create account call to server.
@@ -584,10 +538,9 @@ export function Step_3() {
                 
                    
                 
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup(); router.push("/login", "/login", {scroll: false})}}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {router.push("/login", "/login", {scroll: false})}}})
                 set_loading(false)
     
-                PAGE_CONTEXT.set_signup_obj({username: null, email: null, password: null, legal: false, occasional_emails: false})
             } catch(err) {
                 //Coudltn reach server
             }
@@ -611,7 +564,6 @@ export function Step_3() {
         }
         
     }, [PAGE_CONTEXT.signup_obj.username, PAGE_CONTEXT.signup_obj.email, PAGE_CONTEXT.signup_obj.password, PAGE_CONTEXT.signup_obj.legal])
-
     //Setting style of checkbox when unchecked / checked
     useEffect(() => {
         const get_legal = document.getElementById("legal_check_box") as HTMLDivElement
@@ -624,9 +576,9 @@ export function Step_3() {
             
         }
     }, [PAGE_CONTEXT.signup_obj.legal])
-
     //Setting default values of input field
     useEffect(() => {
+        if(!PAGE_CONTEXT.signup_obj.password) return
         
         const password = document.getElementById("input_password") as HTMLInputElement
         const password_repeat = document.getElementById("input_password_repeat") as HTMLInputElement
@@ -634,7 +586,6 @@ export function Step_3() {
         password_repeat.value = PAGE_CONTEXT.signup_obj.password ? PAGE_CONTEXT.signup_obj.password : `${password_repeat.value}`
 
     }, [PAGE_CONTEXT.signup_obj.password])
-
     //Setting default value of input field also focusing on imput on mount plus clearing timers on umount. Also adding enter key to go to next page.
     useEffect(() => {
         const input_password = document.getElementById("input_password") as HTMLInputElement
@@ -654,20 +605,6 @@ export function Step_3() {
             window.removeEventListener("keypress", enter)
         })
     }, [Device.is_mobile])
-
-    function toggle_password_type() {
-
-        if(refs.current["password"].type === "password") {
-            refs.current["password"].type = "text"
-            refs.current["password_repeat"].type = "text"
-            set_password_visibility(true)
-        } else {
-            refs.current["password"].type = "password"
-            refs.current["password_repeat"].type = "password"
-            set_password_visibility(false)
-        }
-    }
-
     
     return (
         <motion.div className="step_container" initial={{opacity: 0, y: -50}} animate={{opacity: 1, y: 0, transition: {duration: .3, delay: 0.2}}} exit={{opacity: 0, y: 50, transition: {duration: 0.2,  type: "tween"}}}>
@@ -676,8 +613,8 @@ export function Step_3() {
                 
 
             <div className='password_input_container'>
-                <input ref={(el) => refs.current["password"] = el} onKeyUp={validate_password} type="password" placeholder={"Password"} id="input_password" />
-                <p className="input_error_message" id="input_error_message_password"></p>
+                <input ref={(el) => refs.current["password"] = el} onKeyUp={can_use_password} type="password" placeholder={"Password"} id="input_password" />
+                <p ref={(el) => refs.current["error_message_password"] = el} className="input_error_message" id="input_error_message_password"></p>
 
                 {password_visibility &&
                     <div key={"Visibility_off_icon"} onClick={toggle_password_type} className='password_visibility_icon_container'>
@@ -691,8 +628,8 @@ export function Step_3() {
                 }
             </div>
             
-            <input ref={(el) => refs.current["password_repeat"] = el} onKeyUp={validate_password_repeat} type="password" placeholder={"Password-repeat"} id="input_password_repeat" />
-            <p className="input_error_message" id="input_error_message_password_repeat"></p>
+            <input ref={(el) => refs.current["password_repeat"] = el} onKeyUp={can_use_password_repeat} type="password" placeholder={"Password-repeat"} id="input_password_repeat" />
+            <p ref={(el) => refs.current["error_message_password_repeat"] = el} className="input_error_message" id="input_error_message_password_repeat"></p>
             
             
             

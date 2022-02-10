@@ -1,6 +1,6 @@
-import React, {ReactElement, useEffect, useContext, useState, useCallback} from 'react';
+import React, {ReactElement, useEffect, useContext, useState, useCallback, useLayoutEffect} from 'react';
 import Footer from '../components/footer';
-import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type} from "../types"
+import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Server_response, Server_response_pack} from "../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../components/navigation';
@@ -13,7 +13,7 @@ import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../components/h1_with_deco';
 import { format_date } from '../lib/date_lib';
 import { ObjectId } from 'mongodb';
-import { capitalize_first_letter_rest_lowercase } from '../spritearc_lib/custom_lib';
+import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import StarEmptyIcon from "../public/icons/StarEmptyIcon.svg"
 import StarIcon from "../public/icons/StarIcon.svg"
 import Pack_star_raiting from '../components/pack_stars_raiting';
@@ -31,7 +31,7 @@ export default function Pack_page_handler() {
     const router = useRouter()
     const [pack, set_pack] = useState<null | Pack>(null)
 
-    useEffect(() => {
+    useLayoutEffect(() => {
         const controller = new AbortController()
         async function get_pack() {
             if(!router.query.id) return
@@ -45,12 +45,10 @@ export default function Pack_page_handler() {
                     }
                 })
 
-                if(response.status === 200) {
-                    const pack_obj = await response.json() as Pack // JSON PACK
-                    set_pack(pack_obj)
-                } else {
-                    router.push("/browse", "/browse", {scroll: false})
-                }
+                const response_obj = await response.json() as Server_response_pack
+
+                if(!response_obj.success) return router.push("/browse", "/browse", {scroll: false})
+                set_pack(response_obj.pack)
 
             } catch(err) {
                 //Couldnt reach server
@@ -213,13 +211,12 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                 body: JSON.stringify({reason: report_input.value})
             })
 
-            if(response.status === 200) {
-                const response_body = await response.json() as {success:boolean, message:string}
-                
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Thank you for helping us!", message: response_body.message, button_label: "Ok", callb: () => {set_report_confirmation_state(false)}}})
-            
+            const response_obj = await response.json() as Server_response
+
+            if(response_obj.success === true) {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Thank you for helping us!", message: response_obj.message, button_label: "Ok", callb: () => {set_report_confirmation_state(false)}}})
             } else {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to report this pack. We are sorry that you have to experience this.", button_label: "Ok"}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: response_obj.message, button_label: "Ok"}})
             }
 
         } catch(err) {

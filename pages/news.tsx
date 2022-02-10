@@ -120,7 +120,7 @@ function Patchnote_templates(props: {patchnotes: Patchnote[]}): ReactElement{
 }
 
 import patchHandler from '../lib/patch_lib';
-import { check_if_json } from '../spritearc_lib/custom_lib';
+import { check_if_json } from '../lib/custom_lib';
 export const getStaticProps: GetStaticProps = async (context) => {
 	try {
 		const patchnoteListOrderd = patchHandler.patchnoteListOrdered

@@ -1,7 +1,5 @@
 import React, {useEffect} from 'react';
 import Footer from '../components/footer';
-import Image from "next/image"
-import WaveSvg from "../public/images/wave.svg"
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';

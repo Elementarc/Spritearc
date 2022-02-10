@@ -1,12 +1,11 @@
 import React, { useState, useEffect} from 'react';
-import { Pack } from '../types';
-import Link from 'next/link';
+import { Pack, Server_response_packs } from '../types';
 import Pack_stars_raiting from './pack_stars_raiting';
 import { useAnimation , motion} from 'framer-motion';
 import Image from 'next/image';
 import Loader from './loading';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
-import { capitalize_first_letter_rest_lowercase, check_if_json, SORT_ACTIONS, sort_packs_section } from '../spritearc_lib/custom_lib';
+import { check_if_json, SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
 import { useRouter } from 'next/router';
 
 export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: any, sort_action?: string | null | undefined}) {
@@ -38,7 +37,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 			}
 			try {
 			
-				const api_response = await fetch(`${api}?page=${page}`, {
+				const response = await fetch(`${api}?page=${page}`, {
 					method: method.toUpperCase(),
 					headers: {
 						"Content-Type": "application/json"
@@ -48,24 +47,14 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 					body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
 				})
 				
-				if(api_response.status === 200) {
-					const response_packs_obj: {packs: Pack[], max_page: number} = await api_response.json()
-					
-					set_packs(response_packs_obj.packs)
+				const response_obj = await response.json() as Server_response_packs
+				set_packs(response_obj.packs)
 
-					if(response_packs_obj.max_page === page || response_packs_obj.packs.length === 0) {
-							
-						display_load_more(false)
-					} else {
-						display_load_more(true)
-					}
+				if(!response_obj.success) return display_load_more(false);
 
-				} else {
-					
-					set_packs([])
-					display_load_more(false)
-					
-				}
+				console.log(page, response_obj.available_pages)
+				if(response_obj.available_pages === page) return display_load_more(false)
+				display_load_more(true)
 
 			} catch(err) {
 				

@@ -118,7 +118,7 @@ function Profile_page(props: {public_user: Public_user}) {
                     </div>
                     
                     <div className='user_packs_container'>
-                        <Packs_section section_name={`Packs created by '${public_user.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs`} method='POST' body={public_user.released_packs}/>
+                        <Packs_section section_name={`Packs created by '${public_user.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs`} method='POST' body={{username: public_user.username}}/>
                     </div>
 
                 </div>

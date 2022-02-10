@@ -1,7 +1,5 @@
 import React, {useEffect} from 'react';
 import Footer from '../components/footer';
-import Image from "next/image"
-import WaveSvg from "../public/images/wave.svg"
 import { Qick_legal_navigation } from './tos';
 import Head from 'next/head';
 

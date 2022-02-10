@@ -110,7 +110,7 @@ function Forward_item(props: {img: string, header: string, description: string, 
 }
 
 import patchHandler from '../../lib/patch_lib';
-import { check_if_json } from '../../spritearc_lib/custom_lib';
+import { check_if_json } from '../../lib/custom_lib';
 export const getStaticPaths: GetStaticPaths = async () => {
 
 	try {

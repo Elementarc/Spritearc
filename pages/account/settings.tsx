@@ -199,21 +199,21 @@ export function Account_settings_page() {
 
 
         const valid_current_password = validate_password(current_password_input.value)
-        if(!valid_current_password) {
+        if(typeof valid_current_password === "string") {
             update_password_button.classList.remove("active_button")
             update_password_button.classList.add("disabled_button")
             return
         }
         
         const valid_new_password = validate_password(new_password_input.value)
-        if(!valid_new_password) {
+        if(typeof valid_new_password === "string") {
             update_password_button.classList.remove("active_button")
             update_password_button.classList.add("disabled_button")
             return
         }
 
         const valid_new_password_repeat = validate_password(new_password_repeat_input.value)
-        if(!valid_new_password_repeat) {
+        if(typeof valid_new_password_repeat === "string") {
             update_password_button.classList.remove("active_button")
             update_password_button.classList.add("disabled_button")
             return

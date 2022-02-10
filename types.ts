@@ -220,3 +220,16 @@ export interface Server_signup_obj extends Signup_obj {
     released_packs: Pack[]
 }
 
+export interface Server_response_pack{
+    success: boolean,
+    message: string,
+    pack: Pack | null,
+}
+export interface Server_response_packs extends Server_response{
+    packs: Pack[] | [],
+    available_pages: number,
+}
+export interface Server_response {
+    success: boolean,
+    message: string
+}
