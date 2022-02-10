@@ -76,6 +76,7 @@ export function Account_settings_page() {
 
             const response_obj = await response.json() as Server_response
 
+            
             if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: response_obj.message, button_label: "Okay"}})
 
             App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully deleted your account!", message: "We have successfully deleted your account. We are sorry that we could'nt reach your expectations! We will work on to improve our service. Thank you for trying!", button_label: "Okay", callb: () => {router.push("/", "/", {scroll: false}); Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})}}})
@@ -104,9 +105,9 @@ export function Account_settings_page() {
             })
             
             const response_obj = await response.json() as Server_response
-
+            
             if(response.status !== 200) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: response_obj.message, button_label: "Okay"}})
-
+            
             if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Email is already in use!", message: "Please choose an email that is not in use! Make sure that you are the owner of that email address!", button_label: "Okay", callb: () => {set_update_email(false); new_email_input.value = ""}}})
             App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your email!", message: "You have successfully updated your email. You can now login with your new email address.", button_label: "Okay", callb: () => {set_update_email(false); new_email_input.value = ""}}})
 
