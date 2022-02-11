@@ -32,6 +32,7 @@ export default function Search_page() {
 
 		input.value = string
 	}
+
 	useEffect(() => {
 		const get_input = document.getElementById("search_input") as HTMLInputElement
 
@@ -142,24 +143,18 @@ function Search_recommendations() {
 	return(
 		<div className='recommendations_container'>
 			<motion.div animate={expand_recommendations_animation} className='grid_items'>
-				<Recommendation name='Omegalul'/>
 				<Recommendation name='Rpg'/>
-				<Recommendation name='Monsters'/>
-				<Recommendation name='Rpg'/>
-				<Recommendation name='Monsters'/>
-				<Recommendation name='Rpg'/>
-				<Recommendation name='Monsters'/>
-				<Recommendation name='Rpg'/>
-				<Recommendation name='Monsters'/>
-				<Recommendation name='Rpg'/>
-				<Recommendation name='Monsters'/>
-				<Recommendation name='Rpg'/>
-				<Recommendation name='Monsters'/>
-				<Recommendation name='Rpg'/>
-				<Recommendation name='Monsters'/>
-				<Recommendation name='Rpg'/>
-				<Recommendation name='Monsters'/>
-				<Recommendation name='Rpg'/>
+				<Recommendation name='Medival'/>
+				<Recommendation name='Characters'/>
+				<Recommendation name='Backgrounds'/>
+				<Recommendation name='Enemies'/>
+				<Recommendation name='Weapons'/>
+				<Recommendation name='Furniture'/>
+				<Recommendation name='Magic'/>
+				<Recommendation name='Food'/>
+				<Recommendation name='Armor'/>
+				<Recommendation name='Scifi'/>
+				<Recommendation name='Gothic'/>
 			</motion.div>
 
 			<div className='expand_container'>

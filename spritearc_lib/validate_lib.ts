@@ -1,5 +1,9 @@
 import { Formidable_file , Formidable_files} from "./types"
 
+export const LICENSE_TYPES = {
+    opensource: "opensource",
+    attribution: "attribution"
+}
 
 //account
 const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
@@ -236,11 +240,19 @@ export function validate_pack_tags(tags: string[]): boolean | string {
 }
 export function validate_license(license: string): boolean | string {
     
-    if(license === "opensource") {
-        return true
-    } else {
-        return "License is not supported"
+    switch(license.toLowerCase()) {
+        case LICENSE_TYPES.opensource : {
+            return true
+        }
+        case  LICENSE_TYPES.attribution : {
+            return true
+        }
+
+        default : {
+            return "License is not supported"
+        }
     }
+    
 }
 export function validate_pack_report_reason(reason: string) {
     

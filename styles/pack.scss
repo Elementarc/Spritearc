@@ -599,7 +599,6 @@
                                 text-align: flex-start;
                                 height: 100%;
                                 width: 100%;
-
                                 @include breakpoint(mobile) {
                                     justify-content: center;
                                 }
@@ -612,17 +611,27 @@
                                     
                                 }
                                 .tags_container {
-                                    display: flex;
+                                    display: grid;
+                                    grid-template-columns: repeat(auto-fit, minMax(100px, 1fr));
                                     column-gap: .8rem;
                                     @include breakpoint(mobile) {
                                         justify-content: center;
+                                        flex-direction: column;
                                         column-gap: .4rem;
+                                        row-gap: .4rem;
                                     }
                                     width: 100%;
                                     .tag_link{
+                                        display: inline;
+                                        width: min-content;
+                                        text-align: start;
                                         font-weight: unset;
                                         text-decoration: underline;
-    
+                                        
+                                        @include breakpoint(mobile) {
+                                            text-align: center;
+                                            width: unset;
+                                        }
                                         &:hover {
                                             cursor: pointer;
                                             font-weight: 700;

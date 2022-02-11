@@ -168,11 +168,14 @@ export default function Sign_up_page() {
     async function username_available(username: string): Promise<boolean> {
         const error_element = document.getElementById("input_error_message") as HTMLParagraphElement
         const input_element = document.getElementById("input") as HTMLInputElement
+        if(!input_element) return false
+        if(!error_element) return false
 
         try {
            
-            
+            set_error_message(false, "", error_element, input_element)
             const valid_username = validate_username(username)
+            
             if(typeof valid_username === "string") {
                 set_error_message(true, valid_username, error_element, input_element)
                 return false
@@ -199,8 +202,7 @@ export default function Sign_up_page() {
             
         } catch ( err ) {
 
-            console.log(err)
-            set_error_message(true, "Something went wrong while trying to validate your username!", error_element, input_element)
+            set_error_message(true, "Something went wrong while trying to check if username is taken! Please try again later", error_element, input_element)
             return false
         }
              
@@ -280,7 +282,7 @@ export function Step_1() {
     let timer: any
     //Gets username from input. Setting signup_obj to null if validating fails.
     async function get_input_value(e: any) {
-        
+
         clearTimeout(timer)
         timer = setTimeout(async () => {
             

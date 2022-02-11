@@ -455,7 +455,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                     
                     
                     
-                    <Pack_sprite_sections pack={pack}/>
+                    <Pack_assets_section pack={pack}/>
 
                     <Nav_shadow/>
                 </div>
@@ -625,7 +625,7 @@ export const Memo_rate_pack = React.memo(Rate_pack)
 
 
 //Component that creates a section with assets
-function Pack_sprite_sections(props: {pack: Pack}): ReactElement {
+function Pack_assets_section(props: {pack: Pack}): ReactElement {
     const pack: Pack = props.pack
 
     const section_jsx = []
@@ -643,7 +643,7 @@ function Pack_sprite_sections(props: {pack: Pack}): ReactElement {
     return (
         <div className="asset_sections_container">
 
-            <div key="" className="section_container">
+            <div className="section_container">
                 {section_jsx}
             </div>
             
@@ -670,7 +670,7 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
     }
     
     return (
-        <div className="assets_grid_container">
+        <div onContextMenu={(e) => {e.preventDefault()}} className="assets_grid_container">
             {assets_jsx}
         </div>
     );

@@ -917,6 +917,7 @@ function Step_3() {
 
                         <ul>
                             <li onClick={set_license} data-license="opensource">Opensource</li>
+                            <li onClick={set_license} data-license="attribution">Attribution</li>
                         </ul>
                     </motion.div>
                     
@@ -979,6 +980,11 @@ function Preview({section_name}: {section_name: string}) {
                 {create_pack.create_pack_obj.preview.preview_asset && create_pack.create_pack_obj.preview.preview_url &&
                     <div className='asset'>
                         <Image  src={`${create_pack.create_pack_obj.preview.preview_url}`} alt='An image that will preview this pack.' layout='fill'></Image>
+                    </div>
+                }
+                {!create_pack.create_pack_obj.preview.preview_asset &&
+                    <div className='preview_label'>
+                        <h1>Please drop your {`'${section_name.toLowerCase()}'`} file here!</h1>
                     </div>
                 }
                 

@@ -118,7 +118,18 @@
                         margin-bottom: .2rem;
                     }
                 }
-                
+                .preview_label {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 100%;
+                    height: 100%;
+                    
+                    h1 {
+                        @include h1(small);
+                        color: $color_dark_grey;
+                    }
+                }
                 .drop_zone_error_message {
                     line-height: 1.5rem;
                 }

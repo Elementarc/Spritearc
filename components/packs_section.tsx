@@ -53,7 +53,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 				if(!response_obj.success) return display_load_more(false);
 
 				console.log(page, response_obj.available_pages)
-				if(response_obj.available_pages === page) return display_load_more(false)
+				if(response_obj.available_pages === page || response_obj.available_pages === 0) return display_load_more(false)
 				display_load_more(true)
 
 			} catch(err) {
