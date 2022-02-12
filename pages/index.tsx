@@ -67,9 +67,9 @@ export default function Home(): ReactElement {
 
                             <div className="create_pack_home_content">
                                 <div className="text_wrapper_home">
-                                    <h1>Discover Pixelart</h1>
-                                    <p>You can find Pixelart assets and sprites within just a few clicks! Download, find and share your art on Spritearc.</p>
-                                    <Link href={"/search"} scroll={false}>Search Packs</Link>
+                                    <h1>What are Packs?</h1>
+                                    <p>{`Packs are bundled sprites and assets published by a pixel artist. Most of the time all it's content fit well together.`}</p>
+                                    <Link href={"/search"} scroll={false}>Find Packs</Link>
                                 </div>
                                 
                                 

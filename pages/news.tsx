@@ -26,19 +26,19 @@ export default  function News(props: {patchnoteListOrdered: string}): ReactEleme
 		<>
 			<Head>
 				<title>{`Spritearc - News`}</title>
-				<meta name="description" content={`Read about our newest updates and features. Here you can find occasionally release updates for Spritearc.com.`}/>
+				<meta name="description" content={`Read about our newest upcoming features and learn about our intentions!`}/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - News`}/>
-				<meta property="og:description" content={`Read about our newest updates and features. Here you can find occasionally release updates for Spritearc.com.`}/>
+				<meta property="og:description" content={`Read about our newest upcoming features and learn about our intentions!`}/>
 				<meta property="og:image" content={``}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - News`}/>
-				<meta name="twitter:description" content={`Read about our newest updates and features. Here you can find occasionally release updates for Spritearc.com.`}/>
+				<meta name="twitter:description" content={`Read about our newest upcoming features and learn about our intentions!`}/>
 				<meta name="twitter:image:src" content={``}/>
             </Head>
 			

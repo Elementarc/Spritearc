@@ -83,19 +83,19 @@ export function Qick_legal_navigation() {
         <>
             <Head>
 				<title>{`Spritearc - TOS`}</title>
-				<meta name="description" content={`Spritearc Terms Of Service. Our Rules and Services.`}/>
+				<meta name="description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - TOS`}/>
-				<meta property="og:description" content={`Spritearc Terms Of Service. Our Rules and Services.`}/>
+				<meta property="og:description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
 				<meta property="og:image" content={``}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - TOS`}/>
-				<meta name="twitter:description" content={`Spritearc Terms Of Service. Our Rules and Services.`}/>
+				<meta name="twitter:description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
 				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
             </Head>
 
