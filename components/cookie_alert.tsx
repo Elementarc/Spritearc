@@ -45,7 +45,7 @@ export default function Cookie_alert() {
             clearTimeout(timer)
         })
         
-    }, [acknowledged_cookie])
+    }, [acknowledged_cookie, animation])
     
     return (
         <>

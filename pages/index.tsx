@@ -107,7 +107,6 @@ export default function Home(): ReactElement {
                                     <Link href={"/signup"} scroll={false}>Signup</Link>
                                 </div>
                                 
-                                
                                 <div className="preview_packs_home">
                                     <div className="pack_1">
 

@@ -24,7 +24,7 @@ export default function Layout({children}: any ) {
             state.options.scroll = false;
             return true;
         });
-    }, [])
+    }, [router])
 
     //Function that will be triggert everytime a page unmounts
     function on_unmount() {

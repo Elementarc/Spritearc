@@ -241,6 +241,7 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             create_pack_obj = initial_create_pack_obj
             create_pack_obj.preview.preview_asset = null
             create_pack_obj.preview.preview_url = null
+            create_pack_obj.tags = []
             for(let section of create_pack_obj.content.entries()) {
                 for(let url of section[1].section_urls) {
                     URL.revokeObjectURL(url)

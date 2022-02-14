@@ -24,6 +24,12 @@
             @include breakpoint(mobile) {
                 font-size: 18px;
             }
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            &:hover {
+                cursor: pointer;
+            }
         }
             
         .drop_down_container {

@@ -10,10 +10,11 @@ import { useRouter } from 'next/router';
 
 export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: any, sort_action?: string | null | undefined}) {
 	const [sort_action, set_sort_action] = useState<null | string | undefined>(null)
-	const [packs, set_packs] = useState<null | Pack[] | []>(null)
-	const [page, set_page] = useState(1)
 	const [toggle_sort_by_state, set_toggle_sort_by_state] = useState(false)
-	
+	const [packs, set_packs] = useState<null | Pack[] | []>(null)
+	const [toggle_packs, set_toggle_packs] = useState(true)
+	const [current_page, set_current_page] = useState(1)
+	const [available_pages, set_available_pages] = useState(0)
 
 	//Checking sessionstorage if sort_action exists. Setting sort_action if yes
 	useEffect(() => {
@@ -21,23 +22,33 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 		set_sort_action(sort_action)
 	}, [set_sort_action, section_name])
 
+	useEffect(() => {
+		function display_load_more(toggle: boolean) {
+			const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
+
+			if(!counter_cointainer) return
+			if(toggle === true) {
+				counter_cointainer.style.display = ""
+			} else {
+				counter_cointainer.style.display = "none"
+			}
+		}
+
+		if(current_page < available_pages) {
+			display_load_more(true)
+		} else {
+			display_load_more(false)
+		}
+	}, [current_page, available_pages, section_name])
+
 	//Getting packs from server. Setting it aswell
 	useEffect(() => {
 		const controller = new AbortController()
 		async function get_packs() {
-			function display_load_more(toggle: boolean) {
-				const counter_cointainer = document.getElementById(`${section_name}_load_more_container`) as HTMLDivElement
-
-				if(!counter_cointainer) return
-				if(toggle === true) {
-					counter_cointainer.style.display = ""
-				} else {
-					counter_cointainer.style.display = "none"
-				}
-			}
+			
 			try {
 			
-				const response = await fetch(`${api}?page=${page}`, {
+				const response = await fetch(`${api}?page=${current_page}`, {
 					method: method.toUpperCase(),
 					headers: {
 						"Content-Type": "application/json"
@@ -48,17 +59,13 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 				})
 				
 				const response_obj = await response.json() as Server_response_packs
+
 				set_packs(response_obj.packs)
-
-				if(!response_obj.success) return display_load_more(false);
-
-				console.log(page, response_obj.available_pages)
-				if(response_obj.available_pages === page || response_obj.available_pages === 0) return display_load_more(false)
-				display_load_more(true)
+				set_available_pages(response_obj.available_pages)
 
 			} catch(err) {
 				
-				display_load_more(false)
+				//
 				
 			}
 		}
@@ -67,7 +74,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 		return(() => {
 			controller.abort()
 		})
-	}, [set_packs, page, api, method, body, section_name])
+	}, [set_packs, current_page, api, method, body, section_name])
 	
 	//animation for when clicking Sort by button on a packsection
 	const sort_by_animation = useAnimation()
@@ -102,6 +109,9 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 		set_toggle_sort_by_state(false)
 	}
+	function next_page() {
+		if(available_pages > current_page) return set_current_page(current_page + 1)
+	}
 
 	return (
 		<>
@@ -109,7 +119,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 			<div className='packs_section_container'>
 
 				<div className="packs_section_info">
-					<h1>– {section_name}</h1>
+					<h1 onClick={() => {set_toggle_packs(!toggle_packs)}}>{toggle_packs ? `–` : "+"} {section_name}</h1>
 
 					<motion.div animate={sort_by_animation} className='drop_down_container'>
 						<div className='info_container'>
@@ -127,15 +137,24 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 				</div>
 
-				<Pack_previews packs={sort_action ? sort_packs_section(packs ? packs : null, sort_action) : packs ? packs : null}/>
-				
+				{ toggle_packs &&
+					<>
+						<>
+						
+							<Pack_previews packs={sort_action ? sort_packs_section(packs ? packs : null, sort_action) : packs ? packs : null}/>
+						
+						</>
 
-				{ packs &&
-					<div className='load_more_container' id={`${section_name}_load_more_container`}>
-						<span />
-						<h1 onClick={() => {set_page(page + 1)}}>Load more</h1>
-						<span />
-					</div>
+						<>
+							{ packs && available_pages > current_page &&
+								<div className='load_more_container' id={`${section_name}_load_more_container`}>
+									<span />
+									<h1 onClick={next_page}>Load more</h1>
+									<span />
+								</div>
+							}
+						</>
+					</>
 				}
 				
 			</div>
@@ -150,11 +169,13 @@ function Pack_previews(props: { packs: Pack[] | null}) {
 
 	const pack_previews_jsx = []
 	if(packs) {
+
 		for(let pack of packs) {
 			pack_previews_jsx.push(
 				<Pack_preview key={pack._id.toString()} pack={pack}/>
 			)
 		}
+
 	}
     
     
@@ -179,7 +200,6 @@ function Pack_previews(props: { packs: Pack[] | null}) {
 	);
 	
 }
-
 //Component that represents 1 Pack preview. Takes a Pack obj as a property.
 function Pack_preview(props: {pack: Pack}) {
 	const router = useRouter()
@@ -187,20 +207,20 @@ function Pack_preview(props: {pack: Pack}) {
 
 	return (
         
-            <div onClick={() => {router.push(`/pack?id=${pack._id}`, `/pack?id=${pack._id}`, {scroll: false})}} className="pack_preview_container">
+		<div onContextMenu={(e) => {e.preventDefault()}} onClick={() => {router.push(`/pack?id=${pack._id}`, `/pack?id=${pack._id}`, {scroll: false})}} className="pack_preview_container">
 
-                <div className="content_container">
-					<Pack_stars_raiting ratings={pack.ratings}/>
-                    <h1>{pack.title}</h1>
-                </div>
-                
-                <div className="background_container">
-					<Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
-                    <div className="background_blur" />
-                    <div className="background_blur_hover" />
-                </div>
+			<div className="content_container">
+				<Pack_stars_raiting ratings={pack.ratings}/>
+				<h1>{pack.title}</h1>
+			</div>
+			
+			<div className="background_container">
+				<Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
+				<div className="background_blur" />
+				<div className="background_blur_hover" />
+			</div>
 
-            </div>
+		</div>
 
 	);
 }
