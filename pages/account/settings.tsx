@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useEffect, useState, useContext, useRef} from 'react';
 import { App_notification_context_type, Auth_context_type, Server_response, Server_response_email } from '../../types';
 import Footer from '../../components/footer';
 import { format_date } from '../../lib/date_lib';
@@ -29,6 +29,7 @@ export function Account_settings_page() {
     const [delete_account, set_delete_account] = useState(false)
     const [update_email, set_update_email] = useState(false)
     const [settings_state, set_settings_state] = useState("account")
+    const refs = useRef<any>([])
     const router = useRouter()
     const user = Auth.user.public_user
 
@@ -150,6 +151,39 @@ export function Account_settings_page() {
             //COuldnt reach server
         }
     }
+    async function update_socials() {
+        try {
+            
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_socials`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    instagram: refs.current["instagram_input"].value,
+                    twitter: refs.current["twitter_input"].value,
+                    artstation: refs.current["artstation_input"].value,
+                })
+            })
+            
+            if(response.status === 200) {
+                const response_obj = await response.json() as {success: boolean, message: string}
+
+                if(response_obj.success) {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your Socials!", message: "You have successfully updated your Socials.", button_label: "Okay"}})
+                } else {
+                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `We could not update your socials`, message: `We could'nt update what you wanted because: ${response_obj.message}`, button_label: "Okay"}})
+                }
+
+            } else {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "For some reason we could not update your social inputs! Please contact an admin.", button_label: "Okay"}})
+            }
+        } catch(err) {
+            //COuldnt reach server
+        } 
+    }
 
     function on_key_up_email_validation(e: any) {
         const get_update_email_button = document.getElementById("update_email_button") as HTMLButtonElement
@@ -231,7 +265,6 @@ export function Account_settings_page() {
         if(new_password_input.value === new_password_repeat_input.value) return true
         return false
     }
-
     function reset_password_inputs() {
         const current_password_input = document.getElementById("current_password_input") as HTMLInputElement
         if(!current_password_input) return
@@ -331,9 +364,12 @@ export function Account_settings_page() {
 
                     <div className='settings_container'>
                         <div className='settings_navigator'>
-                            <Settings_navigation_item name='Account' current_state={settings_state} set_current_state={set_settings_state}/>
-                            <Settings_navigation_item name='Email' current_state={settings_state} set_current_state={set_settings_state}/>
-                            <Settings_navigation_item name='Password' current_state={settings_state} set_current_state={set_settings_state}/>
+                            <div className='setting_items_grid'>
+                                <Settings_navigation_item name='Account' current_state={settings_state} set_current_state={set_settings_state}/>
+                                <Settings_navigation_item name='Email' current_state={settings_state} set_current_state={set_settings_state}/>
+                                <Settings_navigation_item name='Password' current_state={settings_state} set_current_state={set_settings_state}/>
+                                <Settings_navigation_item name='Socials' current_state={settings_state} set_current_state={set_settings_state}/>
+                            </div>
 
                             <div className='deco_container'>
                                 <span></span>
@@ -395,6 +431,29 @@ export function Account_settings_page() {
                                     <input onKeyUp={on_key_up_password_validation} id="new_password_repeat_input" type="password" placeholder='New Password Repeat'/>
                                     <button onClick={update_password} id="update_password_button" className='disabled_button'>Update Password</button>
                                     <h4>{`Password needs to be atleast 8 characters long. One uppercase / lowercase and one number. Max. 32 characters`}</h4>
+                                </div>
+                            }
+
+                            { settings_state === "socials" && 
+                                <div className='socials_content'>
+                                    <h1>Add Socials</h1>
+
+                                    <div className='social_flex'>
+                                        <p>www.Instagram.com/</p>
+                                        <input ref={(el) => {refs.current["instagram_input"] = el}} type="text" defaultValue={user.socials.instagram.length > 0 ? user.socials.instagram : ""} placeholder='Account'/>
+                                    </div>
+
+                                    <div className='social_flex'>
+                                        <p>www.Twitter.com/</p>
+                                        <input ref={(el) => {refs.current["twitter_input"] = el}} type="text" defaultValue={user.socials.twitter.length > 0 ? user.socials.twitter : ""} placeholder='Account'/>
+                                    </div>
+
+                                    <div className='social_flex'>
+                                        <p>www.Artstation.com/</p>
+                                        <input ref={(el) => {refs.current["artstation_input"] = el}} type="text" defaultValue={user.socials.artstation.length > 0 ? user.socials.artstation : ""} placeholder='Account'/>
+                                    </div>
+                                    
+                                    <button onClick={update_socials}>Save Changes</button>
                                 </div>
                             }
                         </div>

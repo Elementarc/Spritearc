@@ -19,6 +19,7 @@ const tag_regex = new RegExp(/^[a-zA-Z0-9]{2,12}$/)
 const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9 ]{3,25})$/)
 const section_name_regex = new RegExp(/^[a-zA-Z0-9]{3,16}$/)
 const report_input_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\_?! ]{25,250}$/)
+const social_regex = new RegExp(/^[a-zA-Z0-9äöü\.\_\-]{0,20}$/)
 
 export function validate_email(email: string): boolean | string {
     if(email_regex.test(email) === true) return true
@@ -44,6 +45,10 @@ export function validate_password(password: string): boolean | string {
         
     return true
     
+}
+export function validate_social(social: string): boolean | string {
+    if(social_regex.test(social) === true) return true
+    return "Please use a corretly formatted email!"
 }
 
 //return true if blob type & size is valid

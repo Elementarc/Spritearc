@@ -272,35 +272,48 @@
 
             .settings_navigator {
                 position: relative;
-                display: flex;
-                flex-direction: column;
-                padding-top: 2rem;
-                @include breakpoint(mobile) {
-                    flex-direction: row;
-                    height: 50px;
-                    padding-top: unset;
-                }
 
-                .settings_navigation_item {
-                    display: flex;
-                    align-items: center;
-                    padding: 1rem 3rem;
-
+                .setting_items_grid {
+                    display: grid;
+                    align-self: start;
+                    padding-top: 2rem;
+                    row-gap: 1rem;
+                    
+                
+                    @include breakpoint(laptop) {
+                        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                    }
                     @include breakpoint(mobile) {
-                        padding: 0rem .5rem;
+                        column-gap: 1rem;
+                        padding-top: unset;
+                        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
                     }
-                    p {
-                        @include p();
-                        color: $color_dark_grey;
+                    
+                    .settings_navigation_item {
+                        display: flex;
+                        height: 50px;
+                        align-items: center;
+                        padding: 1rem 3rem;
                         
-                    }
-                    &:hover {
-                        cursor: pointer;
-                        
-                        background: rgba(255, 255, 255, 0.2);
-
-                        p{
-                            color: white;
+                        @include breakpoint(mobile) {
+                            padding: 0rem .5rem;
+                        }
+                        p {
+                            @include p();
+                            color: $color_dark_grey;
+                            
+                            @include breakpoint(mobile) {
+                                text-decoration: underline;
+                            }
+                        }
+                        &:hover {
+                            cursor: pointer;
+                            
+                            background: rgba(255, 255, 255, 0.2);
+    
+                            p{
+                                color: white;
+                            }
                         }
                     }
                 }
@@ -315,6 +328,7 @@
                     justify-content: flex-end;
                     align-items: center;
                     @include breakpoint(mobile) {
+                        display: none;
                         bottom: 0;
                         align-items: flex-end;
                         justify-content: center;
@@ -501,6 +515,46 @@
                         @include h4();
                         color: $color_main_bright;
                         margin-top: 1rem;
+                    }
+                }
+
+                .socials_content{
+                    display: flex;
+                    flex-direction: column;
+                    row-gap: 1rem;
+                    .social_flex {
+                        display: flex;
+                        margin-top: 1rem;
+                        
+                        p {
+                            @include p();
+                            color: $color_dark_grey;
+                        }
+
+                        input {
+                            @include input();
+                            text-align: start;
+                            @include p();
+                            width: 100%;
+                            max-width: 250px;
+                            line-height: unset;
+                            padding: unset;
+                            padding-left: .3rem;
+                            transform: translateY(-1px);
+                            
+                            @include breakpoint(mobile) {
+                                width: 100%;
+                            }
+                            
+                        }
+
+                        
+                    }
+                    button {
+                        @include button();
+                        align-self: flex-start;
+                        margin-top: 1rem;
+                        font-size: 16px;
                     }
                 }
             }

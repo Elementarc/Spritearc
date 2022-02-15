@@ -12,6 +12,11 @@ const init_public_user: Frontend_public_user = {
     auth: null,
     public_user: {
         username: "",
+        socials: {
+            instagram: "",
+            twitter: "",
+            artstation: "",
+        },
         description: "",
         created_at: new Date(),
         profile_picture: "",

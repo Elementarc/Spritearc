@@ -1,6 +1,5 @@
 import React, {useReducer} from "react";
 import {App_notification, App_dispatch_notification, App_notification_actions, App_notification_context_type} from "../types"
-
 export const App_notification_context: any = React.createContext(null)
 export const NOTIFICATION_ACTIONS: App_notification_actions = {
     SUCCESS: "SUCCESS",

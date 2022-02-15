@@ -171,10 +171,15 @@ export interface User extends Public_user{
     
     occasional_emails: boolean,
 }
-
+export interface Account_socials {
+    instagram: string
+    twitter: string 
+    artstation: string 
+}
 export interface Public_user {
     username: string,
     description: string,
+    socials: Account_socials,
     created_at: Date,
     profile_picture: string,
     profile_banner: string,
