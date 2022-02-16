@@ -10,6 +10,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import Profile_socials_background from "../public/images/profile_socials_background.svg"
+import Twitter_logo from "../public/logos/twitter_logo.svg"
+import Artstation_logo from "../public/logos/artstation_logo.svg"
 
 export default function Profile_page_handler() {
     const [public_user, set_public_user] = useState<null | Public_user>(null)
@@ -100,17 +102,19 @@ function Profile_page(props: {public_user: Public_user}) {
                                         
                                         {public_user.socials.instagram.length > 0 &&
                                             <a href={`https://www.instagram.com/${public_user.socials.instagram}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                                <Image src={"/logos/instagram_color.png"} layout="fill"></Image>
+                                                <Image src={"/logos/instagram_color.png"} layout={"fill"}></Image>
                                             </a>
                                         }
                                         {public_user.socials.twitter.length > 0 &&
                                             <a href={`https://www.twitter.com/${public_user.socials.twitter}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                                <Image src={"/logos/twitter_color.png"} layout="fill"></Image>
+                                                <Twitter_logo/>
                                             </a>
                                         }
+
                                         {public_user.socials.artstation.length > 0 &&
+                                            
                                             <a href={`https://www.artstation.com/${public_user.socials.artstation}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                                <Image src={"/logos/artstation_color.png"} layout="fill"></Image>
+                                                <Image src={"/logos/artstation_color.png"} layout={"fill"}></Image>
                                             </a>
                                         }
                                     </div>
