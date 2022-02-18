@@ -33,36 +33,6 @@ const PACK_PAGE_CONTEXT: any = React.createContext(null)
 export default function Pack_page_handler({server_pack_response}: {server_pack_response: Server_response_pack}) {
     const pack = server_pack_response.pack
 
-    /* useEffect(() => {
-        const controller = new AbortController()
-        async function get_pack() {
-            if(!router.query.id) return
-
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${router.query.id}`, {
-                    method: "POST",
-                    signal: controller.signal,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-
-                const response_obj = await response.json() as Server_response_pack
-
-                if(!response_obj.success) return router.push("/browse", "/browse", {scroll: false})
-                set_pack(response_obj.pack)
-
-            } catch(err) {
-                //Couldnt reach server
-            }
-        }
-        get_pack()
-        return(() => {
-            controller.abort()
-        })
-        
-    }, [router]) */
-    
     return (
         <div>
             {pack &&
@@ -81,22 +51,22 @@ function Pack_page(props: {pack: Pack}) {
         <>
             <Head>
 				<title>{`${pack?.username} - ${pack?.title}`}</title>
-				<meta property="description" content={`${pack?.description}`}/>
-                <meta property='keywords' content={`pixelart,${pack?.tags.join(",")}`}/>
+				<meta name="description" content={`${pack?.description}`}/>
+                <meta name='keywords' content={`pixelart,${pack?.tags.join(",")}`}/>
 
-				<meta property="og:url" content={`https://Spritearc.com/pack?id=${pack?._id}`}/>
-				<meta property="og:type" content="website" />
-				<meta property="og:title" content={`${pack?.username} - ${pack?.title}`}/>
-				<meta property="og:description" content={`${pack?.description}`}/>
-				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack?._id}/${pack?.preview}`}/>
-				<meta property="og:image:secure_url" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack?._id}/${pack?.preview}`}/>
+				<meta name="og:url" content={`https://Spritearc.com/pack?id=${pack?._id}`}/>
+				<meta name="og:type" content="website" />
+				<meta name="og:title" content={`${pack?.username} - ${pack?.title}`}/>
+				<meta name="og:description" content={`${pack?.description}`}/>
+				<meta name="og:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack?._id}/${pack?.preview}`}/>
+				<meta name="og:image:secure_url" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack?._id}/${pack?.preview}`}/>
 
-				<meta property="twitter:card" content="summary_large_image"/>
-				<meta property="twitter:domain" content="Spritearc.com"/>
-				<meta property="twitter:url" content={`https://Spritearc.com/pack?id=${pack._id}`}/>
-				<meta property="twitter:title" content={`${pack?.username} - ${pack.title}`}/>
-				<meta property="twitter:description" content={`${pack?.description}`} />
-				<meta property="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack?._id}/${pack?.preview}`}/>
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta name="twitter:domain" content="Spritearc.com"/>
+				<meta name="twitter:url" content={`https://Spritearc.com/pack?id=${pack._id}`}/>
+				<meta name="twitter:title" content={`${pack?.username} - ${pack.title}`}/>
+				<meta name="twitter:description" content={`${pack?.description}`} />
+				<meta name="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack?._id}/${pack?.preview}`}/>
             </Head>
 
             <Memo_user_pack pack={pack} App_notification={App_notification} Auth={Auth}/>
@@ -630,7 +600,6 @@ export const Memo_user_pack = React.memo(User_pack)
 export const Memo_rate_pack = React.memo(Rate_pack)
 
 
-
 //Component that creates a section with assets
 function Pack_assets_section(props: {pack: Pack}): ReactElement {
     const pack: Pack = props.pack
@@ -691,7 +660,6 @@ function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string,
     </div>
   );
 }
-
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
