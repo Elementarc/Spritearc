@@ -206,7 +206,7 @@ function Pack_preview(props: {pack: Pack}) {
 
 	return (
         
-		<div onContextMenu={(e) => {e.preventDefault()}} onClick={() => {router.push(`/pack?id=${pack._id}`, `/pack?id=${pack._id}`, {scroll: false})}} className="pack_preview_container">
+		<div onContextMenu={(e) => {e.preventDefault()}} onClick={() => {router.push(`/pack/${pack._id}`, `/pack/${pack._id}`, {scroll: false})}} className="pack_preview_container">
 
 			<div className="content_container">
 				<Pack_stars_raiting ratings={pack.ratings}/>

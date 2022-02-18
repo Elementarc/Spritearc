@@ -1,28 +1,28 @@
 import React, {ReactElement, useEffect, useContext, useState, useCallback} from 'react';
-import Footer from '../components/footer';
-import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Server_response, Server_response_pack, Server_response_pack_rating} from "../types"
+import Footer from '../../components/footer';
+import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Server_response, Server_response_pack, Server_response_pack_rating} from "../../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
-import { Nav_shadow } from '../components/navigation';
-import { useParallax } from '../lib/custom_hooks';
-import ArrowIcon from "../public/icons/ArrowIcon.svg"
-import CloseIcon from "../public/icons/CloseIcon.svg"
-import ReportIcon from "../public/icons/ReportIcon.svg"
+import { Nav_shadow } from '../../components/navigation';
+import { useParallax } from '../../lib/custom_hooks';
+import ArrowIcon from "../../public/icons/ArrowIcon.svg"
+import CloseIcon from "../../public/icons/CloseIcon.svg"
+import ReportIcon from "../../public/icons/ReportIcon.svg"
 import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
-import H1_with_deco from '../components/h1_with_deco';
-import { format_date } from '../lib/date_lib';
+import H1_with_deco from '../../components/h1_with_deco';
+import { format_date } from '../../lib/date_lib';
 import { ObjectId } from 'mongodb';
-import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
-import StarEmptyIcon from "../public/icons/StarEmptyIcon.svg"
-import StarIcon from "../public/icons/StarIcon.svg"
-import Pack_star_raiting from '../components/pack_stars_raiting';
-import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
-import ThrashIcon from "../public/icons/ThrashIcon.svg"
-import { App_notification_context } from "../context/app_notification_context_provider";
-import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider"
+import { capitalize_first_letter_rest_lowercase } from '../../lib/custom_lib';
+import StarEmptyIcon from "../../public/icons/StarEmptyIcon.svg"
+import StarIcon from "../../public/icons/StarIcon.svg"
+import Pack_star_raiting from '../../components/pack_stars_raiting';
+import Fixed_app_content_overlay from '../../components/fixed_app_content_overlay';
+import ThrashIcon from "../../public/icons/ThrashIcon.svg"
+import { App_notification_context } from "../../context/app_notification_context_provider";
+import {NOTIFICATION_ACTIONS} from "../../context/app_notification_context_provider"
 import Head from 'next/dist/shared/lib/head'
-import { Auth_context } from '../context/auth_context_provider';
+import { Auth_context } from '../../context/auth_context_provider';
 import { GetServerSideProps } from 'next'
 import https from "https"
 import http from "http"
@@ -669,7 +669,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             rejectUnauthorized: false
         })
         
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {
+        const pack_id = context?.params?.id
+        if(!pack_id) throw new Error("Could not find id")
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${pack_id}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
