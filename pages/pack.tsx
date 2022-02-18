@@ -88,7 +88,7 @@ function Pack_page(props: {pack: Pack}) {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`${pack?.username} - ${pack?.title}`}/>
 				<meta property="og:description" content={`${pack?.description}`}/>
-				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack?._id}/${pack?.preview}`}/>
+				<meta property="og:image:secure_url" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack?._id}/${pack?.preview}`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
