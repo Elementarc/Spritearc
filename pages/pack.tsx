@@ -696,8 +696,9 @@ function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string,
 import fs from "fs"
 import http from "http"
 export const getServerSideProps: GetServerSideProps = async (context) => {
+    const cert = process.env.cert as string
     const agent = process.env.NEXT_PUBLIC_ENV === "development" ? new http.Agent() : new https.Agent({
-        ca: [fs.readFileSync(`./certificate/certificate.pem`)]
+        ca: [cert.replace(/\\n/g, '\n')]
     })
     
     const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {
@@ -711,7 +712,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const response_obj = await response.json() as Server_response_pack
 
-    console.log(response_obj)
+    console.log(process.env.cert)
 
     return {
         props: {
