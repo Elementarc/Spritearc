@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import Image from "next/image"
 import Link from "next/link"
-import { Public_user, Server_response, Server_response_public_user } from '../types';
+import { Public_user, Server_response,Server_response_pack, Server_response_public_user } from '../types';
 import Footer from '../components/footer';
 import { useParallax } from '../lib/custom_hooks';
 import { Nav_shadow } from '../components/navigation';
@@ -12,12 +12,14 @@ import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import Profile_socials_background from "../public/images/profile_socials_background.svg"
 import Twitter_logo from "../public/logos/twitter_logo.svg"
 import Artstation_logo from "../public/logos/artstation_logo.svg"
+import { GetServerSideProps } from 'next'
+import http from "http"
+import https from "https"
 
-export default function Profile_page_handler() {
-    const [public_user, set_public_user] = useState<null | Public_user>(null)
-    const router = useRouter()
+export default function Profile_page_handler(props: {public_user: Public_user}) {
+    const public_user = props.public_user
 
-    useEffect(() => {
+    /* useEffect(() => {
         const controller = new AbortController()
 
         async function get_public_user() {
@@ -48,7 +50,7 @@ export default function Profile_page_handler() {
             controller.abort()
         })
         
-    }, [router])
+    }, [router]) */
 
     return (
         <div>
@@ -69,7 +71,7 @@ function Profile_page(props: {public_user: Public_user}) {
 				<title>{`${public_user.username}`}</title>
 				<meta name="description" content={`${public_user.description}`}/>
 
-				<meta property="og:url" content="https://Spritearc.com/"/>
+                <meta property="og:url" content={`https://Spritearc.com/profile?user=${public_user.username}`}/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`${public_user.username}`}/>
 				<meta property="og:description" content={`${public_user.description}`}/>
@@ -164,6 +166,38 @@ function Profile_page(props: {public_user: Public_user}) {
             </div>
         </>
     );
+}
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    try {
+        const agent = process.env.NEXT_PUBLIC_ENV === "development" ? new http.Agent() : new https.Agent({
+            rejectUnauthorized: false
+        })
+        
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user?user=${context.query.user}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            // @ts-ignore: Unreachable code error
+            agent
+        })
+
+        const response_obj = await response.json() as Server_response_public_user
+
+    
+        if(!response_obj.success) return {redirect: {destination: "/browse", permanent: false}} 
+    
+        return {
+            props: {
+                public_user: response_obj.public_user
+            }
+        }
+        
+    } catch (err) {
+        return {redirect: {destination: "/browse", permanent: false}} 
+    }
 }
 
 

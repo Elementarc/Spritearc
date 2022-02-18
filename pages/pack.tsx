@@ -23,7 +23,7 @@ import { App_notification_context } from "../context/app_notification_context_pr
 import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider"
 import Head from 'next/dist/shared/lib/head'
 import { Auth_context } from '../context/auth_context_provider';
-import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
+import { GetServerSideProps } from 'next'
 import https from "https"
 import http from "http"
 
@@ -695,28 +695,33 @@ function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string,
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const agent = process.env.NEXT_PUBLIC_ENV === "development" ? new http.Agent() : new https.Agent({
-        rejectUnauthorized: false
-    })
+
+    try {
+        const agent = process.env.NEXT_PUBLIC_ENV === "development" ? new http.Agent() : new https.Agent({
+            rejectUnauthorized: false
+        })
+        
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            // @ts-ignore: Unreachable code error
+            agent
+        })
     
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        // @ts-ignore: Unreachable code error
-        agent
-    })
-
-    const response_obj = await response.json() as Server_response_pack
-
-    if(!response_obj.success) return {redirect: {destination: "/browse", permanent: false}} 
-
-    return {
-        props: {
-            server_pack_response: response_obj
+        const response_obj = await response.json() as Server_response_pack
+    
+        if(!response_obj.success) return {redirect: {destination: "/browse", permanent: false}} 
+    
+        return {
+            props: {
+                server_pack_response: response_obj
+            }
         }
-    }
 
+    } catch (err) {
+        return {redirect: {destination: "/browse", permanent: false}} 
+    }
 }
 
