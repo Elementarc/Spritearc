@@ -24,6 +24,7 @@ import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider
 import Head from 'next/dist/shared/lib/head'
 import { Auth_context } from '../context/auth_context_provider';
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
+import https from "https"
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
