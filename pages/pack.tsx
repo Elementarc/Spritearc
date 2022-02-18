@@ -25,16 +25,15 @@ import Head from 'next/dist/shared/lib/head'
 import { Auth_context } from '../context/auth_context_provider';
 import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 import https from "https"
+import http from "http"
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 
-export default function Pack_page_handler({server_pack}: {server_pack: Pack}) {
-    console.log(server_pack)
-    const router = useRouter()
-    const [pack, set_pack] = useState<null | Pack>(null)
+export default function Pack_page_handler({server_pack_response}: {server_pack_response: Server_response_pack}) {
+    const pack = server_pack_response.pack
 
-    useEffect(() => {
+    /* useEffect(() => {
         const controller = new AbortController()
         async function get_pack() {
             if(!router.query.id) return
@@ -62,7 +61,7 @@ export default function Pack_page_handler({server_pack}: {server_pack: Pack}) {
             controller.abort()
         })
         
-    }, [router])
+    }, [router]) */
     
     return (
         <div>
@@ -693,12 +692,10 @@ function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string,
 }
 
 
-import fs from "fs"
-import http from "http"
+
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    const cert = process.env.cert as string
     const agent = process.env.NEXT_PUBLIC_ENV === "development" ? new http.Agent() : new https.Agent({
-        ca: [cert.replace(/\\n/g, '\n')]
+        rejectUnauthorized: false
     })
     
     const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {
@@ -712,12 +709,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const response_obj = await response.json() as Server_response_pack
 
-    console.log(process.env.cert)
+    if(!response_obj.success) return {redirect: {destination: "/browse", permanent: false}} 
 
     return {
         props: {
-            server_pack: response.status === 200 ? response_obj : {}
+            server_pack_response: response_obj
         }
     }
+
 }
 
