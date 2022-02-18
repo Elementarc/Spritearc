@@ -16,52 +16,9 @@ import { GetServerSideProps } from 'next'
 import http from "http"
 import https from "https"
 
-export default function Profile_page_handler(props: {public_user: Public_user}) {
-    const public_user = props.public_user
 
-    /* useEffect(() => {
-        const controller = new AbortController()
 
-        async function get_public_user() {
-            if(!router.query.user) return
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user?user=${router.query.user}`, {
-                    method: "POST",
-                    signal: controller.signal,
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
-                })
-
-                const response_obj = await response.json() as Server_response_public_user
-
-                if(!response_obj.success) return router.push("/browse", "/browse", {scroll: false})
-
-                set_public_user(response_obj.public_user)
-                    
-
-            } catch(err) {
-                //Couldnt reach server
-                //router.push("/browse", "/browse", {scroll: false})
-            }
-        }
-        get_public_user()
-        return(() => {
-            controller.abort()
-        })
-        
-    }, [router]) */
-
-    return (
-        <div>
-            {public_user &&
-                <Profile_page public_user={public_user}/>
-            }
-        </div>
-    );
-}
-
-function Profile_page(props: {public_user: Public_user}) {
+export default function Profile_page(props: {public_user: Public_user}) {
     const public_user = props.public_user
     useParallax("profile_banner")
     
@@ -75,14 +32,14 @@ function Profile_page(props: {public_user: Public_user}) {
 				<meta property="og:title" content={`${public_user.username}`}/>
 				<meta property="og:description" content={`${public_user.description}`}/>
 				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
+				<meta property="og:image:secure_url" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
 
 				<meta property="twitter:card" content="summary"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
-				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta property="twitter:url" content={`https://Spritearc.com/profile?user${public_user.username}`}/>
 				<meta property="twitter:title" content={`${public_user.username}`}/>
 				<meta property="twitter:description" content={`${public_user.description}`}/>
                 <meta property="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
-				<meta property="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
             </Head>
        
             <div className='profile_page'>
