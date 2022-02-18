@@ -358,7 +358,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                                             <p>Creator:</p>
                                         </div>
 
-                                        <Link href={`/profile?user=${pack?.username}`} scroll={false}>{pack?.username}</Link>
+                                        <Link href={`/user/${pack?.username}`} scroll={false}>{pack?.username}</Link>
                                     </div>
 
                                     <div className="grid_item">
@@ -669,7 +669,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             rejectUnauthorized: false
         })
         
-        const pack_id = context?.params?.id
+        const pack_id = context?.params?.pack_id
         if(!pack_id) throw new Error("Could not find id")
         const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${pack_id}`, {
             method: "POST",
