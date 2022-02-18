@@ -27,7 +27,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
             <Head>
 				<title>{`${public_user.username}`}</title>
 				<meta property="description" content={`${public_user.description}`}/>
-                <meta property="og:url" content={`https://Spritearc.com/profile?user=${public_user.username}`}/>
+                <meta property="og:url" content={`https://Spritearc.com/user/${public_user.username}`}/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`${public_user.username}`}/>
 				<meta property="og:description" content={`${public_user.description}`}/>
@@ -36,7 +36,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
 
 				<meta property="twitter:card" content="summary"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
-				<meta property="twitter:url" content={`https://Spritearc.com/profile?user${public_user.username}`}/>
+				<meta property="twitter:url" content={`https://Spritearc.com/user/${public_user.username}`}/>
 				<meta property="twitter:title" content={`${public_user.username}`}/>
 				<meta property="twitter:description" content={`${public_user.description}`}/>
                 <meta property="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>

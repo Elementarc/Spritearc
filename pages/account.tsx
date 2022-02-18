@@ -228,7 +228,7 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
                     </div>
 
                     <div className='user_info_container'>
-                        <Link href={`/profile?user=${user?.username.toLowerCase()}`} scroll={false}>{user?.username}</Link>
+                        <Link href={`/user/${user?.username.toLowerCase()}`} scroll={false}>{user?.username}</Link>
 
                         <div className='user_description_container'>
 
