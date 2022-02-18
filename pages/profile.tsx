@@ -70,19 +70,19 @@ function Profile_page(props: {public_user: Public_user}) {
             <Head>
 				<title>{`${public_user.username}`}</title>
 				<meta name="description" content={`${public_user.description}`}/>
-
                 <meta property="og:url" content={`https://Spritearc.com/profile?user=${public_user.username}`}/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`${public_user.username}`}/>
 				<meta property="og:description" content={`${public_user.description}`}/>
 				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
 
-				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:card" content="player"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
-				<meta name="twitter:title" content={`${public_user.username}`}/>
-				<meta name="twitter:description" content={`${public_user.description}`}/>
-				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
+				<meta property="twitter:title" content={`${public_user.username}`}/>
+				<meta property="twitter:description" content={`${public_user.description}`}/>
+                <meta property="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
+				<meta property="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`}/>
             </Head>
        
             <div className='profile_page'>
