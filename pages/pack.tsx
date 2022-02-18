@@ -693,14 +693,20 @@ function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string,
 }
 
 
+import fs from "fs"
+import http from "http"
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    
+    const agent = process.env.NEXT_PUBLIC_ENV === "development" ? new http.Agent() : new https.Agent({
+        ca: [fs.readFileSync(`${process.cwd()}/certificate/ca_bundle.crt`)]
+    })
     
     const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
-        }
+        },
+        // @ts-ignore: Unreachable code error
+        agent
     })
 
     const response_obj = await response.json() as Server_response_pack
