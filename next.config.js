@@ -3,7 +3,7 @@
 module.exports = {
   reactStrictMode: true,
   images: {
-    domains: ["localhost", "192.168.178.21", "0.0.0.0", "https://api.spritearc.com", "spritearc.com", "https://spritearc.com"]
+    domains: ["localhost", "192.168.178.21", "0.0.0.0", , "https://api.spritearc.com", "spritearc.com", "https://spritearc.com"]
   },
 }
 
