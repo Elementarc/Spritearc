@@ -296,7 +296,7 @@ export function Account_settings_page() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content="Spritearc - Account Settings"/>
 				<meta name="twitter:description" content="Edit important account information."/>
-				<meta name="twitter:image:src" content="/images/wallpaper.png"/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/images/wallpaper.png`}/>
             </Head>
         
         
@@ -385,7 +385,7 @@ export function Account_settings_page() {
                                     <div className='general_info_container'>
                                         <div className='grid_item'>
                                             <div className='item_1'>Username:</div>
-                                            <div className='item_2'>{user.username}</div>
+                                            <div className='item_2'>{user?.username}</div>
                                         </div>
 
                                         <div className='grid_item'>
@@ -395,13 +395,13 @@ export function Account_settings_page() {
 
                                         <div className='grid_item'>
                                             <div className='item_1'>Role:</div>
-                                            <div className='item_2'>{`${user.role}`}</div>
+                                            <div className='item_2'>{`${user?.role}`}</div>
                                         </div>
 
 
                                         <div className='grid_item'>
                                             <div className='item_1'>User since:</div>
-                                            <div className='item_2'>{format_date(user.created_at)}</div>
+                                            <div className='item_2'>{format_date(user?.created_at)}</div>
                                         </div>
                                     </div>
 
@@ -440,17 +440,17 @@ export function Account_settings_page() {
 
                                     <div className='social_flex'>
                                         <p>www.Instagram.com/</p>
-                                        <input ref={(el) => {refs.current["instagram_input"] = el}} type="text" defaultValue={user.socials.instagram.length > 0 ? user.socials.instagram : ""} placeholder='Account'/>
+                                        <input ref={(el) => {refs.current["instagram_input"] = el}} type="text" defaultValue={user?.socials?.instagram.length > 0 ? user?.socials?.instagram : ""} placeholder='Account'/>
                                     </div>
 
                                     <div className='social_flex'>
                                         <p>www.Twitter.com/</p>
-                                        <input ref={(el) => {refs.current["twitter_input"] = el}} type="text" defaultValue={user.socials.twitter.length > 0 ? user.socials.twitter : ""} placeholder='Account'/>
+                                        <input ref={(el) => {refs.current["twitter_input"] = el}} type="text" defaultValue={user?.socials?.twitter.length > 0 ? user?.socials?.twitter : ""} placeholder='Account'/>
                                     </div>
 
                                     <div className='social_flex'>
                                         <p>www.Artstation.com/</p>
-                                        <input ref={(el) => {refs.current["artstation_input"] = el}} type="text" defaultValue={user.socials.artstation.length > 0 ? user.socials.artstation : ""} placeholder='Account'/>
+                                        <input ref={(el) => {refs.current["artstation_input"] = el}} type="text" defaultValue={user?.socials?.artstation.length > 0 ? user?.socials?.artstation : ""} placeholder='Account'/>
                                     </div>
                                     
                                     <button onClick={update_socials}>Save Changes</button>

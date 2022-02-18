@@ -63,7 +63,6 @@ function Profile_page(props: {public_user: Public_user}) {
     const public_user = props.public_user
     useParallax("profile_banner")
     
-    
     return (
         <>
             <Head>
@@ -91,7 +90,7 @@ function Profile_page(props: {public_user: Public_user}) {
 
                     <Fixed_app_content_overlay>
                         <div className='fixed_profile_container'>
-                            {(public_user.socials.artstation.length > 0 || public_user.socials.instagram.length > 0 || public_user.socials.twitter.length > 0) &&
+                            {(public_user?.socials?.artstation.length > 0 || public_user?.socials?.instagram.length > 0 || public_user?.socials?.twitter.length > 0) &&
                             
                                 <div className='socials_container'>
                                     
@@ -100,18 +99,18 @@ function Profile_page(props: {public_user: Public_user}) {
                                             <Profile_socials_background/>
                                         </div>
                                         
-                                        {public_user.socials.instagram.length > 0 &&
+                                        {public_user?.socials?.instagram.length > 0 &&
                                             <a href={`https://www.instagram.com/${public_user.socials.instagram}`} target="_blank" rel='noreferrer' className='logo_container'>
                                                 <Image src={"/logos/instagram_color.png"} layout={"fill"}></Image>
                                             </a>
                                         }
-                                        {public_user.socials.twitter.length > 0 &&
+                                        {public_user?.socials?.twitter.length > 0 &&
                                             <a href={`https://www.twitter.com/${public_user.socials.twitter}`} target="_blank" rel='noreferrer' className='logo_container'>
                                                 <Twitter_logo/>
                                             </a>
                                         }
 
-                                        {public_user.socials.artstation.length > 0 &&
+                                        {public_user?.socials?.artstation.length > 0 &&
                                             
                                             <a href={`https://www.artstation.com/${public_user.socials.artstation}`} target="_blank" rel='noreferrer' className='logo_container'>
                                                 <Image src={"/logos/artstation_color.png"} layout={"fill"}></Image>
@@ -147,8 +146,8 @@ function Profile_page(props: {public_user: Public_user}) {
                             </div>
 
                             <div className='user_info_container'>
-                                <Link href={`/profile?user=${public_user.username}`} scroll={false}>{`${public_user.username}`}</Link>
-                                <p>{`${public_user.description}`}</p>
+                                <Link href={`/profile?user=${public_user.username}`} scroll={false}>{`${public_user?.username}`}</Link>
+                                <p>{`${public_user?.description}`}</p>
                             </div>
                         </div>
 
@@ -157,7 +156,7 @@ function Profile_page(props: {public_user: Public_user}) {
                     </div>
                     
                     <div className='user_packs_container'>
-                        <Packs_section section_name={`Packs created by '${public_user.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs`} method='POST' body={{username: public_user.username}}/>
+                        <Packs_section section_name={`Packs created by '${public_user?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs`} method='POST' body={{username: public_user?.username}}/>
                     </div>
 
                 </div>

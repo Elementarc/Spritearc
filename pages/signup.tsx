@@ -233,7 +233,7 @@ export default function Sign_up_page() {
                 <meta property="twitter:url" content="https://Spritearc.com/"/>
                 <meta name="twitter:title" content={`Spritearc - Login`}/>
                 <meta name="twitter:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
-                <meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
+                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/images/wallpaper.png`}/>
             </Head>
        
             <SIGNUP_CONTEXT.Provider value={PAGE_CONTEXT}>

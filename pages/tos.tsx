@@ -96,7 +96,7 @@ export function Qick_legal_navigation() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - TOS`}/>
 				<meta name="twitter:description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
-				<meta name="twitter:image:src" content={`/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/images/wallpaper.png`}/>
             </Head>
 
         

@@ -39,7 +39,7 @@ export default  function News(props: {patchnoteListOrdered: string}): ReactEleme
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - News`}/>
 				<meta name="twitter:description" content={`Read about our newest upcoming features and learn about our intentions!`}/>
-				<meta name="twitter:image:src" content={``}/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/images/wallpaper.png`}/>
             </Head>
 			
 			<div className="news_page">

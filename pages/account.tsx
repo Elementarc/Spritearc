@@ -173,7 +173,7 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content="Spritearc - Account"/>
 				<meta name="twitter:description" content="Navigate through your account. Edit your account settings or visit your public profile."/>
-				<meta name="twitter:image:src" content="/images/wallpaper.png"/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/images/wallpaper.png`}/>
             </Head>
         
             <div className='account_page'>
@@ -215,7 +215,7 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
                         <div className='user_portrait_container'>
                             
                             <div className='portrait'>
-                                <Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user.profile_picture}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                                <Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user?.profile_picture}`} alt={`Profile banner for the user ${user?.username}`} layout='fill'></Image>
                             
                                 <div className='portrait_hover_container'>
                                     <EditIcon/>
@@ -227,7 +227,7 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
                     </div>
 
                     <div className='user_info_container'>
-                        <Link href={`/profile?user=${user.username.toLowerCase()}`} scroll={false}>{user.username}</Link>
+                        <Link href={`/profile?user=${user?.username.toLowerCase()}`} scroll={false}>{user?.username}</Link>
 
                         <div className='user_description_container'>
 
@@ -238,8 +238,6 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
                                     <EditIcon/>
                                 </div>
                             </div>
-                            
-                            
                             
                         </div>
 

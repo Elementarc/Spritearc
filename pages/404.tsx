@@ -22,7 +22,7 @@ export default function Error_404() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content="Spritearc - Error 500"/>
 				<meta name="twitter:description" content="We couldn't find what you were looking for!"/>
-				<meta name="twitter:image:src" content="/images/wallpaper.png"/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
             </Head>
 
         

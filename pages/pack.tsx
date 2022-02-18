@@ -74,25 +74,26 @@ function Pack_page(props: {pack: Pack}) {
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     const Auth: Auth_context_type = useContext(Auth_context)
     const pack = props.pack
+
     return(
         <>
             <Head>
-				<title>{`${pack.title}`}</title>
-				<meta name="description" content={`${pack.description}`}/>
-                <meta name='keywords' content={`pixelart,${pack.tags.join(",")}`}/>
+				<title>{`${pack?.username} - ${pack?.title}`}</title>
+				<meta name="description" content={`${pack?.description}`}/>
+                <meta name='keywords' content={`pixelart,${pack?.tags.join(",")}`}/>
 
 				<meta property="og:url" content={`https://Spritearc.com/`}/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content={`${pack.title}`}/>
-				<meta property="og:description" content={`${pack.description}`}/>
-				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`}/>
+				<meta property="og:title" content={`${pack?.username} - ${pack?.title}`}/>
+				<meta property="og:description" content={`${pack?.description}`}/>
+				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack?._id}/${pack?.preview}`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
-				<meta name="twitter:title" content={`${pack.title}`}/>
-				<meta name="twitter:description" content={`${pack.description}`} />
-				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`}/>
+				<meta name="twitter:title" content={`${pack?.username} - ${pack.title}`}/>
+				<meta name="twitter:description" content={`${pack?.description}`} />
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack?._id}/${pack?.preview}`}/>
             </Head>
 
             <Memo_user_pack pack={pack} App_notification={App_notification} Auth={Auth}/>
@@ -105,8 +106,8 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
     const Auth = props.Auth
     //Props
     const pack: Pack = props.pack
-    const user: Public_user = Auth.user.public_user
-    const own_pack = user.username.length > 0 ? user.username.toLowerCase() === pack.username.toLowerCase() : false
+    const user: Public_user = Auth?.user?.public_user
+    const own_pack = user?.username.length > 0 ? user?.username.toLowerCase() === pack?.username.toLowerCase() : false
     const download_link = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${pack_id}`
     //Context
     const App_notification: App_notification_context_type = props.App_notification
@@ -184,13 +185,18 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         
     }
     function pack_tags_jsx() {
-        const tags = pack.tags
+        const tags = pack?.tags
 
-        const tags_jsx = tags.map((tag) => {
-            return <h4 key={`tag_${tag}`} className='tag_link' onClick={() => {router.push(`/search?query=${tag.toLowerCase()}`,`/search?query=${tag.toLowerCase()}`, {scroll: false})}}>{tag.toUpperCase()}</h4>
-        })
+        try {
+            const tags_jsx = tags.map((tag) => {
+                return <h4 key={`tag_${tag}`} className='tag_link' onClick={() => {router.push(`/search?query=${tag.toLowerCase()}`,`/search?query=${tag.toLowerCase()}`, {scroll: false})}}>{tag.toUpperCase()}</h4>
+            })
 
-        return tags_jsx
+            return tags_jsx
+        } catch(err) {
+            return []
+        }
+        
     }
 
     async function submit_pack_report() {
@@ -379,10 +385,8 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                                             <p>Creator:</p>
                                         </div>
 
-                                        <Link href={`/profile?user=${pack.username}`} scroll={false}>{pack.username}</Link>
+                                        <Link href={`/profile?user=${pack?.username}`} scroll={false}>{pack?.username}</Link>
                                     </div>
-
-
 
                                     <div className="grid_item">
 
@@ -390,7 +394,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                                             <p>Released:</p>
                                         </div>
 
-                                        <div className="item_2">{format_date(new Date(pack.date))}</div>
+                                        <div className="item_2">{format_date(new Date(pack?.date))}</div>
                                     </div>
 
                                     <div className="grid_item">
@@ -411,7 +415,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                                             <p>Downloads:</p>
                                         </div>
 
-                                        <div className="item_2">{`${pack.downloads}`}</div>
+                                        <div className="item_2">{`${pack?.downloads}`}</div>
                                     </div>
 
                                     <div className="grid_item">
@@ -420,7 +424,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                                             <p>License:</p>
                                         </div>
 
-                                        <div className="item_2">{pack.license.toUpperCase()}</div>
+                                        <div className="item_2">{pack?.license.toUpperCase()}</div>
                                     </div>
 
                                     <div className="grid_item">
@@ -684,3 +688,4 @@ function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string,
     </div>
   );
 }
+

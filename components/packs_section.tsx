@@ -66,7 +66,6 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 			} catch(err) {
 				
 				//
-				
 			}
 		}
 		get_packs()
