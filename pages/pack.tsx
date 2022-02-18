@@ -697,7 +697,7 @@ import fs from "fs"
 import http from "http"
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const agent = process.env.NEXT_PUBLIC_ENV === "development" ? new http.Agent() : new https.Agent({
-        ca: [fs.readFileSync(`${process.cwd()}/certificate/ca_bundle.crt`), fs.readFileSync(`${process.cwd()}/certificate/certificate.crt`)]
+        ca: [fs.readFileSync(`${process.cwd()}/certificate/ca_chain.crt`)]
     })
     
     const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {
