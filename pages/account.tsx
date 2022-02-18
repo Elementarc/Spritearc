@@ -246,7 +246,7 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
 
                     <div className='user_navigator_cards'>
 
-                        <div onClick={() => go_to(`/profile?user=${user.username}`)} className='card'>
+                        <div onClick={() => go_to(`/user/${user.username}`)} className='card'>
 
                             <div className='icon_container'>
 

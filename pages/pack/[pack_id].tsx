@@ -176,7 +176,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         const valid_report_reason = report_pack_validation()
         const report_input = document.getElementById("report_input") as HTMLInputElement
         if(!valid_report_reason) return
-        const pack_id = router.query.id
+        const pack_id = router.query.pack_id
 
         if(!pack_id) return
         if(typeof pack_id !== "string") return
@@ -203,10 +203,10 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         }
     }
     async function delete_pack() {
-        const query = router.query
+        const pack_id = router.query.pack_id
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_pack?id=${query.id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_pack?id=${pack_id}`, {
                 method: "POST",
                 headers: {
                     "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
