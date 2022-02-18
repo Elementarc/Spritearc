@@ -53,20 +53,20 @@ export default function Forgot_password_page() {
         <>
             <Head>
 				<title>{`Spritearc - Forgot Password`}</title>
-				<meta name="description" content={`Did you forgett your password? You can request a password reset and we will send you a token to your email that will allow you to reset your password!`}/>
-
+				<meta name="description" content={`Request a password token that will enable you to reset your password by providing us your email.`}/>
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Forgot Password`}/>
-				<meta property="og:description" content={`Did you forgett your password? You can request a password reset and we will send you a token to your email that will allow you to reset your password!`}/>
-				<meta property="og:image" content={`/images/wallpaper.png`}/>
+				<meta property="og:description" content={`Request a password token that will enable you to reset your password by providing us your email.`}/>
+                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Forgot Password`}/>
-				<meta name="twitter:description" content={`Did you forgett your password? You can request a password reset and we will send you a token to your email that will allow you to reset your password!`}/>
-				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/images/wallpaper.png`}/>
+				<meta name="twitter:description" content={`Request a password token that will enable you to reset your password by providing us your email.`}/>
+                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
             </Head>
         
             <div className="forgot_password_page">

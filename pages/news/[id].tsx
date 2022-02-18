@@ -14,7 +14,7 @@ import Head from 'next/head';
 //Frontend
 export default function Patch(props: {patchnote: string}) {
 	const router = useRouter()
-  	const patchnote = check_if_json(props.patchnote) ? JSON.parse(props.patchnote) : props.patchnote
+  	const patchnote: Patchnote = check_if_json(props.patchnote) ? JSON.parse(props.patchnote) : props.patchnote
 	
 	
 	useParallax("patch_background_image")
@@ -29,17 +29,19 @@ export default function Patch(props: {patchnote: string}) {
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content={`Spritearc - Home`}/>
+				<meta property="og:title" content={`Spritearc - ${patchnote.info.title}`}/>
 				<meta property="og:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
-				<meta property="og:image" content={``}/>
+				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
-				<meta name="twitter:title" content={`Spritearc - Home`}/>
+				<meta name="twitter:title" content={`Spritearc - ${patchnote.info.title}`}/>
 				<meta name="twitter:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
-				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
             </Head>
+			
 			<div className="patch_container">
 				
 				<div className="patch_header_container">

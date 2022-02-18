@@ -15,14 +15,15 @@ export default function Error_404() {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content="Spritearc - Error 500"/>
 				<meta property="og:description" content="We couldn't find what you were looking for!"/>
-				<meta property="og:image" content="/images/wallpaper.png"/>
+                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content="Spritearc - Error 500"/>
 				<meta name="twitter:description" content="We couldn't find what you were looking for!"/>
-				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/images/wallpaper.png`}/>
+                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
             </Head>
 
         

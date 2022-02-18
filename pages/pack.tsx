@@ -23,11 +23,13 @@ import { App_notification_context } from "../context/app_notification_context_pr
 import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider"
 import Head from 'next/dist/shared/lib/head'
 import { Auth_context } from '../context/auth_context_provider';
+import { GetStaticProps, GetStaticPaths, GetServerSideProps } from 'next'
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
 
-export default function Pack_page_handler() {
+export default function Pack_page_handler({server_pack}: {server_pack: Pack}) {
+    console.log(server_pack)
     const router = useRouter()
     const [pack, set_pack] = useState<null | Pack>(null)
 
@@ -687,5 +689,27 @@ function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string,
         <p>{name}</p>
     </div>
   );
+}
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+    
+    
+    const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${context.query.id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
+
+    const response_obj = await response.json() as Server_response_pack
+
+    console.log(response_obj)
+
+    return {
+        props: {
+            server_pack: response.status === 200 ? response_obj : {}
+        }
+    }
 }
 

@@ -28,7 +28,7 @@ export default function Home(): ReactElement {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Home`}/>
 				<meta property="og:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be shared with the world!`}/>
-				<meta property="og:image" content={`/images/wallpaper.png`}/>
+				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>

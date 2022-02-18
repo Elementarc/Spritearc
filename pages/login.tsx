@@ -150,20 +150,21 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
         <>
             <Head>
 				<title>{`Spritearc - Login`}</title>
-				<meta name="description" content={`Login into your account to rate Pixelart packs or to create your own unqiue packs that can be shared throughout the world.`}/>
+				<meta name="description" content={`Create an account to rate and create Pixel art packs!`}/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Login`}/>
-				<meta property="og:description" content={`Login into your account to rate Pixelart packs or to create your own unqiue packs that can be shared throughout the world.`}/>
-				<meta property="og:image" content={``}/>
+				<meta property="og:description" content={`Create an account to rate and create Pixel art packs!`}/>
+                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Login`}/>
-				<meta name="twitter:description" content={`Login into your account to rate Pixelart packs or to create your own unqiue packs that can be shared throughout the world.`}/>
-				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/images/wallpaper.png`}/>
+				<meta name="twitter:description" content={`Create an account to rate and create Pixel art packs!`}/>
+                <meta property="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
             </Head>
         
             <div className="login_page">
