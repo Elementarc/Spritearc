@@ -98,7 +98,7 @@ function Title_pack_section() {
 						<h2>RANDOM PACK</h2>
 						<h1>{title_pack.title}</h1>
 						<p>{title_pack.description}</p>
-						<Link href={`/pack?id=${title_pack._id}`} scroll={false}>View Pack</Link>
+						<Link href={`/pack/${title_pack._id}`} scroll={false}>View Pack</Link>
 					</div>
 
 					<div className="background_container">

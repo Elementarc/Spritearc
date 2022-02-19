@@ -75,7 +75,7 @@ function Pack_page(props: {pack: Pack}) {
 }
 function User_pack(props: {pack: Pack, App_notification: App_notification_context_type, Auth: Auth_context_type}) {
     const router = useRouter()
-    const pack_id = router.query.id as string
+    const pack_id = router.query.pack_id as string
     const Auth = props.Auth
     //Props
     const pack: Pack = props.pack
@@ -639,8 +639,8 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
     const assets_jsx = []
     for(let i = 0; i < pack_content.section_images.length; i++) {
         assets_jsx.push(
-            <div onClick={() => {show_asset(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_name}/${pack_content.section_images[i]}`)}} key={`${pack_content.section_images[i]}_${i}`} className="asset">
-                <Image unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_name}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
+            <div onClick={() => {show_asset(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_images[i]}`)}} key={`${pack_content.section_images[i]}_${i}`} className="asset">
+                <Image unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
             </div>
         )
     }

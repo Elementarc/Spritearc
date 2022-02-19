@@ -45,7 +45,7 @@ export default function Patch(props: {patchnote: string}) {
 			<div className="patch_container">
 				
 				<div className="patch_header_container">
-					<Image quality="100%" priority={true} src={`/images/${patchnote.info.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="patch_background_image" id="patch_background_image"/>
+					<Image unoptimized={true} quality="100%" priority={true} src={`/images/${patchnote.info.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="patch_background_image" id="patch_background_image"/>
 					<div className="patch_preview_blur"></div>
 				</div>
 
@@ -96,7 +96,7 @@ function Forward_item(props: {img: string, header: string, description: string, 
 					{props.background_color &&
 						<div style={{backgroundColor: props.background_color}} className='patch_forward_img_background'></div>
 					}
-					<Image className="patch_forward_image" layout="fill" src={props.img} alt="" />
+					<Image unoptimized={true} className="patch_forward_image" layout="fill" src={props.img} alt="" />
 				</div>
 				
 				<div className="patch_forward_info_content">

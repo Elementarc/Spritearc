@@ -858,7 +858,7 @@ function Step_3() {
                 if(response.status === 200) {
                     const body = await response.json()
                     function go_to_pack() {
-                        router.push(`/pack?id=${body.pack_id}`, `/pack?id=${body.pack_id}`, {scroll: false})
+                        router.push(`/pack/${body.pack_id}`, `/pack/${body.pack_id}`, {scroll: false})
                     }
     
                     App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully created pack!", message: "Your pack is now live and can be viewed by everyone.", button_label: "Visit pack", callb: go_to_pack}})
