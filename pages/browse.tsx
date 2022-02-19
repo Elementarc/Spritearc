@@ -102,7 +102,7 @@ function Title_pack_section() {
 					</div>
 
 					<div className="background_container">
-						<Image src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${title_pack._id}/${title_pack.preview}`} alt="Preview image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						<Image unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${title_pack._id}/${title_pack.preview}`} alt="Preview image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
 						<div className="background_blur" />
 					</div>
 

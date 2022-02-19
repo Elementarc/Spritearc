@@ -60,7 +60,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
                                         
                                         {public_user?.socials?.instagram.length > 0 &&
                                             <a href={`https://www.instagram.com/${public_user.socials.instagram}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                                <Image src={"/logos/instagram_color.png"} layout={"fill"}></Image>
+                                                <Image unoptimized={true} src={"/logos/instagram_color.png"} layout={"fill"}></Image>
                                             </a>
                                         }
                                         {public_user?.socials?.twitter.length > 0 &&
@@ -72,7 +72,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
                                         {public_user?.socials?.artstation.length > 0 &&
                                             
                                             <a href={`https://www.artstation.com/${public_user.socials.artstation}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                                <Image src={"/logos/artstation_color.png"} layout={"fill"}></Image>
+                                                <Image unoptimized={true} src={"/logos/artstation_color.png"} layout={"fill"}></Image>
                                             </a>
                                         }
                                     </div>
@@ -88,7 +88,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
                         
 
                         <div className='image_container'>
-                            <Image priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+                            <Image unoptimized={true} priority={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
                             <div className='blur' />
                         </div>
                         
@@ -98,7 +98,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
 
                                 <div className='portrait'>
                                     
-                                    <Image priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+                                    <Image unoptimized={true} priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
 
                                 </div>
 

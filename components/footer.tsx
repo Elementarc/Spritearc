@@ -61,7 +61,7 @@ export default function Footer(): ReactElement {
 export function Social_item(props: {link: string, logo: any, alt: string}): ReactElement {
     return(
         <a href={props.link} rel="noreferrer" target="_blank" className="social_item">
-            <Image src={props.logo} alt={props.alt} layout="fill" ></Image>
+            <Image unoptimized={true} src={props.logo} alt={props.alt} layout="fill" ></Image>
         </a>
     )
 }
