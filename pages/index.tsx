@@ -123,7 +123,7 @@ export default function Home(): ReactElement {
                                         </div>
 
                                         <div className="pack_2_image_wrapper">
-                                            <Imageunoptimized={true} src={"/images/wallpaper_5.jpg"} layout="fill"></Image>
+                                            <Image unoptimized={true} src={"/images/wallpaper_5.jpg"} layout="fill"></Image>
                                             <div className="pack_2_image_background"></div>
                                         </div>
                                     </div>
