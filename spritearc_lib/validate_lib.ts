@@ -7,19 +7,19 @@ export const LICENSE_TYPES = {
 
 //account
 const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
-const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Zäüö0-9\.\_\-]+(?<![_.])$/)
+const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-ZäöüÄÖÜ0-9\.\_\-]+(?<![_.])$/)
 const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,32}$/)
 
 //profile
-const user_description = new RegExp(/^(?!(?:\S*\s){12})([a-zA-Z0-9 \.\:\?\!\,\_\-]+)$/)
+const user_description_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{2,50}$/)
 
 //Pack
-const description_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\!\?\_\&\:\ -]{100,500}$/)
-const tag_regex = new RegExp(/^[a-zA-Z0-9]{2,12}$/)
-const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9 ]{3,25})$/)
-const section_name_regex = new RegExp(/^[a-zA-Z0-9]{3,16}$/)
-const report_input_regex = new RegExp(/^[a-zA-Z0-9\.\,\-\_?! ]{25,250}$/)
-const social_regex = new RegExp(/^[a-zA-Z0-9äöü\.\_\-]{0,20}$/)
+const pack_description_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{50,500}$/)
+const tag_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ]{2,12}$/)
+const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9äöüÄÖÜ\' \-]{3,25})$/)
+const section_name_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ]{3,16}$/)
+const report_input_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{3,500}$/)
+const social_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\.\_\-]{0,20}$/)
 
 export function validate_email(email: string): boolean | string {
     if(email_regex.test(email) === true) return true
@@ -182,22 +182,22 @@ export function validate_pack_title(title: string): boolean | string {
 
     if(title.length < 3) return "Min. 3 characters."
     if(title.length > 25) return "Max. 25 characters."
-    if(title_regex.test(title) === false) return "Max. 3 words allowed and title can only contain letters from a-z and number between 0-9"
+    if(title_regex.test(title) === false) return "Max. 3 words allowed. Make sure to not use special Characters"
 
     return true
 }
 export function validate_pack_description(description: string): boolean | string {
     
 
-    if(description.length < 100) return "Min. 100 characters."
+    if(description.length < 50) return "Min. 50 characters."
     if(description.length > 500) return "Max. 500 characters."
-    if(description_regex.test(description) === false) return "Allowed special characters: . , - ! ? _ & :"
+    if(pack_description_regex.test(description) === false) return "Allowed special characters: . , - ! ? _ & :"
 
     return true
 }
 export function validate_user_description(description: string): boolean | string {
-
-    if(!user_description.test(description)) return "description didnt pass validation. Allowed are 12 words and special characters: . : , ! ? _ -"
+    if(description.length < 2) return "To short!"
+    if(!user_description_regex.test(description)) return "Cant use description! Probably using a special character that is not allowed."
     return true
 }
 export function validate_pack_section_name(section_name: string): boolean | string {
