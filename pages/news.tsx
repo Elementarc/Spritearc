@@ -50,7 +50,7 @@ export default  function News(props: {patchnoteListOrdered: string}): ReactEleme
 					<div className="header_container">
 
 						<div className="background">
-							<Image loading='lazy' unoptimized={true} quality="100%" src={Eclipse} layout="fill" alt="A pixelart image that displays a universe" className="background_image" id="news_background_image"/>
+							<Image priority={true} src={Eclipse} layout="fill" alt="A pixelart image that displays a universe" className="background_image" id="news_background_image"/>
 							<div className="background_blur" />
 						</div>
 						
