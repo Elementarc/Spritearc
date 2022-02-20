@@ -204,7 +204,7 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
                     <div className='user_preview_container'>
 
                         <div className='profile_banner_container'>
-                            <Image loading='eager' unoptimized={true}  id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                            <Image loading='lazy' unoptimized={true}  id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
                             <div className='blur' />
 
                             <div className='profile_banner_hover_container'>

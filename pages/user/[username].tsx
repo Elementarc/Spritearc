@@ -88,7 +88,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
                         
 
                         <div className='image_container'>
-                            <Image loading='eager' unoptimized={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+                            <Image loading='lazy' unoptimized={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
                             <div className='blur' />
                         </div>
                         

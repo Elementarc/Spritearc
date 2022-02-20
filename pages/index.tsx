@@ -50,7 +50,7 @@ export default function Home(): ReactElement {
                         <div className="arrow_container">
                             <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
                         </div>
-                        <Image loading='eager' unoptimized={true} src={"/images/24.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                        <Image loading='lazy' unoptimized={true} src={"/images/24.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         <div className="background_blur"></div>
                     </div>
 

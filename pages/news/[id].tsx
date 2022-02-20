@@ -45,7 +45,7 @@ export default function Patch(props: {patchnote: string}) {
 			<div className="patch_container">
 				
 				<div className="patch_header_container">
-					<Image loading='eager' unoptimized={true} quality="100%" src={`/images/${patchnote.info.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="patch_background_image" id="patch_background_image"/>
+					<Image loading='lazy' unoptimized={true} quality="100%" src={`/images/${patchnote.info.image}`} layout="fill" alt="A Background image for header. Represent a cool planet." className="patch_background_image" id="patch_background_image"/>
 					<div className="patch_preview_blur"></div>
 				</div>
 
