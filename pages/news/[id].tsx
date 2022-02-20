@@ -31,7 +31,7 @@ export default function Patch(props: {patchnote: string}) {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - ${patchnote.info.title}`}/>
 				<meta property="og:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
-				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 
 				<meta name="twitter:card" content="summary_large_image"/>
@@ -39,7 +39,7 @@ export default function Patch(props: {patchnote: string}) {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - ${patchnote.info.title}`}/>
 				<meta name="twitter:description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
-				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 			
 			<div className="patch_container">

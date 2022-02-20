@@ -355,7 +355,7 @@ function Create_pack_page() {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Create Pack`}/>
 				<meta property="og:description" content={`Create a pack that you can share around the world. People will be able to download & rate your art.`}/>
-                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 
 				<meta name="twitter:card" content="summary_large_image"/>
@@ -363,7 +363,7 @@ function Create_pack_page() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Create Pack`}/>
 				<meta name="twitter:description" content={`Create a pack that you can share around the world. People will be able to download & rate your art.`}/>
-                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 
         

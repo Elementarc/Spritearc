@@ -28,14 +28,14 @@ export default function Home(): ReactElement {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Home`}/>
 				<meta property="og:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be shared with the world!`}/>
-				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Home`}/>
 				<meta name="twitter:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be shared with the world!`}/>
-                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 
             <div className="home_page">
@@ -50,7 +50,7 @@ export default function Home(): ReactElement {
                         <div className="arrow_container">
                             <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
                         </div>
-                        <Image priority={true} src={"/images/wallpaper.png"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                        <Image priority={true} src={"/images/spritearc_wallpaper.png"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         <div className="background_blur"></div>
                     </div>
 
@@ -111,7 +111,7 @@ export default function Home(): ReactElement {
                                     <div className="pack_1">
 
                                         <div className="pack_1_image_wrapper">
-                                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper.png"} layout="fill"></Image>
+                                            <Image loading='lazy' unoptimized={true} src={"/images/spritearc_wallpaper.png"} layout="fill"></Image>
                                         </div>
                                     </div>
 

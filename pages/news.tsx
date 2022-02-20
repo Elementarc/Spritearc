@@ -32,7 +32,7 @@ export default  function News(props: {patchnoteListOrdered: string}): ReactEleme
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - News`}/>
 				<meta property="og:description" content={`Read about our newest upcoming features and learn about our intentions!`}/>
-				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 
 				<meta name="twitter:card" content="summary_large_image"/>
@@ -40,7 +40,7 @@ export default  function News(props: {patchnoteListOrdered: string}): ReactEleme
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - News`}/>
 				<meta name="twitter:description" content={`Read about our newest upcoming features and learn about our intentions!`}/>
-				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 			
 			<div className="news_page">

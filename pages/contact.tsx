@@ -16,7 +16,7 @@ export default function Terms_of_service() {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Contact`}/>
 				<meta property="og:description" content={`Do you have any question or maybe a suggestion that you would like to have? Get in contact with us and let us know how we can help you.`}/>
-                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 
 				<meta name="twitter:card" content="summary_large_image"/>
@@ -24,7 +24,7 @@ export default function Terms_of_service() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Contact`}/>
 				<meta name="twitter:description" content={`Do you have any question or maybe a suggestion that you would like to have? Get in contact with us and let us know how we can help you.`}/>
-                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
         
             <div className='tos_page'>

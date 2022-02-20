@@ -58,7 +58,7 @@ export default function Forgot_password_page() {
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Forgot Password`}/>
 				<meta property="og:description" content={`Request a password token that will enable you to reset your password by providing us your email.`}/>
-                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 
 				<meta name="twitter:card" content="summary_large_image"/>
@@ -66,7 +66,7 @@ export default function Forgot_password_page() {
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Forgot Password`}/>
 				<meta name="twitter:description" content={`Request a password token that will enable you to reset your password by providing us your email.`}/>
-                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/wallpaper.png`}/>
+                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
         
             <div className="forgot_password_page">
