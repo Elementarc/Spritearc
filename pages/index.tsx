@@ -50,7 +50,7 @@ export default function Home(): ReactElement {
                         <div className="arrow_container">
                             <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
                         </div>
-                        <Image unoptimized={true} priority={true} src={"/images/wallpaper.png"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                        <Image loading='eager' unoptimized={true} src={"/images/24.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         <div className="background_blur"></div>
                     </div>
 
@@ -77,7 +77,7 @@ export default function Home(): ReactElement {
                                     <div className="pack_1">
 
                                         <div className="pack_1_image_wrapper">
-                                            <Image unoptimized={true} src={"/images/example_preview_2.png"} layout="fill"></Image>
+                                            <Image loading='lazy' unoptimized={true} src={"/images/example_preview_2.png"} layout="fill"></Image>
                                         </div>
                                     </div>
 
@@ -89,7 +89,7 @@ export default function Home(): ReactElement {
                                         </div>
 
                                         <div className="pack_2_image_wrapper">
-                                            <Image unoptimized={true} src={"/images/example_preview.png"} layout="fill"></Image>
+                                            <Image loading='lazy' unoptimized={true} src={"/images/example_preview.png"} layout="fill"></Image>
                                             <div className="pack_2_image_background"></div>
                                         </div>
                                     </div>
@@ -111,7 +111,7 @@ export default function Home(): ReactElement {
                                     <div className="pack_1">
 
                                         <div className="pack_1_image_wrapper">
-                                            <Image unoptimized={true} src={"/images/wallpaper.png"} layout="fill"></Image>
+                                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper.png"} layout="fill"></Image>
                                         </div>
                                     </div>
 
@@ -123,7 +123,7 @@ export default function Home(): ReactElement {
                                         </div>
 
                                         <div className="pack_2_image_wrapper">
-                                            <Image unoptimized={true} src={"/images/wallpaper_5.jpg"} layout="fill"></Image>
+                                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_5.jpg"} layout="fill"></Image>
                                             <div className="pack_2_image_background"></div>
                                         </div>
                                     </div>
@@ -133,7 +133,7 @@ export default function Home(): ReactElement {
                         </div>
 
                         <div className="blob_container">
-                            <Image unoptimized={true} src={"/blobs/blob_3.svg"} layout="fill"></Image>
+                            <Image loading='lazy' unoptimized={true} src={"/blobs/blob_3.svg"} layout="fill"></Image>
                         </div>
                     </div>
 
@@ -193,7 +193,7 @@ export default function Home(): ReactElement {
                         </div>
 
                         <div className="img_wrapper">
-                            <Image unoptimized={true} src={"/images/wallpaper_4.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_4.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         </div>
                         <div className="section_one_background_blur" />
                     </section>
@@ -208,7 +208,7 @@ export default function Home(): ReactElement {
                             </Link>
                         </div>
                         <div className="img_wrapper">
-                            <Image unoptimized={true} src={"/images/wallpaper_5.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_5.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         </div>
                         <div className="news_section_background_blur" />
                     </section>
@@ -223,7 +223,7 @@ export default function Home(): ReactElement {
                         </div>
 
                         <div className="img_wrapper">
-                            <Image unoptimized={true} src={"/images/wallpaper_3.png"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_3.png"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         </div>
                         <div className="signup_section_background_blur" />
                     </section>

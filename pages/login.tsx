@@ -29,7 +29,7 @@ export default function Login_page_handler() {
             }
         }
         check_auth()
-    }, [])
+    }, [router])
 
     return(
         <>

@@ -305,7 +305,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                                     <motion.div onClick={() => {set_focus_img_src(null)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="focus_image_container">
                                         
                                         <div onClick={() => {set_focus_img_src("/")}} className="asset_fixed_image_container">
-                                            <Image unoptimized={true} src={focus_img_src} alt="Represents a pack assets but bigger in size." layout="fill" id="asset_fixed_image"></Image>
+                                            <Image loading='lazy' unoptimized={true} src={focus_img_src} alt="Represents a pack assets but bigger in size." layout="fill" id="asset_fixed_image"></Image>
 
                                             <div className="close_asset" id="close_pack">
 
@@ -328,7 +328,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         
                     <div className="preview_container" id="preview_container">
                         <div className="background">
-						    <Image unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" priority={true} className="preview_image" id="title_pack_background_image"/>
+						    <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" className="preview_image" id="title_pack_background_image"/>
                             <div className="background_blur" />
                         </div>
 
@@ -640,7 +640,7 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
     for(let i = 0; i < pack_content.section_images.length; i++) {
         assets_jsx.push(
             <div onClick={() => {show_asset(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_images[i]}`)}} key={`${pack_content.section_images[i]}_${i}`} className="asset">
-                <Image unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
+                <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
             </div>
         )
     }

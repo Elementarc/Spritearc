@@ -981,7 +981,7 @@ function Preview({section_name}: {section_name: string}) {
                 
                 {create_pack.create_pack_obj.preview.preview_asset && create_pack.create_pack_obj.preview.preview_url &&
                     <div className='asset'>
-                        <Image unoptimized={true} src={`${create_pack.create_pack_obj.preview.preview_url}`} alt='An image that will preview this pack.' layout='fill'></Image>
+                        <Image loading='lazy' unoptimized={true} src={`${create_pack.create_pack_obj.preview.preview_url}`} alt='An image that will preview this pack.' layout='fill'></Image>
                     </div>
                 }
                 {!create_pack.create_pack_obj.preview.preview_asset &&
@@ -1014,7 +1014,7 @@ function Section({section_name, section_content}: {section_name: string, section
             asset_jsx.push(
 
                 <div onClick={delete_asset} id={`${i}`} key={`${section_content.section_urls}_${i}`} className='asset'>
-                    <Image unoptimized={true} src={section_content.section_urls[i]} alt='An asset that will represent 1 sprite/asset from this pack.' layout='fill'></Image>
+                    <Image loading='lazy' unoptimized={true} src={section_content.section_urls[i]} alt='An asset that will represent 1 sprite/asset from this pack.' layout='fill'></Image>
 
                     <div className='delete_background_container'>
                         <ThrashIcon/>

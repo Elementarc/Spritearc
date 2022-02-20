@@ -214,7 +214,7 @@ function Pack_preview(props: {pack: Pack}) {
 			</div>
 			
 			<div className="background_container">
-				<Image unoptimized={true} priority={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
+				<Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
 				<div className="background_blur" />
 				<div className="background_blur_hover" />
 			</div>
