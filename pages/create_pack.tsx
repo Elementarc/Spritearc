@@ -903,7 +903,7 @@ function Step_3() {
 
                     <h1>
                         License
-                        <a href='/license' target={"_blank"} className='learn_about_licenses'>
+                        <a href='https//spritearc.com/license' target={"_blank"} className='learn_about_licenses'>
                             <HelpIcon/>
                         </a>
                     </h1>
