@@ -220,19 +220,19 @@ export default function Sign_up_page() {
         <>
             <Head>
                 <title>{`Spritearc - Signup`}</title>
-                <meta name="description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
+                <meta name="description" content={`Create an account to share your own Pixel art assets and sprites with the world.`}/>
 
                 <meta property="og:url" content="https://Spritearc.com/"/>
                 <meta property="og:type" content="website" />
                 <meta property="og:title" content={`Spritearc - Signup`}/>
-                <meta property="og:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
+                <meta property="og:description" content={`Create an account to share your own Pixel art assets and sprites with the world.`}/>
 				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
                 <meta name="twitter:card" content="summary_large_image"/>
                 <meta property="twitter:domain" content="Spritearc.com"/>
                 <meta property="twitter:url" content="https://Spritearc.com/"/>
                 <meta name="twitter:title" content={`Spritearc - Login`}/>
-                <meta name="twitter:description" content={`Create an account to share your own Pixelart assets and sprites with the world.`}/>
+                <meta name="twitter:description" content={`Create an account to share your own Pixel art assets and sprites with the world.`}/>
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
        

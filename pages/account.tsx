@@ -271,7 +271,7 @@ export function Account_page(props: {Auth: Auth_context_type, App_notification: 
                             </div>
 
                             <h1>Create Pack</h1>
-                            <p>Create your own Pixelart pack! Make yourself a name.</p>
+                            <p>Create your own Pixel art pack! Make yourself a name.</p>
                         </div>
 
                         <div onClick={() => go_to(`/account/settings`)} className='card'>

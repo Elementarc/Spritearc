@@ -654,6 +654,7 @@
             }
 
             .pack_license_container {
+                position: relative;
                 display: flex;
                 flex-direction: column;
                 justify-content: center;
@@ -661,9 +662,29 @@
                 width: 100%;
                 margin-top: 4rem;
                 h1{
+                    display: flex;
+                    align-items: center;
+                    position: relative;
                     @include h1(medium);
-                }
 
+                    .learn_about_licenses{
+                        position: absolute;
+                        right: -2rem;
+                        transform: translateY(1px);
+                        height: 20px;
+                        width: 20px;
+
+                        svg {
+                            transform: translateY(-5px);
+                            fill: white;
+
+                            &:hover {
+                                cursor: pointer;
+                            }
+                        }
+                    }
+                }
+                
                 .selection_container {
                     width: 30%;
                     height: 45px;
@@ -696,7 +717,7 @@
                         p {
                             @include p;
                         }
-
+                        
                         .licens_deco_container{
                             position: absolute;
                             display: flex;

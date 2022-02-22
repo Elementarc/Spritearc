@@ -19,12 +19,12 @@ import jwt from "jsonwebtoken"
 import Loader from "../components/loading"
 import Head from 'next/head';
 import Protected_route from '../components/protected_route';
-
+import HelpIcon from "../public/icons/HelpIcon.svg"
 // @ts-ignore: Unreachable code error
 
 //Context
+
 const create_pack_context: any = React.createContext(null)
-const section_name_regex = new RegExp(/^[a-zA-Z0-9]{3,12}$/)
 
 //Actions 
 const CREATE_PACK_ACTIONS = {
@@ -45,7 +45,7 @@ const CREATE_PACK_ACTIONS = {
 
 //Initial value for reducer state
 const initial_create_pack_obj: Create_pack_frontend = {
-    current_step: 0,
+    current_step: 2,
     steps_available: [],
     license: null,
     preview: {preview_asset: null, preview_url: null},
@@ -901,11 +901,17 @@ function Step_3() {
 
                 <div className='pack_license_container'>
 
-                    <h1>License</h1>
-
+                    <h1>
+                        License
+                        <a href='/license' target={"_blank"} className='learn_about_licenses'>
+                            <HelpIcon/>
+                        </a>
+                    </h1>
+                    
                     <motion.div animate={selection_animation} onClick={() => set_selection_state(!selection_state)} onMouseLeave={() => set_selection_state(false)} className='selection_container'>
 
                         <div className='target_licens_container'>
+                            
                             {create_pack.create_pack_obj.license &&
                                 <p>{capitalize_first_letter_rest_lowercase(create_pack.create_pack_obj.license)}</p>
                             }

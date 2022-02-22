@@ -415,11 +415,12 @@
                 padding: 0 12rem;
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                grid-template-rows: 150px;
-                column-gap: 5rem;
+                grid-template-rows: auto;
+                column-gap: 4rem;
                 row-gap: 5rem;
                 width: 100%;
                 @include breakpoint(laptop) {
+                    column-gap: 3.5rem;
                     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
                     padding: 0 4rem;
                 }
@@ -431,28 +432,29 @@
                 }
 
                 .perk {
-                    
                     display: flex;
                     flex-direction: column;
-                    justify-content: center;
                     align-items: center;
-                    height: 150px;
+                    height: auto;
 
-                    .perk_icon_wrapper{
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        width: 100%;
-                        padding: 1rem 0;
-                        svg {
-                            fill: $color_main_bright;
-                            transform: scale(2)
+                    .perk_header{
+                        .perk_icon_wrapper{
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: 100%;
+                            padding: 1rem 0;
+                            svg {
+                                fill: $color_main_bright;
+                                transform: scale(2)
+                            }
+                        }
+                        
+                        h2{
+                            @include h2()
                         }
                     }
                     
-                    h2{
-                        @include h2()
-                    }
 
                     p{
                         @include p(medium);

@@ -10,8 +10,11 @@
     overflow: hidden;
     
     h1{
-        @include h1(big);
+        @include h1();
         margin-top: 3rem;
+        @include breakpoint(mobile) {
+            @include h1(medium);
+        }
     }
     
     .legal_container{
@@ -43,6 +46,10 @@
         img {
             object-fit: contain;
             object-position: center;
+
+            @include breakpoint(mobile) {
+                transform: scale(.8)
+            }
         }
     }
     h5{

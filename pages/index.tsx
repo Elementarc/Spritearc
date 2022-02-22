@@ -22,19 +22,19 @@ export default function Home(): ReactElement {
         <>
             <Head>
 				<title>{`Spritearc - Home`}</title>
-				<meta name="description" content={`Download or create opensource Pixelart assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
+				<meta name="description" content={`Download or create opensource Pixel art assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Home`}/>
-				<meta property="og:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be shared with the world!`}/>
+				<meta property="og:description" content={`Discover thousands of opensource pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
 				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Home`}/>
-				<meta name="twitter:description" content={`Discover thousands of opensource pixelart assets and sprites for free. You can download and create your own pixelart packs that will be shared with the world!`}/>
+				<meta name="twitter:description" content={`Discover thousands of opensource pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 
@@ -44,13 +44,13 @@ export default function Home(): ReactElement {
 
                     <div className="intro_container">
                         <div className="intro_content">
-                            <h2>Pixelart on the Horizon</h2>
+                            <h2>Pixel art on the Horizon</h2>
                             <h1>Welcome to Spritearc!</h1>
                         </div>
                         <div className="arrow_container">
                             <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
                         </div>
-                        <Image priority={true} src={"/images/spritearc_wallpaper.png"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                        <Image priority={true} src={"/images/spritearc_wallpaper.png"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         <div className="background_blur"></div>
                     </div>
 
@@ -103,7 +103,7 @@ export default function Home(): ReactElement {
                             <div className="create_pack_home_content">
                                 <div className="text_wrapper_home">
                                     <h1>Create a Pack</h1>
-                                    <p>If you create an Account on Pixelart you will be able to create your own unqiue Pixelart packs that people can download and use. </p>
+                                    <p>If you create an Account on Pixel art you will be able to create your own unqiue Pixel art packs that people can download and use. </p>
                                     <Link href={"/signup"} scroll={false}>Signup</Link>
                                 </div>
                                 
@@ -147,28 +147,35 @@ export default function Home(): ReactElement {
                         <div className="perks_grid">
                             
                             <div className="perk">
-                                <div className="perk_icon_wrapper">
-                                    <AddIcon/>
+                                <div className="perk_header">
+                                    <div className="perk_icon_wrapper">
+                                        <AddIcon/>
+                                    </div>
+                                    <h2>Creating Packs</h2>
                                 </div>
                                 
-                                <h2>Creating Packs</h2>
-                                <p>We made creating packs an enjoyment. Create your pixelart packs easily with only 3 steps!</p>
+                                <p>Spritearc allows you to organize your assets into packs that categorize your art. Create your pack within only 3 steps!</p>
                             </div>
                            
                             <div className="perk">
-                                <div className="perk_icon_wrapper">
-                                    <WorldIcon/>
+                                <div className="perk_header">
+                                    <div className="perk_icon_wrapper">
+                                        <WorldIcon/>
+                                    </div>
+                                    <h2>Public</h2>
                                 </div>
-                                <h2>Public</h2>
                                 <p>Your recently released packs will be displayed on the front page which makes it easier to grow your audience.</p>
                             </div>
                             
                             <div className="perk">
-                                <div className="perk_icon_wrapper">
-                                    <HighQuality/>
+                                <div className="perk_header">
+                                    <div className="perk_icon_wrapper">
+                                        <HighQuality/>
+                                    </div>
+                                    <h2>High Quality</h2>
                                 </div>
-                                <h2>High Quality</h2>
-                                <p>You can download thousands of high quality pixelart assets on Spritearc.</p>
+                                
+                                <p>{`Discover assets made directly from those who have a passion for Pixel Art.`}</p>
                             </div>
 
                         </div>
@@ -193,7 +200,7 @@ export default function Home(): ReactElement {
                         </div>
 
                         <div className="img_wrapper">
-                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_4.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_4.jpg"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         </div>
                         <div className="section_one_background_blur" />
                     </section>
@@ -208,22 +215,22 @@ export default function Home(): ReactElement {
                             </Link>
                         </div>
                         <div className="img_wrapper">
-                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_5.jpg"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_5.jpg"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         </div>
                         <div className="news_section_background_blur" />
                     </section>
 
                     <section className="signup_section_container">
                         <div className="signup_section_content">
-                            <h1>Publish Your Pixelart</h1>
-                            <p>Are you interested in releasing your own pixelart packs? Create your account now and build yourself a community that will support you through all pixels. </p>
+                            <h1>Publish Your Pixel art</h1>
+                            <p>Are you interested in releasing your own pixel art packs? Create your account now and build yourself a community that will support you through all pixels. </p>
                             <Link href="/signup" scroll={false}>
                                 <button>Create Account</button>
                             </Link>
                         </div>
 
                         <div className="img_wrapper">
-                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_3.png"} alt="Pixelart wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_3.png"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         </div>
                         <div className="signup_section_background_blur" />
                     </section>

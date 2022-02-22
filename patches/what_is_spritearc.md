@@ -24,11 +24,11 @@ Spritearc wants to enable game developers to get high quality pixel art assets a
 <br>
 <br>
 
-We will constantly try to improve this platform and make it reach more and more people! We think that if game developer's would have more high quality sprites & assets more good games would be released. While at the moment you only can release opensource packs, we have planned to introduce premium packs for the future. We want to make sure that artists will also be rewarded for creating great pixelart packs. Also planned would be a donation option for free packs.
+We will constantly try to improve this platform and make it reach more and more people! We think that if game developer's would have more high quality sprites & assets more good games would be released. While at the moment you only can release opensource packs, we have planned to introduce premium packs for the future. We want to make sure that artists will also be rewarded for creating great pixel art packs. Also planned would be a donation option for free packs.
 
 Since we are at the beginning of our journey there is still alot to be done. But we are excited to add new features and would love to see people enjoying sharing their art.
 
-But for now, have fun sharing and downloading PIXELART :)
+But for now, have fun sharing and downloading PIXEL ART :)
 <br>
 <br>
 Your Spritearc team.

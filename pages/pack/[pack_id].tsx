@@ -26,6 +26,7 @@ import { Auth_context } from '../../context/auth_context_provider';
 import { GetServerSideProps } from 'next'
 import https from "https"
 import http from "http"
+import HelpIcon from "../../public/icons/HelpIcon.svg"
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
@@ -52,7 +53,7 @@ function Pack_page(props: {pack: Pack}) {
             <Head>
 				<title>{`${pack?.username} - ${pack?.title}`}</title>
 				<meta property="description" content={`${pack?.description}`}/>
-                <meta property='keywords' content={`pixelart,${pack?.tags.join(",")}`}/>
+                <meta property='keywords' content={`pixel art,${pack?.tags.join(",")}`}/>
 
 				<meta property="og:url" content={`https://Spritearc.com/pack?id=${pack?._id}`}/>
 				<meta property="og:type" content="website" />
@@ -397,7 +398,17 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                                             <p>License:</p>
                                         </div>
 
-                                        <div className="item_2">{pack?.license.toUpperCase()}</div>
+                                        <div className="item_2">
+                                            <p className='pack_license'>
+                                                {pack?.license.toUpperCase()}
+                                                <Link href='/license' scroll={false}>
+                                                    <a>
+                                                        <HelpIcon/>
+                                                    </a>
+                                                </Link>
+                                            </p>
+                                            
+                                        </div>
                                     </div>
 
                                     <div className="grid_item">

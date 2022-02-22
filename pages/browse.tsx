@@ -13,12 +13,12 @@ export default function Browse() {
 	return (
 		<>
 			<Head>
-				<title>{`Spritearc - Browse through thousands of free Pixelart assets and sprites`}</title>
-				<meta name="description" content="Discover free Pixelart sprites and assets from more than 1000+ of packs. We have high quality assets for your pixelart game. Interested?"/>
+				<title>{`Spritearc - Browse through thousands of free Pixel art assets and sprites`}</title>
+				<meta name="description" content="Discover free Pixel art sprites and assets from more than 1000+ of packs. We have high quality assets for your pixel art game. Interested?"/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Browse through thousands of free Pixelart assets and sprites"/>
+				<meta property="og:title" content="Browse through thousands of free Pixel art assets and sprites"/>
 				<meta property="og:description" content="Find sprites and assets from thousands of packs and download them."/>
 				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
@@ -26,7 +26,7 @@ export default function Browse() {
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
-				<meta name="twitter:title" content="Browse through thousands of free Pixelart assets and sprites"/>
+				<meta name="twitter:title" content="Browse through thousands of free Pixel art assets and sprites"/>
 				<meta name="twitter:description" content="Find sprites and assets from thousands of packs and download them."/>
 				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
