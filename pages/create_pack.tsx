@@ -45,7 +45,7 @@ const CREATE_PACK_ACTIONS = {
 
 //Initial value for reducer state
 const initial_create_pack_obj: Create_pack_frontend = {
-    current_step: 2,
+    current_step: 0,
     steps_available: [],
     license: null,
     preview: {preview_asset: null, preview_url: null},

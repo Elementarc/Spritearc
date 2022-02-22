@@ -22,19 +22,19 @@ export default function Home(): ReactElement {
         <>
             <Head>
 				<title>{`Spritearc - Home`}</title>
-				<meta name="description" content={`Download or create opensource Pixel art assets to share it with the world! We have more then thousands of assets you can freely download and use in your projects.`}/>
+				<meta name="description" content={`Discover thousands of pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Home`}/>
-				<meta property="og:description" content={`Discover thousands of opensource pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
+				<meta property="og:description" content={`Discover thousands of pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
 				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Home`}/>
-				<meta name="twitter:description" content={`Discover thousands of opensource pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
+				<meta name="twitter:description" content={`Discover thousands of pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 
@@ -136,8 +136,6 @@ export default function Home(): ReactElement {
                             <Image loading='lazy' unoptimized={true} src={"/blobs/blob_3.svg"} layout="fill"></Image>
                         </div>
                     </div>
-
-                    
 
                     
 
