@@ -17,7 +17,7 @@ const user_description_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!
 const pack_description_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{50,500}$/)
 const tag_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ]{2,12}$/)
 const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9äöüÄÖÜ\' \-]{3,25})$/)
-const section_name_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ]{3,16}$/)
+const section_name_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-]{3,16}$/)
 const report_input_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{3,500}$/)
 const social_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\.\_\-]{0,20}$/)
 
