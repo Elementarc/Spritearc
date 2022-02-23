@@ -1,4 +1,4 @@
-import React, {useEffect, useReducer, useState, ReactElement, useContext, useCallback} from 'react';
+import React, {useEffect, useReducer, useState, ReactElement, useContext, useCallback, useRef} from 'react';
 import CloseIcon from "../public/icons/CloseIcon.svg"
 import Footer from '../components/footer';
 import H1_with_deco from '../components/h1_with_deco';
@@ -404,26 +404,12 @@ function Create_pack_page() {
 function Step_1() {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
     const create_pack_obj = create_pack.create_pack_obj
-    const dispatch = create_pack.dispatch
     const [pack_content_jsx, set_pack_content_jsx] = useState<ReactElement[]>([])
     const [toggle_add_section, set_toggle_add_section] = useState(false)
-
-    //CREATING JSX OF create_pack_obj.content
-    useEffect(() => {
-        const sections_jsx: any = []
-        
-        for(let [section_name, section_content] of create_pack_obj.content.entries()) {
-            
-            sections_jsx.push(
-                <Section key={`section_${section_name}`} section_name={capitalize_first_letter_rest_lowercase(section_name)} section_content={section_content}/>
-            )
-            
-        }
-
-        set_pack_content_jsx(sections_jsx)
-
-    }, [create_pack_obj])
-
+    const [toggle_section_name_recommendations, set_toggle_section_name_recommendations] = useState(false)
+    const refs = useRef<any>([])
+    const dispatch = create_pack.dispatch
+    let timer: any
     //Function that styles error elements when error
     function style_error_items(error: boolean) {
         const input = document.getElementById("section_name_input") as HTMLInputElement
@@ -437,12 +423,18 @@ function Step_1() {
             button.classList.remove("button_disabled")
         }
     }
-
-
+    //Validating section name
     function validate_section_name(): Promise<boolean> {
+        const input = document.getElementById("section_name_input") as HTMLInputElement
+        if(input.value.length === 0) {
+            set_toggle_section_name_recommendations(true)
+        } else {
+            set_toggle_section_name_recommendations(false)
+        }
+
         return new Promise((resolve) => {
             
-            const input = document.getElementById("section_name_input") as HTMLInputElement
+            
             
             const error_message = document.getElementById("section_name_error_message") as HTMLParagraphElement
             
@@ -478,12 +470,36 @@ function Step_1() {
     async function dispatch_section_name_with_input_value() {
         const valid = await validate_section_name()
         if(!valid) return
-        const input = document.getElementById("section_name_input") as HTMLInputElement
+        const section_name = refs.current["section_name_input"].value as string
         
-        dispatch({type: CREATE_PACK_ACTIONS.ADD_SECTION, payload: {section_name: input.value.toLowerCase()}})
+        dispatch({type: CREATE_PACK_ACTIONS.ADD_SECTION, payload: {section_name: section_name.toLowerCase()}})
         set_toggle_add_section(false)
     }
+    async function select_recommendation(e: any) {
+        const recommendation = e.target.innerText as string
+        refs.current["section_name_input"].value = recommendation
+        
+        set_toggle_section_name_recommendations(false)
+        const valid_section_name = await validate_section_name()
+        if(!valid_section_name) return
+        await dispatch_section_name_with_input_value()
+    }
 
+    //CREATING JSX OF create_pack_obj.content
+    useEffect(() => {
+        const sections_jsx: any = []
+        
+        for(let [section_name, section_content] of create_pack_obj.content.entries()) {
+            
+            sections_jsx.push(
+                <Section key={`section_${section_name}`} section_name={capitalize_first_letter_rest_lowercase(section_name)} section_content={section_content}/>
+            )
+            
+        }
+
+        set_pack_content_jsx(sections_jsx)
+
+    }, [create_pack_obj])
     //Adding eventlisteners to be able to press enter to create section
     useEffect(() => {
 
@@ -508,8 +524,7 @@ function Step_1() {
             window.removeEventListener("keyup", key_press)
         };
     }, [toggle_add_section])
-
-
+    
     return (
         <>
             <H1_with_deco title='Step 1'/>
@@ -524,8 +539,42 @@ function Step_1() {
                                 <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: .2}}} exit={{scale: .8, transition: {duration: .2}}} className='content_container'>
 
                                     <h1>Please enter a section name!</h1>
-                                    <input autoComplete='off' onKeyUp={validate_section_name} type="text" placeholder='Section name' id="section_name_input"/>
-                                    <p id="section_name_error_message"></p>
+                                    
+                                    <div className='input_container'>
+                                        <input ref={(el) => {refs.current["section_name_input"] = el}} onFocus={(e) => {if(e.target.value.length === 0) set_toggle_section_name_recommendations(true)}} list='section_name' autoComplete='off' onKeyUp={validate_section_name} onChange={validate_section_name}  type="text" placeholder='Section name' id="section_name_input"/>
+                                        <p id="section_name_error_message"></p>
+                                        
+                                        {toggle_section_name_recommendations &&
+                                            <div className='section_name_recommandations'>
+                                                <ul>
+                                                    <li onClick={select_recommendation}>Characters</li>
+                                                    <li onClick={select_recommendation}>Monsters</li>
+                                                    <li onClick={select_recommendation}>Animals</li>
+                                                    <li onClick={select_recommendation}>Boss-monster</li>
+                                                    <li onClick={select_recommendation}>Weapons</li>
+                                                    <li onClick={select_recommendation}>Armor</li>
+                                                    <li onClick={select_recommendation}>Magic</li>
+                                                    <li onClick={select_recommendation}>Mountains</li>
+                                                    <li onClick={select_recommendation}>Backgrounds</li>
+                                                    <li onClick={select_recommendation}>Tiles</li>
+                                                    <li onClick={select_recommendation}>Tilemap</li>
+                                                    <li onClick={select_recommendation}>Furniture</li>
+                                                    <li onClick={select_recommendation}>Icons</li>
+                                                    <li onClick={select_recommendation}>Fonts</li>
+                                                    <li onClick={select_recommendation}>Food</li>
+                                                    <li onClick={select_recommendation}>Animations</li>
+                                                    <li onClick={select_recommendation}>Sprites</li>
+                                                    <li onClick={select_recommendation}>Items</li>
+                                                    <li onClick={select_recommendation}>Portraits</li>
+                                                    <li onClick={select_recommendation}>User-interface</li>
+                                                </ul>
+                                            </div>
+                                        }
+
+                                    </div>
+                                    
+
+                                    
                                     <button onClick={dispatch_section_name_with_input_value} id='add_section_button' className='button_disabled'>Add section</button>
 
                                 </motion.div>
@@ -692,9 +741,10 @@ function Step_3() {
     const [selection_state, set_selection_state] = useState(false)
     const [tag_jsx, set_tag_jsx] = useState<ReactElement[]>([])
     const [loading, set_loading] = useState(false)
-
+    const [toggle_recommandation, set_toggle_recommandation] = useState(false)
+    const refs = useRef<any>([])
     const selection_animation = useAnimation()
-    
+    let timer: any
     //Animation for licens container when opening / closing
     useEffect(() => {
 
@@ -811,7 +861,11 @@ function Step_3() {
 
     function key_up_event(e: any) {
         const value = e.target.value as string
-
+        if(refs.current["tag_input"].value.length === 0) {
+            set_toggle_recommandation(true)
+        } else {
+            set_toggle_recommandation(false)
+        }
         const valid = validate_pack_tag(value)
 
         const error_message = document.getElementById("tag_error_message") as HTMLParagraphElement
@@ -835,6 +889,12 @@ function Step_3() {
 
 
     }
+
+    useEffect(() => {
+        return () => {
+            clearTimeout(timer)
+        };
+    }, [])
 
     const App_notification: any = useContext(App_notification_context)
     const router = useRouter()
@@ -876,6 +936,12 @@ function Step_3() {
         send_pack()
     }
 
+    function select_recommendation(e: any) {
+        const tag = e.target.innerText as string
+
+        refs.current["tag_input"].value = tag
+        set_tag()
+    }
     return(
 
         <>
@@ -885,13 +951,65 @@ function Step_3() {
                 <div className='pack_tags_container'>
                     <h1>Tags</h1>
                     
-                    <div className='add_tag_container'>
-                        <input onKeyUp={key_up_event} type="text" placeholder='Max. 5 Tags' id="tag_input" autoComplete="off"/>
-                        <p onClick={set_tag}>+ Add</p>
+                    <div className='input_container'>
+                        <div className='add_tag_container'>
+                            <input onBlur={() => {timer = setTimeout(() => {set_toggle_recommandation(false)},120)}} onFocus={() => set_toggle_recommandation(true)} ref={(el) => {refs.current["tag_input"] = el}} onKeyUp={key_up_event} type="text" placeholder='Min. 3 Tags' id="tag_input" autoComplete="off"/>
+                            
+                            <p onClick={set_tag}>+ Add</p>
+                            
+                        </div>
+                        <p id="tag_error_message" className='tag_error_message'></p>
+                        {toggle_recommandation &&
+                            <div className='tag_recommandations'>
+                                <ul>
+                                    <li onClick={select_recommendation}>Rpg</li>
+                                    <li onClick={select_recommendation}>MMORPG</li>
+                                    <li onClick={select_recommendation}>Fantasy</li>
+                                    <li onClick={select_recommendation}>Adventure</li>
+                                    <li onClick={select_recommendation}>Arcade</li>
+                                    <li onClick={select_recommendation}>Medival</li>
+                                    <li onClick={select_recommendation}>Horror</li>
+                                    <li onClick={select_recommendation}>Scifci</li>
+                                    <li onClick={select_recommendation}>Gothic</li>
+                                    <li onClick={select_recommendation}>Thriller</li>
+                                    <li onClick={select_recommendation}>Christmas</li>
+                                    <li onClick={select_recommendation}>Halloween</li>
+                                    <li onClick={select_recommendation}>Romance</li>
+                                    <li onClick={select_recommendation}>Vampire</li>
+                                    <li onClick={select_recommendation}>Dungeon</li>
+                                    <li onClick={select_recommendation}>War</li>
+                                    <li onClick={select_recommendation}>Platformer</li>
+                                    <li onClick={select_recommendation}>City</li>
+                                    <li onClick={select_recommendation}>Aseteroids</li>
+                                    <li onClick={select_recommendation}>Mysterious</li>
+                                    <li onClick={select_recommendation}>Animals</li>
+                                    <li onClick={select_recommendation}>Characters</li>
+                                    <li onClick={select_recommendation}>Classes</li>
+                                    <li onClick={select_recommendation}>Monsters</li>
+                                    <li onClick={select_recommendation}>Ui</li>
+                                    <li onClick={select_recommendation}>Fonts</li>
+                                    <li onClick={select_recommendation}>Weapons</li>
+                                    <li onClick={select_recommendation}>Armor</li>
+                                    <li onClick={select_recommendation}>Magic</li>
+                                    <li onClick={select_recommendation}>Backgrounds</li>
+                                    <li onClick={select_recommendation}>Tiles</li>
+                                    <li onClick={select_recommendation}>Tilemap</li>
+                                    <li onClick={select_recommendation}>Furniture</li>
+                                    <li onClick={select_recommendation}>Gardening</li>
+                                    <li onClick={select_recommendation}>Icons</li>
+                                    <li onClick={select_recommendation}>Fonts</li>
+                                    <li onClick={select_recommendation}>Food</li>
+                                    <li onClick={select_recommendation}>Animations</li>
+                                    <li onClick={select_recommendation}>Sprites</li>
+                                    <li onClick={select_recommendation}>Items</li>
+                                    <li onClick={select_recommendation}>Portraits</li>
+                                </ul>
+                            </div>  
+                        }                     
                     </div>
 
-                    <p id="tag_error_message" className='tag_error_message'></p>
-                    
+
+
                     <div className='included_tags_container' id="included_tags_container">
 
                         {tag_jsx}
@@ -903,7 +1021,7 @@ function Step_3() {
 
                     <h1>
                         License
-                        <a href='https//spritearc.com/license' target={"_blank"} className='learn_about_licenses'>
+                        <a href='https://spritearc.com/license' target={"_blank"} className='learn_about_licenses'>
                             <HelpIcon/>
                         </a>
                     </h1>
