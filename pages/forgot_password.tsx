@@ -2,7 +2,7 @@ import React, {useContext, useState} from 'react';
 import Footer from '../components/footer';
 import H1_with_deco from '../components/h1_with_deco';
 import Link from 'next/link';
-import Loader from '../components/loading';
+import Loading from '../components/loading';
 import { Nav_shadow } from '../components/navigation';
 import { validate_email } from '../spritearc_lib/validate_lib';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
@@ -80,7 +80,7 @@ export default function Forgot_password_page() {
                         <p className='forgot_password_error_message' id="forgot_password_error_message"></p>
                         <button onClick={send_password_token}>
                             <p style={loading ? {opacity: 0} : {opacity: 1}}>Request Password Reset</p>
-                            {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
+                            {loading ? <Loading loading={loading} main_color={false} scale={1}/> : null}
                         </button>
 
                         <div className="forward_container">

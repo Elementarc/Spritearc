@@ -8,7 +8,7 @@ import { Patchnote } from '../types';
 import { formatDistanceStrict } from "date-fns"
 import { useParallax } from '../lib/custom_hooks';
 import { GetStaticProps} from 'next'
-import Loader from '../components/loading';
+import Loading from '../components/loading';
 import Head from 'next/head';
 
 
@@ -70,7 +70,7 @@ export default  function News(props: {patchnoteListOrdered: string}): ReactEleme
 								<Patchnote_templates patchnotes={patchnoteListOrdered}/>
 							}
 							{patchnoteListOrdered === null &&
-								<Loader loading={true} main_color={true}/>
+								<Loading loading={true} main_color={true}/>
 							}
 
 						</div>

@@ -3,7 +3,7 @@ import { Pack, Server_response_packs } from '../types';
 import Pack_stars_raiting from './pack_stars_raiting';
 import { useAnimation , motion} from 'framer-motion';
 import Image from 'next/image';
-import Loader from './loading';
+import Loading from './loading';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import { check_if_json, SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
 import { useRouter } from 'next/router';
@@ -182,7 +182,7 @@ function Pack_previews(props: { packs: Pack[] | null}) {
 
 		<div className="previews_container">
 			{packs === null 
-				? <Loader loading={true} main_color={true}></Loader>
+				? <Loading loading={true} main_color={true}></Loading>
 				: <>
 					{pack_previews_jsx.length > 0 &&
 						pack_previews_jsx

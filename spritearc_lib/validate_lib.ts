@@ -20,7 +20,13 @@ const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9äöüÄÖÜ\' \-]{3
 const section_name_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-]{3,16}$/)
 const report_input_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{3,500}$/)
 const social_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\.\_\-]{0,20}$/)
+const search_query = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\.\_\-]{2,20}$/)
 
+export function validate_search_query(query: string): boolean | string {
+    
+    if(search_query.test(query) === false) return "Please enter a valid search query!"
+    return true
+}
 export function validate_email(email: string): boolean | string {
     if(email_regex.test(email) === true) return true
     return "Please use a corretly formatted email!"

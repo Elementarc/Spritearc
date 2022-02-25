@@ -130,7 +130,7 @@
         position: relative;
         padding-top: 1.5rem;
         width: 100%;
-        display: grid;
+        display: none;
         grid-template-columns: 1fr minmax(150px, .3fr) 1fr;
         h1 {
             @include a(default);

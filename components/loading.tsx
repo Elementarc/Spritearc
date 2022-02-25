@@ -1,6 +1,6 @@
 import React, { useEffect} from 'react';
 
-export default function Loader(props: {loading: boolean, main_color?: boolean, scale?: number}) {
+export default function Loading(props: {loading: boolean, main_color?: boolean, scale?: number}) {
     const loading = props.loading
 
     useEffect(() => {

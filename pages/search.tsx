@@ -7,19 +7,14 @@ import Packs_section from '../components/packs_section';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import Head from 'next/head';
+import Users_section from '../components/users_section';
+import { validate_search_query } from '../spritearc_lib/validate_lib';
+
 const search_context: any = React.createContext(null)
 
 export default function Search_page() {
 	const router = useRouter()
 	const search_query = typeof router.query.query === "string" ? router.query.query : ""
-	useEffect(() => {
-		const get_input = document.getElementById("search_input") as HTMLInputElement
-		if(router.query.query as string) {
-			get_input.defaultValue = router.query.query ? `${router.query.query}` : ""
-		}
-		
-
-	}, [search_query, router.query])
 
 	function search() {
 		const input = document.getElementById("search_input") as HTMLInputElement
@@ -35,10 +30,22 @@ export default function Search_page() {
 
 	useEffect(() => {
 		const get_input = document.getElementById("search_input") as HTMLInputElement
+		if(router.query.query as string) {
+			get_input.defaultValue = router.query.query ? `${router.query.query}` : ""
+		}
+		
+
+	}, [search_query, router.query])
+
+	useEffect(() => {
+		const get_input = document.getElementById("search_input") as HTMLInputElement
 
 		get_input.focus()
 
 		function search(e: any) {
+			const valid_search = validate_search_query(get_input.value)
+			if(typeof valid_search === "string") return
+			
 			if(get_input === document.activeElement) {
 				if(e.keyCode === 13) {
 					const search_button = document.getElementById("search_button") as HTMLButtonElement
@@ -54,6 +61,18 @@ export default function Search_page() {
 		})
 	}, [])
 	
+	function validate_input_value(e: any) {
+		const search_button = document.getElementById("search_button") as HTMLInputElement
+		const search = e.target.value as string
+		const valid_search = validate_search_query(search)
+
+
+		if(valid_search === true) {
+			search_button.classList.add("active_search_button")
+		} else {
+			search_button.classList.remove("active_search_button")
+		}
+	}
 	return (
 		<>
 			<Head>
@@ -83,7 +102,7 @@ export default function Search_page() {
 						<div className='searching_container'>
 
 							<div className='search_input_container'>
-								<input type="text" placeholder='Search Tags' id="search_input"/>
+								<input onKeyUp={validate_input_value} onChange={validate_input_value} onBlur={validate_input_value} type="text" placeholder='Search' id="search_input"/>
 								<button onClick={search} id="search_button">Search</button>
 							</div>
 
@@ -92,7 +111,10 @@ export default function Search_page() {
 						<Search_recommendations/>
 
 						{search_query &&
-							<Search_results_packs search_query={search_query}/>
+							<>
+								<Users_section search_query={search_query}/>
+								<Search_results_packs search_query={search_query}/>
+							</>
 						} 
 
 						{!search_query &&
@@ -126,16 +148,19 @@ function Search_recommendations() {
 
 	useEffect(() => {
 		const icon = document.getElementById("expand_icon") as HTMLElement
-		
+		const grid_items = document.getElementById("grid_items_container") as HTMLDivElement
+
 		if(!expand_state) {
+			grid_items.scrollTop = 0
 			expand_recommendations_animation.start({
-				height: ""
+				height: "",
+				overflowY: "hidden",
 			})
 			icon.style.transform = "scale(1.5) rotate(0deg)"
 		} else {
 			expand_recommendations_animation.start({
-				height: "auto"
-				
+				height: "250px",
+				overflowY: "scroll"
 			})
 			icon.style.transform = "scale(1.5) rotate(180deg)"
 		}
@@ -143,19 +168,53 @@ function Search_recommendations() {
 
 	return(
 		<div className='recommendations_container'>
-			<motion.div animate={expand_recommendations_animation} className='grid_items'>
-				<Recommendation name='Rpg'/>
-				<Recommendation name='Medival'/>
-				<Recommendation name='Characters'/>
-				<Recommendation name='Backgrounds'/>
-				<Recommendation name='Enemies'/>
-				<Recommendation name='Weapons'/>
-				<Recommendation name='Furniture'/>
-				<Recommendation name='Magic'/>
-				<Recommendation name='Food'/>
-				<Recommendation name='Armor'/>
-				<Recommendation name='Scifi'/>
-				<Recommendation name='Gothic'/>
+			<motion.div animate={expand_recommendations_animation} className='grid_items_container' id="grid_items_container">
+				
+				<div className='grid_items'>
+					<Recommendation name='Rpg'/>
+					<Recommendation name='Fantasy'/>
+					<Recommendation name='Medival'/>
+					<Recommendation name='Scifi'/>
+					<Recommendation name='Gothic'/>
+					<Recommendation name='Arcade'/>
+					<Recommendation name='Horror'/>
+					<Recommendation name='Thriller'/>
+					<Recommendation name='Christmas'/>
+					<Recommendation name='Halloween'/>
+					<Recommendation name='Romance'/>
+					<Recommendation name='Vampire'/>
+					<Recommendation name='Dungeon'/>
+					<Recommendation name='Portrait'/>
+					<Recommendation name='Anime'/>
+					<Recommendation name='Tiles'/>
+					<Recommendation name='Tilemap'/>
+					<Recommendation name='Platformer'/>
+					<Recommendation name='City'/>
+					<Recommendation name='Enviroment'/>
+					<Recommendation name='Animals'/>
+					<Recommendation name='Classes'/>
+					<Recommendation name='Fonts'/>
+					<Recommendation name='Tilemap'/>
+					<Recommendation name='Asteroids'/>
+					<Recommendation name='Animations'/>
+					<Recommendation name='Sprites'/>
+					<Recommendation name='Characters'/>
+					<Recommendation name='Backgrounds'/>
+					<Recommendation name='Monsters'/>
+					<Recommendation name='Weapons'/>
+					<Recommendation name='Furniture'/>
+					<Recommendation name='Magic'/>
+					<Recommendation name='Food'/>
+					<Recommendation name='Armor'/>
+					<Recommendation name='Backgrounds'/>
+					<Recommendation name='Monsters'/>
+					<Recommendation name='Weapons'/>
+					<Recommendation name='Furniture'/>
+					<Recommendation name='Magic'/>
+					<Recommendation name='Food'/>
+					<Recommendation name='Armor'/>
+				</div>
+				
 			</motion.div>
 
 			<div className='expand_container'>
@@ -168,6 +227,8 @@ function Search_recommendations() {
 		</div>
 	)
 }
+
+
 
 function Recommendation({name}: {name: string}) {
 	const search_c: any = useContext(search_context)

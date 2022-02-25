@@ -16,7 +16,7 @@ import { create_form_data as create_form_data } from '../lib/create_lib';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { useRouter } from 'next/router';
 import jwt from "jsonwebtoken"
-import Loader from "../components/loading"
+import Loading from "../components/loading"
 import Head from 'next/head';
 import Protected_route from '../components/protected_route';
 import HelpIcon from "../public/icons/HelpIcon.svg"
@@ -58,7 +58,6 @@ const initial_create_pack_obj: Create_pack_frontend = {
 //Create Pack handler that handles all functions for
 function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {type: string, payload?: any}): Create_pack_frontend {
     const {type , payload} = action
-
     
     //Object handler
     switch ( type ) {
@@ -409,7 +408,7 @@ function Step_1() {
     const [toggle_section_name_recommendations, set_toggle_section_name_recommendations] = useState(false)
     const refs = useRef<any>([])
     const dispatch = create_pack.dispatch
-    let timer: any
+
     //Function that styles error elements when error
     function style_error_items(error: boolean) {
         const input = document.getElementById("section_name_input") as HTMLInputElement
@@ -500,6 +499,7 @@ function Step_1() {
         set_pack_content_jsx(sections_jsx)
 
     }, [create_pack_obj])
+
     //Adding eventlisteners to be able to press enter to create section
     useEffect(() => {
 
@@ -894,7 +894,7 @@ function Step_3() {
         return () => {
             clearTimeout(timer)
         };
-    }, [])
+    }, [timer])
 
     const App_notification: any = useContext(App_notification_context)
     const router = useRouter()
@@ -980,7 +980,7 @@ function Step_3() {
                                     <li onClick={select_recommendation}>War</li>
                                     <li onClick={select_recommendation}>Platformer</li>
                                     <li onClick={select_recommendation}>City</li>
-                                    <li onClick={select_recommendation}>Aseteroids</li>
+                                    <li onClick={select_recommendation}>Asteroids</li>
                                     <li onClick={select_recommendation}>Mysterious</li>
                                     <li onClick={select_recommendation}>Animals</li>
                                     <li onClick={select_recommendation}>Characters</li>
@@ -1059,7 +1059,7 @@ function Step_3() {
 
                 <button onClick={send_pack_to_api} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>
                     <p style={loading ? {opacity: 0} : {opacity: 1}}>Create Pack</p>
-                    {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
+                    {loading ? <Loading loading={loading} main_color={false} scale={1}/> : null}
                 </button>
             </div>
         </>
@@ -1123,7 +1123,6 @@ function Preview({section_name}: {section_name: string}) {
 function Section({section_name, section_content}: {section_name: string, section_content: {section_assets: Blob[], section_urls: string[]}}) {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
     const [section_assets_jsx, set_section_assets_jsx] = useState<ReactElement[] | null>(null)
-
     
 
     useEffect(() => {

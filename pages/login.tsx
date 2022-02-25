@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Auth_context } from '../context/auth_context_provider';
 import { useRouter } from 'next/router';
 import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
-import Loader from '../components/loading';
+import Loading from '../components/loading';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { Nav_shadow } from '../components/navigation';
 import { App_notification_context_type, Auth_context_type, Public_user, Server_response, Server_response_login } from '../types';
@@ -194,7 +194,7 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
 
                         <button ref={(el) => {return refs.current["button"] = el}} onClick={login}>
                             <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
-                            {loading ? <Loader loading={loading} main_color={false} scale={1}/> : null}
+                            {loading ? <Loading loading={loading} main_color={false} scale={1}/> : null}
                         </button>
 
                         <div className="forward_container">

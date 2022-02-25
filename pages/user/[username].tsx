@@ -60,7 +60,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
                                         
                                         {public_user?.socials?.instagram.length > 0 &&
                                             <a href={`https://www.instagram.com/${public_user.socials.instagram}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                                <Image loading='lazy' unoptimized={true} src={"/logos/instagram_color.png"} layout={"fill"}></Image>
+                                                <Image loading='lazy' unoptimized={true} src={"/logos/instagram_color.png"} layout={"fill"} alt="Instagram Logo"></Image>
                                             </a>
                                         }
                                         {public_user?.socials?.twitter.length > 0 &&
@@ -72,7 +72,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
                                         {public_user?.socials?.artstation.length > 0 &&
                                             
                                             <a href={`https://www.artstation.com/${public_user.socials.artstation}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                                <Image loading='lazy' unoptimized={true} src={"/logos/artstation_color.png"} layout={"fill"}></Image>
+                                                <Image loading='lazy' unoptimized={true} src={"/logos/artstation_color.png"} layout={"fill"} alt="Artstation Logo"></Image>
                                             </a>
                                         }
                                     </div>
