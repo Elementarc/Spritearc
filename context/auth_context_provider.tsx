@@ -23,7 +23,10 @@ const init_public_user: Frontend_public_user = {
         profile_banner: "",
         followers: [],
         following: [],
-        role: ""
+        role: "",
+        donation: {
+            paypal: ""
+        }
     }
 
 }

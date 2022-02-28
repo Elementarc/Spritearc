@@ -103,7 +103,7 @@ export default function Home(): ReactElement {
                             <div className="create_pack_home_content">
                                 <div className="text_wrapper_home">
                                     <h1>Create a Pack</h1>
-                                    <p>An account on Spritearc you will allow you to create your own unqiue Pixel art packs that people can download and use. </p>
+                                    <p>An account on spritearc will allow you to create packs. Those will be visible to everyone in the world!</p>
                                     <Link href={"/signup"} scroll={false}>Signup</Link>
                                 </div>
                                 
@@ -111,7 +111,7 @@ export default function Home(): ReactElement {
                                     <div className="pack_1">
 
                                         <div className="pack_1_image_wrapper">
-                                            <Image loading='lazy' unoptimized={true} src={"/images/spritearc_wallpaper.png"} layout="fill" alt="Represents a Galaxy"></Image>
+                                            <Image loading="lazy" unoptimized={true} src={"/images/spritearc_wallpaper.png"} layout="fill" alt="Represents a Galaxy"></Image>
                                         </div>
                                     </div>
 
@@ -123,7 +123,7 @@ export default function Home(): ReactElement {
                                         </div>
 
                                         <div className="pack_2_image_wrapper">
-                                            <Image loading='lazy' unoptimized={true} src={"/images/wallpaper_5.jpg"} layout="fill" alt="Represents a preview of a pack."></Image>
+                                            <Image loading="lazy" unoptimized={true} src={"/images/wallpaper_5.jpg"} layout="fill" alt="Represents a preview of a pack."></Image>
                                             <div className="pack_2_image_background"></div>
                                         </div>
                                     </div>

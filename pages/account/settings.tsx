@@ -369,6 +369,7 @@ export function Account_settings_page() {
                                 <Settings_navigation_item name='Email' current_state={settings_state} set_current_state={set_settings_state}/>
                                 <Settings_navigation_item name='Password' current_state={settings_state} set_current_state={set_settings_state}/>
                                 <Settings_navigation_item name='Socials' current_state={settings_state} set_current_state={set_settings_state}/>
+                                <Settings_navigation_item name='Donation' current_state={settings_state} set_current_state={set_settings_state}/>
                             </div>
 
                             <div className='deco_container'>
@@ -452,6 +453,17 @@ export function Account_settings_page() {
                                         <p>www.Artstation.com/</p>
                                         <input ref={(el) => {refs.current["artstation_input"] = el}} type="text" defaultValue={user?.socials?.artstation.length > 0 ? user?.socials?.artstation : ""} placeholder='Account'/>
                                     </div>
+                                    
+                                    <button onClick={update_socials}>Save Changes</button>
+                                </div>
+                            }
+
+                            { settings_state === "donation" && 
+                                <div className='donation_content'>
+                                    <h1>Add donation link</h1>
+
+                                    <p>Paypal donation Link</p>
+                                    <input type="text" placeholder='https://www.paypal.com/donate/?hosted_button_id=id'/>
                                     
                                     <button onClick={update_socials}>Save Changes</button>
                                 </div>

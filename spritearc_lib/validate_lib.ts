@@ -21,7 +21,12 @@ const section_name_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-]{3,16}$/)
 const report_input_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{3,500}$/)
 const social_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\.\_\-]{0,20}$/)
 const search_query = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\.\_\-]{2,20}$/)
+const paypal_donation_link_regex = new RegExp(/^https:\/\/www.paypal.com\/donate\/\?hosted_button_id=[a-zA-Z0-9]{0,30}$/)
 
+export function validate_paypal_donation_link(link: string): boolean | string {
+    if(paypal_donation_link_regex.test(link) === false) return "Donation Link is not valid!"
+    return true
+}
 export function validate_search_query(query: string): boolean | string {
     
     if(search_query.test(query) === false) return "Please enter a valid search query!"

@@ -148,6 +148,8 @@
                 justify-content: flex-end;
                 width: 100%;
                 height: auto;
+                background: black;
+                min-height: 200px;
                 margin-top: 25rem;
                 padding: 0 2rem;
                 @include breakpoint(mobile) {
@@ -264,6 +266,7 @@
                 justify-content: flex-start;
                 width: 100%;
                 height: auto;
+                min-height: 200px;
                 margin-top: 25rem;
                 padding: 0 2rem;
                 @include breakpoint(mobile) {

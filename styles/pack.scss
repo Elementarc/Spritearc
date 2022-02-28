@@ -5,13 +5,15 @@
     position: relative;
     height: auto;
 
-    .pack_overlay {
+    .pack_fix_overlay {
         position: relative;
         width: 100%;
         height: 100%;
 
+
         .pack_nav_container{
-            position: relative;
+            position: absolute;
+            top: 0;
             z-index: 0;
             width: 100%;
             height: 100%;
@@ -369,8 +371,216 @@
                 scrollbar-width: none;
             }
         }
+
+        .pack_download_container {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 0;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            @include breakpoint(mobile) {
+                align-items: unset;
+                padding-top: 5rem;
+            }
+            .prev_download_container {
+                position: relative;
+                z-index: 1;
+                width: 70%;
+                height: auto;
+                min-height: 200px;
+                background: $color_main_blue;
+                pointer-events: all;
+                box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.5);
+                @include breakpoint(laptop) {
+                    width: 85%;
+                }
+                @include breakpoint(mobile) {
+                    width: 90%;
+                    height: 90%;
+                    overflow-y: scroll;
+                    &::-webkit-scrollbar{
+                        width: 10px;
+                        background-color: #0e1a2e;
+                    }
+                    &::-webkit-scrollbar-thumb{
+                        border-radius: 50px;
+                        background-color: $color_main;
+                        &:hover{
+                            background-color: $color_main_bright;
+                        }
+                    }
+                }
+
+                .user_representation_container{
+                    position: relative;
+                    width: 100%;
+                    padding: 2rem 1rem 2.5rem 1rem;
+                    
+                    .user_banner_container{
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 200px;
+                        img {
+                            object-fit: cover;
+                            object-position: center;
+                        }
+
+                        .blur {
+                            position: absolute;
+                            transform: translateY(3px);
+                            bottom: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 220px;
+                            background: rgb(17,31,53);
+                            background: linear-gradient(0deg, rgba(17,31,53,1) 0%, rgba(17,31,53,1) 5%, rgba(17,31,53,0) 100%);
+                        }
+                    }
+
+                    .user_portrait_container {
+                        position: relative;
+                        display: flex;
+                        justify-content: center;
+                        height: 100%;
+                        width: 100%;
+                        .portrait_circle {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            
+                            height: 200px;
+                            width: 200px;
+                            border-radius: 50%;
+                            background: rgb(17,31,53);
+                            background: linear-gradient(0deg, rgba(17,31,53,1) 15%, rgba(17,31,53,0) 30%);
+                            .portrait {
+                                position: relative;
+                                overflow: hidden;
+                                width: 92%;
+                                height: 92%;
+                                border-radius: 50%;
+                                
+                                img {
+                                    object-fit: cover;
+                                    object-position: center;
+                                }
+                                
+                            }
+                        }
+                        
+                    }
+                    .user_info_container{
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        margin-top: .5rem;
+                        width: 100%;
+
+                        a {
+                            @include a()
+                        }
+                    }
+
+                    .tip_container {
+                        width: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        margin-top: 1rem;
+
+                        h1 {
+                            @include h1(medium);
+                            text-align: center;
+                        }
+
+                        p {
+                            @include p(medium);
+                            text-align: center;
+                            width: 70%;
+                            padding: 0 1rem;
+                            margin-top: .5rem;
+                            @include breakpoint(mobile) {
+                                width: 100%;
+                            }
+                            
+                        }
+
+                        .tip_artist_button {
+                            @include button();
+                            margin-top: 1.5rem;
+                            background-color: #5EF7AE;
+                            &:hover {
+                                background-color: #8dfbc6;
+                            }
+                        }
+
+                        h4{
+                            @include h4();
+                            margin-top: 2rem;
+
+                            &:hover {
+                                cursor: pointer;
+                                color: $color_grey;
+                            }
+                        }
+                    }
+                    .download_container {
+                        width: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        h1 {
+                            @include h1(medium);
+                            text-align: center;
+                        }
+
+                        p {
+                            @include p(medium);
+                            text-align: center;
+                            width: 70%;
+                            padding: 0 1rem;
+                            margin-top: .5rem;
+                            @include breakpoint(mobile) {
+                                width: 100%;
+                            }
+                        }
+
+                        a {
+                            margin-top: 1.5rem;
+                            @include button();
+                        }
+                        h4{
+                            @include h4();
+                            margin-top: 2rem;
+
+                            &:hover {
+                                cursor: pointer;
+                                color: $color_grey;
+                            }
+                        }
+                    }
+                }
+            }
+            .download_container_background {
+                position: absolute;
+                pointer-events: all;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.75);
+            }
+        }
+        
     }
+
     
+
     .content {
         position: relative;
         z-index: 1;
@@ -714,8 +924,6 @@
                 }
             }
         }
-        
-        
         
         .asset_sections_container{
             position: relative;

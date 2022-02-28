@@ -46,6 +46,15 @@
                     padding: 0 1rem;
                     @include p(medium);
                 }
+                .active_search_button {
+                    @include button();
+                    pointer-events: all;
+                    font-size: 16px;
+                    height: 100%;
+                    padding: unset;
+                    width: 100%;
+                    display: inline;
+                }
                 button {
                     @include button(disabled);
                     font-size: 16px;
@@ -54,14 +63,7 @@
                     width: 100%;
                     display: inline;
                 }
-                .active_search_button {
-                    @include button();
-                    font-size: 16px;
-                    height: 100%;
-                    padding: unset;
-                    width: 100%;
-                    display: inline;
-                }
+                
             }
         }
 

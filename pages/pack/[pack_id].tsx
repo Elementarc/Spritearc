@@ -1,6 +1,6 @@
 import React, {ReactElement, useEffect, useContext, useState, useCallback} from 'react';
 import Footer from '../../components/footer';
-import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Server_response, Server_response_pack, Server_response_pack_rating} from "../../types"
+import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Server_response, Server_response_pack, Server_response_pack_rating, Server_response_public_user} from "../../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../../components/navigation';
@@ -27,6 +27,10 @@ import { GetServerSideProps } from 'next'
 import https from "https"
 import http from "http"
 import HelpIcon from "../../public/icons/HelpIcon.svg"
+import Script from 'next/script';
+import { User_representation } from '../user/[username]';
+import { validate_paypal_donation_link } from '../../spritearc_lib/validate_lib';
+import Loading from '../../components/loading';
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
@@ -78,11 +82,13 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
     const router = useRouter()
     const pack_id = router.query.pack_id as string
     const Auth = props.Auth
+    //
+    const [toggle_download_container, set_toggle_download_container] = useState(false)
     //Props
     const pack: Pack = props.pack
     const user: Public_user = Auth?.user?.public_user
     const own_pack = user?.username.length > 0 ? user?.username.toLowerCase() === pack?.username.toLowerCase() : false
-    const download_link = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${pack_id}`
+    
     //Context
     const App_notification: App_notification_context_type = props.App_notification
     //State that saves currently clicked asset as a url string.
@@ -240,7 +246,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                 <AnimatePresence exitBeforeEnter>
                     <Fixed_app_content_overlay>
 
-                        <div className='pack_overlay'>
+                        <div className='pack_fix_overlay'>
 
                             <div className='pack_nav_container'>
                                 <div className='close_pack_container' id="close_pack">
@@ -321,7 +327,20 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                                     
                                 }
                             </AnimatePresence>
+
+                            <AnimatePresence exitBeforeEnter>
+                                {toggle_download_container &&
+
+                                    <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.2}}} exit={{opacity: 0, transition: {duration: 0.2}}} className='pack_download_container'>
+                                        <Download_popup username={pack.username} pack={pack} set_toggle_download_container={set_toggle_download_container}/>
+                                    </motion.div>
+
+                                }
+                            </AnimatePresence>
+                            
                         </div>
+
+                        
                     </Fixed_app_content_overlay>
                 </AnimatePresence>
 
@@ -340,7 +359,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
 
                                 <p>{pack.description}</p>
                                 <button onClick={download_pack}>Download Pack</button>
-                                <a id="download_pack_link" style={{display: "none", opacity: 0, pointerEvents: "none"}} href={download_link}>download</a>
+                                <div onClick={() => {set_toggle_download_container(true)}} id="download_pack_link" style={{display: "none", opacity: 0, pointerEvents: "none"}}>download</div>
                             </div>
 
                             {!own_pack &&
@@ -441,8 +460,6 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
 
                     </div>
                     
-                    
-                    
                     <Pack_assets_section pack={pack}/>
 
                     <Nav_shadow/>
@@ -455,6 +472,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         </PACK_PAGE_CONTEXT.Provider>
     );
 }
+
 function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any, prev_pack_ratings: any, App_notification: App_notification_context_type}) {
     const set_prev_pack_ratings = props.set_prev_pack_ratings
     const prev_pack_ratings = props.prev_pack_ratings
@@ -531,9 +549,9 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
     }
 
     async function submit_rating(e: any) {
-        
+        if(user_has_rated()) return
         if(user?.username.length === 0) {
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please create an Account to rate", message: "You only can rate packs when creating an account!", button_label: "ok"}})
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login!", message: "You have to log into your account to be able to rate packs!", button_label: "ok"}})
             return
         }
         const rating = parseInt(e.target.id)
@@ -611,6 +629,146 @@ export const Memo_user_pack = React.memo(User_pack)
 export const Memo_rate_pack = React.memo(Rate_pack)
 
 
+function Download_popup(props: {username: string, pack: Pack, set_toggle_download_container: React.Dispatch<React.SetStateAction<boolean>>}) {
+    const username = props.username
+    const download_link = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${props.pack._id}`
+    const [timer, set_timer] = useState<null | number>(null)
+    const [public_user, set_public_user] = useState<null | Public_user>(null)
+    const [tip_available, set_tip_available] = useState<null | boolean>(null)
+    const [toggle_download_window, set_toggle_download_window] = useState(false)
+    let timer_id: any = 0
+
+    const open_download_window = useCallback(() => {
+        function open_download_window() {
+            set_tip_available(false)
+            set_toggle_download_window(true)
+        }
+        open_download_window()
+    }, [set_tip_available, set_toggle_download_window])
+    
+    
+    useEffect(() => {
+        const controller = new AbortController()
+
+        async function get_public_user() {
+
+            try {
+               
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user?user=${username}`, {
+                    method: "POST",
+                    signal: controller.signal,
+                })
+
+                const response_obj = await response.json() as Server_response_public_user
+                const public_user = response_obj?.public_user
+                if(!public_user) return
+
+                set_public_user(public_user)
+                const valid_donation_link = validate_paypal_donation_link(`${public_user?.donation?.paypal}`)
+                if(typeof valid_donation_link === "string") return open_download_window()
+                if(!valid_donation_link) return open_download_window()
+                
+                set_tip_available(true)
+                    
+            } catch(err) {
+                //Could not reach server
+            }
+            
+        }
+        get_public_user()
+
+        return(() => {
+            controller.abort()
+        })
+    }, [username, open_download_window])
+
+    useEffect(() => {
+        const download_button = document.getElementById("download_button") as HTMLButtonElement
+        if(!download_button) return
+        
+        if(timer === 0) {
+            download_button.setAttribute("href", download_link)
+            download_button.setAttribute("download", props.pack.title.split(" ").join("_"))
+            download_button.click()
+            download_button.removeAttribute("href")
+            download_button.removeAttribute("download")
+            set_timer(null)
+        } else {
+            if(!timer) return
+            timer_id = setTimeout(() => {
+                set_timer(timer - 1)
+            }, 1000);
+        }
+
+        return(() => {
+            clearTimeout(timer_id)
+        })
+    }, [timer, set_timer, timer_id])
+
+    return (
+        <>
+            <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: 0.2}}} exit={{scale: .8, transition: {duration: 0.2}}} className='prev_download_container'>
+
+                {public_user === null &&
+                    <Loading loading={true} main_color={true}></Loading>
+                }
+                {public_user &&
+                    <div className='user_representation_container'>
+
+                        <>
+                            {tip_available &&
+                                <>
+                                    <div className='user_banner_container'>
+                                        <Image loading='lazy' unoptimized={true} id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${public_user.profile_banner}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+                                        <div className='blur' />
+                                    </div>
+
+                                    <div className='user_portrait_container'>
+
+                                        <div className='portrait_circle'>
+
+                                            <div className='portrait'>
+                                                
+                                                <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <div className='user_info_container'>
+                                        <Link href={`/user/${public_user.username}`} scroll={false}>{`${public_user?.username}`}</Link>
+                                    </div>
+
+                                
+                                    <div className='tip_container'>
+                                        <h1>Support The Artist</h1>
+                                        <p>This asset pack is free but you can tip the artist {`'${public_user.username}'`} to show your appreciation. Please keep in mind that donations / tips can not be refunded.</p>
+                                        <a onClick={open_download_window} href={`${public_user?.donation?.paypal}`} rel="noreferrer" target={'_blank'} className='tip_artist_button'>Tip</a>
+                                        <h4 onClick={open_download_window}>Process to download</h4>
+                                    </div>
+                                </>
+                            }
+                            
+                            {toggle_download_window &&
+                                <div className='download_container'>
+                                    <h1>Download Pack!</h1>
+                                    <p>Please make sure to read the license so you exactly know how to properly use all the assets and sprites from this pack! You can start the download by clicking the download button below!</p>
+                                    <a onClick={() => {if(timer === null) set_timer(5)}} className='download_button' id="download_button">{timer ? timer : "Download"}</a>
+
+                                </div>
+                            }
+                        </>
+                    </div>
+                }
+                
+            </motion.div>
+            <div onClick={() => {props.set_toggle_download_container(false)}} className='download_container_background'></div>
+        </>
+    );
+}
+
 //Component that creates a section with assets
 function Pack_assets_section(props: {pack: Pack}): ReactElement {
     const pack: Pack = props.pack
@@ -637,6 +795,7 @@ function Pack_assets_section(props: {pack: Pack}): ReactElement {
         </div>
     );
 }
+
 //Component that creates assets from pack.
 function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): ReactElement {
     const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
