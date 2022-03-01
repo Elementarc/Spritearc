@@ -295,7 +295,7 @@
             @include breakpoint(mobile) {
                 align-items: unset;
                 justify-content: center;
-                padding-top: 2rem;
+                padding-top: 5rem;
             }
     
             .asset_fixed_image_container{
@@ -315,7 +315,7 @@
                 -webkit-user-select: none;
                 -o-user-select: none;
                 @include breakpoint(mobile) {
-                    width: 260px;
+                    width: 90%;
                     height: 260px;
                 }
                 img{

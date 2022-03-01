@@ -549,14 +549,14 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
     }
 
     async function submit_rating(e: any) {
-        if(user_has_rated()) return
+        
         if(user?.username.length === 0) {
             App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login!", message: "You have to log into your account to be able to rate packs!", button_label: "ok"}})
             return
         }
         const rating = parseInt(e.target.id)
         
-        const pack_id = router.query.id
+        const pack_id = router.query.pack_id
 
         if(!pack_id) return
         if(typeof pack_id !== "string") return
@@ -572,6 +572,7 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
                 body: JSON.stringify({rating: rating + 1})
             })
 
+            
             const response_obj = await response.json() as Server_response_pack_rating
             console.log(response_obj)
             if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: response_obj.message, button_label: "Okay"}})
@@ -664,7 +665,8 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
                 if(!public_user) return
 
                 set_public_user(public_user)
-                const valid_donation_link = validate_paypal_donation_link(`${public_user?.donation?.paypal}`)
+                if(!public_user.paypal_donation_link) return open_download_window()
+                const valid_donation_link = validate_paypal_donation_link(`${public_user?.paypal_donation_link}`)
                 if(typeof valid_donation_link === "string") return open_download_window()
                 if(!valid_donation_link) return open_download_window()
                 
@@ -693,6 +695,7 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
             download_button.removeAttribute("href")
             download_button.removeAttribute("download")
             set_timer(null)
+            props.set_toggle_download_container(false)
         } else {
             if(!timer) return
             timer_id = setTimeout(() => {
@@ -745,7 +748,7 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
                                     <div className='tip_container'>
                                         <h1>Support The Artist</h1>
                                         <p>This asset pack is free but you can tip the artist {`'${public_user.username}'`} to show your appreciation. Please keep in mind that donations / tips can not be refunded.</p>
-                                        <a onClick={open_download_window} href={`${public_user?.donation?.paypal}`} rel="noreferrer" target={'_blank'} className='tip_artist_button'>Tip</a>
+                                        <a onClick={open_download_window} href={`${public_user?.paypal_donation_link}`} rel="noreferrer" target={'_blank'} className='tip_artist_button'>Tip</a>
                                         <h4 onClick={open_download_window}>Process to download</h4>
                                     </div>
                                 </>

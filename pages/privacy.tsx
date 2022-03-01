@@ -365,9 +365,9 @@ function Changes_to_our_privacy_policy() {
         <section>
             <h1 className='section_header'>{`Changes to Our Privacy Policy`}</h1>
 
-            <p>{`We may update our privacy policy from time to time. If we make material changes to how we treat our users’ Personal Information, we will post the new privacy policy on this page with a notice that the privacy policy has been updated and notify you by email specified in your account and an in-app alert the first time you use the Service after we make the change.`}</p>
+            <p>{`We may update our privacy policy from time to time. If we make material changes to how we treat our users’ Personal Information, we will post the new privacy policy on this page with a notice that the privacy policy has been updated.`}</p>
             <br />
-            <p>{`The date the privacy policy was last revised is identified at the top of the page. You are responsible for ensuring we have an up-to-date active and deliverable email address for you and for periodically visiting this privacy policy to check for any changes.`}</p>
+            <p>{`The date the privacy policy was last revised is identified at the top of the page. You are responsible for periodically visiting this privacy policy to check for any changes.`}</p>
 
         </section>
     )

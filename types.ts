@@ -183,9 +183,7 @@ export interface Public_user {
     created_at: Date,
     profile_picture: string,
     profile_banner: string,
-    donation: {
-        paypal: string,
-    }
+    paypal_donation_link: string,
     following: [],
     followers: [],
     role: string,

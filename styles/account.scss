@@ -293,7 +293,9 @@
                 &:hover {
                     cursor: pointer;
                     transform: scale(1.1);
-
+                    @include breakpoint(mobile) {
+                        transform: unset;
+                    }
                     .icon_container {
                         .icon_background {
                             .icon {
