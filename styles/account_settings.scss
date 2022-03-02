@@ -254,7 +254,7 @@
                 display: grid;
                 width: 100%;
                 padding: 0 20%;
-                grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+                grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
                 height: auto;
                 
 
@@ -321,7 +321,9 @@
             }
 
             .header_content {
-                    
+                @include breakpoint(mobile) {
+                    margin-top: 4rem;
+                }    
                 h1{
                     @include h1();
                 }

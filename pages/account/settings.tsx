@@ -552,7 +552,7 @@ export function Donation_settings(props: {public_user: Public_user, App_notifica
             </div>
 
             <input ref={(el) => {refs.current["current_password"] = el}} type="password" placeholder='Current Password'/>
-            <input ref={(el) => {refs.current["donation_link"] = el}} onKeyUp={on_key_up_donation_link_validation} onChange={on_key_up_donation_link_validation} type="text" placeholder='Donation Link'/>
+            <input ref={(el) => {refs.current["donation_link"] = el}} onKeyUp={on_key_up_donation_link_validation} onChange={on_key_up_donation_link_validation} type="text" defaultValue={public_user?.paypal_donation_link ? `${public_user.paypal_donation_link}` : ""} placeholder='Donation Link'/>
             <button onClick={submit_donation_link} ref={(el) => refs.current["update_donation_link_button"] = el} className='disabled_button'>Save Donation Link</button>
         </div>
     )

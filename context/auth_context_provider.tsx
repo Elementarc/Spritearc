@@ -24,9 +24,7 @@ const init_public_user: Frontend_public_user = {
         followers: [],
         following: [],
         role: "",
-        donation: {
-            paypal: ""
-        }
+        paypal_donation_link: null,
     }
 
 }

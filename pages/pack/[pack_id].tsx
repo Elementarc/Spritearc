@@ -695,6 +695,7 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
             download_button.removeAttribute("href")
             download_button.removeAttribute("download")
             set_timer(null)
+            
             props.set_toggle_download_container(false)
         } else {
             if(!timer) return
@@ -749,7 +750,7 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
                                         <h1>Support The Artist</h1>
                                         <p>This asset pack is free but you can tip the artist {`'${public_user.username}'`} to show your appreciation. Please keep in mind that donations / tips can not be refunded.</p>
                                         <a onClick={open_download_window} href={`${public_user?.paypal_donation_link}`} rel="noreferrer" target={'_blank'} className='tip_artist_button'>Tip</a>
-                                        <h4 onClick={open_download_window}>Process to download</h4>
+                                        <h4 onClick={open_download_window}>Proceed to download</h4>
                                     </div>
                                 </>
                             }

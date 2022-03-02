@@ -22,6 +22,9 @@ export default function Home(): ReactElement {
         <>
             <Head>
 				<title>{`Spritearc - Home`}</title>
+                <link rel="canonical" href="https://spritearc.com" />
+                <link rel="shortlink" href="https://spritearc.com" />
+                <meta name="keywords" content="pixelart, pixel art, free, sprites, game assets, free game assets, 2d"></meta>
 				<meta name="description" content={`Discover thousands of pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
@@ -44,8 +47,10 @@ export default function Home(): ReactElement {
 
                     <div className="intro_container">
                         <div className="intro_content">
-                            <h2>Pixel art on the Horizon</h2>
-                            <h1>Welcome to Spritearc!</h1>
+                            <h2>2D Pixel World</h2>
+                            <h1>Become A Creator</h1>
+                            <p>Publish your pixel art game assets and sprites to build yourself a community!</p>
+                            <button onClick={() => {router.push("/signup", "/signup", {scroll: false})}}>Join Now</button>
                         </div>
                         <div className="arrow_container">
                             <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
@@ -57,87 +62,67 @@ export default function Home(): ReactElement {
                     <div className="middle_container">
 
                         <div className="spritearc_info">
-                            <H1_with_deco title="Explore Spritearc"></H1_with_deco>
-                            <p>{`Discover thousands of pixel art assets that you can use for free in your projects. Start improving your game's visuals with high-quality character sprites, item art, backgrounds and more! You can browse art packs by tags to find the exact kind of assets you're looking for.`}</p>
+                            <H1_with_deco title="Explore Sprites"></H1_with_deco>
+                            <p>{`Discover thousands of different 2D game assets and sprites that you can use for free in your projects. Start improving your game's visuals with high quality character sprites, item art, backgrounds and more! You can browse pixel art packs by tags to find the exact kind of assets you're looking for.`}</p>
                             <button onClick={() => {router.push("/browse", "/browse", {scroll: false})}}>Browse Packs</button>
-                            
                         </div>
 
-                        <div className="create_pack_home_container">
+                        <div className="packs_explanation_container">
+                            <div className="packs_explanation_content">
+                                <h2>What are Packs?</h2>
+                                <p>{`Packs are bundled sprites and assets published by a pixel artist. Most of the time all it's content fit well together.`}</p>
+                                <Link href="/search" scroll={false}>Find Packs</Link>
 
-                            <div className="create_pack_home_content">
-                                <div className="text_wrapper_home">
-                                    <h1>What are Packs?</h1>
-                                    <p>{`Packs are bundled sprites and assets published by a pixel artist. Most of the time all it's content fit well together.`}</p>
-                                    <Link href={"/search"} scroll={false}>Find Packs</Link>
-                                </div>
-                                
-                                
-                                <div className="preview_packs_home">
-                                    <div className="pack_1">
+                                <div className="example_preview_container">
 
-                                        <div className="pack_1_image_wrapper">
-                                            <Image loading='lazy' unoptimized={true} src={"/images/example_preview_2.png"} alt="Pack preview example" layout="fill"></Image>
+                                    <div className="example_preview_info">
+
+                                        <div className="example_ratings_container">
+                                            <Pack_stars_raiting ratings={[{user: "Test", rating: 5}]}/>
                                         </div>
+                                        
+                                        <h2>Platformer Pack</h2>
                                     </div>
 
-                                    <div className="pack_2">
-
-                                        <div className="pack_2_content">
-                                            <Pack_stars_raiting ratings={[{rating: 4, user: "Lol"}]}/>
-                                            <h1>Pack</h1>
-                                        </div>
-
-                                        <div className="pack_2_image_wrapper">
-                                            <Image loading='lazy' unoptimized={true} src={"/images/example_preview.png"} alt="Pack preview example" layout="fill"></Image>
-                                            <div className="pack_2_image_background"></div>
-                                        </div>
+                                    <div className="example_image_container">
+                                        <Image src={"/images/example_preview.png"} layout="fill" alt="Preview image of one pack"></Image>
+                                        <div className="blur"></div>
                                     </div>
+                                    
                                 </div>
                             </div>
-
                         </div>
 
-                        <div className="create_pack_home_container_left">
+                        <div className="create_pack_explanation_container">
+                            <div className="create_pack_explanation_content">
+                                <h2>Pack Licenses</h2>
+                                <p>There are different kind of licenses you can choose from, when publishing a pixel art pack.</p>
+                                <Link href="/license" scroll={false}>Licenses</Link>
 
-                            <div className="create_pack_home_content">
-                                <div className="text_wrapper_home">
-                                    <h1>Create a Pack</h1>
-                                    <p>An account on spritearc will allow you to create packs. Those will be visible to everyone in the world!</p>
-                                    <Link href={"/signup"} scroll={false}>Signup</Link>
-                                </div>
-                                
-                                <div className="preview_packs_home">
-                                    <div className="pack_1">
+                                <div className="example_preview_container">
 
-                                        <div className="pack_1_image_wrapper">
-                                            <Image loading="lazy" unoptimized={true} src={"/images/spritearc_wallpaper.png"} layout="fill" alt="Represents a Galaxy"></Image>
+                                    <div className="example_preview_info">
+
+                                        <div className="example_ratings_container">
+                                            <Pack_stars_raiting ratings={[{user: "Test", rating: 5}]}/>
                                         </div>
+                                        
+                                        <h2>Adventure Pack</h2>
                                     </div>
 
-                                    <div className="pack_2">
-
-                                        <div className="pack_2_content">
-                                            <Pack_stars_raiting ratings={[{rating: 4, user: "Lol"}]}/>
-                                            <h1>Unique Pack</h1>
-                                        </div>
-
-                                        <div className="pack_2_image_wrapper">
-                                            <Image loading="lazy" unoptimized={true} src={"/images/wallpaper_5.jpg"} layout="fill" alt="Represents a preview of a pack."></Image>
-                                            <div className="pack_2_image_background"></div>
-                                        </div>
+                                    <div className="example_image_container">
+                                        <Image src={"/images/example_preview_2.png"} layout="fill" alt="Preview image of one pack"></Image>
+                                        <div className="blur"></div>
                                     </div>
+                                    
                                 </div>
                             </div>
-
                         </div>
 
                         <div className="blob_container">
                             <Image loading='lazy' unoptimized={true} src={"/blobs/blob_3.svg"} layout="fill" alt="Big wave blob"></Image>
                         </div>
                     </div>
-
-                    
 
                     <div className="perks_container">
 
@@ -152,7 +137,7 @@ export default function Home(): ReactElement {
                                     <h2>Creating Packs</h2>
                                 </div>
                                 
-                                <p>Spritearc allows you to organize your assets into packs that categorize your art. Create your pack within only 3 steps!</p>
+                                <p>You can organize your game assets and sprites into packs to create beautiful experiences. Create your first pixel art pack within only 3 steps!</p>
                             </div>
                            
                             <div className="perk">
@@ -162,7 +147,7 @@ export default function Home(): ReactElement {
                                     </div>
                                     <h2>Public</h2>
                                 </div>
-                                <p>Your recently released packs will be displayed on the front page which makes it easier to grow your audience.</p>
+                                <p>Your recently released pixel art packs will be displayed on the front page which makes it easier to grow your audience.</p>
                             </div>
                             
                             <div className="perk">
@@ -173,7 +158,7 @@ export default function Home(): ReactElement {
                                     <h2>High Quality</h2>
                                 </div>
                                 
-                                <p>{`Discover assets made directly from those who have a passion for Pixel Art.`}</p>
+                                <p>{`Discover assets made directly from those who have a passion for pixel art.`}</p>
                             </div>
 
                         </div>
@@ -188,7 +173,7 @@ export default function Home(): ReactElement {
                         <div className="section_one_content">
                             <h2>News</h2>
                             <h1>Our Recent Updates</h1>
-                            <p>{`Are you curiouse about our newest features? You can visit our news page and read all about the changes and updates we made. We're keeping it updated. `}</p>
+                            <p>{`Are you curiouse about our newest features? You can visit our news page and read all about the changes and updates we have made.`}</p>
                             
                             
 

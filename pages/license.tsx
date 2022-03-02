@@ -85,7 +85,7 @@ function Attribution_license() {
         <div className='license_description'>
             <h1>Attribution</h1>
             <p><b>License:</b> Creative Commons BY, CC-BY</p>
-            <p><b>Read more:</b> <a href="https://creativecommons.org/licenses/" target="_blank" rel='noreferrer'>creativecommons.org</a></p>
+            <p><b>Read more:</b> <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel='noreferrer'>creativecommons.org</a></p>
             <br />
             <p>
                 This license lets others distribute, remix, adapt, and build upon your work, even commercially, as long as they credit you for the original creation. This is the most accommodating of licenses offered. Recommended for maximum dissemination and use of licensed materials.

@@ -183,14 +183,14 @@ export interface Public_user {
     created_at: Date,
     profile_picture: string,
     profile_banner: string,
-    paypal_donation_link: string,
+    paypal_donation_link: string | null,
     following: [],
     followers: [],
-    role: string,
+    role: string | null,
 }
 
 export interface Frontend_public_user {
-    auth: boolean | null
+    auth: boolean | null,
     public_user: Public_user
 }
 //Auth
