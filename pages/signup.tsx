@@ -647,7 +647,7 @@ export function Step_3() {
 
                     </div>
 
-                    <p>I agree to the <Link href="">Terms of use</Link> and i have read the <Link href="">Privacy policy</Link> and accept it.</p>
+                    <p>I agree to the <Link href="/tos" scroll={false}>Terms of use</Link> and i have read the <Link href="/privacy" scroll={false}>Privacy policy</Link> and accept it.</p>
 
                 </div>
 

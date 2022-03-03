@@ -49,7 +49,7 @@ export default function Home(): ReactElement {
                         <div className="intro_content">
                             <h2>2D Pixel World</h2>
                             <h1>Become A Creator</h1>
-                            <p>Publish your pixel art game assets and sprites to build yourself a community!</p>
+                            <p>Join a growing community of 2D artists and game developers by publishing your own pixel art sprites!</p>
                             <button onClick={() => {router.push("/signup", "/signup", {scroll: false})}}>Join Now</button>
                         </div>
                         <div className="arrow_container">
@@ -70,7 +70,7 @@ export default function Home(): ReactElement {
                         <div className="packs_explanation_container">
                             <div className="packs_explanation_content">
                                 <h2>What are Packs?</h2>
-                                <p>{`Packs are bundled sprites and assets published by a pixel artist. Most of the time all it's content fit well together.`}</p>
+                                <p>{`Packs are bundled sprites and assets published by a pixel artist. Most of the time, all it's content fit well together.`}</p>
                                 <Link href="/search" scroll={false}>Find Packs</Link>
 
                                 <div className="example_preview_container">
@@ -173,7 +173,7 @@ export default function Home(): ReactElement {
                         <div className="section_one_content">
                             <h2>News</h2>
                             <h1>Our Recent Updates</h1>
-                            <p>{`Are you curiouse about our newest features? You can visit our news page and read all about the changes and updates we have made.`}</p>
+                            <p>{`Are you curious about our newest features? You can visit our news page and read all about the changes and updates we have made.`}</p>
                             
                             
 
@@ -192,7 +192,7 @@ export default function Home(): ReactElement {
                         <div className="news_section_content">
                             <h2>Your Desires</h2>
                             <h1>Find Whatever You Need!</h1>
-                            <p>Our searching tool provides you a way to look for specific tags in packs. That way whenever you exactly know what you need, you will find it.</p>
+                            <p>Our searching tool provides you a way to look for specific tags in packs. You also can search for specific creators!</p>
                             <Link href="/search" scroll={false}>
                                 <a>Search Packs</a>
                             </Link>
@@ -205,8 +205,8 @@ export default function Home(): ReactElement {
 
                     <section className="signup_section_container">
                         <div className="signup_section_content">
-                            <h1>Publish Your Pixel art</h1>
-                            <p>Are you interested in releasing your own pixel art packs? Create your account now and build yourself a community that will support you through all pixels. </p>
+                            <h1>Create Unique Packs</h1>
+                            <p>Are you interested in releasing your own pixel art packs? Join our growing community and become known for your incredible art! </p>
                             <Link href="/signup" scroll={false}>
                                 <button>Create Account</button>
                             </Link>
