@@ -28,12 +28,13 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 			if(!counter_cointainer) return
 			if(toggle === true) {
-				counter_cointainer.style.display = ""
+				counter_cointainer.style.display = "grid"
 			} else {
 				counter_cointainer.style.display = "none"
 			}
 		}
 
+		console.log(current_page, available_pages)
 		if(current_page < available_pages) {
 			display_load_more(true)
 		} else {
@@ -60,6 +61,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 				
 				const response_obj = await response.json() as Server_response_packs
 
+				console.log(response_obj.packs)
 				set_packs(response_obj.packs)
 				set_available_pages(response_obj.available_pages)
 

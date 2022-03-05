@@ -31,6 +31,8 @@ const CREATE_PACK_ACTIONS = {
     ADD_SECTION: "ADD_SECTION",
     DELETE_SECTION: "DELETE_SECTION",
     ADD_LICENSE: "ADD_LICENSE",
+    ADD_PERSPECTIVE: "ADD_PERSPECTIVE",
+    ADD_RESOLUTION: "ADD_RESOLUTION",
     ADD_ASSET: "ADD_ASSET",
     DELETE_ASSET: "DELETE_ASSET",
     ADD_PREVIEW: "ADD_PREVIEW",
@@ -48,6 +50,8 @@ const initial_create_pack_obj: Create_pack_frontend = {
     current_step: 0,
     steps_available: [],
     license: null,
+    resolution: null,
+    perspective: null,
     preview: {preview_asset: null, preview_url: null},
     title: null,
     description: null,
@@ -59,256 +63,282 @@ const initial_create_pack_obj: Create_pack_frontend = {
 function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {type: string, payload?: any}): Create_pack_frontend {
     const {type , payload} = action
     
-    //Object handler
-    switch ( type ) {
-        
-        case ( CREATE_PACK_ACTIONS.ADD_SECTION ) : {
-            if(!payload) break
 
-            const section_name = payload.section_name
-
-            let exists = false
-            for(let [key] of create_pack_obj.content.entries()) {
-
-                if(key.toLowerCase() === payload.section_name.toLowerCase()) {
-                    exists = true
-                }
-                
-            } 
-
-            if(exists === false) {
-                
-                create_pack_obj.content.set(`${section_name.toLowerCase()}`, {section_assets: [], section_urls: []})
-                /* create_pack_obj.content = new_content_map */
-            }
+    try {
+        //Object handler
+        switch ( type ) {
             
-            break
-        }
+            case ( CREATE_PACK_ACTIONS.ADD_SECTION ) : {
+                if(!payload) break
 
-        case ( CREATE_PACK_ACTIONS.DELETE_SECTION ) : {
-            if(!payload) break
-            const section_name = payload.section_name as string
-
-            const section = create_pack_obj.content.get(section_name.toLowerCase())
-
-            if(!section) break
-
-            for(let url of section.section_urls) {
-                URL.revokeObjectURL(url)
-            }
-
-            create_pack_obj.content.delete(payload.section_name.toLowerCase() as string)
-
-            break
-        }
-        
-        case ( CREATE_PACK_ACTIONS.ADD_ASSET ) : {
-            if(!payload) return create_pack_obj
-            const section_name = (payload.section_name as string).toLowerCase()
-            const section_blobs = payload.section_assets as File[] 
-
-            const old_blobs = create_pack_obj.content.get(section_name)
-
-            if(!old_blobs) break
-
-            let all_files = [...section_blobs, ...old_blobs.section_assets]
-
-            let object_urls: string[] = []
-            for(let file of all_files){
-                object_urls.push(URL.createObjectURL(file))
-            }
-            
-
-            create_pack_obj.content.set(section_name, {section_assets: all_files, section_urls: object_urls})
-            break 
-        }
-
-        case ( CREATE_PACK_ACTIONS.DELETE_ASSET ) : {
-            if(!payload) return create_pack_obj
-            const section_name = payload.section_name as string
-            const index = payload.asset_index as number
-            
-            const section = create_pack_obj.content.get(section_name.toLowerCase())
-
-            if(!section) break
-
-            section.section_assets.splice(index, 1)
-            let removed_url = section.section_urls.splice(index, 1)
-            URL.revokeObjectURL(removed_url[0])
-            create_pack_obj.content.set(section_name.toLowerCase(), {section_assets: [...section.section_assets], section_urls: [...section.section_urls]})
-            
-            break
-        }
-
-        case ( CREATE_PACK_ACTIONS.ADD_PREVIEW ) : {
-            
-            if(!payload) return create_pack_obj
-            const preview_asset = payload.preview_asset
-
-            if(create_pack_obj.preview.preview_url) URL.revokeObjectURL(create_pack_obj.preview.preview_url)
-
-            const preview_url = URL.createObjectURL(preview_asset)
-            create_pack_obj.preview = {preview_asset:  preview_asset, preview_url: preview_url}
-            
-            break
-        }
-
-        case ( CREATE_PACK_ACTIONS.ADD_TITLE ) : {
-            
-            if(!payload) return create_pack_obj
-            const title = payload.title
-
-            create_pack_obj.title = title
-            break
-        }
-
-        case ( CREATE_PACK_ACTIONS.ADD_DESCRIPTION ) : {
-            
-            if(!payload) return create_pack_obj
-            const description = payload.description
-
-            create_pack_obj.description = description
-            break
-        }
-
-        case ( CREATE_PACK_ACTIONS.NEXT_STEP ) : {
-            if(create_pack_obj.steps_available.includes(create_pack_obj.current_step + 1)) create_pack_obj.current_step = create_pack_obj.current_step + 1
-
-            break
-        }
-
-        case ( CREATE_PACK_ACTIONS.PREV_STEP ) : {
-            if(create_pack_obj.current_step > 0) create_pack_obj.current_step = create_pack_obj.current_step - 1
-
-            break
-        }
-
-        case ( CREATE_PACK_ACTIONS.ADD_LICENSE ) : {
-            if(!payload) break
-
-            const license = (payload.license as string).toLowerCase()
-            
-            create_pack_obj.license = license
-            break
-        }
-
-        case ( CREATE_PACK_ACTIONS.ADD_TAG ) : {
-            if(!payload) break
-
-            if(create_pack_obj.tags.length >= 5) break
-            const tag = (payload.tag as string).toLowerCase()
-
-            console.log(tag)
-
-            let tags_array = create_pack_obj.tags as string[]
-
-            if(tags_array.length === 0) {
-
-                tags_array.push(tag)
-                
-            } else {
+                const section_name = payload.section_name
 
                 let exists = false
-                
-                for(let existing_tag of tags_array) {
-                    
-                    if(existing_tag.toLowerCase() === tag) {
+                for(let [key] of create_pack_obj.content.entries()) {
+
+                    if(key.toLowerCase() === payload.section_name.toLowerCase()) {
                         exists = true
                     }
+                    
+                } 
 
+                if(exists === false) {
+                    
+                    create_pack_obj.content.set(`${section_name.toLowerCase()}`, {section_assets: [], section_urls: []})
+                    /* create_pack_obj.content = new_content_map */
                 }
-
-                if(exists === false) tags_array.push(tag)
+                
+                break
             }
-            
-            
-            create_pack_obj.tags = tags_array
-            break
-        }
 
-        case ( CREATE_PACK_ACTIONS.DELETE_TAG ) : {
-            if(!payload) break
-            const tag = payload.tag as string
-            
-            const index = create_pack_obj.tags.indexOf(tag.toLowerCase())
+            case ( CREATE_PACK_ACTIONS.DELETE_SECTION ) : {
+                if(!payload) break
+                const section_name = payload.section_name as string
 
-            create_pack_obj.tags.splice(index, 1)
-            break
-        }
+                const section = create_pack_obj.content.get(section_name.toLowerCase())
 
-        case ( CREATE_PACK_ACTIONS.RESET_ALL) : {
-            create_pack_obj = initial_create_pack_obj
-            create_pack_obj.preview.preview_asset = null
-            create_pack_obj.preview.preview_url = null
-            create_pack_obj.tags = []
-            for(let section of create_pack_obj.content.entries()) {
-                for(let url of section[1].section_urls) {
+                if(!section) break
+
+                for(let url of section.section_urls) {
                     URL.revokeObjectURL(url)
                 }
-            }
-            create_pack_obj.content = new Map()
-            break
-        }
 
-        //Default value
-        default : {
-            return {...create_pack_obj}
-        }
-        
-    } 
+                create_pack_obj.content.delete(payload.section_name.toLowerCase() as string)
 
-    function available_steps() {
-        let steps = [0]
-
-        //Step 2 available handler
-        if(create_pack_obj.content.size > 0) {
-            const step_2 = 1
-            if(create_pack_obj.preview.preview_asset) {
-
-                for(let [key, value] of create_pack_obj.content.entries()) {
-
-                    if(value.section_assets.length > 0) {
-                        steps.push(step_2)
-                        
-                    } else {
-                        let index = steps.indexOf(step_2)
-                        steps.splice(index, 1)
-                    }
-
-                }
-
-                
+                break
             }
             
-        }
+            case ( CREATE_PACK_ACTIONS.ADD_ASSET ) : {
+                if(!payload) return create_pack_obj
+                const section_name = (payload.section_name as string).toLowerCase()
+                const section_blobs = payload.section_assets as File[] 
 
-        if(steps.includes(1)) {
+                const old_blobs = create_pack_obj.content.get(section_name)
 
-            //Step 3 available handler
-            if(create_pack_obj.title && create_pack_obj.description) {
-                const valid_title = validate_pack_title(create_pack_obj.title)
-                const valid_description = validate_pack_description(create_pack_obj.description)
+                if(!old_blobs) break
 
-                if(valid_title === true && valid_description === true) {
-                    steps.push(2)
+                let all_files = [...section_blobs, ...old_blobs.section_assets]
+
+                let object_urls: string[] = []
+                for(let file of all_files){
+                    object_urls.push(URL.createObjectURL(file))
+                }
+                
+
+                create_pack_obj.content.set(section_name, {section_assets: all_files, section_urls: object_urls})
+                break 
+            }
+
+            case ( CREATE_PACK_ACTIONS.DELETE_ASSET ) : {
+                if(!payload) return create_pack_obj
+                const section_name = payload.section_name as string
+                const index = payload.asset_index as number
+                
+                const section = create_pack_obj.content.get(section_name.toLowerCase())
+
+                if(!section) break
+
+                section.section_assets.splice(index, 1)
+                let removed_url = section.section_urls.splice(index, 1)
+                URL.revokeObjectURL(removed_url[0])
+                create_pack_obj.content.set(section_name.toLowerCase(), {section_assets: [...section.section_assets], section_urls: [...section.section_urls]})
+                
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.ADD_PREVIEW ) : {
+                
+                if(!payload) return create_pack_obj
+                const preview_asset = payload.preview_asset
+
+                if(create_pack_obj.preview.preview_url) URL.revokeObjectURL(create_pack_obj.preview.preview_url)
+
+                const preview_url = URL.createObjectURL(preview_asset)
+                create_pack_obj.preview = {preview_asset:  preview_asset, preview_url: preview_url}
+                
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.ADD_TITLE ) : {
+                
+                if(!payload) return create_pack_obj
+                const title = payload.title
+
+                create_pack_obj.title = title
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.ADD_DESCRIPTION ) : {
+                
+                if(!payload) return create_pack_obj
+                const description = payload.description
+
+                create_pack_obj.description = description
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.NEXT_STEP ) : {
+                if(create_pack_obj.steps_available.includes(create_pack_obj.current_step + 1)) create_pack_obj.current_step = create_pack_obj.current_step + 1
+
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.PREV_STEP ) : {
+                if(create_pack_obj.current_step > 0) create_pack_obj.current_step = create_pack_obj.current_step - 1
+
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.ADD_LICENSE ) : {
+                if(!payload) break
+                const license = payload?.license
+                if(typeof license !== "string") break
+                
+                
+                create_pack_obj.license = license.toLowerCase()
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.ADD_PERSPECTIVE) : {
+                if(!payload) break
+                const perspective = payload?.perspective
+                if(typeof perspective !== "string") break
+
+                create_pack_obj.perspective = perspective.toLowerCase()
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.ADD_RESOLUTION ) : {
+                if(!payload) break
+                const resolution = payload?.resolution
+                if(typeof resolution !== "string") break
+
+                create_pack_obj.resolution = resolution.toLowerCase()
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.ADD_TAG ) : {
+                if(!payload) break
+
+                if(create_pack_obj.tags.length >= 5) break
+                const tag = (payload.tag as string).toLowerCase()
+
+                console.log(tag)
+
+                let tags_array = create_pack_obj.tags as string[]
+
+                if(tags_array.length === 0) {
+
+                    tags_array.push(tag)
+                    
+                } else {
+
+                    let exists = false
+                    
+                    for(let existing_tag of tags_array) {
+                        
+                        if(existing_tag.toLowerCase() === tag) {
+                            exists = true
+                        }
+
+                    }
+
+                    if(exists === false) tags_array.push(tag)
+                }
+                
+                
+                create_pack_obj.tags = tags_array
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.DELETE_TAG ) : {
+                if(!payload) break
+                const tag = payload.tag as string
+                
+                const index = create_pack_obj.tags.indexOf(tag.toLowerCase())
+
+                create_pack_obj.tags.splice(index, 1)
+                break
+            }
+
+            case ( CREATE_PACK_ACTIONS.RESET_ALL) : {
+                create_pack_obj = initial_create_pack_obj
+                create_pack_obj.preview.preview_asset = null
+                create_pack_obj.preview.preview_url = null
+                create_pack_obj.tags = []
+                for(let section of create_pack_obj.content.entries()) {
+                    for(let url of section[1].section_urls) {
+                        URL.revokeObjectURL(url)
+                    }
+                }
+                create_pack_obj.content = new Map()
+                break
+            }
+
+            //Default value
+            default : {
+                return {...create_pack_obj}
+            }
+            
+        } 
+
+        function available_steps() {
+            let steps = [0]
+
+            //Step 2 available handler
+            if(create_pack_obj.content.size > 0) {
+                const step_2 = 1
+                if(create_pack_obj.preview.preview_asset) {
+
+                    for(let [key, value] of create_pack_obj.content.entries()) {
+
+                        if(value.section_assets.length > 0) {
+                            steps.push(step_2)
+                            
+                        } else {
+                            let index = steps.indexOf(step_2)
+                            steps.splice(index, 1)
+                        }
+
+                    }
+
+                    
+                }
+                
+            }
+
+            if(steps.includes(1)) {
+
+                //Step 3 available handler
+                if(create_pack_obj.title && create_pack_obj.description) {
+                    const valid_title = validate_pack_title(create_pack_obj.title)
+                    const valid_description = validate_pack_description(create_pack_obj.description)
+
+                    if(valid_title === true && valid_description === true) {
+                        steps.push(2)
+                    } 
+                    
+                }
+
+            }
+
+            if(steps.includes(2)) {
+                
+                if(create_pack_obj.tags.length >= 3 && create_pack_obj.license && create_pack_obj.perspective && create_pack_obj.resolution) {
+                    steps.push(3)
                 } 
                 
             }
-
+            return steps
         }
 
-        if(steps.includes(2)) {
-            
-            if(create_pack_obj.tags.length >= 3 && create_pack_obj.license) {
-                steps.push(3)
-            } 
-            
-        }
-        return steps
+        create_pack_obj.steps_available = available_steps()
+        return {...create_pack_obj}
+
+    } catch(err) {
+        return create_pack_obj
     }
 
-    create_pack_obj.steps_available = available_steps()
-    return {...create_pack_obj}
 }
 
 
@@ -790,10 +820,14 @@ function Step_3() {
         
     }, [create_pack.create_pack_obj, device])
 
-    function set_license(e: any) {
-        const license = e.target.getAttribute("data-license") as string
-        
-        create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_LICENSE, payload: {license}})
+    function set_license(value: string) {
+        create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_LICENSE, payload: {license: value}})
+    }
+    function set_perspective(value: string) {
+        create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_PERSPECTIVE, payload: {perspective: value}})
+    }
+    function set_resoluion(value: string) {
+        create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_RESOLUTION, payload: {resolution: value}})
     }
 
     const set_tag = useCallback(
@@ -903,8 +937,9 @@ function Step_3() {
         set_loading(true)
         async function send_pack() {
             const Form_data = create_form_data(create_pack.create_pack_obj)
-        
-            if(!Form_data) return
+            
+            if(typeof Form_data === "string") return
+            
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/create_pack`, {
                     method: "POST",
@@ -1017,37 +1052,9 @@ function Step_3() {
                     </div>
                 </div>
 
-                <div className='pack_license_container'>
-
-                    <h1>
-                        License
-                        <a href='https://spritearc.com/license' target={"_blank"} rel="noreferrer" className='learn_about_licenses'>
-                            <HelpIcon/>
-                        </a>
-                    </h1>
-                    
-                    <motion.div animate={selection_animation} onClick={() => set_selection_state(!selection_state)} onMouseLeave={() => set_selection_state(false)} className='selection_container'>
-
-                        <div className='target_licens_container'>
-                            
-                            {create_pack.create_pack_obj.license &&
-                                <p>{capitalize_first_letter_rest_lowercase(create_pack.create_pack_obj.license)}</p>
-                            }
-                            {create_pack.create_pack_obj.license === null &&
-                                <p>Choose a license</p>
-                            }
-                            <div className='licens_deco_container'>
-                                <ExpandIcon/>
-                            </div>
-                        </div>
-
-                        <ul>
-                            <li onClick={set_license} data-license="opensource">Opensource</li>
-                            <li onClick={set_license} data-license="attribution">Attribution</li>
-                        </ul>
-                    </motion.div>
-                    
-                </div>
+                <Drop_menu label={"Perspective"} options={["Top-Down","Side-Scroller", "Isometric", "Other"]} create_pack_property={create_pack.create_pack_obj.perspective} callb={set_perspective}/>
+                <Drop_menu label={"Resolution"} options={["8x8", "16x16", "32x32", "64x64", "128x128",  "256x256","Other"]} create_pack_property={create_pack.create_pack_obj.resolution} callb={set_resoluion}/>
+                <Drop_menu label={"License"} options={["Opensource", "Attribution"]} help_link={"/license"} create_pack_property={create_pack.create_pack_obj.license} callb={set_license}/>
 
             </div>
 
@@ -1190,6 +1197,80 @@ function Section({section_name, section_content}: {section_name: string, section
     );
 }
 
+function Drop_menu(props: {label: string, options: string[], create_pack_property: string | null, help_link?: string | undefined | null, callb: (value: string) => void}) {
+    const [state, set_state] = useState(false)
+    const create_pack_frontend = props.create_pack_property
+    const callb = props.callb
+    const options = props.options
+    const menu_animation = useAnimation()
+
+    //Animation for licens container when opening / closing
+    useEffect(() => {
+
+        if(state === true) {
+            menu_animation.start({
+                height: "auto",
+            })
+        } else {
+            menu_animation.start({
+                height: "",
+            })
+        }
+        
+    }, [state, menu_animation])
+
+    function menu_click(e: any) {
+        const menu_value = e.target.innerText as any
+        if(typeof menu_value !== "string") return
+        
+        callb(menu_value.toLowerCase())
+
+    }
+
+    let options_jsx = []
+    for(let option of options) {
+
+        options_jsx.push(
+            <li key={`${props.label}_${option}`} onClick={menu_click} data-license="opensource">{`${option}`}</li>
+        )
+    }
+    
+
+    return(
+        <div key={props.label} className='pack_license_container'>
+
+            <h1>
+                {capitalize_first_letter_rest_lowercase(props.label)}
+                {props.help_link &&
+                    <a href='https://spritearc.com/license' target={"_blank"} rel="noreferrer" className='learn_about_licenses'>
+                        <HelpIcon/>
+                    </a>
+                }
+                
+            </h1>
+            
+            <motion.div animate={menu_animation} onClick={() => set_state(!state)} onMouseLeave={() => set_state(false)} className='selection_container'>
+
+                <div className='target_licens_container'>
+                    
+                    {props.create_pack_property &&
+                        <p>{capitalize_first_letter_rest_lowercase(props.create_pack_property)}</p>
+                    }
+                    {props.create_pack_property === null &&
+                        <p>Choose a {capitalize_first_letter_rest_lowercase(props.label)}</p>
+                    }
+                    <div className='licens_deco_container'>
+                        <ExpandIcon/>
+                    </div>
+                </div>
+
+                <ul>
+                    {options_jsx}
+                </ul>
+            </motion.div>
+        </div>
+    )
+}
 //Dropzone component. Handles whenever files are dropped into a dropzone
 function Dropzone({children, section_name, type}: {children: any, section_name: string, type: string}) {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)

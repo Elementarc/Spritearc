@@ -1,4 +1,4 @@
-import { useAnimation, motion } from 'framer-motion';
+import { useAnimation, motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import React, {useState, useEffect, useContext} from 'react';
 import Footer from '../components/footer';
@@ -6,6 +6,8 @@ import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
+import ProfileIcon from "../public/icons/ProfileIcon.svg"
+import PacksIcon from "../public/icons/PacksIcon.svg"
 import Head from 'next/head';
 import Users_section from '../components/users_section';
 import { validate_search_query } from '../spritearc_lib/validate_lib';
@@ -14,6 +16,7 @@ const search_context: any = React.createContext(null)
 
 export default function Search_page() {
 	const router = useRouter()
+	const [search_packs, set_search_packs] = useState(true)
 	const search_query = typeof router.query.query === "string" ? router.query.query : ""
 
 	function search() {
@@ -26,6 +29,19 @@ export default function Search_page() {
 		const input = document.getElementById("search_input") as HTMLInputElement
 
 		input.value = string
+	}
+
+	function validate_input_value(e: any) {
+		const search_button = document.getElementById("search_button") as HTMLInputElement
+		const search = e.target.value as string
+		const valid_search = validate_search_query(search)
+
+
+		if(valid_search === true) {
+			search_button.classList.add("active_search_button")
+		} else {
+			search_button.classList.remove("active_search_button")
+		}
 	}
 
 	useEffect(() => {
@@ -61,18 +77,8 @@ export default function Search_page() {
 		})
 	}, [])
 	
-	function validate_input_value(e: any) {
-		const search_button = document.getElementById("search_button") as HTMLInputElement
-		const search = e.target.value as string
-		const valid_search = validate_search_query(search)
 
 
-		if(valid_search === true) {
-			search_button.classList.add("active_search_button")
-		} else {
-			search_button.classList.remove("active_search_button")
-		}
-	}
 	return (
 		<>
 			<Head>
@@ -102,8 +108,33 @@ export default function Search_page() {
 						<div className='searching_container'>
 
 							<div className='search_input_container'>
-								<input onKeyUp={validate_input_value} onChange={validate_input_value} onBlur={validate_input_value} type="text" placeholder='Search' id="search_input"/>
+								<div className='input_container'>
+									<input onKeyUp={validate_input_value} onChange={validate_input_value} onBlur={validate_input_value} type="text" placeholder={search_packs ? "Search Packs" : "Search Users"} id="search_input"/>
+									
+									<div className='toggle_search_state_container'>
+
+										<AnimatePresence exitBeforeEnter>
+
+											{search_packs === false &&
+												<motion.div key="search_users" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.12}}} onClick={() => {set_search_packs(!search_packs)}} className='svg_wrapper'>
+													<PacksIcon />
+												</motion.div>
+											}
+
+											{search_packs === true &&
+												<motion.div key="search_packs" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.12}}} onClick={() => {set_search_packs(!search_packs)}} className='svg_wrapper'>
+													<ProfileIcon />
+												</motion.div>
+											}
+											
+											
+
+										</AnimatePresence>
+									</div>
+									
+								</div>
 								<button onClick={search} id="search_button">Search</button>
+								
 							</div>
 
 						</div>
@@ -112,8 +143,14 @@ export default function Search_page() {
 
 						{search_query &&
 							<>
-								<Users_section search_query={search_query}/>
-								<Search_results_packs search_query={search_query}/>
+								{search_packs === false &&
+									<Users_section search_query={search_query}/>
+								}
+
+								{search_packs === true &&
+									<Search_results_packs search_query={search_query}/>
+								}
+								
 							</>
 						} 
 
@@ -227,8 +264,6 @@ function Search_recommendations() {
 		</div>
 	)
 }
-
-
 
 function Recommendation({name}: {name: string}) {
 	const search_c: any = useContext(search_context)

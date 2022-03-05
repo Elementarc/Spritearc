@@ -235,6 +235,64 @@ export function validate_pack_tag(tag_name: string): boolean | string {
     }
     
 }
+export function validate_pack_perspective(perspective: string): boolean | string {
+    
+    switch( perspective.toLowerCase() ) {
+        case "top-down" : {
+            return true
+        }
+
+        case "side-scroller" : {
+            return true
+        }
+
+        case "isometric" : {
+            return true
+        }
+
+        case "other" : {
+            return true
+        }
+        
+        default : {
+            return "Perspective is not valid"
+        }
+    }
+    
+}
+export function validate_pack_resolution(resolution: string): boolean | string {
+
+    switch( resolution.toLowerCase() ) {
+        case "16x16" : {
+            return true
+        }
+
+        case "32x32" : {
+            return true
+        }
+
+        case "64x64" : {
+            return true
+        }
+
+        case "128x128" : {
+            return true
+        }
+
+        case "256x256" : {
+            return true
+        }
+
+        case "other" : {
+            return true
+        }
+
+        default : {
+            return "Resolution is not valid"
+        }
+    }
+    
+}
 export function validate_pack_tags(tags: string[]): boolean | string {
 
     if(tags.length === 0) return ""

@@ -61,6 +61,8 @@ export interface Pack {
     username: string,
     preview: string,
     popularity: number,
+    perspective: string,
+    resolution: string,
     title: string,
     license: string,
     description: string,
@@ -140,6 +142,8 @@ export interface Create_pack_frontend{
     current_step: number,
     steps_available: number[],
     license: string | null,
+    resolution: string | null,
+    perspective: string | null
     preview: {
         preview_asset: File | null,
         preview_url: string | null

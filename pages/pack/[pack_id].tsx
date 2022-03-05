@@ -38,6 +38,7 @@ const PACK_PAGE_CONTEXT: any = React.createContext(null)
 export default function Pack_page_handler({server_pack_response}: {server_pack_response: Server_response_pack}) {
     const pack = server_pack_response.pack
 
+    console.log(pack)
     return (
         <div>
             {pack &&
@@ -164,20 +165,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         router.push(prev_path, prev_path, {scroll: false})
         
     }
-    function pack_tags_jsx() {
-        const tags = pack?.tags
-
-        try {
-            const tags_jsx = tags.map((tag) => {
-                return <h4 key={`tag_${tag}`} className='tag_link' onClick={() => {router.push(`/search?query=${tag.toLowerCase()}`,`/search?query=${tag.toLowerCase()}`, {scroll: false})}}>{tag.toUpperCase()}</h4>
-            })
-
-            return tags_jsx
-        } catch(err) {
-            return []
-        }
-        
-    }
+    
 
     async function submit_pack_report() {
         const valid_report_reason = report_pack_validation()
@@ -367,91 +355,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                             }
                             
 
-                            <div style={own_pack ? {marginTop: "16rem"} : {}} className="stats_container"> 
-                                <span className="top_line" />
-
-                                <div className="grid_container">
-                                    
-                                    <div className="grid_item">
-
-                                        <div className="item_1">
-                                            <p>Creator:</p>
-                                        </div>
-
-                                        <Link href={`/user/${pack?.username}`} scroll={false}>{pack?.username}</Link>
-                                    </div>
-
-                                    <div className="grid_item">
-
-                                        <div className="item_1">
-                                            <p>Released:</p>
-                                        </div>
-
-                                        <div className="item_2">{format_date(new Date(pack?.date))}</div>
-                                    </div>
-
-                                    <div className="grid_item">
-
-                                        <div className="item_1">
-                                            <p>Rating:</p>
-                                        </div>
-
-
-                                        <div className="item_2">
-                                            <Pack_star_raiting ratings={prev_pack_ratings}/>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid_item">
-
-                                        <div className="item_1">
-                                            <p>Downloads:</p>
-                                        </div>
-
-                                        <div className="item_2">{`${pack?.downloads}`}</div>
-                                    </div>
-
-                                    <div className="grid_item">
-
-                                        <div className="item_1">
-                                            <p>License:</p>
-                                        </div>
-
-                                        <div className="item_2">
-                                            <p className='pack_license'>
-                                                {pack?.license.toUpperCase()}
-                                                <Link href='/license' scroll={false}>
-                                                    <a>
-                                                        <HelpIcon/>
-                                                    </a>
-                                                </Link>
-                                            </p>
-                                            
-                                        </div>
-                                    </div>
-
-                                    <div className="grid_item">
-
-                                        <div className="item_1">
-                                            <p>Tags:</p>
-                                        </div>
-
-                                        <div className="item_2">
-                                            <div className='tags_container'>
-                                                {pack_tags_jsx()}
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-
-
-
-
-                                </div>
-
-                                <span className="bottom_line" />
-                            </div>
+                            <Pack_stats pack={pack} own_pack={own_pack} prev_pack_ratings={prev_pack_ratings}/>
 
                             <div className="arrow_container">
                                 <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
@@ -771,6 +675,112 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
             <div onClick={() => {props.set_toggle_download_container(false)}} className='download_container_background'></div>
         </>
     );
+}
+
+function Pack_stats(props: {pack: Pack, own_pack: boolean, prev_pack_ratings: Pack_rating[]}) {
+    const pack = props.pack
+    const own_pack = props.own_pack
+    const prev_pack_ratings = props.prev_pack_ratings
+    const router = useRouter()
+
+    function pack_tags_jsx() {
+        const tags = pack?.tags
+
+        try {
+            const tags_jsx = tags.map((tag) => {
+                return <h4 key={`tag_${tag}`} className='tag_link' onClick={() => {router.push(`/search?query=${tag.toLowerCase()}`,`/search?query=${tag.toLowerCase()}`, {scroll: false})}}>{tag.toUpperCase()}</h4>
+            })
+
+            return tags_jsx
+        } catch(err) {
+            return []
+        }
+        
+    }
+
+    return (
+        <div style={own_pack ? {marginTop: "16rem"} : {}} className="stats_container"> 
+            <span className="top_line" />
+
+            <div className="grid_container">
+                
+                <div className="grid_item">
+
+                    <div className="item_1">
+                        <p>Creator:</p>
+                    </div>
+
+                    <Link href={`/user/${pack?.username}`} scroll={false}>{pack?.username}</Link>
+                </div>
+
+                <div className="grid_item">
+
+                    <div className="item_1">
+                        <p>Released:</p>
+                    </div>
+
+                    <div className="item_2">{format_date(new Date(pack?.date))}</div>
+                </div>
+
+                <div className="grid_item">
+
+                    <div className="item_1">
+                        <p>Rating:</p>
+                    </div>
+
+
+                    <div className="item_2">
+                        <Pack_star_raiting ratings={prev_pack_ratings}/>
+                    </div>
+                </div>
+
+                <div className="grid_item">
+
+                    <div className="item_1">
+                        <p>Downloads:</p>
+                    </div>
+
+                    <div className="item_2">{`${pack?.downloads}`}</div>
+                </div>
+
+                <div className="grid_item">
+
+                    <div className="item_1">
+                        <p>License:</p>
+                    </div>
+
+                    <div className="item_2">
+                        <p className='pack_license'>
+                            {pack?.license.toUpperCase()}
+                            <Link href='/license' scroll={false}>
+                                <a>
+                                    <HelpIcon/>
+                                </a>
+                            </Link>
+                        </p>
+                        
+                    </div>
+                </div>
+
+                
+                <div className="grid_item">
+
+                    <div className="item_1">
+                        <p>Tags:</p>
+                    </div>
+
+                    <div className="item_2">
+                        <div className='tags_container'>
+                            {pack_tags_jsx()}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <span className="bottom_line" />
+        </div>
+    )
 }
 
 //Component that creates a section with assets
