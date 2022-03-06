@@ -8,14 +8,23 @@ import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import { check_if_json, SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
 import { useRouter } from 'next/router';
 
-export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: any, sort_action?: string | null | undefined}) {
+export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: string, sort_action?: string | null | undefined}) {
 	const [sort_action, set_sort_action] = useState<null | string | undefined>(null)
 	const [toggle_sort_by_state, set_toggle_sort_by_state] = useState(false)
 	const [packs, set_packs] = useState<null | Pack[] | []>(null)
 	const [toggle_packs, set_toggle_packs] = useState(true)
-	const [current_page, set_current_page] = useState(1)
+	const [current_page, set_current_page] = useState(() => {
+		if(typeof window === "undefined") return 1
+		const page = sessionStorage.getItem(section_name)
+		if(page) return parseInt(page)
+		return 1
+	})
 	const [available_pages, set_available_pages] = useState(0)
 
+	useEffect(() => {
+
+		sessionStorage.setItem(section_name, `${current_page}`)
+	}, [section_name, current_page])
 	//Checking sessionstorage if sort_action exists. Setting sort_action if yes
 	useEffect(() => {
 		const sort_action =  sessionStorage.getItem(`${section_name}_sort_action`) ? sessionStorage.getItem(`${section_name}_sort_action`) : null
@@ -34,7 +43,6 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 			}
 		}
 
-		console.log(current_page, available_pages)
 		if(current_page < available_pages) {
 			display_load_more(true)
 		} else {
@@ -56,12 +64,11 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 					},
 					credentials: "include",
 					signal: controller.signal,
-					body: body ? check_if_json(body) ? body: JSON.stringify(body) : null,
+					body: body ? body : null,
 				})
 				
 				const response_obj = await response.json() as Server_response_packs
 
-				console.log(response_obj.packs)
 				set_packs(response_obj.packs)
 				set_available_pages(response_obj.available_pages)
 

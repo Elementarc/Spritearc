@@ -250,10 +250,6 @@ export function validate_pack_perspective(perspective: string): boolean | string
             return true
         }
 
-        case "other" : {
-            return true
-        }
-        
         default : {
             return "Perspective is not valid"
         }
@@ -263,6 +259,10 @@ export function validate_pack_perspective(perspective: string): boolean | string
 export function validate_pack_resolution(resolution: string): boolean | string {
 
     switch( resolution.toLowerCase() ) {
+        case "8x8" : {
+            return true
+        }
+
         case "16x16" : {
             return true
         }
@@ -280,10 +280,6 @@ export function validate_pack_resolution(resolution: string): boolean | string {
         }
 
         case "256x256" : {
-            return true
-        }
-
-        case "other" : {
             return true
         }
 

@@ -1,6 +1,6 @@
 import { useAnimation, motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useRef, useCallback} from 'react';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
 import Packs_section from '../components/packs_section';
@@ -8,6 +8,7 @@ import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import ProfileIcon from "../public/icons/ProfileIcon.svg"
 import PacksIcon from "../public/icons/PacksIcon.svg"
+import CloseIcon from "../public/icons/CloseIcon.svg"
 import Head from 'next/head';
 import Users_section from '../components/users_section';
 import { validate_search_query } from '../spritearc_lib/validate_lib';
@@ -16,24 +17,46 @@ const search_context: any = React.createContext(null)
 
 export default function Search_page() {
 	const router = useRouter()
+	const refs: any = useRef([])
+	const [show_delete_search_query_icon, set_show_delete_search_query_icon] = useState(false)
+	const [search_perspective, set_search_perspective] = useState<null | string>(() => {
+		if(typeof window === "undefined") return null
+		if(sessionStorage.getItem("search_perspective")) return sessionStorage.getItem("search_perspective")
+		else return null
+	})
+	const [search_size, set_search_size] = useState<null | string>(() => {
+		if(typeof window === "undefined") return null
+		if(sessionStorage.getItem("search_size")) return sessionStorage.getItem("search_size")
+		else return null
+	})
+	const [search_license, set_search_license] = useState<null | string>(() => {
+		if(typeof window === "undefined") return null
+		if(sessionStorage.getItem("search_license")) return sessionStorage.getItem("search_license")
+		else return null
+	})
 	const [search_packs, set_search_packs] = useState(true)
-	const search_query = typeof router.query.query === "string" ? router.query.query : ""
-
+	const [search_query, set_search_query] = useState("")
+	
 	function search() {
-		const input = document.getElementById("search_input") as HTMLInputElement
+		const search_input = refs.current["search_input"] as HTMLInputElement
+		const valid_search_query = validate_search_query(search_input.value)
+		if(!valid_search_query) return
 
-		router.push(`/search?query=${input.value}`, `/search?query=${input.value}`, {scroll: false})
+		set_search_query(search_input.value)
 	}
 
-	function set_input_value(string: string) {
-		const input = document.getElementById("search_input") as HTMLInputElement
+	function delete_input_value() {
+		const search_input = refs.current["search_input"] as HTMLInputElement
 
-		input.value = string
+		search_input.value = ""
+		validate_input_value()
+		set_show_delete_search_query_icon(false)
+
 	}
 
-	function validate_input_value(e: any) {
+	function validate_input_value() {
 		const search_button = document.getElementById("search_button") as HTMLInputElement
-		const search = e.target.value as string
+		const search = refs.current["search_input"].value as string
 		const valid_search = validate_search_query(search)
 
 
@@ -43,26 +66,53 @@ export default function Search_page() {
 			search_button.classList.remove("active_search_button")
 		}
 	}
-
-	useEffect(() => {
-		const get_input = document.getElementById("search_input") as HTMLInputElement
-		if(router.query.query as string) {
-			get_input.defaultValue = router.query.query ? `${router.query.query}` : ""
+	//Function that checks if search query is valid
+	const valid_search_query = useCallback(() => {
+		if(typeof router?.query?.query == "string") {
+			return validate_search_query(router?.query?.query)
+		} else {
+			return "Pls enter a valid search query"
 		}
-		
+	}, [router])
 
-	}, [search_query, router.query])
+	
+	useEffect(() => {
+		const search_input = refs.current["search_input"]
+		search_input.value = search_query
+		router.push(`/search?query=${search_query}`, `/search?query=${search_query}`, {scroll: false})
+	}, [search_query, refs])
+
+	//Checking if query and setting value of input + setting show_delete_search_query_icon.
+	useEffect(() => {
+		const search_input = refs.current["search_input"] as HTMLInputElement
+
+		if(typeof router?.query?.query === "string") {
+			
+			search_input.value = router?.query?.query
+
+			if(search_input.value.length === 0) {
+				set_show_delete_search_query_icon(false)
+			} else {
+				set_show_delete_search_query_icon(true)
+			}
+			validate_input_value()
+			const valid_search = valid_search_query()
+			if(typeof valid_search === "string") return
+			set_search_query(router?.query?.query)
+		}
+
+		search_input.focus()
+
+	}, [router, refs, set_show_delete_search_query_icon])
 
 	useEffect(() => {
-		const get_input = document.getElementById("search_input") as HTMLInputElement
+		const search_input = refs.current["search_input"] as HTMLInputElement
 
-		get_input.focus()
-
-		function search(e: any) {
-			const valid_search = validate_search_query(get_input.value)
+		function search_by_pressing_enter(e: any) {
+			const valid_search = validate_search_query(search_input.value)
 			if(typeof valid_search === "string") return
 			
-			if(get_input === document.activeElement) {
+			if(search_input === document.activeElement) {
 				if(e.keyCode === 13) {
 					const search_button = document.getElementById("search_button") as HTMLButtonElement
 					search_button.click()
@@ -70,14 +120,29 @@ export default function Search_page() {
 			}
 		}
 
-		window.addEventListener("keyup", search)
+		window.addEventListener("keyup", search_by_pressing_enter)
 
 		return(() => {
-			window.removeEventListener("keyup", search)
+			window.removeEventListener("keyup", search_by_pressing_enter)
 		})
-	}, [])
-	
+	}, [refs])
 
+	//Setting event to input to show_delete_search_query_icon should be set to true / false on keyup.
+	useEffect(() => {
+		const search_input = refs.current["search_input"] as HTMLInputElement
+
+		function toggle_delete_search_query() {
+
+			if(search_input.value.length === 0) return set_show_delete_search_query_icon(false)
+			return set_show_delete_search_query_icon(true)
+		}
+		
+		search_input.addEventListener("keyup", toggle_delete_search_query)
+
+		return(() => {
+			search_input.removeEventListener("keyup", toggle_delete_search_query)
+		})
+	}, [refs, set_show_delete_search_query_icon])
 
 	return (
 		<>
@@ -100,7 +165,7 @@ export default function Search_page() {
 				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 		
-			<search_context.Provider value={{search, set_input_value}}>
+			<search_context.Provider value={{search}}>
 				<div className='search_page'>
 
 					<div className='content'>
@@ -108,9 +173,20 @@ export default function Search_page() {
 						<div className='searching_container'>
 
 							<div className='search_input_container'>
+
 								<div className='input_container'>
-									<input onKeyUp={validate_input_value} onChange={validate_input_value} onBlur={validate_input_value} type="text" placeholder={search_packs ? "Search Packs" : "Search Users"} id="search_input"/>
+									<input ref={(el) => {refs.current["search_input"] = el}} onKeyUp={validate_input_value} onChange={validate_input_value} onBlur={validate_input_value} type="text" placeholder={search_packs ? "Search Packs" : "Search Creators"} id="search_input"/>
 									
+									<div className='delete_search_query_container'>
+
+										{show_delete_search_query_icon &&
+											<div onClick={delete_input_value} className='svg_wrapper'>
+												<CloseIcon/>
+											</div>
+										}
+										
+									</div>
+
 									<div className='toggle_search_state_container'>
 
 										<AnimatePresence exitBeforeEnter>
@@ -133,22 +209,36 @@ export default function Search_page() {
 									</div>
 									
 								</div>
+
 								<button onClick={search} id="search_button">Search</button>
-								
 							</div>
+
+							
+							{search_packs &&
+								<div className='extra_options_container_wrapper'>
+
+									<Extra_options key={"perspective"} label='Perspective' options={["All", "Top-Down", "Side-Scroller", "Isometric"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
+									<Extra_options key={"size"} label='Size' options={["All","8x8", "16x16", "32x32", "64x64", "128x128",  "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
+									<Extra_options key={"license"} label='License' options={["All", "Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
+
+								</div>
+							}
+							
 
 						</div>
 
-						<Search_recommendations/>
+						<Search_recommendations set_search_query={set_search_query}/>
 
 						{search_query &&
 							<>
 								{search_packs === false &&
-									<Users_section search_query={search_query}/>
+									<div className='search_results_user_container'>
+										<Users_section search_query={search_query} />
+									</div>
 								}
 
 								{search_packs === true &&
-									<Search_results_packs search_query={search_query}/>
+									<Search_results_packs search_query={search_query} search_perspective={search_perspective} search_size={search_size} search_license={search_license}/>
 								}
 								
 							</>
@@ -169,17 +259,108 @@ export default function Search_page() {
 	);
 }
 
-function Search_results_packs({search_query}: {search_query: string}) {
-	
+function Extra_options(props: {label: string, options: string[], active_state: string | null, set_active_state: React.Dispatch<React.SetStateAction<string | null>>}) {
+	const options = props.options
+	const label = props.label
+	const active_state = props.active_state
+	const set_active_state = props.set_active_state
+	const [state, set_state] = useState(false)
+	const menu_animation = useAnimation()
+
+    //Animation for licens container when opening / closing
+    useEffect(() => {
+
+        if(state === true) {
+            menu_animation.start({
+                height: "auto",
+            })
+        } else {
+            menu_animation.start({
+                height: "",
+            })
+        }
+        
+    }, [state, menu_animation])
+
+	function search(option: string) {
+		sessionStorage.setItem(`search_${label.toLowerCase()}`, option.toLowerCase())
+		set_active_state(option)
+	}
+	let options_jsx = []
+    for(let option of options) {
+
+        options_jsx.push(
+            <li key={`${label}_${option}`} onClick={() => {search(option)}}>{`${option}`}</li>
+        )
+        
+    }
+
+	return(
+		<div className='extra_options_container'>
+
+            <motion.div animate={menu_animation} onClick={() => set_state(!state)} onMouseLeave={() => set_state(false)} className='selection_container'>
+
+                <div className='head_option'>
+                    
+                    {active_state &&
+                        <p>{active_state.toLowerCase() === "all" ? capitalize_first_letter_rest_lowercase(props.label) : capitalize_first_letter_rest_lowercase(active_state)}</p>
+                    }
+                    {active_state === null &&
+                        <p>{capitalize_first_letter_rest_lowercase(props.label)}</p>
+                    }
+                    <div className='licens_deco_container'>
+                        <ExpandIcon/>
+                    </div>
+                </div>
+
+                <ul>
+                    {options_jsx}
+                </ul>
+            </motion.div>
+
+        </div>
+	)
+}
+function Search_results_packs({search_query, search_perspective, search_size, search_license}: {search_query: string, search_perspective: null | string, search_size: null | string, search_license: null | string}) {
+	const perspective = (() => {
+        if(!search_perspective) return null
+        if(search_perspective.toLowerCase() === "all") return null
+        return search_perspective.toLowerCase()
+    })();
+
+    const size = (() => {
+        if(!search_size) return null
+        if(search_size.toLowerCase() === "all") return null
+        return search_size.toLowerCase()
+    })();
+
+	const license = (() => {
+        if(!search_license) return null
+        if(search_license.toLowerCase() === "all") return null
+        return search_license.toLowerCase()
+    })();
+
 	return(
 		<div className='search_results_user_container'>
-			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/${search_query}`} method='POST'/>
+			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/${search_query}`} method='POST' body={JSON.stringify({search_perspective: perspective, search_size: size, search_license: license})}/>
 		</div>
 	)
 }
-
-function Search_recommendations() {
-	
+function Search_recommendations(props: {set_search_query: React.Dispatch<React.SetStateAction<string>>}) {
+	let recommandation_arr = [
+		"Rpg","Fantasy","Medival",
+		"Scifi","Gothic","Arcade",
+		"Horror","Thriller","Christmas",
+		"Halloween","Romance","Vampire",
+		"Dungeon","Portrait","Anime",
+		"Tiles","Tilemap","Platformer",
+		"City","Enviroment","Animals",
+		"Classes","Fonts","Asteroids",
+		"Animations","Sprites","Characters",
+		"Backgrounds","Monsters","Weapons",
+		"Furniture","Magic","Food"
+		,"Armor"
+	]
 	const [expand_state, set_expand_state] = useState(false)
 	const expand_recommendations_animation = useAnimation()
 
@@ -203,53 +384,20 @@ function Search_recommendations() {
 		}
 	}, [expand_recommendations_animation, expand_state, set_expand_state])
 
+
+	let recommendation_jsx = []
+
+	for(let recommandation of recommandation_arr) {
+		recommendation_jsx.push(
+			<Recommendation key={recommandation} name={capitalize_first_letter_rest_lowercase(recommandation)} set_search_query={props.set_search_query}/>
+		)
+	}
 	return(
 		<div className='recommendations_container'>
 			<motion.div animate={expand_recommendations_animation} className='grid_items_container' id="grid_items_container">
 				
 				<div className='grid_items'>
-					<Recommendation name='Rpg'/>
-					<Recommendation name='Fantasy'/>
-					<Recommendation name='Medival'/>
-					<Recommendation name='Scifi'/>
-					<Recommendation name='Gothic'/>
-					<Recommendation name='Arcade'/>
-					<Recommendation name='Horror'/>
-					<Recommendation name='Thriller'/>
-					<Recommendation name='Christmas'/>
-					<Recommendation name='Halloween'/>
-					<Recommendation name='Romance'/>
-					<Recommendation name='Vampire'/>
-					<Recommendation name='Dungeon'/>
-					<Recommendation name='Portrait'/>
-					<Recommendation name='Anime'/>
-					<Recommendation name='Tiles'/>
-					<Recommendation name='Tilemap'/>
-					<Recommendation name='Platformer'/>
-					<Recommendation name='City'/>
-					<Recommendation name='Enviroment'/>
-					<Recommendation name='Animals'/>
-					<Recommendation name='Classes'/>
-					<Recommendation name='Fonts'/>
-					<Recommendation name='Tilemap'/>
-					<Recommendation name='Asteroids'/>
-					<Recommendation name='Animations'/>
-					<Recommendation name='Sprites'/>
-					<Recommendation name='Characters'/>
-					<Recommendation name='Backgrounds'/>
-					<Recommendation name='Monsters'/>
-					<Recommendation name='Weapons'/>
-					<Recommendation name='Furniture'/>
-					<Recommendation name='Magic'/>
-					<Recommendation name='Food'/>
-					<Recommendation name='Armor'/>
-					<Recommendation name='Backgrounds'/>
-					<Recommendation name='Monsters'/>
-					<Recommendation name='Weapons'/>
-					<Recommendation name='Furniture'/>
-					<Recommendation name='Magic'/>
-					<Recommendation name='Food'/>
-					<Recommendation name='Armor'/>
+					{recommendation_jsx}
 				</div>
 				
 			</motion.div>
@@ -264,13 +412,14 @@ function Search_recommendations() {
 		</div>
 	)
 }
-
-function Recommendation({name}: {name: string}) {
+function Recommendation({name, set_search_query}: {name: string, set_search_query: React.Dispatch<React.SetStateAction<string>>}) {
+	const router = useRouter()
 	const search_c: any = useContext(search_context)
+	
 	
 	return(
 		<>
-			<div onClick={() => {search_c.set_input_value(name); search_c.search()}} className='grid_item'>
+			<div onClick={() => {set_search_query(name.toLowerCase())}} className='grid_item'>
 				<p>{capitalize_first_letter_rest_lowercase(name)}</p>
 			</div>
 		</>

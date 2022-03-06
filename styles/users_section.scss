@@ -2,10 +2,8 @@
 
 .users_section_container {
     position: relative;
-    margin-top: 2rem;
-    padding: 0 2rem;
-    width: 100%;
-
+    padding: 0 2rem 2rem 2rem;
+    
     @include breakpoint(mobile) {
         padding: 0 1rem;
     }

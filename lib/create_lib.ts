@@ -22,16 +22,33 @@ export function create_form_data(pack: Create_pack_frontend): FormData | string 
         }
 
         const form_data = new FormData()
-
-    
     
         form_data.set("title", `${pack?.title}`)
         form_data.set("description", `${pack?.description}`)
         form_data.set("license", `${pack?.license}`)
         form_data.set("preview", pack?.preview.preview_asset, `preview`)
         form_data.set("tags", JSON.stringify(pack.tags))
-        form_data.set("perspective", `${pack?.perspective}`)
-        form_data.set("resolution", `${pack?.resolution}`)
+
+        console.log(pack?.perspective)
+        const perspective = (() => {
+            if(!pack?.perspective) return null
+            if(pack?.perspective.toLowerCase() === "all" || pack?.perspective.toLowerCase() === "other") return null
+            return pack?.perspective.toLowerCase()
+        })();
+    
+        if(perspective) {
+            form_data.set("perspective", `${pack?.perspective}`)
+        }
+
+        const resolution = (() => {
+            if(!pack?.resolution) return null
+            if(pack?.resolution.toLowerCase() === "all" || pack?.resolution.toLowerCase() === "other") return null
+            return pack?.resolution.toLowerCase()
+        })();
+        
+        if(resolution) {
+            form_data.set("resolution", `${pack?.resolution}`)
+        }
 
         for(let section of pack_content) {
             

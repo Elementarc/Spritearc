@@ -1231,8 +1231,9 @@ function Drop_menu(props: {label: string, options: string[], create_pack_propert
     for(let option of options) {
 
         options_jsx.push(
-            <li key={`${props.label}_${option}`} onClick={menu_click} data-license="opensource">{`${option}`}</li>
+            <li key={`${props.label}_${option}`} onClick={menu_click}>{`${option}`}</li>
         )
+        
     }
     
 
