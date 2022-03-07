@@ -38,7 +38,6 @@ const PACK_PAGE_CONTEXT: any = React.createContext(null)
 export default function Pack_page_handler({server_pack_response}: {server_pack_response: Server_response_pack}) {
     const pack = server_pack_response.pack
 
-    console.log(pack)
     return (
         <div>
             {pack &&
@@ -83,6 +82,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
     const router = useRouter()
     const pack_id = router.query.pack_id as string
     const Auth = props.Auth
+    
     //
     const [toggle_download_container, set_toggle_download_container] = useState(false)
     //Props
@@ -478,7 +478,7 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
 
             
             const response_obj = await response.json() as Server_response_pack_rating
-            console.log(response_obj)
+            
             if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: response_obj.message, button_label: "Okay"}})
             
             let updated_pack_ratings = [...prev_pack_ratings, {user: response_obj.user, rating: response_obj.rating}]
@@ -551,7 +551,7 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
         open_download_window()
     }, [set_tip_available, set_toggle_download_window])
     
-    
+   
     useEffect(() => {
         const controller = new AbortController()
 
@@ -864,8 +864,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             agent
         })
     
+        
         const response_obj = await response.json() as Server_response_pack
-    
+        
         if(!response_obj.success) return {redirect: {destination: "/browse", permanent: false}} 
     
         return {

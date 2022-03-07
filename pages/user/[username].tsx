@@ -87,7 +87,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
                     <User_representation public_user={public_user}/>
                     
                     <div className='user_packs_container'>
-                        <Packs_section section_name={`Packs created by '${public_user?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs`} method='POST' body={{username: public_user?.username}}/>
+                        <Packs_section section_name={`Packs created by '${public_user?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs`} method='POST' body={JSON.stringify({username: public_user?.username})}/>
                     </div>
 
                 </div>

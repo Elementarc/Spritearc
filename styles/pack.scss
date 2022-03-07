@@ -43,7 +43,7 @@
                         background: $color_main_bright;
                         .hover_box {
                             opacity: 1;
-                            transform: scale(1);
+                            transform: translateX(10px);
                         }
                     }
     
@@ -55,7 +55,7 @@
                         color: white;
                         pointer-events: none;
                         opacity: 0;
-                        transform: scale(0.8);
+                        transform: translateX(0px);
                     }
     
                     .close_icon{
@@ -106,7 +106,7 @@
                             background: $color_error_hover;
                             p {
                                 opacity: 1;
-                                transform: scale(1)
+                                transform: translateX(-10px)
                             }
                         }
                         p {
@@ -117,7 +117,7 @@
                             width: 150px;
                             left: -145px;
                             transition: .1s ease-in-out;
-                            transform: scale(.7);
+                            transform: translateX(0px);
                             pointer-events: none;
                             text-align: center;
                         }

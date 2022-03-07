@@ -438,7 +438,7 @@ function Step_1() {
     const [toggle_section_name_recommendations, set_toggle_section_name_recommendations] = useState(false)
     const refs = useRef<any>([])
     const dispatch = create_pack.dispatch
-
+    let timer: any = 0
     //Function that styles error elements when error
     function style_error_items(error: boolean) {
         const input = document.getElementById("section_name_input") as HTMLInputElement
@@ -537,7 +537,6 @@ function Step_1() {
         if(toggle_add_section) {
             const input = document.getElementById("section_name_input") as HTMLInputElement
 
-            input.focus()
         }
 
         function key_press(e: any) {
@@ -555,6 +554,11 @@ function Step_1() {
         };
     }, [toggle_add_section])
     
+    useEffect(() => {
+      return () => {
+        clearTimeout(timer)
+      };
+    }, [timer])
     return (
         <>
             <H1_with_deco title='Step 1'/>
@@ -571,7 +575,7 @@ function Step_1() {
                                     <h1>Please enter a section name!</h1>
                                     
                                     <div className='input_container'>
-                                        <input ref={(el) => {refs.current["section_name_input"] = el}} onFocus={(e) => {if(e.target.value.length === 0) set_toggle_section_name_recommendations(true)}} list='section_name' autoComplete='off' onKeyUp={validate_section_name} onChange={validate_section_name}  type="text" placeholder='Section name' id="section_name_input"/>
+                                        <input ref={(el) => {refs.current["section_name_input"] = el}} onBlur={() => {clearTimeout(timer);timer = setTimeout(() => {set_toggle_section_name_recommendations(false)},150)}} onFocus={(e) => {clearTimeout(timer);if(e.target.value.length === 0) set_toggle_section_name_recommendations(true)}} list='section_name' autoComplete='off' onKeyUp={validate_section_name} onChange={validate_section_name}  type="text" placeholder='Section name' id="section_name_input"/>
                                         <p id="section_name_error_message"></p>
                                         
                                         {toggle_section_name_recommendations &&

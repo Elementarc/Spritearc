@@ -103,7 +103,7 @@ function User_previews({public_users}: {public_users: Public_user[] | null | []}
                 <>
                     {jsx_public_users && jsx_public_users?.length === 0 &&
                         <div className='no_users_container'>
-                            <h1>No Users found!</h1>
+                            <h1>No Creators found!</h1>
                         </div>
                     }
                     

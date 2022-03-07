@@ -42,7 +42,7 @@ export default function Search_page() {
 		const valid_search_query = validate_search_query(search_input.value)
 		if(!valid_search_query) return
 
-		set_search_query(search_input.value)
+		router.push(`/search?query=${search_input.value.toLowerCase()}`, `/search?query=${search_input.value.toLowerCase()}`, {scroll: false})
 	}
 
 	function delete_input_value() {
@@ -66,44 +66,42 @@ export default function Search_page() {
 			search_button.classList.remove("active_search_button")
 		}
 	}
-	//Function that checks if search query is valid
-	const valid_search_query = useCallback(() => {
-		if(typeof router?.query?.query == "string") {
-			return validate_search_query(router?.query?.query)
-		} else {
-			return "Pls enter a valid search query"
-		}
-	}, [router])
-
+	
 	
 	useEffect(() => {
 		const search_input = refs.current["search_input"]
-		search_input.value = search_query
-		router.push(`/search?query=${search_query}`, `/search?query=${search_query}`, {scroll: false})
-	}, [search_query, refs])
+
+		if(typeof router?.query?.query === "string") {
+			set_search_query(router?.query?.query)
+			search_input.value = router?.query?.query
+		} else {
+			set_search_query("")
+			search_input.value = ""
+		}
+
+	}, [refs, router])
+
+	useEffect(() => {
+		const search_input = refs.current["search_input"] as HTMLInputElement
+		search_input.focus()
+	}, [refs])
 
 	//Checking if query and setting value of input + setting show_delete_search_query_icon.
 	useEffect(() => {
-		const search_input = refs.current["search_input"] as HTMLInputElement
 
-		if(typeof router?.query?.query === "string") {
-			
-			search_input.value = router?.query?.query
-
-			if(search_input.value.length === 0) {
-				set_show_delete_search_query_icon(false)
-			} else {
-				set_show_delete_search_query_icon(true)
-			}
-			validate_input_value()
-			const valid_search = valid_search_query()
-			if(typeof valid_search === "string") return
-			set_search_query(router?.query?.query)
+		if(search_query.length === 0) {
+			set_show_delete_search_query_icon(false)
+		} else {
+			set_show_delete_search_query_icon(true)
 		}
+		validate_input_value()
 
-		search_input.focus()
+		window.scrollTo({
+			top: 0,
+			behavior: "smooth"
+		})
 
-	}, [router, refs, set_show_delete_search_query_icon])
+	}, [search_query, refs, set_show_delete_search_query_icon])
 
 	useEffect(() => {
 		const search_input = refs.current["search_input"] as HTMLInputElement
@@ -321,6 +319,7 @@ function Extra_options(props: {label: string, options: string[], active_state: s
         </div>
 	)
 }
+
 function Search_results_packs({search_query, search_perspective, search_size, search_license}: {search_query: string, search_perspective: null | string, search_size: null | string, search_license: null | string}) {
 	const perspective = (() => {
         if(!search_perspective) return null
@@ -342,16 +341,19 @@ function Search_results_packs({search_query, search_perspective, search_size, se
 
 	return(
 		<div className='search_results_user_container'>
-			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/${search_query}`} method='POST' body={JSON.stringify({search_perspective: perspective, search_size: size, search_license: license})}/>
+			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/packs/${search_query}`} method='POST' body={JSON.stringify({search_perspective: perspective, search_size: size, search_license: license})}/>
 		</div>
 	)
 }
+
 function Search_recommendations(props: {set_search_query: React.Dispatch<React.SetStateAction<string>>}) {
 	let recommandation_arr = [
-		"Rpg","Fantasy","Medival",
+		"ALL","Rpg","Fantasy","Medival",
 		"Scifi","Gothic","Arcade",
 		"Horror","Thriller","Christmas",
 		"Halloween","Romance","Vampire",
+		"Mechanical", "Space", "Retro",
+		"Mafia", "Farm", "Futuristic",
 		"Dungeon","Portrait","Anime",
 		"Tiles","Tilemap","Platformer",
 		"City","Enviroment","Animals",
@@ -359,7 +361,9 @@ function Search_recommendations(props: {set_search_query: React.Dispatch<React.S
 		"Animations","Sprites","Characters",
 		"Backgrounds","Monsters","Weapons",
 		"Furniture","Magic","Food"
-		,"Armor"
+		,"Armor", "Aliens", "Atmospheric",
+		"Survival",
+
 	]
 	const [expand_state, set_expand_state] = useState(false)
 	const expand_recommendations_animation = useAnimation()
@@ -412,15 +416,13 @@ function Search_recommendations(props: {set_search_query: React.Dispatch<React.S
 		</div>
 	)
 }
+
 function Recommendation({name, set_search_query}: {name: string, set_search_query: React.Dispatch<React.SetStateAction<string>>}) {
 	const router = useRouter()
-	const search_c: any = useContext(search_context)
-	
-	
 	return(
 		<>
-			<div onClick={() => {set_search_query(name.toLowerCase())}} className='grid_item'>
-				<p>{capitalize_first_letter_rest_lowercase(name)}</p>
+			<div onClick={() => {router.push(`/search?query=${name.toLowerCase()}`, `/search?query=${name.toLowerCase()}`, {scroll: false})}} className='grid_item'>
+				<p style={name.toLowerCase() === "all" ? {color: "#F7C35E"}: {}}>{capitalize_first_letter_rest_lowercase(name)}</p>
 			</div>
 		</>
 	)
