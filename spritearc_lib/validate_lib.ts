@@ -61,7 +61,7 @@ export function validate_password(password: string): boolean | string {
 }
 export function validate_social(social: string): boolean | string {
     if(social_regex.test(social) === true) return true
-    return "Please use a corretly formatted email!"
+    return "Social is not valid"
 }
 
 //return true if blob type & size is valid
@@ -210,6 +210,7 @@ export function validate_pack_description(description: string): boolean | string
 }
 export function validate_user_description(description: string): boolean | string {
     if(description.length < 2) return "To short!"
+    if(description.length > 50) return "To Long!"
     if(!user_description_regex.test(description)) return "Cant use description! Probably using a special character that is not allowed."
     return true
 }
@@ -293,6 +294,7 @@ export function validate_pack_tags(tags: string[]): boolean | string {
 
     if(tags.length === 0) return ""
     if(tags.length < 3) return "Min. 3 Tags"
+    if(tags.length > 5) return "Max. 3 Tags"
     else {
         let passed_test = true
         for(let tag of tags) {

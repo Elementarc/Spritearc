@@ -102,7 +102,7 @@ function Title_pack_section() {
 					</div>
 
 					<div className="background_container">
-						<Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${title_pack._id}/${title_pack.preview}`} alt="Preview image" layout="fill" className="preview_image" id="title_pack_background_image"/>
+						<Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${title_pack.username.toLowerCase()}_${title_pack._id}/${title_pack.preview}`} alt="Preview image" layout="fill" className="preview_image" id="title_pack_background_image"/>
 						<div className="background_blur" />
 					</div>
 

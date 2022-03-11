@@ -42,7 +42,6 @@ export default function Home(): ReactElement {
             </Head>
 
             <div className="home_page">
-                
                 <div className="content">
 
                     <div className="intro_container">
@@ -70,7 +69,7 @@ export default function Home(): ReactElement {
                         <div className="packs_explanation_container">
                             <div className="packs_explanation_content">
                                 <h2>What are Packs?</h2>
-                                <p>{`Packs are bundled sprites and assets published by a pixel artist. Most of the time, all it's content fit well together.`}</p>
+                                <p>{`Packs are bundled sprites and assets published by a pixel artist. Most of the time, all its content fit well together.`}</p>
                                 <Link href="/search" scroll={false}>Find Packs</Link>
 
                                 <div className="example_preview_container">

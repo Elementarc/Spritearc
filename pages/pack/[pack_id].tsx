@@ -12,7 +12,6 @@ import { useRouter } from 'next/router';
 import { AnimatePresence , motion} from 'framer-motion';
 import H1_with_deco from '../../components/h1_with_deco';
 import { format_date } from '../../lib/date_lib';
-import { ObjectId } from 'mongodb';
 import { capitalize_first_letter_rest_lowercase } from '../../lib/custom_lib';
 import StarEmptyIcon from "../../public/icons/StarEmptyIcon.svg"
 import StarIcon from "../../public/icons/StarIcon.svg"
@@ -336,7 +335,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         
                     <div className="preview_container" id="preview_container">
                         <div className="background">
-						    <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" className="preview_image" id="title_pack_background_image"/>
+						    <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack.username.toLowerCase()}_${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" className="preview_image" id="title_pack_background_image"/>
                             <div className="background_blur" />
                         </div>
 
@@ -409,10 +408,11 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
             
             if(user) {
                 for(let rating of prev_pack_ratings) {
-                
-                    if(rating.user.toLowerCase() === user.username.toLowerCase()) {
+                    console.log(prev_pack_ratings)
+                    if(rating.user_id === user._id) {
+                        
                         user_rated_obj = {
-                            user: rating.user,
+                            user_id: rating.user_id,
                             rating: rating.rating
                         }
                     }
@@ -481,7 +481,7 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
             
             if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: response_obj.message, button_label: "Okay"}})
             
-            let updated_pack_ratings = [...prev_pack_ratings, {user: response_obj.user, rating: response_obj.rating}]
+            let updated_pack_ratings = [...prev_pack_ratings, {user_id: response_obj.user_id, rating: response_obj.rating}]
             set_prev_pack_ratings(updated_pack_ratings)
             
         } catch(err) {
@@ -508,7 +508,7 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
             }
         }
         
-    }, [user_has_rated])
+    }, [user_has_rated, prev_pack_ratings])
 
     return (
         <div className='rate_pack_container'>
@@ -536,7 +536,7 @@ export const Memo_rate_pack = React.memo(Rate_pack)
 
 function Download_popup(props: {username: string, pack: Pack, set_toggle_download_container: React.Dispatch<React.SetStateAction<boolean>>}) {
     const username = props.username
-    const download_link = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${props.pack._id}`
+    const download_link = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${props.pack._id}&author=${props.pack.username}`
     const [timer, set_timer] = useState<null | number>(null)
     const [public_user, set_public_user] = useState<null | Public_user>(null)
     const [tip_available, set_tip_available] = useState<null | boolean>(null)
@@ -794,7 +794,7 @@ function Pack_assets_section(props: {pack: Pack}): ReactElement {
         section_jsx.push(
             <div key={`section_${i}`} className="section_container">
                 <h1>{"– "} {capitalize_first_letter_rest_lowercase(pack.content[i].section_name)}</h1>
-                <Pack_asset pack_content={pack.content[i]} pack_id={pack._id}/>
+                <Pack_asset pack_content={pack.content[i]} pack_id={`${pack._id}`} username={pack.username}/>
             </div>
         )
     }
@@ -811,7 +811,7 @@ function Pack_assets_section(props: {pack: Pack}): ReactElement {
 }
 
 //Component that creates assets from pack.
-function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): ReactElement {
+function Pack_asset(props: {pack_content: Pack_content, pack_id: string, username: string}): ReactElement {
     const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
     const pack_id = props.pack_id
     const pack_content = props.pack_content
@@ -823,8 +823,8 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: ObjectId}): Rea
     const assets_jsx = []
     for(let i = 0; i < pack_content.section_images.length; i++) {
         assets_jsx.push(
-            <div onClick={() => {show_asset(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_images[i]}`)}} key={`${pack_content.section_images[i]}_${i}`} className="asset">
-                <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack_id.toString()}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
+            <div onClick={() => {show_asset(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${props.username.toLowerCase()}_${pack_id.toString()}/${pack_content.section_images[i]}`)}} key={`${pack_content.section_images[i]}_${i}`} className="asset">
+                <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${props.username.toLowerCase()}_${pack_id.toString()}/${pack_content.section_images[i]}`}  quality="100%" layout="fill"  alt={`Representing one asset from this pack`}  className="patch_preview_image"/>
             </div>
         )
     }

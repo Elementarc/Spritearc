@@ -73,7 +73,7 @@ export interface Pack {
     ratings: Pack_rating[]
 }
 export interface Pack_rating {
-    user: string,
+    user_id: string,
     rating: number
 }
 export interface Pack_content {
@@ -163,9 +163,6 @@ export interface Create_pack_context_type {
 }
 
 //User
-export interface User_with_id extends User {
-    _id: ObjectId
-}
 export interface User extends Public_user{
     email: string,
     password: string,
@@ -181,6 +178,7 @@ export interface Account_socials {
     artstation: string 
 }
 export interface Public_user {
+    _id: string,
     username: string,
     description: string,
     socials: Account_socials,
@@ -245,7 +243,7 @@ export interface Server_response_login extends Server_response{
     email: string | undefined | null,
 }
 export interface Server_response_pack_rating extends Server_response{
-    user: string,
+    user_id: string,
     rating: number,
 }
 export interface Server_response_email extends Server_response{

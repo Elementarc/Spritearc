@@ -387,18 +387,14 @@ export function Password_settings(props: {App_notification: App_notification_con
                 body: JSON.stringify({current_password: refs.current["current_password"].value, new_password: refs.current["new_password"].value})
             })
             
-            if(response.status === 200) {
-                const response_obj = await response.json() as {success: boolean, message: string}
+            const response_obj = await response.json() as {success: boolean, message: string}
 
-                if(response_obj.success) {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your Password!", message: "You have successfully updated your Password.", button_label: "Okay", callb: () => {reset_inputs(); disable_button(true)}}})
-                } else {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${response_obj.message}`, message: `We could'nt update what you wanted because: ${response_obj.message}`, button_label: "Okay", callb: () => {reset_inputs(); disable_button(true)}}})
-                }
-
+            if(response_obj.success) {
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your Password!", message: "You have successfully updated your Password.", button_label: "Okay", callb: () => {reset_inputs(); disable_button(true)}}})
             } else {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "For some reason we couldn't delete your account! We are sorry that you have to experience this. Please contact an admin or try again later.", button_label: "Okay", callb: () => {reset_inputs(); disable_button(true)}}})
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${response_obj.message}`, message: `We could'nt update what you wanted because: ${response_obj.message}`, button_label: "Okay", callb: () => {reset_inputs(); disable_button(true)}}})
             }
+
         } catch(err) {
             //COuldnt reach server
         }

@@ -1,5 +1,17 @@
 @import "./variables.module.scss";
 
+.TESTO {
+    position: fixed;
+    z-index: 100;
+    margin-top: 5rem;
+    .todo {
+        margin-top: 3rem
+    }
+    h1 {
+        @include h1();
+        color: white
+    }
+}
 .home_page{
     position: relative;
     height: auto;

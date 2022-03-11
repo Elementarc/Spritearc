@@ -25,6 +25,7 @@ export default function Reset_account_password_page_handler() {
                     body: JSON.stringify({token: router.query.token})
                 })
                 
+                console.log(response)
                 if(response.status === 200) {
                     
                     set_success(true)

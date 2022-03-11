@@ -348,7 +348,7 @@ function Search_results_packs({search_query, search_perspective, search_size, se
 
 function Search_recommendations(props: {set_search_query: React.Dispatch<React.SetStateAction<string>>}) {
 	let recommandation_arr = [
-		"ALL","Rpg","Fantasy","Medival",
+		"ALL","Rpg","Fantasy","Medieval",
 		"Scifi","Gothic","Arcade",
 		"Horror","Thriller","Christmas",
 		"Halloween","Romance","Vampire",

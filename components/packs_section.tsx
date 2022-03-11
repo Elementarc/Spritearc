@@ -5,7 +5,7 @@ import { useAnimation , motion} from 'framer-motion';
 import Image from 'next/image';
 import Loading from './loading';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
-import { check_if_json, SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
+import { SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
 import { useRouter } from 'next/router';
 
 export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: string, sort_action?: string | null | undefined}) {
@@ -67,8 +67,9 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 					body: body ? body : null,
 				})
 				
+				
 				const response_obj = await response.json() as Server_response_packs
-
+				
 				set_packs(response_obj.packs)
 				set_available_pages(response_obj.available_pages)
 
@@ -223,7 +224,7 @@ function Pack_preview(props: {pack: Pack}) {
 			</div>
 			
 			<div className="background_container">
-				<Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack._id}/${pack.preview}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
+				<Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack.username.toLowerCase()}_${pack._id}/${pack.preview}`} alt="An image that represents this pack full of assets" layout="fill" className="background_image"/>
 				<div className="background_blur" />
 				<div className="background_blur_hover" />
 			</div>
