@@ -21,11 +21,12 @@ export default function Reset_account_password_page_handler() {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/password_token_exists`, {
                     method: "POST",
                     signal: controller.signal,
-                    headers: {"Content-Type": "application/json"},
+                    headers: {
+						"Content-Type": "application/json"
+					},
                     body: JSON.stringify({token: router.query.token})
                 })
                 
-                console.log(response)
                 if(response.status === 200) {
                     
                     set_success(true)

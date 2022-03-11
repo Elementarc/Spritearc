@@ -12,31 +12,23 @@ import { App_notification_context_type, Auth_context_type, Public_user, Server_r
 import Head from 'next/head';
 import VisibilityIcon from "../public/icons/VisibilityIcon.svg"
 import VisibilityOffIcon from "../public/icons/VisibilityOffIcon.svg"
+
 export default function Login_page_handler() {
     const Auth: Auth_context_type = useContext(Auth_context)
     const App_notification: App_notification_context_type = useContext(App_notification_context)
-    const [user_logged_in, set_user_logged_in] = useState<null | boolean>(null)
     const router = useRouter()
 
     useEffect(() => {
-        function check_auth() {
-            const user_token = sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""
-            if(user_token) { 
-                router.push("/account", "/account", {scroll: false})
-                return set_user_logged_in(true)
-            } else {
-                return set_user_logged_in(false)
-            }
+
+        if(Auth.user.auth === true) {
+            router.push("/account", "/account", {scroll: false})
         }
-        check_auth()
-    }, [router])
+        
+    }, [Auth.user])
 
     return(
         <>
-            {user_logged_in === false &&
-                <Login_page Auth={Auth} App_notification={App_notification}/>
-            }
-            
+            <Memo_login Auth={Auth} App_notification={App_notification}/>
         </>
     )
 }
@@ -77,7 +69,6 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`
                 },
                 credentials: "include",
                 body: JSON.stringify({
@@ -89,8 +80,7 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
             const response_obj = await response.json() as Server_response_login
             const email = response_obj.email
             const public_user = response_obj.public_user
-            const token = response_obj.token
-
+            
             if(!response_obj.success) {
                 set_loading(false)
                 App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Wrong Credentials", message: "We couldn't find any match for your credentials", button_label: "ok", callb: () => {refs.current["email"].focus()}}})
@@ -107,8 +97,8 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
             }
 
             if(!public_user) return 
-            if(!token) return
-            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...public_user}, token: token, callb: () => {router.push("/account", "/account", {scroll: false})}}})
+            
+            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...public_user}, callb: () => {router.push("/account", "/account", {scroll: false})}}})
             set_loading(false)
 
         } catch ( err ) {
@@ -215,5 +205,5 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
         </>
     );
 }
-
+export const Memo_login = React.memo(Login_page)
 

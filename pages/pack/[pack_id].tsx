@@ -26,8 +26,6 @@ import { GetServerSideProps } from 'next'
 import https from "https"
 import http from "http"
 import HelpIcon from "../../public/icons/HelpIcon.svg"
-import Script from 'next/script';
-import { User_representation } from '../user/[username]';
 import { validate_paypal_donation_link } from '../../spritearc_lib/validate_lib';
 import Loading from '../../components/loading';
 
@@ -200,10 +198,10 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         const pack_id = router.query.pack_id
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_pack?id=${pack_id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_pack/${pack_id}`, {
                 method: "POST",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
+                    "Content-Type": "application/json"
                 },
                 credentials: "include",
             })
@@ -408,7 +406,6 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
             
             if(user) {
                 for(let rating of prev_pack_ratings) {
-                    console.log(prev_pack_ratings)
                     if(rating.user_id === user._id) {
                         
                         user_rated_obj = {
@@ -469,7 +466,6 @@ function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any,
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/rate_pack?pack_id=${pack_id}`, {
                 method: "POST",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 credentials: "include",
@@ -559,8 +555,11 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
 
             try {
                
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user?user=${username}`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user/${username}`, {
                     method: "POST",
+                    headers: {
+						"Content-Type": "application/json"
+					},
                     signal: controller.signal,
                 })
 
@@ -646,7 +645,7 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
                                     </div>
 
                                     <div className='user_info_container'>
-                                        <Link href={`/user/${public_user.username}`} scroll={false}>{`${public_user?.username}`}</Link>
+                                        <Link href={`/user/${public_user.username.toLowerCase()}`} scroll={false}>{`${public_user?.username}`}</Link>
                                     </div>
 
                                 
@@ -710,7 +709,7 @@ function Pack_stats(props: {pack: Pack, own_pack: boolean, prev_pack_ratings: Pa
                         <p>Creator:</p>
                     </div>
 
-                    <Link href={`/user/${pack?.username}`} scroll={false}>{pack?.username}</Link>
+                    <Link href={`/user/${pack?.username.toLowerCase()}`} scroll={false}>{pack?.username}</Link>
                 </div>
 
                 <div className="grid_item">
@@ -855,7 +854,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         
         const pack_id = context?.params?.pack_id
         if(!pack_id) throw new Error("Could not find id")
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack?id=${pack_id}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_pack/${pack_id}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

@@ -15,10 +15,9 @@ import { Device_context } from '../context/device_context_provider';
 import { create_form_data as create_form_data } from '../lib/create_lib';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { useRouter } from 'next/router';
-import jwt from "jsonwebtoken"
 import Loading from "../components/loading"
 import Head from 'next/head';
-import Protected_route from '../components/protected_route';
+import Protected_route from '../components/protected_router';
 import HelpIcon from "../public/icons/HelpIcon.svg"
 // @ts-ignore: Unreachable code error
 
@@ -223,8 +222,6 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
                 if(create_pack_obj.tags.length >= 5) break
                 const tag = (payload.tag as string).toLowerCase()
 
-                console.log(tag)
-
                 let tags_array = create_pack_obj.tags as string[]
 
                 if(tags_array.length === 0) {
@@ -342,17 +339,16 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
 }
 
 
-export default function Create_pack_page_handler() {
-    return (
-        <>
-            <Protected_route>
-                <Create_pack_page/>
-            </Protected_route>
-        </>
-    );
-}
 
-function Create_pack_page() {
+export default function Create_pack_page_handler() {
+
+    return(
+        <Protected_route>
+            <Create_pack_page/>
+        </Protected_route>
+    )
+}
+export function Create_pack_page() {
     const [create_pack_obj, dispatch] = useReducer(create_pack_reducer, initial_create_pack_obj)
     
     useEffect(() => {
@@ -947,9 +943,6 @@ function Step_3() {
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/create_pack`, {
                     method: "POST",
-                    headers: {
-                        "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
-                    },
                     credentials: "include",
                     body: Form_data
                 })

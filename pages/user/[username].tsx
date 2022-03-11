@@ -87,7 +87,7 @@ export default function Profile_page(props: {public_user: Public_user}) {
                     <User_representation public_user={public_user}/>
                     
                     <div className='user_packs_container'>
-                        <Packs_section section_name={`Packs created by '${public_user?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs`} method='POST' body={JSON.stringify({username: public_user?.username})}/>
+                        <Packs_section section_name={`Packs created by '${public_user?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs/${public_user?.username}`} method='POST'/>
                     </div>
 
                 </div>
@@ -121,7 +121,7 @@ export function User_representation(props: {public_user: Public_user}) {
                 </div>
 
                 <div className='user_info_container'>
-                    <Link href={`/user/${public_user.username}`} scroll={false}>{`${public_user?.username}`}</Link>
+                    <Link href={`/user/${public_user.username.toLowerCase()}`} scroll={false}>{`${public_user?.username}`}</Link>
                     <p>{`${public_user?.description}`}</p>
                 </div>
             </div>
@@ -139,7 +139,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         const username = context?.params?.username
         if(!username) throw new Error("No user param")
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user?user=${username}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user/${username}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

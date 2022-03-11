@@ -215,7 +215,7 @@ export default function Search_page() {
 							{search_packs &&
 								<div className='extra_options_container_wrapper'>
 
-									<Extra_options key={"perspective"} label='Perspective' options={["All", "Top-Down", "Side-Scroller", "Isometric"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
+									<Extra_options key={"perspective"} label='Perspective' options={["All", "Top-down", "Side-scroller", "Isometric"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
 									<Extra_options key={"size"} label='Size' options={["All","8x8", "16x16", "32x32", "64x64", "128x128",  "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
 									<Extra_options key={"license"} label='License' options={["All", "Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
 

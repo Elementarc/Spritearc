@@ -29,7 +29,9 @@ export default function Forgot_password_page() {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/forgot_password`, {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({email: email_input.value})
             })
 

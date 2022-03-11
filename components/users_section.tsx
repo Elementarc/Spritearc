@@ -45,7 +45,10 @@ export default function Users_section({search_query}: {search_query: string}) {
                     
                 
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/users/${search_query}?page=${page}`, {
-                    method: "POST"
+                    method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					}
                 })
                 
 				const response_obj = await response.json()
@@ -124,7 +127,7 @@ function User_preview({public_user}: {public_user: Public_user}) {
 			<div onClick={() => {router.push(`/user/${public_user?.username}`, `/user/${public_user?.username}`, {scroll: false})}} className='user_portrait_container'>
 				<Image unoptimized={true} alt={`Profile picture of ${public_user?.username}.`} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user?.profile_picture}`} layout="fill"></Image>
 			</div>
-			<Link href={`/user/${public_user?.username}`} scroll={false}>{public_user?.username}</Link>
+			<Link href={`/user/${public_user?.username.toLowerCase()}`} scroll={false}>{public_user?.username}</Link>
 		</div>
 	)
 }

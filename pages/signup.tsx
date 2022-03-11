@@ -158,7 +158,6 @@ export default function Sign_up_page() {
             }
             
         } catch ( err ) {
-            console.log(err)
             return false
         }
             

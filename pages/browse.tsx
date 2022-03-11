@@ -60,6 +60,9 @@ function Title_pack_section() {
 			
 				const response_title_pack = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/title_pack`, {
 					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
 					signal: controller.signal,
 					credentials: "include",
 				})

@@ -10,22 +10,22 @@ import { Auth_context, USER_DISPATCH_ACTIONS } from '../../context/auth_context_
 import { validate_email, validate_password, validate_paypal_donation_link } from '../../spritearc_lib/validate_lib';
 import Head from 'next/head';
 import { Nav_shadow } from '../../components/navigation';
-import Protected_route from '../../components/protected_route';
 import ProfileIcon from "../../public/icons/ProfileIcon.svg"
 import KeyIcon from "../../public/icons/KeyIcon.svg"
 import EmailIcon from "../../public/icons/EmailIcon.svg"
 import GroupIcon from "../../public/icons/GroupIcon.svg"
 import DonationIcon from "../../public/icons/DonationIcon.svg"
 import Image from 'next/image';
+import Protected_route from '../../components/protected_router';
 
-export default function Account_settings_page_handler() {
-    return (
+export default function Account_settings_handler() {
+
+    return(
         <Protected_route>
             <Account_settings_page/>
         </Protected_route>
-    );
+    )
 }
-
 export function Account_settings_page() {
     const [safe_email, set_safe_email] = useState<null | string>(null)
     const App_notification: App_notification_context_type = useContext(App_notification_context)
@@ -45,7 +45,6 @@ export function Account_settings_page() {
                 method: "POST",
                 credentials: "include",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({password: password_input.value})
@@ -71,7 +70,6 @@ export function Account_settings_page() {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_email`,{
                     method: "POST",
                     headers: {
-                        "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                         "Content-Type": "application/json"
                     },
                     credentials: "include",
@@ -298,7 +296,6 @@ export function Email_settings(props: {App_notification: App_notification_contex
                 method: "POST",
                 credentials: "include",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({new_email: refs.current["new_email"].value, password: refs.current["current_password"].value})
@@ -381,7 +378,6 @@ export function Password_settings(props: {App_notification: App_notification_con
                 method: "POST",
                 credentials: "include",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({current_password: refs.current["current_password"].value, new_password: refs.current["new_password"].value})
@@ -426,7 +422,6 @@ export function Social_settings(props: {public_user: Public_user, App_notificati
                 method: "POST",
                 credentials: "include",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
@@ -522,7 +517,6 @@ export function Donation_settings(props: {public_user: Public_user, App_notifica
                 method: "POST",
                 credentials: "include",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({donation_link: refs.current["donation_link"].value, password: refs.current["current_password"].value})

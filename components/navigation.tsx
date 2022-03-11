@@ -425,7 +425,7 @@ function User_profile() {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
                 method: "POST",
                 headers: {
-                    "x-access-token": `${sessionStorage.getItem("user") ? sessionStorage.getItem("user") : ""}`
+                    "Content-Type": "application/json"
                 },
                 signal: controller.signal,
                 credentials: "include"
