@@ -19,21 +19,9 @@ export default function Search_page() {
 	const router = useRouter()
 	const refs: any = useRef([])
 	const [show_delete_search_query_icon, set_show_delete_search_query_icon] = useState(false)
-	const [search_perspective, set_search_perspective] = useState<null | string>(() => {
-		if(typeof window === "undefined") return null
-		if(sessionStorage.getItem("search_perspective")) return sessionStorage.getItem("search_perspective")
-		else return null
-	})
-	const [search_size, set_search_size] = useState<null | string>(() => {
-		if(typeof window === "undefined") return null
-		if(sessionStorage.getItem("search_size")) return sessionStorage.getItem("search_size")
-		else return null
-	})
-	const [search_license, set_search_license] = useState<null | string>(() => {
-		if(typeof window === "undefined") return null
-		if(sessionStorage.getItem("search_license")) return sessionStorage.getItem("search_license")
-		else return null
-	})
+	const [search_perspective, set_search_perspective] = useState<null | string>(null)
+	const [search_size, set_search_size] = useState<null | string>(null)
+	const [search_license, set_search_license] = useState<null | string>(null)
 	const [search_packs, set_search_packs] = useState(true)
 	const [search_query, set_search_query] = useState("")
 	
@@ -67,7 +55,12 @@ export default function Search_page() {
 		}
 	}
 	
-	
+	useEffect(() => {
+		if(sessionStorage.getItem("search_size")) sessionStorage.getItem("search_size")?.toLowerCase() === "all" ? set_search_perspective(null) : sessionStorage.getItem("search_size")
+		if(sessionStorage.getItem("search_perspective")) set_search_perspective(sessionStorage.getItem("search_perspective")) 
+		if(sessionStorage.getItem("search_license")) set_search_license(sessionStorage.getItem("search_license")) 
+	}, [set_search_size, set_search_perspective, set_search_license])
+
 	useEffect(() => {
 		const search_input = refs.current["search_input"]
 
@@ -216,7 +209,7 @@ export default function Search_page() {
 								<div className='extra_options_container_wrapper'>
 
 									<Extra_options key={"perspective"} label='Perspective' options={["All", "Top-down", "Side-scroller", "Isometric"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
-									<Extra_options key={"size"} label='Size' options={["All","8x8", "16x16", "32x32", "64x64", "128x128",  "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
+									<Extra_options key={"size"} label='Size' options={["All", "8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
 									<Extra_options key={"license"} label='License' options={["All", "Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
 
 								</div>
@@ -264,26 +257,56 @@ function Extra_options(props: {label: string, options: string[], active_state: s
 	const set_active_state = props.set_active_state
 	const [state, set_state] = useState(false)
 	const menu_animation = useAnimation()
-
+	const refs = useRef<any>([])
     //Animation for licens container when opening / closing
-    useEffect(() => {
 
+    useEffect(() => {
+		let timer: any
+
+		const type_menu_animation = menu_animation as any
         if(state === true) {
-            menu_animation.start({
+
+            type_menu_animation.start({
+				transition: {duration: .1, type: "tween"},
                 height: "auto",
             })
+
+			
+			timer = setTimeout(() => {
+				type_menu_animation.start({
+					overflowY: "overlay"
+				})
+			}, 100);
+			
+
         } else {
+
             menu_animation.start({
+				transition: {duration: .1, type: "tween"},
                 height: "",
+				overflowY: "hidden"
             })
         }
         
+		return(() => {
+			const selection_container = refs.current["selection_container"] as HTMLDivElement
+			if(selection_container) selection_container.scrollTo(0,0);
+
+			clearTimeout(timer)
+		})
     }, [state, menu_animation])
 
+	
 	function search(option: string) {
-		sessionStorage.setItem(`search_${label.toLowerCase()}`, option.toLowerCase())
+		if(option.toLowerCase() !== "all") sessionStorage.setItem(`search_${label.toLowerCase()}`, option.toLowerCase())
+		
+		if(option.toLowerCase() === "all") {
+			sessionStorage.removeItem(`search_${label.toLowerCase()}`)
+			return set_active_state(null)
+		}
 		set_active_state(option)
 	}
+
 	let options_jsx = []
     for(let option of options) {
 
@@ -295,13 +318,13 @@ function Extra_options(props: {label: string, options: string[], active_state: s
 
 	return(
 		<div className='extra_options_container'>
-
-            <motion.div animate={menu_animation} onClick={() => set_state(!state)} onMouseLeave={() => set_state(false)} className='selection_container'>
+			
+            <motion.div ref={(el) => {refs.current["selection_container"] = el}} animate={menu_animation} onClick={() => set_state(!state)} onMouseLeave={() => set_state(false)} className='selection_container' >
 
                 <div className='head_option'>
                     
                     {active_state &&
-                        <p>{active_state.toLowerCase() === "all" ? capitalize_first_letter_rest_lowercase(props.label) : capitalize_first_letter_rest_lowercase(active_state)}</p>
+                        <p>{active_state ? capitalize_first_letter_rest_lowercase(active_state)  : capitalize_first_letter_rest_lowercase(props.label) }</p>
                     }
                     {active_state === null &&
                         <p>{capitalize_first_letter_rest_lowercase(props.label)}</p>
@@ -321,27 +344,10 @@ function Extra_options(props: {label: string, options: string[], active_state: s
 }
 
 function Search_results_packs({search_query, search_perspective, search_size, search_license}: {search_query: string, search_perspective: null | string, search_size: null | string, search_license: null | string}) {
-	const perspective = (() => {
-        if(!search_perspective) return null
-        if(search_perspective.toLowerCase() === "all") return null
-        return search_perspective.toLowerCase()
-    })();
-
-    const size = (() => {
-        if(!search_size) return null
-        if(search_size.toLowerCase() === "all") return null
-        return search_size.toLowerCase()
-    })();
-
-	const license = (() => {
-        if(!search_license) return null
-        if(search_license.toLowerCase() === "all") return null
-        return search_license.toLowerCase()
-    })();
-
+	
 	return(
 		<div className='search_results_user_container'>
-			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/packs/${search_query}`} method='POST' body={JSON.stringify({search_perspective: perspective, search_size: size, search_license: license})}/>
+			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/packs/${search_query}`} method='POST' body={JSON.stringify({search_perspective, search_size, search_license})}/>
 		</div>
 	)
 }

@@ -15,14 +15,19 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	const [toggle_packs, set_toggle_packs] = useState(true)
 	const [current_page, set_current_page] = useState(() => {
 		if(typeof window === "undefined") return 1
-		const page = sessionStorage.getItem(section_name)
-		if(page) return parseInt(page)
-		return 1
+		try {
+			const page = sessionStorage.getItem(section_name)
+			if(page) return parseInt(page)
+			return 1
+		} catch(err) {
+			console.log(err)
+			return 1
+		}
+		
 	})
 	const [available_pages, set_available_pages] = useState(0)
 
 	useEffect(() => {
-
 		sessionStorage.setItem(section_name, `${current_page}`)
 	}, [section_name, current_page])
 	//Checking sessionstorage if sort_action exists. Setting sort_action if yes
@@ -78,6 +83,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 				//
 			}
 		}
+
 		get_packs()
 
 		return(() => {

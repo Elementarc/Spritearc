@@ -125,10 +125,10 @@ export function Reset_account_password() {
         if(typeof validate_password(password) === "string") return
 
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/reset_account_password`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/reset_account_password/${router.query.token}`, {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({password: password, token: router.query.token})
+                body: JSON.stringify({password: password})
             })
 
             if(response.status !== 200) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to set your password. Please message an admin or try it again later", button_label: "Ok"}})

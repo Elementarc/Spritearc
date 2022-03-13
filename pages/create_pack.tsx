@@ -191,19 +191,16 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
             case ( CREATE_PACK_ACTIONS.ADD_LICENSE ) : {
                 if(!payload) break
                 const license = payload?.license
-                if(typeof license !== "string") break
                 
-                
-                create_pack_obj.license = license.toLowerCase()
+                create_pack_obj.license = license ? license.toLowerCase() : null
                 break
             }
 
             case ( CREATE_PACK_ACTIONS.ADD_PERSPECTIVE) : {
                 if(!payload) break
                 const perspective = payload?.perspective
-                if(typeof perspective !== "string") break
 
-                create_pack_obj.perspective = perspective.toLowerCase()
+                create_pack_obj.perspective = perspective ? perspective.toLowerCase() : null
                 break
             }
 
@@ -212,7 +209,7 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
                 const resolution = payload?.resolution
                 if(typeof resolution !== "string") break
 
-                create_pack_obj.resolution = resolution.toLowerCase()
+                create_pack_obj.resolution = resolution ? resolution.toLowerCase() : null
                 break
             }
 
@@ -820,13 +817,13 @@ function Step_3() {
         
     }, [create_pack.create_pack_obj, device])
 
-    function set_license(value: string) {
+    function set_license(value: string | null) {
         create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_LICENSE, payload: {license: value}})
     }
-    function set_perspective(value: string) {
+    function set_perspective(value: string | null) {
         create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_PERSPECTIVE, payload: {perspective: value}})
     }
-    function set_resoluion(value: string) {
+    function set_resoluion(value: string | null) {
         create_pack.dispatch({type: CREATE_PACK_ACTIONS.ADD_RESOLUTION, payload: {resolution: value}})
     }
 
@@ -974,6 +971,7 @@ function Step_3() {
         refs.current["tag_input"].value = tag
         set_tag()
     }
+
     return(
 
         <>
@@ -1050,7 +1048,7 @@ function Step_3() {
                 </div>
 
                 <Drop_menu label={"Perspective"} options={["Top-Down","Side-Scroller", "Isometric", "Other"]} create_pack_property={create_pack.create_pack_obj.perspective} callb={set_perspective}/>
-                <Drop_menu label={"Resolution"} options={["8x8", "16x16", "32x32", "64x64", "128x128",  "256x256","Other"]} create_pack_property={create_pack.create_pack_obj.resolution} callb={set_resoluion}/>
+                <Drop_menu label={"Resolution"} options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256","Other"]} create_pack_property={create_pack.create_pack_obj.resolution} callb={set_resoluion}/>
                 <Drop_menu label={"License"} options={["Opensource", "Attribution"]} help_link={"/license"} create_pack_property={create_pack.create_pack_obj.license} callb={set_license}/>
 
             </div>
@@ -1194,7 +1192,7 @@ function Section({section_name, section_content}: {section_name: string, section
     );
 }
 
-function Drop_menu(props: {label: string, options: string[], create_pack_property: string | null, help_link?: string | undefined | null, callb: (value: string) => void}) {
+function Drop_menu(props: {label: string, options: string[], create_pack_property: string | null, help_link?: string | undefined | null, callb: (value: string | null) => void}) {
     const [state, set_state] = useState(false)
     const create_pack_frontend = props.create_pack_property
     const callb = props.callb
@@ -1219,7 +1217,7 @@ function Drop_menu(props: {label: string, options: string[], create_pack_propert
     function menu_click(e: any) {
         const menu_value = e.target.innerText as any
         if(typeof menu_value !== "string") return
-        
+        if(menu_value.toLowerCase() === "other") callb(null)
         callb(menu_value.toLowerCase())
 
     }

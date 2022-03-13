@@ -10,20 +10,19 @@ export default function Verify_account_page_handler() {
     const router = useRouter()
 
     useEffect(() => {
-        if(!router.query.token) return
+        if(typeof router.query.token !== "string") return
         const controller = new AbortController()
 
         async function verify_account() {
             
             
             try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/verify_account`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/verify_account/${router.query.token}`, {
                     method: "POST",
                     signal: controller.signal,
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({token: router.query.token})
                 })
 
                 const response_obj = await response.json() as Server_response

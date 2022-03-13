@@ -153,6 +153,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     
         if(!response_obj.success) return {redirect: {destination: "/browse", permanent: false}} 
     
+        if(response_obj.public_user.banned === true) return {redirect: {destination: "/browse", permanent: false}}
+        
         return {
             props: {
                 public_user: response_obj.public_user

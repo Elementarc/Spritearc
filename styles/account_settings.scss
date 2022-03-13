@@ -395,6 +395,7 @@
 
             //Email page
             .email_settings_container {
+                
                 input {
                     display: block;
                     @include input();
@@ -411,17 +412,27 @@
                     }
                 }
 
-                
-
                 .active_button {
                     @include button();
                     margin-top: 2rem;
+                    align-self: flex-start;
+                    font-size: 16px;
+
+                    @include breakpoint(mobile) {
+                        font-size: 14px
+                    }
                 }
+
                 .disabled_button {
                     @include button(disabled);
                     margin-top: 2rem;
-                }
+                    align-self: flex-start;
+                    font-size: 16px;
 
+                    @include breakpoint(mobile) {
+                        font-size: 14px
+                    }
+                }
                 
             }
 
@@ -447,10 +458,22 @@
                 .active_button {
                     @include button();
                     margin-top: 2rem;
+                    align-self: flex-start;
+                    font-size: 16px;
+
+                    @include breakpoint(mobile) {
+                        font-size: 14px
+                    }
                 }
                 .disabled_button {
                     @include button(disabled);
                     margin-top: 2rem;
+                    align-self: flex-start;
+                    font-size: 16px;
+
+                    @include breakpoint(mobile) {
+                        font-size: 14px
+                    }
                 }
 
                 
@@ -462,6 +485,7 @@
                     display: flex;
                     flex-direction: column;
                     row-gap: 1rem;
+
                     .social_flex {
                         display: flex;
                         margin-top: 1.5rem;
@@ -490,11 +514,16 @@
 
                         
                     }
+
                     button {
                         @include button();
                         align-self: flex-start;
                         margin-top: 1rem;
                         font-size: 16px;
+
+                        @include breakpoint(mobile) {
+                            font-size: 14px
+                        }
                     }
                 }
                 
@@ -528,15 +557,25 @@
                     }
                 }
 
-                
-
                 .active_button {
                     @include button();
                     margin-top: 2rem;
+                    align-self: flex-start;
+                    font-size: 16px;
+
+                    @include breakpoint(mobile) {
+                        font-size: 14px
+                    }
                 }
                 .disabled_button {
                     @include button(disabled);
                     margin-top: 2rem;
+                    align-self: flex-start;
+                    font-size: 16px;
+
+                    @include breakpoint(mobile) {
+                        font-size: 14px
+                    }
                 }
             }
         }

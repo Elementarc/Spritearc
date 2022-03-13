@@ -172,7 +172,7 @@ export default function Sign_up_page() {
 
         try {
            
-            set_error_message(false, "", error_element, input_element)
+            //set_error_message(false, "", error_element, input_element)
             const valid_username = validate_username(username)
             
             if(typeof valid_username === "string") {
@@ -279,20 +279,26 @@ export function Step_1() {
     //Page context
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
     let timer: any
+    let user_available_timer: any = 0
     //Gets username from input. Setting signup_obj to null if validating fails.
     async function get_input_value(e: any) {
-
-        clearTimeout(timer)
-        timer = setTimeout(async () => {
+        
+        clearTimeout(user_available_timer)
+        user_available_timer = setTimeout(async () => {
+            console.log("TEST")
+            try {
+                const username_available = await PAGE_CONTEXT.username_available(e.target.value)
             
-            const username_available = await PAGE_CONTEXT.username_available(e.target.value)
-            
 
-            if(username_available) {
-                PAGE_CONTEXT.update_signup_informations("username", e.target.value as string)
-            } else {
-                PAGE_CONTEXT.update_signup_informations("username", null)
+                if(username_available) {
+                    PAGE_CONTEXT.update_signup_informations("username", e.target.value as string)
+                } else {
+                    PAGE_CONTEXT.update_signup_informations("username", null)
+                }
+            } catch(err) {
+                //Could not reach server
             }
+            
             
         }, 150);
         

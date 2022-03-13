@@ -81,6 +81,12 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
             const email = response_obj.email
             const public_user = response_obj.public_user
             
+            if(response.status === 403) {
+                set_loading(false)
+                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Banned!", message: "You're banned! Please contact an admin for more informations.", button_label: "ok"}})
+                return
+            }
+
             if(!response_obj.success) {
                 set_loading(false)
                 App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Wrong Credentials", message: "We couldn't find any match for your credentials", button_label: "ok", callb: () => {refs.current["email"].focus()}}})

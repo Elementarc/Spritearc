@@ -272,7 +272,23 @@ export function validate_pack_resolution(resolution: string): boolean | string {
             return true
         }
 
+        case "48x48" : {
+            return true
+        }
+
         case "64x64" : {
+            return true
+        }
+
+        case "80x80" : {
+            return true
+        }
+
+        case "96x96" : {
+            return true
+        }
+
+        case "112x112" : {
             return true
         }
 

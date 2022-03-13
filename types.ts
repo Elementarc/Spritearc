@@ -189,6 +189,7 @@ export interface Public_user {
     following: [],
     followers: [],
     role: string | null,
+    banned: boolean
 }
 
 export interface Frontend_public_user {

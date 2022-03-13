@@ -171,9 +171,10 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
         const pack_id = router.query.pack_id
 
         if(!pack_id) return
+
         if(typeof pack_id !== "string") return
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/report_pack?pack_id=${pack_id}`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/report_pack/${pack_id}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
