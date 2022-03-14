@@ -186,8 +186,8 @@ export interface Public_user {
     profile_picture: string,
     profile_banner: string,
     paypal_donation_link: string | null,
-    following: [],
-    followers: [],
+    followers_count: number,
+    following_count: number
     role: string | null,
     banned: boolean
 }

@@ -532,7 +532,7 @@ export function Step_3() {
         if(PAGE_CONTEXT.signup_obj.username && PAGE_CONTEXT.signup_obj.email && PAGE_CONTEXT.signup_obj.password && PAGE_CONTEXT.signup_obj.legal) {
             
             try {
-                const response_stream = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/create_account`, {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/create_account`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -541,7 +541,8 @@ export function Step_3() {
                     body: JSON.stringify({...PAGE_CONTEXT.signup_obj})
                 })
                 
-                if(response_stream.status !== 200) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${await response_stream.text()}`, message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+                const response_obj = await response.json()
+                if(response_obj.success === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${response_obj.message}`, message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
                 
                    
                 

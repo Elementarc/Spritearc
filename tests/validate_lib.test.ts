@@ -10,9 +10,10 @@ test("validate password", async() => {
     
     expect(validate_password("Insanepassword1")).toBe(true)
     expect(validate_password("omega-Items_1")).toBe(true)
+    expect(validate_password("insanepassword1")).toBe("Password needs to contain atleast one uppercase character!")
     expect(validate_password("flower")).toBe("Password is to short!")
-    expect(validate_password("insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1")).toBe("Password is to long!")
-    expect(validate_password("insanepassword1")).toBe("Your password is not safe enough! Make sure it atleast contains: 1 Uppercase and 1 number character!")
+    expect(validate_password("insanepasswoROD1insanepassword1insanepassword1insanEpassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1insanepassword1")).toBe("Password is to long!")
+    
     
 })
 test("validate username", async() => {
@@ -23,7 +24,10 @@ test("validate username", async() => {
     expect(validate_username("sp")).toBe("Username is to short!")
     expect(validate_username("sprtiearc_new_era_lol")).toBe("Username is to long!")
     expect(validate_username(".spritearc")).toBe("You cannot use special characters at the beginning or at the end of your username!")
+    expect(validate_username(" spritearc")).toBe("You cannot use special characters at the beginning or at the end of your username!")
+    expect(validate_username("spritearc ")).toBe("You cannot use special characters at the beginning or at the end of your username!")
     expect(validate_username("spritearc.")).toBe("You cannot use special characters at the beginning or at the end of your username!")
+    expect(validate_username("sprit earc")).toBe("You can't use that username!")
     expect(validate_username("sprit__earc")).toBe("Username cannot contain 2 special characters after each other.")
     expect(validate_username("sprit..earc")).toBe("Username cannot contain 2 special characters after each other.")
 })
@@ -76,14 +80,19 @@ test("validate license", async() => {
 })
 test("validate pack Title", async() => {
     
+
     expect(validate_pack_title("Title is Awesome")).toBe(true)
     expect(validate_pack_title("Platformer")).toBe(true)
     expect(validate_pack_title("Platformer-Pack")).toBe(true)
     expect(validate_pack_title("Platformer Pack")).toBe(true)
+
     expect(validate_pack_title("2d")).toBe("Min. 3 characters.")
+    expect(validate_pack_title("2d ")).toBe("You cannot use special characters at the beginning or the end!")
+    expect(validate_pack_title(" 2dasdasdu asdiuashdas")).toBe("You cannot use special characters at the beginning or the end!")
+
     expect(validate_pack_title("Platformer-Packeditionnewest")).toBe("Max. 25 characters.")
-    expect(validate_pack_title("Title is_Awesome")).toBe("Max. 3 words allowed. Make sure to not use special Characters")
-    expect(validate_pack_title("Title is LOL Omega")).toBe("Max. 3 words allowed. Make sure to not use special Characters")
+    expect(validate_pack_title("Title is_Awesome")).toBe("Pack title did not pass validations!")
+    expect(validate_pack_title("Title is LOL Omega")).toBe("Max. allowed words are 3.")
 })
 test("validate pack description", async() => {
 
@@ -130,7 +139,7 @@ test("validate pack tag", async() => {
     expect(validate_pack_tag("t")).toBe("Min. 2 characters")
     expect(validate_pack_tag("2d")).toBe(true)
     expect(validate_pack_tag("MMORPG")).toBe(true)
-    expect(validate_pack_tag("MMORPG-multiplayer")).toBe("Max. 12 characters")
+    expect(validate_pack_tag("MMORPG-multiplayer")).toBe("Max. 15 characters")
     expect(validate_pack_tag("MMORPG-test")).toBe("Allowed characters: a-z A-Z 0-9")
     expect(validate_pack_tag("fantasy")).toBe(true)
 })

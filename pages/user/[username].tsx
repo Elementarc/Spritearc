@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import Image from "next/image"
 import Link from "next/link"
-import { Public_user, Server_response_public_user } from '../../types';
+import { Auth_context_type, Public_user, Server_response, Server_response_public_user } from '../../types';
 import Footer from '../../components/footer';
 import { useParallax } from '../../lib/custom_hooks';
 import { Nav_shadow } from '../../components/navigation';
@@ -13,12 +13,16 @@ import Twitter_logo from "../../public/logos/twitter_logo.svg"
 import { GetServerSideProps } from 'next'
 import http from "http"
 import https from "https"
-
-
+import HeartIcon from "../../public/icons/HeartIcon.svg"
+import HeartBrokenIcon from "../../public/icons/HeartBrokenIcon.svg"
+import { Auth_context } from '../../context/auth_context_provider';
+import { useRouter } from 'next/router';
 
 export default function Profile_page(props: {public_user: Public_user}) {
     const public_user = props.public_user
-    
+    const [followers_count, set_followers_count] = useState(public_user.followers_count)
+    const [following_count, set_following_count] = useState(public_user.following_count)
+
     useParallax("profile_banner")
     
     return (
@@ -84,8 +88,9 @@ export default function Profile_page(props: {public_user: Public_user}) {
                         </div>
                     </Fixed_app_content_overlay>
                     
-                    <User_representation public_user={public_user}/>
-                    
+                    <User_representation public_user={public_user} followers_count={followers_count} following_count={following_count}  set_followers_count={set_followers_count} set_following_count={set_following_count}/>
+                    <User_stats followers_count={followers_count} following_count={following_count}/>
+
                     <div className='user_packs_container'>
                         <Packs_section section_name={`Packs created by '${public_user?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs/${public_user?.username}`} method='POST'/>
                     </div>
@@ -97,8 +102,123 @@ export default function Profile_page(props: {public_user: Public_user}) {
     );
 }
 
-export function User_representation(props: {public_user: Public_user}) {
+function User_stats(props: {followers_count: number, following_count: number}) {
+    
+    return(
+        <div className='user_stats_container'>
+
+            <div className='stat_wrapper'>
+
+                <div className='stat_container'>
+                    <p className='counter'>{props.following_count}</p>
+                    <p>Following</p>
+                </div>
+
+                <div className='stat_container'>
+                    <p className='counter'>{props.followers_count}</p>
+                    <p>Followers</p>
+                </div>
+
+                
+            </div>
+
+        </div>
+    )
+}
+
+export function User_representation(props: {public_user: Public_user, followers_count: number, following_count: number, set_followers_count: React.Dispatch<React.SetStateAction<number>>, set_following_count: React.Dispatch<React.SetStateAction<number>>,}) {
+    const Auth: Auth_context_type = useContext(Auth_context)
     const public_user = props.public_user
+    const [visitor_has_followed, set_visitor_has_followed] = useState<null | boolean>(null)
+    const controller_2 = new AbortController()
+
+    function follow_user() {
+        try {
+            async function has_visitor_followed() {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/follow/${public_user._id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    signal: controller_2.signal,
+                    credentials:"include"
+                })
+                
+                if(response.status === 200) {
+                    props.set_followers_count(props.followers_count + 1) 
+                    set_visitor_has_followed(true)
+                } 
+                
+                
+            }
+            has_visitor_followed()
+        } catch(err) {
+            //
+        }
+    }
+
+    function unfollow_user() {
+        try {
+            async function has_visitor_followed() {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/unfollow/${public_user._id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials:"include",
+                    signal: controller_2.signal,
+                })
+                
+                if(response.status === 200) {
+                    set_visitor_has_followed(false)
+                    props.set_followers_count(props.followers_count - 1)
+                }
+                
+            }
+            has_visitor_followed()
+        } catch(err) {
+            //
+        }
+    }
+
+    useEffect(() => {
+
+        return () => {
+            controller_2.abort()
+        };
+    }, [controller_2])
+
+    useEffect(() => {
+        if(!Auth.user.auth) return
+        if(public_user.username.toLowerCase() === Auth.user.public_user.username.toLowerCase()) return
+        const controller = new AbortController()
+
+        try {
+            async function has_visitor_followed() {
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/is_following/${public_user._id}`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials:"include",
+                    signal: controller.signal,
+                })
+    
+                const response_obj = await response.json()
+                
+                console.log(response_obj)
+                set_visitor_has_followed(response_obj?.following ? response_obj.following : false)
+                
+            }
+            has_visitor_followed()
+        } catch(err) {
+            //
+        }
+        
+        return(() => {
+            controller.abort()
+        })
+    }, [Auth, public_user])
 
     return (
         <div className='user_preview_container'>
@@ -121,8 +241,29 @@ export function User_representation(props: {public_user: Public_user}) {
                 </div>
 
                 <div className='user_info_container'>
-                    <Link href={`/user/${public_user.username.toLowerCase()}`} scroll={false}>{`${public_user?.username}`}</Link>
+
+                    <div className='username_container'>
+                        <Link href={`/user/${public_user.username.toLowerCase()}`} scroll={false}>{`${public_user?.username}`}</Link>
+                        
+                        <div className='heart_container'>
+                            {visitor_has_followed === false &&
+                                <div onClick={follow_user} key={"follow"} className={`follow_container ${visitor_has_followed ? "follow_container_active" : ''}`}>
+                                    <HeartIcon/>
+                                </div>
+                            }
+
+                            {visitor_has_followed === true &&
+                                <div onClick={unfollow_user} key={"unfollow"} className='unfollow_container'>
+                                    <HeartBrokenIcon/>
+                                </div>
+                            }
+                        </div>
+                        
+                    </div>
+                    
                     <p>{`${public_user?.description}`}</p>
+
+                    
                 </div>
             </div>
 

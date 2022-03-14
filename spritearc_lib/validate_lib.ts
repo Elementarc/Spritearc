@@ -1,22 +1,28 @@
 import { Formidable_file , Formidable_files} from "./types"
 
+
 export const LICENSE_TYPES = {
     opensource: "opensource",
     attribution: "attribution"
 }
 
+const contains_uppercase = new RegExp(/[A-ZÖÄÜ]/)
+const contains_lowercase = new RegExp(/[a-zöäü]/)
+const contains_number = new RegExp(/[0-9]/)
+
+const special_character_regex = new RegExp(/^[ \.\_]{1}$/)
 //account
-const email_regex = new RegExp(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)
-const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-ZäöüÄÖÜ0-9\.\_\-]+(?<![_.])$/)
-const password_regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{8,32}$/)
+const email_regex = new RegExp(/^[a-zA-Z0-9\.\-\_]{3,25}@[a-zA-Z]{3,25}.[a-zA-Z]{2,5}$/)
+const username_regex = new RegExp(/^[a-zA-Z0-9\.\_]{3,20}$/)
+const password_regex = new RegExp(/^[a-zA-Z0-9\§\*\.\!\/\@\#\$\%\^\&\(\)\{\}\:\;\<\>\,\.\?\|\~\+\-\=\~\_]{8,100}$/)
 
 //profile
-const user_description_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{2,50}$/)
+const user_description_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{2,100}$/)
 
 //Pack
 const pack_description_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{50,500}$/)
-const tag_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ]{2,12}$/)
-const title_regex = new RegExp(/^(?!(?:\S*\s){3})([a-zA-Z0-9äöüÄÖÜ\' \-]{3,25})$/)
+const tag_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ]{2,15}$/)
+const title_regex = new RegExp(/^[a-zA-Z0-9öäüÖÄÜ\-\']{1,25}$/)
 const section_name_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-]{3,16}$/)
 const report_input_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{3,500}$/)
 const social_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\.\_\-]{0,20}$/)
@@ -39,21 +45,35 @@ export function validate_email(email: string): boolean | string {
     return "Please use a corretly formatted email!"
 }
 export function validate_username(username: string): boolean | string {
-    const beginning_regex = new RegExp(/^[\.\_]+/)
-    const end_regex = new RegExp(/[\.\_]+$/)
-    const look_double_special_characters_regex = new RegExp(/(?<=[\.\_])[\.\_]/)
-
     if(username.length < 3) return "Username is to short!"
-    if(username.length > 16) return "Username is to long!"
-    if(beginning_regex.test(username) === true || end_regex.test(username) === true) return "You cannot use special characters at the beginning or at the end of your username!"
-    if(look_double_special_characters_regex.test(username) === true) return "Username cannot contain 2 special characters after each other."
+    if(username.length > 20) return "Username is to long!"
+
+
+    
+    for(let i = 0; i < username.length; i++) {
+        if(special_character_regex.test(username[i])) {
+            if(special_character_regex.test(username[i + 1])) {
+                return "Username cannot contain 2 special characters after each other."
+            }
+        }
+    }
+
+    if(special_character_regex.test(username[0])) return "You cannot use special characters at the beginning or at the end of your username!"
+    if(special_character_regex.test(username[username.length - 1])) return "You cannot use special characters at the beginning or at the end of your username!"
+    
+    
     if(!username_regex.test(username)) return "You can't use that username!"
     
     return true
 }
 export function validate_password(password: string): boolean | string {
     if(password.length < 8) return "Password is to short!"
-    if(password.length > 32) return "Password is to long!"
+    if(password.length > 100) return "Password is to long!"
+
+    if(!contains_uppercase.test(password)) return "Password needs to contain atleast one uppercase character!"
+    if(!contains_lowercase.test(password)) return "Password needs to contain atleast one lowercase character!"
+    if(!contains_number.test(password)) return "Password needs to contain atleast one number!"
+
     if(!password_regex.test(password)) return "Your password is not safe enough! Make sure it atleast contains: 1 Uppercase and 1 number character!"
         
     return true
@@ -195,7 +215,22 @@ export function validate_pack_title(title: string): boolean | string {
 
     if(title.length < 3) return "Min. 3 characters."
     if(title.length > 25) return "Max. 25 characters."
-    if(title_regex.test(title) === false) return "Max. 3 words allowed. Make sure to not use special Characters"
+    if(title.split(" ").length > 3) return "Max. allowed words are 3."
+    
+    if(special_character_regex.test(title[0])) return "You cannot use special characters at the beginning or the end!"
+    if(special_character_regex.test(title[title.length - 1])) return "You cannot use special characters at the beginning or the end!"
+    
+    let valid_title = true
+    for(let text of title.split(" ")) {
+
+        if(!title_regex.test(text)){
+            valid_title = false
+            break
+        } 
+
+    }
+
+    if(!valid_title) return "Pack title did not pass validations!"
 
     return true
 }
@@ -210,7 +245,7 @@ export function validate_pack_description(description: string): boolean | string
 }
 export function validate_user_description(description: string): boolean | string {
     if(description.length < 2) return "To short!"
-    if(description.length > 50) return "To Long!"
+    if(description.length > 100) return "To Long!"
     if(!user_description_regex.test(description)) return "Cant use description! Probably using a special character that is not allowed."
     return true
 }
@@ -226,7 +261,7 @@ export function validate_pack_tag(tag_name: string): boolean | string {
 
     if(tag_name.length === 0) return ""
     if(tag_name.length < 2) return "Min. 2 characters"
-    if(tag_name.length > 12) return "Max. 12 characters"
+    if(tag_name.length > 15) return "Max. 15 characters"
     else {
         if(tag_regex.test(tag_name) === false) {
             return "Allowed characters: a-z A-Z 0-9"

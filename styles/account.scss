@@ -202,13 +202,20 @@
         }
 
         .user_info_container {
+            position: relative;
             margin-top: 6rem;
             margin-bottom: 6rem;
             width: 100%;
             text-align: center;
+            word-break: break-all;
             a{
                 @include a(default);
+                display: block;
+                width: 100%;
+                padding: 0 1rem;
                 font-size: 36px;
+                overflow: hidden;
+                text-overflow: ellipsis;
                 @include breakpoint(mobile) {
                     font-size: 22px;
                 }
@@ -218,12 +225,20 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-
+                
                 .description_wrapper {
                     position: relative;
                     display: flex;
                     justify-content: center;
+                    max-width: 70%;
                     align-items: center;
+                    
+                    @include breakpoint(laptop) {
+                        max-width: 75%;
+                    }
+                    @include breakpoint(mobile) {
+                        max-width: 84%;
+                    }
                     p {
                         position: relative;
                         @include p;
@@ -236,7 +251,7 @@
 
                     .svg_wrapper {
                         position: absolute;
-                        right: -1.2rem;
+                        right: -1.3rem;
                         display: flex;
                         justify-content: center;
                         align-items: center;
