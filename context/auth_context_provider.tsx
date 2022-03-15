@@ -22,8 +22,9 @@ const init_public_user: Frontend_public_user = {
         created_at: new Date(),
         profile_picture: "",
         profile_banner: "",
-        followers: [],
-        following: [],
+        followers_count: 0,
+        following_count: 0,
+        banned: false,
         role: "",
         paypal_donation_link: null,
     }

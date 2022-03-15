@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext} from 'react';
 import Image from "next/image"
 import Link from "next/link"
-import { Auth_context_type, Public_user, Server_response, Server_response_public_user } from '../../types';
+import { App_notification_context_type, Auth_context_type, Public_user, Server_response, Server_response_public_user } from '../../types';
 import Footer from '../../components/footer';
 import { useParallax } from '../../lib/custom_hooks';
 import { Nav_shadow } from '../../components/navigation';
@@ -17,6 +17,8 @@ import HeartIcon from "../../public/icons/HeartIcon.svg"
 import HeartBrokenIcon from "../../public/icons/HeartBrokenIcon.svg"
 import { Auth_context } from '../../context/auth_context_provider';
 import { useRouter } from 'next/router';
+import { AnimatePresence, motion } from 'framer-motion';
+import { App_notification_context, NOTIFICATION_ACTIONS } from '../../context/app_notification_context_provider';
 
 export default function Profile_page(props: {public_user: Public_user}) {
     const public_user = props.public_user
@@ -103,22 +105,26 @@ export default function Profile_page(props: {public_user: Public_user}) {
 }
 
 function User_stats(props: {followers_count: number, following_count: number}) {
-    
+    const App_notification: App_notification_context_type = useContext(App_notification_context)
+
+    function Feature_coming() {
+        App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Coming Soon", message: "This feature is coming soon!", button_label: "Ok"}})
+    }
+
     return(
         <div className='user_stats_container'>
 
             <div className='stat_wrapper'>
 
-                <div className='stat_container'>
+                <div onClick={Feature_coming} className='stat_container'>
                     <p className='counter'>{props.following_count}</p>
                     <p>Following</p>
                 </div>
 
-                <div className='stat_container'>
+                <div onClick={Feature_coming} className='stat_container'>
                     <p className='counter'>{props.followers_count}</p>
                     <p>Followers</p>
                 </div>
-
                 
             </div>
 
@@ -126,15 +132,19 @@ function User_stats(props: {followers_count: number, following_count: number}) {
     )
 }
 
-export function User_representation(props: {public_user: Public_user, followers_count: number, following_count: number, set_followers_count: React.Dispatch<React.SetStateAction<number>>, set_following_count: React.Dispatch<React.SetStateAction<number>>,}) {
+function User_representation(props: {public_user: Public_user, followers_count: number, following_count: number, set_followers_count: React.Dispatch<React.SetStateAction<number>>, set_following_count: React.Dispatch<React.SetStateAction<number>>,}) {
     const Auth: Auth_context_type = useContext(Auth_context)
+    const App_notification: App_notification_context_type = useContext(App_notification_context)
     const public_user = props.public_user
     const [visitor_has_followed, set_visitor_has_followed] = useState<null | boolean>(null)
     const controller_2 = new AbortController()
 
     function follow_user() {
-        try {
-            async function has_visitor_followed() {
+
+        async function has_visitor_followed() {
+            if(Auth.user.auth === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login", message: "You have to login into your account to be able to follow people!", button_label: "Ok"}})
+
+            try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/follow/${public_user._id}`, {
                     method: "POST",
                     headers: {
@@ -148,18 +158,21 @@ export function User_representation(props: {public_user: Public_user, followers_
                     props.set_followers_count(props.followers_count + 1) 
                     set_visitor_has_followed(true)
                 } 
-                
-                
+            } catch(err) {
+                //
             }
-            has_visitor_followed()
-        } catch(err) {
-            //
+            
         }
+        has_visitor_followed()
+        
     }
 
     function unfollow_user() {
-        try {
-            async function has_visitor_followed() {
+        
+        async function has_visitor_followed() {
+            try {
+                if(Auth.user.auth === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login", message: "You have to login into your account to be able to unfollow people!", button_label: "Ok"}})
+
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/unfollow/${public_user._id}`, {
                     method: "POST",
                     headers: {
@@ -173,52 +186,57 @@ export function User_representation(props: {public_user: Public_user, followers_
                     set_visitor_has_followed(false)
                     props.set_followers_count(props.followers_count - 1)
                 }
-                
+            } catch(err) {
+
             }
-            has_visitor_followed()
-        } catch(err) {
-            //
         }
+        has_visitor_followed()
+        
     }
 
     useEffect(() => {
-
-        return () => {
-            controller_2.abort()
-        };
-    }, [controller_2])
-
-    useEffect(() => {
-        if(!Auth.user.auth) return
         if(public_user.username.toLowerCase() === Auth.user.public_user.username.toLowerCase()) return
         const controller = new AbortController()
 
-        try {
+        if(Auth.user.auth === true) {
+        
             async function has_visitor_followed() {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/is_following/${public_user._id}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    credentials:"include",
-                    signal: controller.signal,
-                })
-    
-                const response_obj = await response.json()
-                
-                console.log(response_obj)
-                set_visitor_has_followed(response_obj?.following ? response_obj.following : false)
+
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/is_following/${public_user._id}`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        credentials:"include",
+                        signal: controller.signal,
+                    })
+        
+                    const response_obj = await response.json()
+                    
+                    console.log(response_obj)
+                    set_visitor_has_followed(response_obj?.following ? response_obj.following : false)
+                } catch(err) {
+                    //
+                }
                 
             }
             has_visitor_followed()
-        } catch(err) {
-            //
+
+        } else if(Auth.user.auth === false) {
+            return set_visitor_has_followed(false)
         }
         
         return(() => {
             controller.abort()
         })
     }, [Auth, public_user])
+
+    useEffect(() => {
+        return () => {
+            controller_2.abort()
+        };
+    }, [controller_2])
 
     return (
         <div className='user_preview_container'>
@@ -236,6 +254,21 @@ export function User_representation(props: {public_user: Public_user, followers_
                         
                         <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user.profile_picture}`} alt={`Profile banner for the user ${public_user.username}`} layout='fill'></Image>
 
+                        <AnimatePresence exitBeforeEnter>
+                            {visitor_has_followed === false &&
+                                <motion.div key={"follow"} initial={{opacity: 0, y: 8}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: 8}} onClick={follow_user} className='follow_container'>
+                                    <HeartIcon/>
+                                    <p>Follow</p>
+                                </motion.div>
+                            }
+                            
+                            {visitor_has_followed === true &&
+                                <motion.div key={"unfollow"} initial={{opacity: 0, y: 8}} animate={{opacity: 1, y: 0}} exit={{opacity: 0, y: 8}} onClick={unfollow_user} className='unfollow_container'>
+                                    <HeartBrokenIcon/>
+                                    <p>Unfollow</p>
+                                </motion.div>
+                            }
+                        </AnimatePresence>
                     </div>
 
                 </div>
@@ -244,21 +277,6 @@ export function User_representation(props: {public_user: Public_user, followers_
 
                     <div className='username_container'>
                         <Link href={`/user/${public_user.username.toLowerCase()}`} scroll={false}>{`${public_user?.username}`}</Link>
-                        
-                        <div className='heart_container'>
-                            {visitor_has_followed === false &&
-                                <div onClick={follow_user} key={"follow"} className={`follow_container ${visitor_has_followed ? "follow_container_active" : ''}`}>
-                                    <HeartIcon/>
-                                </div>
-                            }
-
-                            {visitor_has_followed === true &&
-                                <div onClick={unfollow_user} key={"unfollow"} className='unfollow_container'>
-                                    <HeartBrokenIcon/>
-                                </div>
-                            }
-                        </div>
-                        
                     </div>
                     
                     <p>{`${public_user?.description}`}</p>

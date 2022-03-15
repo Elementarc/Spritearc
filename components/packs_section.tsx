@@ -1,15 +1,15 @@
 import React, { useState, useEffect} from 'react';
 import { Pack, Server_response_packs } from '../types';
 import Pack_stars_raiting from './pack_stars_raiting';
-import { useAnimation , motion} from 'framer-motion';
+import { useAnimation } from 'framer-motion';
 import Image from 'next/image';
 import Loading from './loading';
-import ExpandIcon from "../public/icons/ExpandIcon.svg"
-import { SORT_ACTIONS, sort_packs_section } from '../lib/custom_lib';
+import { sort_packs_section } from '../lib/custom_lib';
 import { useRouter } from 'next/router';
+import { Drop_down } from './dropdown';
 
 export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: string, sort_action?: string | null | undefined}) {
-	const [sort_action, set_sort_action] = useState<null | string | undefined>(null)
+	const [sort_action, set_sort_action] = useState<null | string>(null)
 	const [toggle_sort_by_state, set_toggle_sort_by_state] = useState(false)
 	const [packs, set_packs] = useState<null | Pack[] | []>(null)
 	const [toggle_packs, set_toggle_packs] = useState(true)
@@ -26,7 +26,6 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 		
 	})
 	const [available_pages, set_available_pages] = useState(0)
-
 	useEffect(() => {
 		sessionStorage.setItem(section_name, `${current_page}`)
 	}, [section_name, current_page])
@@ -35,6 +34,12 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 		const sort_action =  sessionStorage.getItem(`${section_name}_sort_action`) ? sessionStorage.getItem(`${section_name}_sort_action`) : null
 		set_sort_action(sort_action)
 	}, [set_sort_action, section_name])
+
+	//Setting sort action in sessionStorage
+	useEffect(() => {
+		if(!sort_action) return sessionStorage.removeItem(`${section_name}_sort_action`) 
+		if(sort_action) return sessionStorage.setItem(`${section_name}_sort_action`, sort_action) 
+	}, [sort_action])
 
 	useEffect(() => {
 		function display_load_more(toggle: boolean) {
@@ -111,19 +116,6 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 	}, [toggle_sort_by_state, sort_by_animation])
 
-	//Function that sets sort_action when clicking on a sort_item
-	function set_sort_action_and_session_storage(sort_action: string | null) {
-
-		if(!sort_action) {
-			sessionStorage.removeItem(`${section_name}_sort_action`)
-			set_sort_action(null)
-		} else {
-			sessionStorage.setItem(`${section_name}_sort_action`, sort_action)
-			set_sort_action(sort_action)
-		}
-
-		set_toggle_sort_by_state(false)
-	}
 	function next_page() {
 		if(available_pages > current_page) return set_current_page(current_page + 1)
 	}
@@ -135,23 +127,14 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 				<div className="packs_section_info">
 					<h1 onClick={() => {set_toggle_packs(!toggle_packs)}}>{toggle_packs ? `–` : "+"} {section_name}</h1>
-
-					<motion.div animate={sort_by_animation} className='drop_down_container'>
-						<div className='info_container'>
-							<div onClick={() => {set_toggle_sort_by_state(!toggle_sort_by_state)}} className='info'>
-								<h4>{sort_action ? `Sort by ${sort_action.split("_")[1].toLowerCase()}` : "Sort by"}</h4>
-								<ExpandIcon/>
-							</div>
-						</div>
-
-						<div className='grid_sort_item' onClick={() => {set_sort_action_and_session_storage(null)}}>None</div>
-						<div className='grid_sort_item' onClick={() => {set_sort_action_and_session_storage(SORT_ACTIONS.BY_RATING)}}>Rating</div>
-						<div className='grid_sort_item' onClick={() => {set_sort_action_and_session_storage(SORT_ACTIONS.BY_RECENT)}}>Recent</div>
-						<div className='grid_sort_item' onClick={() => {set_sort_action_and_session_storage(SORT_ACTIONS.BY_DOWNLOADS)}}>Downloads</div>
-					</motion.div>
+					
+					{toggle_packs &&
+						<Drop_down label='Sort by' reset_option='None' options={["Recent","Rating", "Downloads"]} active_state={sort_action} set_active_state={set_sort_action} />
+					}
 
 				</div>
 
+				
 				{ toggle_packs &&
 					<>
 						<>

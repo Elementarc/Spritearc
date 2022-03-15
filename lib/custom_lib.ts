@@ -1,9 +1,9 @@
 import { Pack } from "../types";
 
 export const SORT_ACTIONS = {
-    BY_RATING: "BY_RATING",
-    BY_DOWNLOADS: "BY_DOWNLOADS",
-    BY_RECENT: "BY_RECENT",
+    BY_RATING: "rating",
+    BY_DOWNLOADS: "downloads",
+    BY_RECENT: "recent",
     REMOVE_SORT: null
 }
 

@@ -12,6 +12,7 @@ import CloseIcon from "../public/icons/CloseIcon.svg"
 import Head from 'next/head';
 import Users_section from '../components/users_section';
 import { validate_search_query } from '../spritearc_lib/validate_lib';
+import { Drop_down } from '../components/dropdown';
 
 const search_context: any = React.createContext(null)
 
@@ -207,18 +208,19 @@ export default function Search_page() {
 							
 							{search_packs &&
 								<div className='extra_options_container_wrapper'>
-
-									<Extra_options key={"perspective"} label='Perspective' options={["All", "Top-down", "Side-scroller", "Isometric"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
-									<Extra_options key={"size"} label='Size' options={["All", "8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
-									<Extra_options key={"license"} label='License' options={["All", "Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
-
+									<Drop_down label='Perspective' reset_option='All'  options={["Top-down", "Side-scroller", "Isometric"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
+									<Drop_down label='Size' reset_option='All' options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
+									<Drop_down label='License' reset_option='All' options={["Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
 								</div>
 							}
 							
 
 						</div>
 
-						<Search_recommendations set_search_query={set_search_query}/>
+						{search_packs === true &&
+							<Search_recommendations set_search_query={set_search_query}/>
+						}
+						
 
 						{search_query &&
 							<>
@@ -248,99 +250,6 @@ export default function Search_page() {
 
 		</>
 	);
-}
-
-function Extra_options(props: {label: string, options: string[], active_state: string | null, set_active_state: React.Dispatch<React.SetStateAction<string | null>>}) {
-	const options = props.options
-	const label = props.label
-	const active_state = props.active_state
-	const set_active_state = props.set_active_state
-	const [state, set_state] = useState(false)
-	const menu_animation = useAnimation()
-	const refs = useRef<any>([])
-    //Animation for licens container when opening / closing
-
-    useEffect(() => {
-		let timer: any
-
-		const type_menu_animation = menu_animation as any
-        if(state === true) {
-
-            type_menu_animation.start({
-				transition: {duration: .1, type: "tween"},
-                height: "auto",
-            })
-
-			
-			timer = setTimeout(() => {
-				type_menu_animation.start({
-					overflowY: "overlay"
-				})
-			}, 100);
-			
-
-        } else {
-
-            menu_animation.start({
-				transition: {duration: .1, type: "tween"},
-                height: "",
-				overflowY: "hidden"
-            })
-        }
-        
-		return(() => {
-			const selection_container = refs.current["selection_container"] as HTMLDivElement
-			if(selection_container) selection_container.scrollTo(0,0);
-
-			clearTimeout(timer)
-		})
-    }, [state, menu_animation])
-
-	
-	function search(option: string) {
-		if(option.toLowerCase() !== "all") sessionStorage.setItem(`search_${label.toLowerCase()}`, option.toLowerCase())
-		
-		if(option.toLowerCase() === "all") {
-			sessionStorage.removeItem(`search_${label.toLowerCase()}`)
-			return set_active_state(null)
-		}
-		set_active_state(option)
-	}
-
-	let options_jsx = []
-    for(let option of options) {
-
-        options_jsx.push(
-            <li key={`${label}_${option}`} onClick={() => {search(option)}}>{`${option}`}</li>
-        )
-        
-    }
-
-	return(
-		<div className='extra_options_container'>
-			
-            <motion.div ref={(el) => {refs.current["selection_container"] = el}} animate={menu_animation} onClick={() => set_state(!state)} onMouseLeave={() => set_state(false)} className='selection_container' >
-
-                <div className='head_option'>
-                    
-                    {active_state &&
-                        <p>{active_state ? capitalize_first_letter_rest_lowercase(active_state)  : capitalize_first_letter_rest_lowercase(props.label) }</p>
-                    }
-                    {active_state === null &&
-                        <p>{capitalize_first_letter_rest_lowercase(props.label)}</p>
-                    }
-                    <div className='licens_deco_container'>
-                        <ExpandIcon/>
-                    </div>
-                </div>
-
-                <ul>
-                    {options_jsx}
-                </ul>
-            </motion.div>
-
-        </div>
-	)
 }
 
 function Search_results_packs({search_query, search_perspective, search_size, search_license}: {search_query: string, search_perspective: null | string, search_size: null | string, search_license: null | string}) {
