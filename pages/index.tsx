@@ -54,7 +54,7 @@ export default function Home(): ReactElement {
                         <div className="arrow_container">
                             <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
                         </div>
-                        <Image priority={true} src={"/images/spritearc_wallpaper.png"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                        <Image src={"/images/spritearc_wallpaper.png"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         <div className="background_blur"></div>
                     </div>
 
