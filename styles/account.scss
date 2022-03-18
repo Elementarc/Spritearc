@@ -210,8 +210,9 @@
             word-break: break-all;
             a{
                 @include a(default);
-                display: block;
-                width: 100%;
+                display: inline-block;
+                align-self: start;
+                max-width: 100%;
                 padding: 0 1rem;
                 font-size: 36px;
                 overflow: hidden;

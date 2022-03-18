@@ -1,4 +1,4 @@
-import React, {ReactElement, useEffect, useContext, useState, useCallback} from 'react';
+import React, {ReactElement, useEffect, useContext, useState, useCallback, useRef} from 'react';
 import Footer from '../../components/footer';
 import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Server_response, Server_response_pack, Server_response_pack_rating, Server_response_public_user} from "../../types"
 import Link from 'next/dist/client/link';
@@ -538,8 +538,9 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
     const [public_user, set_public_user] = useState<null | Public_user>(null)
     const [tip_available, set_tip_available] = useState<null | boolean>(null)
     const [toggle_download_window, set_toggle_download_window] = useState(false)
-    let timer_id: any = 0
-
+    const timer_id: any = useRef(0)
+    const pack_title = props.pack.title
+    const set_toggle_download_container = props.set_toggle_download_container
     const open_download_window = useCallback(() => {
         function open_download_window() {
             set_tip_available(false)
@@ -594,16 +595,16 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
         
         if(timer === 0) {
             download_button.setAttribute("href", download_link)
-            download_button.setAttribute("download", props.pack.title.split(" ").join("_"))
+            download_button.setAttribute("download", pack_title.split(" ").join("_"))
             download_button.click()
             download_button.removeAttribute("href")
             download_button.removeAttribute("download")
             set_timer(null)
             
-            props.set_toggle_download_container(false)
+            set_toggle_download_container(false)
         } else {
             if(!timer) return
-            timer_id = setTimeout(() => {
+            timer_id.current = setTimeout(() => {
                 set_timer(timer - 1)
             }, 1000);
         }
@@ -611,7 +612,7 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
         return(() => {
             clearTimeout(timer_id)
         })
-    }, [timer, set_timer, timer_id])
+    }, [timer, set_timer, timer_id, set_toggle_download_container, download_link, pack_title])
 
     return (
         <>

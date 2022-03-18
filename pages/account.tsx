@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import { App_notification_context_type, Auth_context_type, Public_user, Server_response } from '../types';
 import Footer from '../components/footer';
 import Image from "next/image"
@@ -53,7 +53,9 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user,
     const Auth = props.Auth
     const user = props.user
     const App_notification = props.App_notification
-    const controller = new AbortController()
+    const controller = useMemo(() => {
+        return new AbortController()
+    },[])
 
     
     function go_to(path: string) {

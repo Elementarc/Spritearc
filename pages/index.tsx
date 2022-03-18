@@ -77,7 +77,7 @@ export default function Home(): ReactElement {
                                     <div className="example_preview_info">
 
                                         <div className="example_ratings_container">
-                                            <Pack_stars_raiting ratings={[{user: "Test", rating: 5}]}/>
+                                            <Pack_stars_raiting ratings={[{user_id: "Test", rating: 5}]}/>
                                         </div>
                                         
                                         <h2>Platformer Pack</h2>
@@ -103,7 +103,7 @@ export default function Home(): ReactElement {
                                     <div className="example_preview_info">
 
                                         <div className="example_ratings_container">
-                                            <Pack_stars_raiting ratings={[{user: "Test", rating: 5}]}/>
+                                            <Pack_stars_raiting ratings={[{user_id: "Test", rating: 5}]}/>
                                         </div>
                                         
                                         <h2>Adventure Pack</h2>

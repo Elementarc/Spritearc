@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect, useContext, useMemo} from 'react';
 import Image from "next/image"
 import Link from "next/link"
 import { App_notification_context_type, Auth_context_type, Public_user, Server_response, Server_response_public_user } from '../../types';
@@ -137,7 +137,9 @@ function User_representation(props: {public_user: Public_user, followers_count: 
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     const public_user = props.public_user
     const [visitor_has_followed, set_visitor_has_followed] = useState<null | boolean>(null)
-    const controller_2 = new AbortController()
+    const controller_2 = useMemo(() => {
+        return new AbortController()
+    },[])
 
     function follow_user() {
 

@@ -16,6 +16,7 @@ export function Drop_down(props: {label: string, reset_option: string, options: 
 
     useEffect(() => {
 		let timer: any
+        const selection_container = refs.current["selection_container"] as HTMLDivElement
 		const type_menu_animation = menu_animation as any
         if(state === true) {
 
@@ -42,12 +43,11 @@ export function Drop_down(props: {label: string, reset_option: string, options: 
         }
         
 		return(() => {
-			const selection_container = refs.current["selection_container"] as HTMLDivElement
 			if(selection_container) selection_container.scrollTo(0,0);
 
 			clearTimeout(timer)
 		})
-    }, [state, menu_animation])
+    }, [state, menu_animation, refs])
 	
 	function set_new_active_state(option: string) {
 

@@ -972,6 +972,35 @@ function Step_3() {
         set_tag()
     }
 
+    function create_recommendations() {
+        let recommandation_arr = [
+            "Rpg","Fantasy","Medieval",
+            "Scifi","Gothic","Arcade",
+            "Horror","Thriller","Christmas",
+            "Halloween","Romance","Vampire",
+            "Mechanical", "Space", "Retro",
+            "Mafia", "Farm", "Futuristic",
+            "Dungeon","Portrait","Anime",
+            "Tiles","Tilemap","Platformer",
+            "City","Enviroment","Animals",
+            "Classes","Fonts","Asteroids",
+            "Animations","Sprites","Characters",
+            "Backgrounds","Monsters","Weapons",
+            "Furniture","Magic","Food"
+            ,"Armor", "Aliens", "Atmospheric",
+            "Survival",
+    
+        ]
+        let li_jsx = []
+
+        for(let recommandation of recommandation_arr) {
+            li_jsx.push(
+                <li onClick={select_recommendation}>{capitalize_first_letter_rest_lowercase(recommandation)}</li>
+            )
+        }
+
+        return li_jsx
+    }
     return(
 
         <>
@@ -992,47 +1021,7 @@ function Step_3() {
                         {toggle_recommandation &&
                             <div className='tag_recommandations'>
                                 <ul>
-                                    <li onClick={select_recommendation}>Rpg</li>
-                                    <li onClick={select_recommendation}>MMORPG</li>
-                                    <li onClick={select_recommendation}>Fantasy</li>
-                                    <li onClick={select_recommendation}>Adventure</li>
-                                    <li onClick={select_recommendation}>Arcade</li>
-                                    <li onClick={select_recommendation}>Medival</li>
-                                    <li onClick={select_recommendation}>Horror</li>
-                                    <li onClick={select_recommendation}>Scifci</li>
-                                    <li onClick={select_recommendation}>Gothic</li>
-                                    <li onClick={select_recommendation}>Thriller</li>
-                                    <li onClick={select_recommendation}>Christmas</li>
-                                    <li onClick={select_recommendation}>Halloween</li>
-                                    <li onClick={select_recommendation}>Romance</li>
-                                    <li onClick={select_recommendation}>Vampire</li>
-                                    <li onClick={select_recommendation}>Dungeon</li>
-                                    <li onClick={select_recommendation}>War</li>
-                                    <li onClick={select_recommendation}>Platformer</li>
-                                    <li onClick={select_recommendation}>City</li>
-                                    <li onClick={select_recommendation}>Asteroids</li>
-                                    <li onClick={select_recommendation}>Mysterious</li>
-                                    <li onClick={select_recommendation}>Animals</li>
-                                    <li onClick={select_recommendation}>Characters</li>
-                                    <li onClick={select_recommendation}>Classes</li>
-                                    <li onClick={select_recommendation}>Monsters</li>
-                                    <li onClick={select_recommendation}>Ui</li>
-                                    <li onClick={select_recommendation}>Fonts</li>
-                                    <li onClick={select_recommendation}>Weapons</li>
-                                    <li onClick={select_recommendation}>Armor</li>
-                                    <li onClick={select_recommendation}>Magic</li>
-                                    <li onClick={select_recommendation}>Backgrounds</li>
-                                    <li onClick={select_recommendation}>Tiles</li>
-                                    <li onClick={select_recommendation}>Tilemap</li>
-                                    <li onClick={select_recommendation}>Furniture</li>
-                                    <li onClick={select_recommendation}>Gardening</li>
-                                    <li onClick={select_recommendation}>Icons</li>
-                                    <li onClick={select_recommendation}>Fonts</li>
-                                    <li onClick={select_recommendation}>Food</li>
-                                    <li onClick={select_recommendation}>Animations</li>
-                                    <li onClick={select_recommendation}>Sprites</li>
-                                    <li onClick={select_recommendation}>Items</li>
-                                    <li onClick={select_recommendation}>Portraits</li>
+                                    {create_recommendations()}
                                 </ul>
                             </div>  
                         }                     
@@ -1198,28 +1187,50 @@ function Drop_menu(props: {label: string, options: string[], create_pack_propert
     const callb = props.callb
     const options = props.options
     const menu_animation = useAnimation()
-
+    const label = props.label
     //Animation for licens container when opening / closing
     useEffect(() => {
+        let timer: any
+        const type_menu_animation = menu_animation as any
+
+        const scroll_div = document.getElementById(`${label.toLowerCase()}_selection_container`) as HTMLDivElement
+        
+        scroll_div.scrollTo(0,0)
 
         if(state === true) {
-            menu_animation.start({
+            type_menu_animation.start({
+                transition: {duration: .1, type: "tween"},
                 height: "auto",
             })
+
+            timer = setTimeout(() => {
+				type_menu_animation.start({
+                    overflowY: "overlay",
+                })
+			}, 100);
         } else {
-            menu_animation.start({
+            type_menu_animation.start({
+                transition: {duration: .1, type: "tween"},
                 height: "",
+                overflowY: "hidden"
             })
         }
         
-    }, [state, menu_animation])
+        return(() => {
+			
+			clearTimeout(timer)
+		})
+    }, [state, menu_animation, label])
 
     function menu_click(e: any) {
+        
         const menu_value = e.target.innerText as any
         if(typeof menu_value !== "string") return
         if(menu_value.toLowerCase() === "other") callb(null)
         callb(menu_value.toLowerCase())
+        
 
+        
     }
 
     let options_jsx = []
@@ -1245,7 +1256,7 @@ function Drop_menu(props: {label: string, options: string[], create_pack_propert
                 
             </h1>
             
-            <motion.div animate={menu_animation} onClick={() => set_state(!state)} onMouseLeave={() => set_state(false)} className='selection_container'>
+            <motion.div animate={menu_animation} onClick={() => set_state(!state)} onMouseLeave={() => set_state(false)} className='selection_container'  id={`${props.label.toLowerCase()}_selection_container`}>
 
                 <div className='target_licens_container'>
                     

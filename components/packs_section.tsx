@@ -10,7 +10,7 @@ import { Drop_down } from './dropdown';
 
 export default function Packs_section({section_name, api, method, body}: {section_name: string, api: string, method: string, body?: string, sort_action?: string | null | undefined}) {
 	const [sort_action, set_sort_action] = useState<null | string>(null)
-	const [toggle_sort_by_state, set_toggle_sort_by_state] = useState(false)
+	const [toggle_sort_menu, set_toggle_sort_menu] = useState(false)
 	const [packs, set_packs] = useState<null | Pack[] | []>(null)
 	const [toggle_packs, set_toggle_packs] = useState(true)
 	const [current_page, set_current_page] = useState(() => {
@@ -39,7 +39,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	useEffect(() => {
 		if(!sort_action) return sessionStorage.removeItem(`${section_name}_sort_action`) 
 		if(sort_action) return sessionStorage.setItem(`${section_name}_sort_action`, sort_action) 
-	}, [sort_action])
+	}, [sort_action, section_name])
 
 	useEffect(() => {
 		function display_load_more(toggle: boolean) {
@@ -100,7 +100,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	const sort_by_animation = useAnimation()
 	useEffect(() => {
 		
-		if(toggle_sort_by_state) {
+		if(toggle_sort_menu) {
 
 			sort_by_animation.start({
 				overflow: "unset",
@@ -114,7 +114,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 
 		}
 
-	}, [toggle_sort_by_state, sort_by_animation])
+	}, [toggle_sort_menu, sort_by_animation])
 
 	function next_page() {
 		if(available_pages > current_page) return set_current_page(current_page + 1)
@@ -165,15 +165,19 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 function Pack_previews(props: { packs: Pack[] | null}) {
 	const packs = props.packs
 
-	const pack_previews_jsx = []
-	if(packs) {
+	function create_preview_jsx() {
+		const pack_previews_jsx = []
+		if(packs) {
 
-		for(let pack of packs) {
-			pack_previews_jsx.push(
-				<Pack_preview key={pack._id.toString()} pack={pack}/>
-			)
+			for(let pack of packs) {
+				pack_previews_jsx.push(
+					<Pack_preview key={pack._id.toString()} pack={pack}/>
+				)
+			}
+
 		}
 
+		return pack_previews_jsx
 	}
     
     
@@ -183,10 +187,12 @@ function Pack_previews(props: { packs: Pack[] | null}) {
 			{packs === null 
 				? <Loading loading={true} main_color={true}></Loading>
 				: <>
-					{pack_previews_jsx.length > 0 &&
-						pack_previews_jsx
+					{packs.length > 0 &&
+						<>
+							{create_preview_jsx()}
+						</>
 					}
-					{pack_previews_jsx.length === 0 &&
+					{packs.length === 0 &&
 						<div className='no_packs_container'>
 							<h1>No Packs found!</h1>
 						</div>

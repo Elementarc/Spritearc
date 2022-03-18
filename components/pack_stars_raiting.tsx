@@ -6,7 +6,7 @@ import Star from "../public/icons/StarIcon.svg"
 
 //Component that renders Stars based on pack Rating.
 export default function Pack_stars_raiting(props: {ratings: Pack_rating[]}) {
-    const ratings: {user: string, rating: number}[] = props.ratings
+    const ratings: {user_id: string, rating: number}[] = props.ratings
     let sum_ratings: number = 0
 
     for(let item of ratings) {
