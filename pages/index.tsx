@@ -54,7 +54,7 @@ export default function Home(): ReactElement {
                         <div className="arrow_container">
                             <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
                         </div>
-                        <Image loading="lazy" src={"/images/spritearc_wallpaper.png"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                        <Image src={"/images/spritearc_wallpaper.png"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         <div className="background_blur"></div>
                     </div>
 
@@ -182,7 +182,7 @@ export default function Home(): ReactElement {
                         </div>
 
                         <div className="img_wrapper">
-                            <Image loading='lazy' src={"/images/wallpaper_4.jpg"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                            <Image src={"/images/wallpaper_4.jpg"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         </div>
                         <div className="section_one_background_blur" />
                     </section>
@@ -197,7 +197,7 @@ export default function Home(): ReactElement {
                             </Link>
                         </div>
                         <div className="img_wrapper">
-                            <Image loading='lazy' src={"/images/wallpaper_5.jpg"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                            <Image src={"/images/wallpaper_5.jpg"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         </div>
                         <div className="news_section_background_blur" />
                     </section>
@@ -212,7 +212,7 @@ export default function Home(): ReactElement {
                         </div>
 
                         <div className="img_wrapper">
-                            <Image loading='lazy' src={"/images/wallpaper_3.png"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
+                            <Image src={"/images/wallpaper_3.png"} alt="Pixel art wallpaper of the sky." id="intro_image" layout="fill"></Image>
                         </div>
                         <div className="signup_section_background_blur" />
                     </section>
