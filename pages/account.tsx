@@ -13,6 +13,7 @@ import { Auth_context } from '../context/auth_context_provider';
 import { Nav_shadow } from '../components/navigation';
 import { useParallax } from '../lib/custom_hooks';
 import EditIcon from "../public/icons/EditIcon.svg"
+import BellIcon from "../public/icons/BellIcon.svg"
 import { App_notification_context } from '../context/app_notification_context_provider';
 import { NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
@@ -58,6 +59,10 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user,
     },[])
 
     
+    function coming_soon() {
+        App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Coming soon!", message: "This feature will be available soon!", button_label: "Ok"}})
+    }
+
     function go_to(path: string) {
         router.push(path, path, {scroll: false})
     }
@@ -320,6 +325,19 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user,
                             <p>Change important account informations of your account. </p>
                         </div>
 
+                        <div onClick={coming_soon} className='card'>
+
+                            <div className='icon_container'>
+
+                                <div className='icon_background'>
+                                    <BellIcon className="icon"/>
+                                </div>
+
+                            </div>
+
+                            <h1>Notifications</h1>
+                            <p>Stay up to date and read everything new coming up!</p>
+                        </div>
                         <div onClick={() => logout()} className='card'>
 
                             <div className='icon_container'>
