@@ -336,7 +336,7 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user,
                             </div>
 
                             <h1>Notifications</h1>
-                            <p>Stay up to date and read everything new coming up!</p>
+                            <p>Stay up to date with anything new happening!</p>
                         </div>
                         <div onClick={() => logout()} className='card'>
 

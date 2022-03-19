@@ -738,7 +738,7 @@ function Step_2() {
 
                     <div className='input_container'>
 
-                        <textarea defaultValue={create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description : ""} onKeyUp={validate_description} onBlur={validate_description} placeholder='Min. 100 characters' className='description_input' id="description_input"></textarea>
+                        <textarea defaultValue={create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description : ""} onKeyUp={validate_description} onBlur={validate_description} placeholder='Min. 50 characters' className='description_input' id="description_input"></textarea>
                         
                         <div className='input_info_container'>
                             <h4 id="description_counter">{`${create_pack.create_pack_obj.description ? create_pack.create_pack_obj.description.length : "0"} / 500`}</h4>
