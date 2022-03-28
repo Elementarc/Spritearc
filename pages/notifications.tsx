@@ -17,9 +17,7 @@ export default function Notification_page(): ReactElement {
     const Unseen_notification: IUnseen_notification_context_provider = useContext(Unseen_notification_context)
     const set_unseen_notification_count = Unseen_notification.set_unseen_notifications
     const unseen_notifications_count = Unseen_notification.unseen_notifications
-    const controller = useMemo(() => {
-        return new AbortController()
-    }, [])
+    const controller = new AbortController()
 
     const fetch_notifications = useCallback(async() => {
         try {
