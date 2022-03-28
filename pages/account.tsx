@@ -286,7 +286,7 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user,
 
                         <Navigation_card label='Profile' description='Visit your public profile and checkout what others will see when visiting your account!' callb={() => {go_to(`/user/${user.username}`)}} notification={null} icon={ProfileIcon}/>
                         <Navigation_card label='Create Pack' description='Create your own Pixel art pack! Make yourself a name.' callb={() => {go_to('/create_pack')}} notification={null} icon={AddIcon}/>
-                        <Navigation_card label='Notifications' description='Stay up to date with anything new happening!' callb={() => {go_to('/notifications')}} notification={Unseen_notification?.unseen_notifications === 0 ? null : `${Unseen_notification?.unseen_notifications}`} icon={BellIcon}/>
+                        <Navigation_card label='Notifications' description='Stay up to date with anything new happening!' callb={() => {go_to('/notifications')}} notification={Unseen_notification?.unseen_notifications ? Unseen_notification?.unseen_notifications === 0 ? null : `${Unseen_notification?.unseen_notifications}` : null} icon={BellIcon}/>
                         <Navigation_card label='Account Settings' description='Change important account informations of your account.' callb={() => {go_to('/account/settings')}} notification={null} icon={SettingsIcon}/>
                         <Navigation_card label='Logout' description='Logout from your account.' callb={logout} notification={null} icon={LogoutIcon}/>
                     
