@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { ReactElement, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import Footer from "../components/footer";
 import { Nav_shadow } from "../components/navigation";
 import Head from "next/head";
@@ -17,7 +17,9 @@ export default function Notification_page(): ReactElement {
     const Unseen_notification: IUnseen_notification_context_provider = useContext(Unseen_notification_context)
     const set_unseen_notification_count = Unseen_notification.set_unseen_notifications
     const unseen_notifications_count = Unseen_notification.unseen_notifications
-    const controller = useRef(new AbortController())
+    const controller = useMemo(() => {
+        return new AbortController()
+    }, [])
 
     const fetch_notifications = useCallback(async() => {
         try {
@@ -25,7 +27,7 @@ export default function Notification_page(): ReactElement {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/notifications?page=${page}`, {
                 method: "POST",
                 credentials: "include",
-                signal: controller.current.signal,
+                signal: controller.signal,
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -54,7 +56,7 @@ export default function Notification_page(): ReactElement {
 
     useEffect(() => {
         return () => {
-            controller.current.abort()
+            controller.abort()
         };
     }, [controller])
 
