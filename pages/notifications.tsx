@@ -17,47 +17,50 @@ export default function Notification_page(): ReactElement {
     const Unseen_notification: IUnseen_notification_context_provider = useContext(Unseen_notification_context)
     const set_unseen_notification_count = Unseen_notification.set_unseen_notifications
     const unseen_notifications_count = Unseen_notification.unseen_notifications
-    const controller = new AbortController()
+    
 
-    const fetch_notifications = useCallback(async() => {
-        try {
-                
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/notifications?page=${page}`, {
-                method: "POST",
-                credentials: "include",
-                signal: controller.signal,
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-
-            const response_obj = await response.json()
+    useEffect(() => {
+        const controller = new AbortController()
+        let timer: any = 0
+        async function fetch_notifications() {
             
-            set_notifications(response_obj.notifications.reverse())
-        } catch(err) {
-            //
+            try {
+                    
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/notifications?page=${page}`, {
+                    method: "POST",
+                    credentials: "include",
+                    signal: controller.signal,
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                })
+    
+                const response_obj = await response.json()
+                
+                set_notifications(response_obj.notifications.reverse())
+            } catch(err) {
+                //
+            }
+
+        
         }
-    },[page, controller, set_notifications])
+
+        fetch_notifications()
+
+        timer = setInterval(() => {
+            fetch_notifications()
+        }, 1000 * 30)
+
+        return(() => {
+            clearInterval(timer)
+            controller.abort()
+        })
+    }, [page, set_notifications])
 
     useEffect(() => {
         set_unseen_notification_count(0)
     }, [set_unseen_notification_count, unseen_notifications_count])
     
-    useEffect(() => {
-        fetch_notifications()
-    }, [fetch_notifications])
-
-    useEffect(() => {
-        if(unseen_notifications_count === 0) return
-        fetch_notifications()
-    }, [fetch_notifications, unseen_notifications_count])
-
-    useEffect(() => {
-        return () => {
-            controller.abort()
-        };
-    }, [controller])
-
     return (
         <>
             <Head>
