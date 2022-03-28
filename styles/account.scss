@@ -283,7 +283,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             column-gap: 5rem;
-            row-gap: 5rem;
+            row-gap: 6rem;
             width: 100%;
 
             @include breakpoint(laptop) {
@@ -297,6 +297,10 @@
                 padding-bottom: 10rem;
             }
             .card {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
                 min-height: 200px;
                 height: auto;
                 width: 100%;
@@ -336,13 +340,31 @@
                         width: 100px;
                         border-radius: 50%;
                         background: $color_main_blue;
+                        
                         .icon {
                             transition: .1s ease-in-out;
                             transform: scale(4);
                             fill: $color_white;
+
                         }
                     }
                     
+
+                }
+                .card_notification {
+                    position: absolute;
+                    top: -5rem;
+                    padding: .5rem 1rem;
+                    border-radius: 100%;
+                    background: $color_main;
+                    transform: scale(.9);
+                    p {
+                        @include p(medium);
+                        padding: unset;
+                        margin: unset;
+                        line-height: unset;
+                        color: $color_background_dark;
+                    }
                 }
                 h1{
                     @include h1(medium);

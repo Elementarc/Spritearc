@@ -9,7 +9,7 @@ import HomeIcon from "../public/icons/HomeIcon.svg"
 import NewsIcon from "../public/icons/NewsIcon.svg"
 import BrowseIcon from "../public/icons/PacksIcon.svg"
 import SearchIcon from "../public/icons/SearchIcon.svg"
-import SignInIcon from "../public/icons/SignInIcon.svg"
+import SignInIcon from "../public/icons/LoginIcon.svg"
 //Context
 import { APP_CONTEXT } from "../components/layout";
 import { useRouter } from "next/router";
@@ -20,6 +20,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { format_date } from "../lib/date_lib";
 import { App_notification_context, NOTIFICATION_ACTIONS } from "../context/app_notification_context_provider";
+import { IUnseen_notification_context_provider, Unseen_notification_context } from "../context/unseen_notifications_provider";
 
 
 export default function Navigation(): ReactElement {
@@ -313,7 +314,6 @@ const Navigation_mobile = React.memo((props: {Auth: Auth_context_type}) => {
                         <motion.div animate={profile_animation}>
                             <User_profile/>
                         </motion.div>
-                        
                     }
                 </motion.div>
 
@@ -339,7 +339,7 @@ const Navigation_mobile = React.memo((props: {Auth: Auth_context_type}) => {
                     }
                     
                     {user.auth &&
-                        <motion.div animate={nav_profile_animation}>
+                        <motion.div animate={nav_profile_animation} className="nav_profile_container_wrapper">
                             <User_profile/>
                         </motion.div>
                         
@@ -412,6 +412,7 @@ function Nav_item_container(props: Nav_item) {
 
 function User_profile() {
     const Auth: Auth_context_type = useContext(Auth_context)
+    const Unseen_notification: IUnseen_notification_context_provider = useContext(Unseen_notification_context)
     const Navigation: any = useContext(Navigation_context)
     const user_info_animation = useAnimation()
     const router = useRouter()
@@ -484,9 +485,14 @@ function User_profile() {
                     <div className="portrait_image">
                         <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user.profile_picture}`} layout="fill"/>
                     </div>
-
+                    
                 </div>
-                
+
+                <div onClick={() => {router.push("/notifications", "/notifications", {scroll: false})}} className="unseen_notifications_count_container">
+                    {Unseen_notification.unseen_notifications > 0 &&
+                        <p>{Unseen_notification.unseen_notifications}</p>
+                    }
+                </div>
 
                 <motion.div animate={user_info_animation} className="user_info">
                     <Link href={`/profile?user=${user.username.toLowerCase()}`}>{user.username}</Link>

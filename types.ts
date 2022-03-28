@@ -191,7 +191,12 @@ export interface Public_user {
     role: string | null,
     banned: boolean
 }
-
+export interface INotification {
+    message: string
+    date: Date
+    seen: boolean
+    from: Public_user
+}
 export interface Frontend_public_user {
     auth: boolean | null,
     public_user: Public_user

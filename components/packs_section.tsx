@@ -29,6 +29,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	useEffect(() => {
 		sessionStorage.setItem(section_name, `${current_page}`)
 	}, [section_name, current_page])
+	
 	//Checking sessionstorage if sort_action exists. Setting sort_action if yes
 	useEffect(() => {
 		const sort_action =  sessionStorage.getItem(`${section_name}_sort_action`) ? sessionStorage.getItem(`${section_name}_sort_action`) : null

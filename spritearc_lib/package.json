@@ -1,0 +1,16 @@
+{
+  "name": "spritearc_lib",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mongodb": "^4.0.7",
+    "mongodb": "^4.4.1"
+  }
+}

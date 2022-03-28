@@ -3,6 +3,7 @@ import Image from "next/image"
 //SVG COMPONENTS (ICONS)
 import Twitter from "../public/logos/twitter.png"
 import Discord from "../public/logos/discord.png"
+import Patreon from "../public/logos/patreon.png"
 import Link from 'next/dist/client/link';
 import { App_context } from '../types';
 import { APP_CONTEXT } from './layout';
@@ -41,6 +42,7 @@ export default function Footer(): ReactElement {
 
                 <div className="socials_container">
                     <Social_item link="https://twitter.com/Spritearc" logo={Twitter} alt="Twitter Logo"/>
+                    <Social_item link="https://www.patreon.com/spritearc" logo={Patreon} alt="Patreon Logo"/>
                     <Social_item link="https://discord.gg/HRZXRcFFwU" logo={Discord} alt="Discord Logo"/>
                 </div>
 
