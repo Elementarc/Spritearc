@@ -6,6 +6,7 @@
     height: 100%;
     z-index: 100;
     background: rgba(0, 0, 0, 0.75);
+    pointer-events: all;
     @include breakpoint(mobile) {
         align-items: center;
     }

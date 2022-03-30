@@ -1,20 +1,18 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/router';
-import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
+import { App_notification_context, NOTIFICATION_ACTIONS } from '../../context/app_notification_context_provider';
 import Head from 'next/head';
-import { Server_response } from '../types';
+import { Server_response } from '../../types';
 
 
 export default function Verify_account_page_handler() {
     const [verification_obj, set_verification_obj] = useState<null | {success: boolean, message: string}>(null)
     const router = useRouter()
-
     useEffect(() => {
         if(typeof router.query.token !== "string") return
         const controller = new AbortController()
 
         async function verify_account() {
-            
             
             try {
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/verify_account/${router?.query?.token}`, {
