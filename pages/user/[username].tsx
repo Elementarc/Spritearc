@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext, useMemo} from 'react';
+import React, {useState, useEffect, useContext, useMemo, useRef} from 'react';
 import Image from "next/image"
 import Link from "next/link"
 import { App_notification_context_type, Auth_context_type, Public_user, Server_response, Server_response_public_user } from '../../types';
@@ -137,64 +137,64 @@ function User_representation(props: {public_user: Public_user, followers_count: 
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     const public_user = props.public_user
     const [visitor_has_followed, set_visitor_has_followed] = useState<null | boolean>(null)
-    const controller_2 = useMemo(() => {
-        return new AbortController()
-    },[])
+    const abort_controller = useRef(new AbortController())
 
-    function follow_user() {
+    async function follow_user() {
+        if(Auth.user.auth === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login", message: "You have to login into your account to be able to follow people!", button_label: "Ok"}})
 
-        async function has_visitor_followed() {
-            if(Auth.user.auth === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login", message: "You have to login into your account to be able to follow people!", button_label: "Ok"}})
+        try {
 
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/follow/${public_user._id}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    signal: controller_2.signal,
-                    credentials:"include"
-                })
-                
-                if(response.status === 200) {
-                    props.set_followers_count(props.followers_count + 1) 
-                    set_visitor_has_followed(true)
-                } 
-            } catch(err) {
-                //
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/follow/${public_user._id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                signal: abort_controller.current.signal,
+                credentials:"include"
+            })
+            
+            if(response.status === 200) {
+                props.set_followers_count(props.followers_count + 1) 
+                set_visitor_has_followed(true)
+            } 
+
+        } catch(err) {
+            //
+        }
+        
+    }
+   
+    async function unfollow_user() {
+
+        try {
+            if(Auth.user.auth === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login", message: "You have to login into your account to be able to unfollow people!", button_label: "Ok"}})
+            
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/unfollow/${public_user._id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials:"include",
+                signal: abort_controller.current.signal,
+            })
+            
+            if(response.status === 200) {
+                set_visitor_has_followed(false)
+                props.set_followers_count(props.followers_count - 1)
             }
+
+        } catch(err) {
             
         }
-        has_visitor_followed()
         
     }
 
-    function unfollow_user() {
+    useEffect(() => {
         
-        async function has_visitor_followed() {
-            try {
-                if(Auth.user.auth === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login", message: "You have to login into your account to be able to unfollow people!", button_label: "Ok"}})
-
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/unfollow/${public_user._id}`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    credentials:"include",
-                    signal: controller_2.signal,
-                })
-                
-                if(response.status === 200) {
-                    set_visitor_has_followed(false)
-                    props.set_followers_count(props.followers_count - 1)
-                }
-            } catch(err) {
-
-            }
-        }
-        has_visitor_followed()
-        
-    }
+        return(() => {
+            if(abort_controller?.current) abort_controller?.current?.abort()
+        })
+    }, [abort_controller])
 
     useEffect(() => {
         if(public_user.username.toLowerCase() === Auth.user.public_user.username.toLowerCase()) return
@@ -233,12 +233,6 @@ function User_representation(props: {public_user: Public_user, followers_count: 
             controller.abort()
         })
     }, [Auth, public_user])
-
-    useEffect(() => {
-        return () => {
-            controller_2.abort()
-        };
-    }, [controller_2])
 
     return (
         <div className='user_preview_container'>

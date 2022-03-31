@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import { App_notification_context_type, Auth_context_type, Public_user, Server_response } from '../types';
 import Footer from '../components/footer';
 import Image from "next/image"
@@ -55,9 +55,7 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user,
     const Auth = props.Auth
     const user = props.user
     const App_notification = props.App_notification
-    const controller = useMemo(() => {
-        return new AbortController()
-    },[])
+    const controller = useRef(new AbortController())
     const Unseen_notification: IUnseen_notification_context_provider = useContext(Unseen_notification_context)
     
     function coming_soon() {
@@ -77,7 +75,7 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user,
                 headers: {
                     "Content-Type": "application/json"
                 },
-                signal: controller.signal,
+                signal: controller.current.signal,
                 credentials: "include"
             })
     
@@ -94,7 +92,7 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user,
     
     useEffect(() => {
         return () => {
-            controller.abort()
+            controller.current.abort()
         };
     }, [controller])
 

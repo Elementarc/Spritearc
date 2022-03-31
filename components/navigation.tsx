@@ -1,5 +1,5 @@
 /*eslint-disable */
-import React, {ReactElement, useContext, useEffect} from "react"
+import React, {ReactElement, useContext, useEffect, useRef} from "react"
 import {motion, useAnimation, AnimatePresence } from "framer-motion";
 import { Nav_item, App_context, Public_user, Auth_context_type, App_notification_context_type} from "../types"
 //SVG Components (ICONS)
@@ -417,7 +417,7 @@ function User_profile() {
     const user_info_animation = useAnimation()
     const router = useRouter()
     const user = Auth.user.public_user
-    const controller = new AbortController()
+    const controller = useRef(new AbortController)
 
     async function logout () {
 
@@ -428,7 +428,7 @@ function User_profile() {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                signal: controller.signal,
+                signal: controller.current.signal,
                 credentials: "include"
             })
     
@@ -443,11 +443,10 @@ function User_profile() {
         
     }
 
-
     useEffect(() => {
-      return () => {
-        controller.abort()
-      };
+        return () => {
+            controller.current.abort()
+        };
     }, [controller])
 
     //Showing Labels of Profile info when toggling navState
