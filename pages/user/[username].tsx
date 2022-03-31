@@ -137,7 +137,6 @@ function User_representation(props: {public_user: Public_user, followers_count: 
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     const public_user = props.public_user
     const [visitor_has_followed, set_visitor_has_followed] = useState<null | boolean>(null)
-    const abort_controller = useRef(new AbortController())
 
     async function follow_user() {
         if(Auth.user.auth === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login", message: "You have to login into your account to be able to follow people!", button_label: "Ok"}})
@@ -149,7 +148,6 @@ function User_representation(props: {public_user: Public_user, followers_count: 
                 headers: {
                     "Content-Type": "application/json"
                 },
-                signal: abort_controller.current.signal,
                 credentials:"include"
             })
             
@@ -175,7 +173,6 @@ function User_representation(props: {public_user: Public_user, followers_count: 
                     "Content-Type": "application/json"
                 },
                 credentials:"include",
-                signal: abort_controller.current.signal,
             })
             
             if(response.status === 200) {
@@ -189,12 +186,7 @@ function User_representation(props: {public_user: Public_user, followers_count: 
         
     }
 
-    useEffect(() => {
-        
-        return(() => {
-            if(abort_controller?.current) abort_controller?.current?.abort()
-        })
-    }, [abort_controller])
+    
 
     useEffect(() => {
         if(public_user.username.toLowerCase() === Auth.user.public_user.username.toLowerCase()) return
