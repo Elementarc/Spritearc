@@ -45,7 +45,7 @@ export default function Guidelines() {
                 <div className='legal_content_container'>
                     <section>
                         <h1 className='tos_header'>Spritearc Community Guidelines</h1>
-                        <h4 className='tos_update_date'>{`Last updated: 30/01/2022`}</h4>
+                        <h4 className='tos_update_date'>{`Last updated: 10/04/2022`}</h4>
                     </section>
                     <General_Guidelines/>
                     <Respect_eachother/>
