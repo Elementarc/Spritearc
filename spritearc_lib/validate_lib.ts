@@ -17,7 +17,7 @@ const username_regex = new RegExp(/^[a-zA-Z0-9\.\_]{3,20}$/)
 const password_regex = new RegExp(/^[a-zA-Z0-9\§\*\.\!\/\@\#\$\%\^\&\(\)\{\}\:\;\<\>\,\.\?\|\~\+\-\=\~\_]{8,100}$/)
 
 //profile
-const user_description_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{2,100}$/)
+const user_description_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{2,200}$/)
 
 //Pack
 const pack_description_regex = new RegExp(/^[a-zA-Z0-9äöüÄÖÜ\-()\/,:;_+?'!%&#*<> \.]{50,500}$/)
@@ -215,7 +215,7 @@ export function validate_pack_title(title: string): boolean | string {
 
     if(title.length < 3) return "Min. 3 characters."
     if(title.length > 25) return "Max. 25 characters."
-    if(title.split(" ").length > 3) return "Max. allowed words are 3."
+    if(title.split(" ").length > 4) return "Max. allowed words are 4."
     
     if(special_character_regex.test(title[0])) return "You cannot use special characters at the beginning or the end!"
     if(special_character_regex.test(title[title.length - 1])) return "You cannot use special characters at the beginning or the end!"
@@ -245,7 +245,7 @@ export function validate_pack_description(description: string): boolean | string
 }
 export function validate_user_description(description: string): boolean | string {
     if(description.length < 2) return "To short!"
-    if(description.length > 100) return "To Long!"
+    if(description.length > 200) return "To Long!"
     if(!user_description_regex.test(description)) return "Cant use description! Probably using a special character that is not allowed."
     return true
 }
@@ -286,6 +286,9 @@ export function validate_pack_perspective(perspective: string): boolean | string
             return true
         }
 
+        case "ui" : {
+            return true
+        }
         default : {
             return "Perspective is not valid"
         }

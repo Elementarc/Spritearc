@@ -208,7 +208,7 @@ export default function Search_page() {
 							
 							{search_packs &&
 								<div className='extra_options_container_wrapper'>
-									<Drop_down label='Perspective' reset_option='All'  options={["Top-down", "Side-scroller", "Isometric"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
+									<Drop_down label='Perspective' reset_option='All'  options={["Top-Down", "Side-Scroller", "Isometric", "UI"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
 									<Drop_down label='Size' reset_option='All' options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
 									<Drop_down label='License' reset_option='All' options={["Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
 								</div>

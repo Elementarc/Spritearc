@@ -74,10 +74,10 @@ export function Drop_down(props: {label: string, reset_option: string, options: 
 			<div onClick={() => set_state(!state)} className='option_header'>
                     
                 {active_state &&
-                    <p>{active_state ? capitalize_first_letter_rest_lowercase(active_state)  : capitalize_first_letter_rest_lowercase(props.label) }</p>
+                    <p>{active_state ? capitalize_first_letter_rest_lowercase(active_state)  : capitalize_first_letter_rest_lowercase(label) }</p>
                 }
                 {active_state === null &&
-                    <p>{capitalize_first_letter_rest_lowercase(props.label)}</p>
+                    <p>{label}</p>
                 }
 
                 <ExpandIcon/>

@@ -1037,9 +1037,9 @@ function Step_3() {
                     </div>
                 </div>
 
-                <Drop_menu label={"Perspective"} options={["Top-Down","Side-Scroller", "Isometric", "Other"]} create_pack_property={create_pack.create_pack_obj.perspective} callb={set_perspective}/>
-                <Drop_menu label={"Resolution"} options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256","Other"]} create_pack_property={create_pack.create_pack_obj.resolution} callb={set_resoluion}/>
-                <Drop_menu label={"License"} options={["Opensource", "Attribution"]} help_link={"/license"} create_pack_property={create_pack.create_pack_obj.license} callb={set_license}/>
+                <Drop_menu_create_pack label={"Perspective"} options={["Top-Down","Side-Scroller", "Isometric", "UI" ,"Other"]} create_pack_property={create_pack.create_pack_obj.perspective} callb={set_perspective}/>
+                <Drop_menu_create_pack label={"Resolution"} options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256","Other"]} create_pack_property={create_pack.create_pack_obj.resolution} callb={set_resoluion}/>
+                <Drop_menu_create_pack label={"License"} options={["Opensource", "Attribution"]} help_link={"/license"} create_pack_property={create_pack.create_pack_obj.license} callb={set_license}/>
 
             </div>
 
@@ -1182,7 +1182,7 @@ function Section({section_name, section_content}: {section_name: string, section
     );
 }
 
-function Drop_menu(props: {label: string, options: string[], create_pack_property: string | null, help_link?: string | undefined | null, callb: (value: string | null) => void}) {
+function Drop_menu_create_pack(props: {label: string, options: string[], create_pack_property: string | null, help_link?: string | undefined | null, callb: (value: string | null) => void}) {
     const [state, set_state] = useState(false)
     const create_pack_frontend = props.create_pack_property
     const callb = props.callb
