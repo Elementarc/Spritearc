@@ -51,6 +51,7 @@ export default function Footer(): ReactElement {
                     <Link href="/privacy" scroll={false}><a>Privacy Policy</a></Link>
                     <Link href="/contact" scroll={false}><a>Contact</a></Link>
                     <Link href="/cookies" scroll={false}><a>Cookies</a></Link>
+                    <Link href="/guidelines" scroll={false}><a>Guidelines</a></Link>
                 </div>
 
                 <h5>©2022 By Hamit Kiziltas. ALL RIGHTS RESERVED.</h5>

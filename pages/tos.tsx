@@ -3,6 +3,7 @@ import Footer from '../components/footer';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import Head from 'next/head';
+import Qick_legal_navigation from '../components/quick_legal_nav';
 
 export default function Terms_of_service() {
     //Setting numbers for headers
@@ -21,7 +22,23 @@ export default function Terms_of_service() {
 
     return (
         <div className='tos_page'>
-            
+            <Head>
+				<title>{`Spritearc - TOS`}</title>
+				<meta name="description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
+
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - TOS`}/>
+				<meta property="og:description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
+                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - TOS`}/>
+				<meta name="twitter:description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
+                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
+            </Head>
             <div className='content'>
                 <div className='legal_content_container'>
                     <section>
@@ -72,60 +89,6 @@ export default function Terms_of_service() {
             </div>
             <Footer />
         </div>
-    );
-}
-
-export function Qick_legal_navigation() {
-    const router = useRouter()
-    const pathname = router.pathname.toLowerCase()
-
-    return (
-        <>
-            <Head>
-				<title>{`Spritearc - TOS`}</title>
-				<meta name="description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
-
-				<meta property="og:url" content="https://Spritearc.com/"/>
-				<meta property="og:type" content="website" />
-				<meta property="og:title" content={`Spritearc - TOS`}/>
-				<meta property="og:description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
-                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
-
-				<meta name="twitter:card" content="summary_large_image"/>
-				<meta property="twitter:domain" content="Spritearc.com"/>
-				<meta property="twitter:url" content="https://Spritearc.com/"/>
-				<meta name="twitter:title" content={`Spritearc - TOS`}/>
-				<meta name="twitter:description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
-                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
-            </Head>
-
-        
-            <div className='legal_navigation_container'>
-                <h1>Quick Legal Navigation: </h1>
-                <ul>
-                        
-                    <li>
-                        <Link href={`/tos`} scroll={false}>Terms Of Service</Link>
-                    </li>
-                    
-                        
-                    <li>
-                        <Link href={`/privacy`} scroll={false}>Privacy Policy</Link>
-                    </li>
-                    
-                        
-                    <li>
-                        <Link href={`/cookies`} scroll={false}>Cookies</Link>
-                    </li>
-
-                        
-                    <li>
-                        <Link href={`/contact`} scroll={false}>Contact</Link>
-                    </li>
-                    
-                </ul>
-            </div>
-        </>
     );
 }
 

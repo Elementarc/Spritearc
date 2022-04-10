@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import Footer from '../components/footer';
-import { Qick_legal_navigation } from './tos';
 import Head from 'next/head';
+import Qick_legal_navigation from '../components/quick_legal_nav';
 
 export default function Privacy_policy() {
     //Setting numbers for headers
