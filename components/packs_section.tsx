@@ -12,7 +12,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	const [sort_action, set_sort_action] = useState<null | string>(null)
 	const [toggle_sort_menu, set_toggle_sort_menu] = useState(false)
 	const [packs, set_packs] = useState<null | Pack[] | []>(null)
-	const [toggle_packs, set_toggle_packs] = useState(true)
+	const [display_packs, set_toggle_packs] = useState(true)
 	const [current_page, set_current_page] = useState(() => {
 		if(typeof window === "undefined") return 1
 		try {
@@ -127,34 +127,32 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 			<div className='packs_section_container'>
 
 				<div className="packs_section_info">
-					<h1 onClick={() => {set_toggle_packs(!toggle_packs)}}>{toggle_packs ? `–` : "+"} {section_name}</h1>
+					<h1 onClick={() => {set_toggle_packs(!display_packs)}}>{display_packs ? `–` : "+"} {section_name}</h1>
 					
-					{toggle_packs &&
+					{display_packs &&
 						<Drop_down label='Sort by' reset_option='None' options={["Recent","Rating", "Downloads"]} active_state={sort_action} set_active_state={set_sort_action} />
 					}
 
 				</div>
 
 				
-				{ toggle_packs &&
+				<div style={display_packs ? {display: ""} : {display: "none"}} className='packs_section_content'>
 					<>
-						<>
-						
-							<Pack_previews packs={sort_action ? sort_packs_section(packs ? packs : null, sort_action) : packs ? packs : null}/>
-						
-						</>
-
-						<>
-							{ packs && available_pages > current_page &&
-								<div className='load_more_container' id={`${section_name}_load_more_container`}>
-									<span />
-									<h1 onClick={next_page}>Load more</h1>
-									<span />
-								</div>
-							}
-						</>
+					
+						<Pack_previews packs={sort_action ? sort_packs_section(packs ? packs : null, sort_action) : packs ? packs : null}/>
+					
 					</>
-				}
+
+					<>
+						{ packs && available_pages > current_page &&
+							<div className='load_more_container' id={`${section_name}_load_more_container`}>
+								<span />
+								<h1 onClick={next_page}>Load more</h1>
+								<span />
+							</div>
+						}
+					</>
+				</div>
 				
 			</div>
 			

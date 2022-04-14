@@ -51,55 +51,59 @@
             
     }
     
-    .previews_container {
-        position: relative;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minMax(380px, 1fr));
-        min-height: $pack_preview_height;
-        column-gap: 1rem;
-        row-gap: 1rem;
-        @include breakpoint(laptop) {
-            grid-template-columns: repeat(auto-fill, minMax(290px, 1fr));
+    .packs_section_content {
+        width: 100%;
+        .previews_container {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minMax(380px, 1fr));
+            min-height: $pack_preview_height;
+            column-gap: 1rem;
+            row-gap: 1rem;
+            @include breakpoint(laptop) {
+                grid-template-columns: repeat(auto-fill, minMax(290px, 1fr));
+            }
+            @include breakpoint(mobile) {
+                grid-template-columns: 1fr;
+            }
+            .no_packs_container {
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+                h1 {
+                    @include h1(small);
+                    color: $color_dark_grey;
+                }
+            }
+            //Each Pack component as a child
         }
-        @include breakpoint(mobile) {
-            grid-template-columns: 1fr;
-        }
-        .no_packs_container {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        
+        .load_more_container {
+            position: relative;
+            padding-top: 1.5rem;
             width: 100%;
-            height: 100%;
+            display: none;
+            grid-template-columns: 1fr minmax(150px, .3fr) 1fr;
             h1 {
-                @include h1(small);
-                color: $color_dark_grey;
+                @include a(default);
+                align-self: center;
+                justify-self: center;
+                text-align: center;
+            } 
+            span {
+                width: 100%;
+                height: 1px;
+                background: $color_dark_grey;
+                opacity: .5;
+                align-self: center;
+                justify-self: center;
             }
         }
-        //Each Pack component as a child
     }
     
-    .load_more_container {
-        position: relative;
-        padding-top: 1.5rem;
-        width: 100%;
-        display: none;
-        grid-template-columns: 1fr minmax(150px, .3fr) 1fr;
-        h1 {
-            @include a(default);
-            align-self: center;
-            justify-self: center;
-            text-align: center;
-        } 
-        span {
-            width: 100%;
-            height: 1px;
-            background: $color_dark_grey;
-            opacity: .5;
-            align-self: center;
-            justify-self: center;
-        }
-    }
 }
 
 .pack_preview_container {
