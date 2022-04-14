@@ -560,8 +560,8 @@ function Promote_popup(props: {pack: Pack, set_toggle_promote_window: React.Disp
                 const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_credits`, {
                     method: "POST",
                     headers: {
-						"Content-Type": "application/json",
-					},
+                        "Content-Type": "application/json",
+                    },
                     credentials: "include",
                     signal: controller.signal,
                 })
@@ -570,6 +570,7 @@ function Promote_popup(props: {pack: Pack, set_toggle_promote_window: React.Disp
                 const credits = response_obj?.credits as number | undefined
                     
                 set_credits(`${credits ? credits : "Something went wrong!"}`)
+                
             } catch(err) {
                 //Could not reach server
             }
@@ -606,22 +607,15 @@ function Promote_popup(props: {pack: Pack, set_toggle_promote_window: React.Disp
         <>
             <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: 0.2}}} exit={{scale: .8, transition: {duration: 0.2}}} className='pack_promote_content_container'>
 
-                {!credits &&
-                    <Loading loading={true} main_color={true}></Loading>
-                }
-
-                {credits &&
-                    <>
-                        <h1>Promotion</h1>
-                        <p>Your pack will be added to the promotion list for 2 days. Promoted packs will be shown randomly at the top of our browse page. This is recommended to grow your community and increase your discoverability!</p>
-                        <h2>Your Sprite-Credits</h2>
-                        <Sprite_credits credits={credits} />
-                        
-                        <button onClick={buy_promotion} className={`${parseInt(credits) >= 250 ? 'active_promotion_button' : 'inactive_promotion_button'}`}>Pay 250 Sprite-Credits</button>
-                        <h4 onClick={() => {set_toggle_promote_window(false)}}>No, thank you</h4>
-                    </>
-                }
-                
+                <>
+                    <h1>Promotion</h1>
+                    <p>Your pack will be added to the promotion list for 2 days. Promoted packs will be shown randomly at the top of our browse page. This is recommended to grow your community and increase your discoverability!</p>
+                    <h2>Your Sprite-Credits</h2>
+                    <Sprite_credits credits={credits}/>
+                    
+                    <button onClick={buy_promotion} className={`${parseInt(credits ? credits : "0") >= 250 ? 'active_promotion_button' : 'inactive_promotion_button'}`}>Pay 250 Sprite-Credits</button>
+                    <h4 onClick={() => {set_toggle_promote_window(false)}}>No, thank you</h4>
+                </>
                 
                 
             </motion.div>
