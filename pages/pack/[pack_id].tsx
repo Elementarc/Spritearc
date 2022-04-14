@@ -1,6 +1,6 @@
 import React, {ReactElement, useEffect, useContext, useState, useCallback, useRef} from 'react';
 import Footer from '../../components/footer';
-import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Server_response, Server_response_pack, Server_response_pack_rating, Server_response_public_user} from "../../types"
+import {Pack_content, Pack, Public_user, Pack_rating, App_notification_context_type, Auth_context_type, Server_response, Server_response_pack, Server_response_pack_rating, Server_response_public_user, Server_response_credits, App_dispatch_notification} from "../../types"
 import Link from 'next/dist/client/link';
 import Image from 'next/dist/client/image';
 import { Nav_shadow } from '../../components/navigation';
@@ -28,6 +28,7 @@ import http from "http"
 import HelpIcon from "../../public/icons/HelpIcon.svg"
 import { validate_paypal_donation_link } from '../../spritearc_lib/validate_lib';
 import Loading from '../../components/loading';
+import Sprite_credits from '../../components/sprite_credits';
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
@@ -80,8 +81,8 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
     const pack_id = router.query.pack_id as string
     const Auth = props.Auth
     
-    //
     const [toggle_download_container, set_toggle_download_container] = useState(false)
+    const [toggle_promote_window, set_toggle_promote_window] = useState(false)
     //Props
     const pack: Pack = props.pack
     const user: Public_user = Auth?.user?.public_user
@@ -235,14 +236,6 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                         <div className='pack_fix_overlay'>
 
                             <div className='pack_nav_container'>
-                                <div className='close_pack_container' id="close_pack">
-
-                                    <div onClick={() => {go_back()}} className="icon_container">
-                                        <CloseIcon className="close_icon"/>
-                                        <div className="hover_box">Close Pack</div>
-                                    </div>
-
-                                </div>
                                 
                                 <AnimatePresence exitBeforeEnter>
 
@@ -279,13 +272,28 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
 
                                 <div className='pack_actions_fixed_container'>
 
-                                    <div className='pack_actions_container'>
+                                    <div className='pack_positive_actions_container_wrapper'>
+                                        <div className='pack_positive_actions_container'>
+                                            <Pack_action Action_icon={CloseIcon} name='Close Pack' positive={true} callb={() => {go_back()}}/>
 
-                                        <Pack_action Action_icon={ReportIcon} name='Report Pack' callb={() => {set_report_confirmation_state(!delete_confirmation_state)}}/>
-                                        {user && (user.username === pack.username || user.role === "admin") &&
-                                            <Pack_action Action_icon={ThrashIcon} name='Delete Pack' callb={() => {set_delete_confirmation_state(!delete_confirmation_state)}}/>
-                                        }
+                                            {user && (user.username === pack.username || user.role === "admin") &&
+                                                <Pack_action Action_icon={StarIcon} name='Promote Pack' positive={true} callb={() => {set_toggle_promote_window(true)}}/>
+                                            }
+                                            
+                                        </div>
+                                    </div>
 
+                                    <div className='pack_negative_actions_container_wrapper'>
+
+                                        <div className='pack_negative_actions_container'>
+
+                                            <Pack_action Action_icon={ReportIcon} name='Report Pack' positive={false} callb={() => {set_report_confirmation_state(!delete_confirmation_state)}}/>
+
+                                            {user && (user.username === pack.username || user.role === "admin") &&
+                                                <Pack_action Action_icon={ThrashIcon} name='Delete Pack' positive={false} callb={() => {set_delete_confirmation_state(!delete_confirmation_state)}}/>
+                                            }
+
+                                        </div>
                                     </div>
 
                                 </div>
@@ -317,13 +325,22 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                             <AnimatePresence exitBeforeEnter>
                                 {toggle_download_container &&
 
-                                    <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.2}}} exit={{opacity: 0, transition: {duration: 0.2}}} className='pack_download_container'>
+                                    <motion.div key={`Download_popup`} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.2}}} exit={{opacity: 0, transition: {duration: 0.2}}} className='pack_download_container'>
                                         <Download_popup username={pack.username} pack={pack} set_toggle_download_container={set_toggle_download_container}/>
                                     </motion.div>
 
                                 }
                             </AnimatePresence>
                             
+                            <AnimatePresence exitBeforeEnter>
+                                {toggle_promote_window &&
+
+                                    <motion.div key={`Promote_popup`} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.2}}} exit={{opacity: 0, transition: {duration: 0.2}}} className='pack_promote_container'>
+                                        <Promote_popup pack={pack} set_toggle_promote_window={set_toggle_promote_window} set_app_notification={App_notification.dispatch}/>
+                                    </motion.div>
+
+                                }
+                            </AnimatePresence>
                         </div>
 
                         
@@ -375,157 +392,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
     );
 }
 
-function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any, prev_pack_ratings: any, App_notification: App_notification_context_type}) {
-    const set_prev_pack_ratings = props.set_prev_pack_ratings
-    const prev_pack_ratings = props.prev_pack_ratings
-    const App_notification = props.App_notification
-    const user = props.user
-    const router = useRouter()
-    //Filled stars
-    let stars_jsx: ReactElement[] = []
-    for(let i = 0; i < 5; i++) {
-        stars_jsx.push(
-            <div onMouseEnter={mouse_enter} onClick={submit_rating} onMouseLeave={mouse_leave} key={`full_rate_star_${i}`} className='full_rate_star' id={`${i}`}>
-                <StarIcon/>
-            </div>
-        )
-    }
-    
-    //Empty stars
-    let empty_stars_jsx: ReactElement[] = []
-    for(let i = 0; i < 5; i++) {
-        empty_stars_jsx.push(
-            <div key={`empty_rate_star_${i}`} className='empty_rate_star'>
-                <StarEmptyIcon/>
-            </div>
-        )
-    }
-    
-    const user_has_rated = useCallback(() => {
-        function user_has_rated(): null | Pack_rating {
-            let user_rated_obj: null | Pack_rating = null
-            
-            if(user) {
-                for(let rating of prev_pack_ratings) {
-                    if(rating.user_id === user._id) {
-                        
-                        user_rated_obj = {
-                            user_id: rating.user_id,
-                            rating: rating.rating
-                        }
-                    }
-                }
-            }
-            
-            
-            if(!user_rated_obj) return null
-            return user_rated_obj
-        }
-        return user_has_rated()
-    }, [prev_pack_ratings, user])
 
-    function mouse_enter(e: any) {
-        if(user_has_rated()) return
-        const id = parseInt(e.target.id)
-        const stars = document.getElementsByClassName(`full_rate_star`) as HTMLCollection
-        
-        const stars_arr = Array.from(stars)
-
-        for(let i = 0; i <= id; i++) {
-            stars_arr[i].classList.add("visible_star")
-        }
-        
-    }
-
-    function mouse_leave(e: any) {
-        if(user_has_rated()) return
-        const id = parseInt(e.target.id)
-        const stars = document.getElementsByClassName(`full_rate_star`) as HTMLCollection
-        
-        const stars_arr = Array.from(stars)
-
-        for(let i = 0; i <= id; i++) {
-            stars_arr[i].classList.remove("visible_star")
-        }
-        
-    }
-
-    async function submit_rating(e: any) {
-        
-        if(user?.username.length === 0) {
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login!", message: "You have to log into your account to be able to rate packs!", button_label: "ok"}})
-            return
-        }
-        const rating = parseInt(e.target.id)
-        
-        const pack_id = router.query.pack_id
-
-        if(!pack_id) return
-        if(typeof pack_id !== "string") return
-
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/rate_pack?pack_id=${pack_id}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                credentials: "include",
-                body: JSON.stringify({rating: rating + 1})
-            })
-
-            
-            const response_obj = await response.json() as Server_response_pack_rating
-            
-            if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: response_obj.message, button_label: "Okay"}})
-            
-            let updated_pack_ratings = [...prev_pack_ratings, {user_id: response_obj.user_id, rating: response_obj.rating}]
-            set_prev_pack_ratings(updated_pack_ratings)
-            
-        } catch(err) {
-            //Couldnt reach server
-        }
-    }
-
-    useEffect(() => {
-        const user_rating = user_has_rated()
-        if(!user_rating) return
-        const stars = document.getElementsByClassName(`full_rate_star`) as HTMLCollection
-        const stars_arr = Array.from(stars)
-
-        for(let i = 0; i < stars_arr.length; i++) {
-            
-            stars_arr[i].classList.add("already_rated")
-            
-            if(i <= user_rating.rating - 1) {
-
-                if(stars_arr[i]) {
-                    stars_arr[i].classList.add("visible_star")
-                }
-                
-            }
-        }
-        
-    }, [user_has_rated, prev_pack_ratings])
-
-    return (
-        <div className='rate_pack_container'>
-            <h1>{user_has_rated() ? "You Rated" : "Rate This Pack"}</h1>
-            <div className='rate_pack_stars_container'>
-
-                <div className='empty_stars_container'>
-                    
-                    {empty_stars_jsx}
-                    
-                </div>
-
-                <div className='full_stars_container'>
-                    {stars_jsx}
-                </div>
-            </div>
-            
-        </div>
-    );  
-}
 
 export const Memo_user_pack = React.memo(User_pack)
 export const Memo_rate_pack = React.memo(Rate_pack)
@@ -677,7 +544,246 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
         </>
     );
 }
+function Promote_popup(props: {pack: Pack, set_toggle_promote_window: React.Dispatch<React.SetStateAction<boolean>>, set_app_notification: React.Dispatch<{type: string; payload: App_dispatch_notification | null}>}) {
+    const [credits, set_credits] = useState<string | null>(null)
+    const [loading, set_loading] = useState(false)
 
+    const set_toggle_promote_window = props.set_toggle_promote_window
+   
+    useEffect(() => {
+        const controller = new AbortController()
+
+        async function get_credits() {
+
+            try {
+               
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_credits`, {
+                    method: "POST",
+                    headers: {
+						"Content-Type": "application/json",
+					},
+                    credentials: "include",
+                    signal: controller.signal,
+                })
+
+                const response_obj = await response.json() as Server_response_credits
+                const credits = response_obj?.credits as number | undefined
+                    
+                set_credits(`${credits ? credits : "Something went wrong!"}`)
+            } catch(err) {
+                //Could not reach server
+            }
+            
+        }
+        get_credits()
+
+        return(() => {
+            controller.abort()
+        })
+    }, [set_toggle_promote_window, set_credits])
+
+    const router = useRouter()
+    async function buy_promotion() {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/promote_pack/${router.query.pack_id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+            })
+
+            const response_obj = await response.json() as Server_response
+            
+            if(response_obj.success) return props.set_app_notification({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message:"You successfully have promoted your pack!", button_label: "Okay", callb: () => {set_toggle_promote_window(false)}}})
+            else return props.set_app_notification({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Error!", message: response_obj.message, button_label: "Okay", callb: () => {set_toggle_promote_window(false)}}})
+        } catch(err) {
+            console.log(err)
+        }
+    }
+
+    return (
+        <>
+            <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: 0.2}}} exit={{scale: .8, transition: {duration: 0.2}}} className='pack_promote_content_container'>
+
+                {!credits &&
+                    <Loading loading={true} main_color={true}></Loading>
+                }
+
+                {credits &&
+                    <>
+                        <h1>Promotion</h1>
+                        <p>Your pack will be added to the promotion list for 2 days. Promoted packs will be shown randomly at the top of our browse page. This is recommended to grow your community and increase your discoverability!</p>
+                        <h2>Your Sprite-Credits</h2>
+                        <Sprite_credits credits={credits} />
+                        
+                        <button onClick={buy_promotion} className={`${parseInt(credits) >= 250 ? 'active_promotion_button' : 'inactive_promotion_button'}`}>Pay 250 Sprite-Credits</button>
+                        <h4 onClick={() => {set_toggle_promote_window(false)}}>No, thank you</h4>
+                    </>
+                }
+                
+                
+                
+            </motion.div>
+            <div onClick={() => {set_toggle_promote_window(false)}} className='promote_container_background'></div>
+        </>
+    );
+}
+
+
+//Pack Rate
+function Rate_pack(props: {user: Public_user | null, set_prev_pack_ratings: any, prev_pack_ratings: any, App_notification: App_notification_context_type}) {
+    const set_prev_pack_ratings = props.set_prev_pack_ratings
+    const prev_pack_ratings = props.prev_pack_ratings
+    const App_notification = props.App_notification
+    const user = props.user
+    const router = useRouter()
+    //Filled stars
+    let stars_jsx: ReactElement[] = []
+    for(let i = 0; i < 5; i++) {
+        stars_jsx.push(
+            <div onMouseEnter={mouse_enter} onClick={submit_rating} onMouseLeave={mouse_leave} key={`full_rate_star_${i}`} className='full_rate_star' id={`${i}`}>
+                <StarIcon/>
+            </div>
+        )
+    }
+    
+    //Empty stars
+    let empty_stars_jsx: ReactElement[] = []
+    for(let i = 0; i < 5; i++) {
+        empty_stars_jsx.push(
+            <div key={`empty_rate_star_${i}`} className='empty_rate_star'>
+                <StarEmptyIcon/>
+            </div>
+        )
+    }
+    
+    const user_has_rated = useCallback(() => {
+        function user_has_rated(): null | Pack_rating {
+            let user_rated_obj: null | Pack_rating = null
+            
+            if(user) {
+                for(let rating of prev_pack_ratings) {
+                    if(rating.user_id === user._id) {
+                        
+                        user_rated_obj = {
+                            user_id: rating.user_id,
+                            rating: rating.rating
+                        }
+                    }
+                }
+            }
+            
+            
+            if(!user_rated_obj) return null
+            return user_rated_obj
+        }
+        return user_has_rated()
+    }, [prev_pack_ratings, user])
+
+    function mouse_enter(e: any) {
+        if(user_has_rated()) return
+        const id = parseInt(e.target.id)
+        const stars = document.getElementsByClassName(`full_rate_star`) as HTMLCollection
+        
+        const stars_arr = Array.from(stars)
+
+        for(let i = 0; i <= id; i++) {
+            stars_arr[i].classList.add("visible_star")
+        }
+        
+    }
+
+    function mouse_leave(e: any) {
+        if(user_has_rated()) return
+        const id = parseInt(e.target.id)
+        const stars = document.getElementsByClassName(`full_rate_star`) as HTMLCollection
+        
+        const stars_arr = Array.from(stars)
+
+        for(let i = 0; i <= id; i++) {
+            stars_arr[i].classList.remove("visible_star")
+        }
+        
+    }
+
+    async function submit_rating(e: any) {
+        
+        if(user?.username.length === 0) {
+            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login!", message: "You have to log into your account to be able to rate packs!", button_label: "ok"}})
+            return
+        }
+        const rating = parseInt(e.target.id)
+        
+        const pack_id = router.query.pack_id
+
+        if(!pack_id) return
+        if(typeof pack_id !== "string") return
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/rate_pack?pack_id=${pack_id}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                credentials: "include",
+                body: JSON.stringify({rating: rating + 1})
+            })
+
+            
+            const response_obj = await response.json() as Server_response_pack_rating
+            
+            if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: response_obj.message, button_label: "Okay"}})
+            
+            let updated_pack_ratings = [...prev_pack_ratings, {user_id: response_obj.user_id, rating: response_obj.rating}]
+            set_prev_pack_ratings(updated_pack_ratings)
+            
+        } catch(err) {
+            //Couldnt reach server
+        }
+    }
+
+    useEffect(() => {
+        const user_rating = user_has_rated()
+        if(!user_rating) return
+        const stars = document.getElementsByClassName(`full_rate_star`) as HTMLCollection
+        const stars_arr = Array.from(stars)
+
+        for(let i = 0; i < stars_arr.length; i++) {
+            
+            stars_arr[i].classList.add("already_rated")
+            
+            if(i <= user_rating.rating - 1) {
+
+                if(stars_arr[i]) {
+                    stars_arr[i].classList.add("visible_star")
+                }
+                
+            }
+        }
+        
+    }, [user_has_rated, prev_pack_ratings])
+
+    return (
+        <div className='rate_pack_container'>
+            <h1>{user_has_rated() ? "You Rated" : "Rate This Pack"}</h1>
+            <div className='rate_pack_stars_container'>
+
+                <div className='empty_stars_container'>
+                    
+                    {empty_stars_jsx}
+                    
+                </div>
+
+                <div className='full_stars_container'>
+                    {stars_jsx}
+                </div>
+            </div>
+            
+        </div>
+    );  
+}
+//Pack stats
 function Pack_stats(props: {pack: Pack, own_pack: boolean, prev_pack_ratings: Pack_rating[]}) {
     const pack = props.pack
     const own_pack = props.own_pack
@@ -783,7 +889,6 @@ function Pack_stats(props: {pack: Pack, own_pack: boolean, prev_pack_ratings: Pa
         </div>
     )
 }
-
 //Component that creates a section with assets
 function Pack_assets_section(props: {pack: Pack}): ReactElement {
     const pack: Pack = props.pack
@@ -810,7 +915,6 @@ function Pack_assets_section(props: {pack: Pack}): ReactElement {
         </div>
     );
 }
-
 //Component that creates assets from pack.
 function Pack_asset(props: {pack_content: Pack_content, pack_id: string, username: string}): ReactElement {
     const PACK_PAGE: any = useContext(PACK_PAGE_CONTEXT)
@@ -837,9 +941,9 @@ function Pack_asset(props: {pack_content: Pack_content, pack_id: string, usernam
     );
 }
 //Compontent that represents an icon for the pack navigation
-function Pack_action({Action_icon, name, callb}: {Action_icon:any, name: string, callb: ()=>void}) {
+function Pack_action({Action_icon, name, positive, callb}: {Action_icon:any, name: string, positive: boolean, callb: ()=>void}) {
   return (
-    <div className='pack_action' onClick={callb}>
+    <div className={`pack_action ${positive ? 'pack_positive_action' : 'pack_negative_action'}`} onClick={callb}>
         <Action_icon/>
         <p>{name}</p>
     </div>

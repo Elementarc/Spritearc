@@ -947,6 +947,7 @@ function Step_3() {
                 if(response.status === 200) {
                     const body = await response.json()
                     function go_to_pack() {
+                        create_pack.dispatch({type: CREATE_PACK_ACTIONS.RESET_ALL})
                         router.push(`/pack/${body.pack_id}`, `/pack/${body.pack_id}`, {scroll: false})
                     }
     
@@ -956,6 +957,7 @@ function Step_3() {
                     App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "We couldn't create your pack! Please relog and try again!", button_label: "Ok"}})
                     set_loading(false)
                 }
+                
             } catch(err) {
                 //Coudlnt reach server
             }
@@ -995,7 +997,7 @@ function Step_3() {
 
         for(let recommandation of recommandation_arr) {
             li_jsx.push(
-                <li onClick={select_recommendation}>{capitalize_first_letter_rest_lowercase(recommandation)}</li>
+                <li key={recommandation} onClick={select_recommendation}>{capitalize_first_letter_rest_lowercase(recommandation)}</li>
             )
         }
 

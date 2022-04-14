@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useContext, useRef} from 'react';
-import { App_notification_context_type, Auth_context_type, Server_response, Server_response_email, Public_user } from '../../types';
+import { App_notification_context_type, Auth_context_type, Server_response, Server_response_email, Public_user, Server_response_credits } from '../../types';
 import Footer from '../../components/footer';
 import { format_date } from '../../lib/date_lib';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../../context/app_notification_context_provider';
@@ -17,6 +17,7 @@ import GroupIcon from "../../public/icons/GroupIcon.svg"
 import DonationIcon from "../../public/icons/DonationIcon.svg"
 import Image from 'next/image';
 import Protected_route from '../../components/protected_router';
+import Sprite_credits from '../../components/sprite_credits';
 
 export default function Account_settings_handler() {
 
@@ -219,9 +220,41 @@ export function Account_navigation_item(props: {state: string, icon: any, curren
 
 export function Account_informations(props: {set_account_delete_warning: React.Dispatch<React.SetStateAction<boolean>>, public_user: Public_user, safe_email: string | null | undefined, App_notification: App_notification_context_type}) {
     const public_user = props.public_user
+    const [credits, set_credits] = useState<string | null>(null)
     const safe_email = props.safe_email
     const set_account_delete_warning = props.set_account_delete_warning
 
+    useEffect(() => {
+        const controller = new AbortController()
+
+        async function get_credits() {
+
+            try {
+               
+                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_credits`, {
+                    method: "POST",
+                    headers: {
+						"Content-Type": "application/json",
+					},
+                    credentials: "include",
+                    signal: controller.signal,
+                })
+
+                const response_obj = await response.json() as Server_response_credits
+                const credits = response_obj?.credits
+                    
+                set_credits(`${credits}`)
+            } catch(err) {
+                //Could not reach server
+            }
+            
+        }
+        get_credits()
+
+        return(() => {
+            controller.abort()
+        })
+    }, [set_credits])
     return(
         <div className='account_informations_container'>
             <div className='header_content'>
@@ -239,6 +272,11 @@ export function Account_informations(props: {set_account_delete_warning: React.D
                 <div className='grid_item'>
                     <p className='grid_property'>Email:</p>
                     <p className='grid_value'>{safe_email ? safe_email : "undefined"}</p>
+                </div>
+
+                <div className='grid_item'>
+                    <p className='grid_property'>Sprite-Credits:</p>
+                    <p style={{marginLeft: "1.55rem"}} className='grid_value'><Sprite_credits credits={credits ? credits : 0}/></p>
                 </div>
 
                 <div className='grid_item'>

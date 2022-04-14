@@ -22,6 +22,7 @@ export class User {
     role: string = "member"
     paypal_donation_link: string | null = null
     banned: boolean = false
+    credits: number = 0
 
     constructor(username: string, email: string, password: string, salt: string, occasional_emails: boolean) {
         this._id = new ObjectId()

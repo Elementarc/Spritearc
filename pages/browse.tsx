@@ -37,7 +37,6 @@ export default function Browse() {
 					<Title_pack_section/>
 					<Packs_section section_name='Most Popular' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/most_popular_packs`} method='POST'/>
 					<Packs_section section_name='Recent Packs' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/recent_packs`} method='POST'/>
-
 					<Nav_shadow/>
 				</div>
 
@@ -48,7 +47,7 @@ export default function Browse() {
 }
 
 function Title_pack_section() {
-	const [title_pack, set_title_pack] = useState<Pack | null | false>(null)
+	const [promo_pack, set_promo_pack] = useState<Pack | null | false>(null)
 	
 
 
@@ -58,7 +57,7 @@ function Title_pack_section() {
 		async function get_title_pack() {
 			try {
 			
-				const response_title_pack = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/title_pack`, {
+				const response_title_pack = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_promoted_pack`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json"
@@ -67,13 +66,10 @@ function Title_pack_section() {
 					credentials: "include",
 				})
 				
-				if(response_title_pack.status === 200) {
-					const response_obj: {pack: Pack | null} = await response_title_pack.json()
+				const response_obj = await response_title_pack.json() 
 
-					set_title_pack((response_obj.pack as any))
-				} else {
-					set_title_pack(false)
-				}
+				if(!response_obj?.pack) return set_promo_pack(null)
+				return set_promo_pack(response_obj?.pack)
 
 			} catch(err) {
 				//Couldnt reach server
@@ -86,38 +82,39 @@ function Title_pack_section() {
 			controller.abort()
 		})
 		
-	}, [set_title_pack])
+	}, [set_promo_pack])
 	
-	useParallax("title_pack_background_image", title_pack)
+	useParallax("title_pack_background_image", promo_pack)
 	
 	return (
-		<div className="title_pack_container">
-			
-			{title_pack &&
+		<>
+			<div className="title_pack_container">
+				{promo_pack &&
 
-				<div className="title_pack_preview_container">
-						
-					<div className="content_container">
-						<h2>RANDOM PACK</h2>
-						<h1>{title_pack.title}</h1>
-						<p>{title_pack.description}</p>
-						<Link href={`/pack/${title_pack._id}`} scroll={false}>View Pack</Link>
+					<div className="title_pack_preview_container">
+							
+						<div className="content_container">
+							<h2>Promoted Pack</h2>
+							<h1>{promo_pack.title}</h1>
+							<p>{promo_pack.description}</p>
+							<Link href={`/pack/${promo_pack._id}`} scroll={false}>View Pack</Link>
+						</div>
+
+						<div className="background_container">
+							<Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${promo_pack.username.toLowerCase()}_${promo_pack._id}/${promo_pack.preview}`} alt="Preview image" layout="fill" className="preview_image" id="title_pack_background_image"/>
+							<div className="background_blur" />
+						</div>
+
 					</div>
 
-					<div className="background_container">
-						<Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${title_pack.username.toLowerCase()}_${title_pack._id}/${title_pack.preview}`} alt="Preview image" layout="fill" className="preview_image" id="title_pack_background_image"/>
-						<div className="background_blur" />
-					</div>
+				}
+				{promo_pack === null &&
+					null
+				}
 
-				</div>
-
-			}
-			{title_pack === null &&
-				null
-			}
+			</div>
 			
-
-		</div>
+		</>
 	);
 	
 	

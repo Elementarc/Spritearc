@@ -18,53 +18,6 @@
             width: 100%;
             height: 100%;
             
-            .close_pack_container{
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                @include breakpoint(mobile) {
-                    display: none;
-                }
-                .icon_container{
-                    pointer-events: all;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    margin: 4rem;
-                    height: 50px;
-                    width: 50px;
-                    box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.25);
-                    border-radius: 50%;
-                    background: $color_main;
-                    position: absolute;
-                    
-                    &:hover {
-                        cursor: pointer;
-                        background: $color_main_bright;
-                        .hover_box {
-                            opacity: 1;
-                            transform: translateX(10px);
-                        }
-                    }
-    
-                    .hover_box{
-                        transition: 0.1s ease-in-out;
-                        @include p(default);
-                        position: absolute;
-                        right: -110px;
-                        color: white;
-                        pointer-events: none;
-                        opacity: 0;
-                        transform: translateX(0px);
-                    }
-    
-                    .close_icon{
-                        transform: scale(1.2);
-                        fill: $color_background_dark;
-                    }
-                }
-            }
-    
             .pack_actions_fixed_container {
                 position: absolute;
                 width: 100%;
@@ -74,60 +27,150 @@
                     display: flex;
                     justify-content: flex-end;
                 }
-                .pack_actions_container {
-                    position: relative;
+
+
+                .pack_positive_actions_container_wrapper{
+                    position: absolute;
                     width: 100%;
-                    display: flex;
-                    justify-content: flex-end;
-                    align-items: flex-end;
-                    row-gap: 2rem;
-                    padding-right: 4rem;
-                    padding-top: 4rem;
-                    flex-direction: column;
-                    pointer-events: none;
-                    @include breakpoint(mobile) {
-                        display: none;
-                    }
-                    .pack_action {
+                    height: 100%;
+
+                    .pack_positive_actions_container {
                         position: relative;
+                        width: 100%;
                         display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        right: 0;
-                        top: 0;
-                        height: 50px;
-                        width: 50px;
-                        border-radius: 50%;
-                        background: $color_error;
-                        pointer-events: all;
-    
-                        &:hover {
-                            cursor: pointer;
-                            background: $color_error_hover;
+                        justify-content: flex-start;
+                        align-items: flex-start;
+                        row-gap: 2rem;
+                        padding-left: 4rem;
+                        padding-top: 4rem;
+                        flex-direction: column;
+                        pointer-events: none;
+                        @include breakpoint(mobile) {
+                            display: none;
+                        }
+                        .pack_action {
+                            position: relative;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            right: 0;
+                            top: 0;
+                            height: 50px;
+                            width: 50px;
+                            border-radius: 50%;
+                            pointer-events: all;
+        
+                            &:hover {
+                                cursor: pointer;
+                                background: $color_error_hover;
+                                p {
+                                    opacity: 1;
+                                    transform: translateX(10px)
+                                }
+                            }
                             p {
-                                opacity: 1;
-                                transform: translateX(-10px)
+                                @include p;
+                                opacity: 0;
+                                position: absolute;
+                                width: 150px;
+                                right: -165px;
+                                transition: .1s ease-in-out;
+                                transform: translateX(0px);
+                                pointer-events: none;
+                            }
+                            svg {
+                                fill: $color_background_dark;
+                                transform: scale(1.1);
                             }
                         }
-                        p {
-                            @include p;
-                            color: $color_error;
-                            opacity: 0;
-                            position: absolute;
-                            width: 150px;
-                            left: -145px;
-                            transition: .1s ease-in-out;
-                            transform: translateX(0px);
-                            pointer-events: none;
-                            text-align: center;
-                        }
-                        svg {
-                            fill: $color_background_dark;
-                            transform: scale(1.1);
+
+                        .pack_positive_action {
+                            background: $color_main;
+
+                            &:hover {
+                                cursor: pointer;
+                                background: $color_main_bright;
+                                
+                            }
+
+                            p {
+                                color: white;
+                            }
                         }
                     }
                 }
-    
+
+                .pack_negative_actions_container_wrapper {
+                    position: absolute;
+                    width: 100%;
+                    height: 100%;
+                    .pack_negative_actions_container {
+                        position: relative;
+                        width: 100%;
+                        display: flex;
+                        justify-content: flex-end;
+                        align-items: flex-end;
+                        row-gap: 2rem;
+                        padding-right: 4rem;
+                        padding-top: 4rem;
+                        flex-direction: column;
+                        pointer-events: none;
+                        @include breakpoint(mobile) {
+                            display: none;
+                        }
+                        .pack_action {
+                            position: relative;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            right: 0;
+                            top: 0;
+                            height: 50px;
+                            width: 50px;
+                            border-radius: 50%;
+                            pointer-events: all;
+        
+                            &:hover {
+                                cursor: pointer;
+                                
+                                p {
+                                    opacity: 1;
+                                    transform: translateX(-10px)
+                                }
+                            }
+                            
+                            p {
+                                @include p;
+                                color: $color_error;
+                                opacity: 0;
+                                position: absolute;
+                                width: 150px;
+                                left: -165px;
+                                transition: .1s ease-in-out;
+                                transform: translateX(0px);
+                                pointer-events: none;
+                                text-align: end;
+                            }
+                            svg {
+                                fill: $color_background_dark;
+                                transform: scale(1.1);
+                            }
+                        }
+                        .pack_negative_action {
+                            background: $color_error;
+
+                            &:hover {
+                                cursor: pointer;
+                                background: $color_error_hover;
+                                
+                            }
+
+                            p {
+                                color: $color_error;
+                            }
+                        }
+                    }
+                }
                 
             }
     
@@ -577,6 +620,107 @@
             }
         }
         
+        .pack_promote_container {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 0;
+            z-index: 2;
+            width: 100%;
+            height: 100%;
+            @include breakpoint(mobile) {
+                align-items: unset;
+                padding-top: 5rem;
+            }
+            .pack_promote_content_container {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                z-index: 1;
+                width: 70%;
+                height: auto;
+                min-height: 200px;
+                padding: 2rem 8rem;
+                background: $color_main_blue;
+                pointer-events: all;
+                box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.5);
+
+                @include breakpoint(laptop) {
+                    width: 85%;
+                    padding: 2rem 6rem;
+                }
+                
+                @include breakpoint(mobile) {
+                    width: 90%;
+                    height: 90%;
+                    overflow-y: scroll;
+                    padding: 2rem 1rem;
+                    &::-webkit-scrollbar{
+                        width: 10px;
+                        background-color: #0e1a2e;
+                    }
+                    &::-webkit-scrollbar-thumb{
+                        border-radius: 50px;
+                        background-color: $color_main;
+                        &:hover{
+                            background-color: $color_main_bright;
+                        }
+                    }
+                }
+
+                h1 {
+                    @include h1(medium);
+                    margin-bottom: .2rem;
+                }
+                
+                p {
+                    position: relative;
+                    @include p();
+                    text-align: center;
+                }
+
+                h2 {
+                    @include h2();
+                    margin-top: 1.5rem;
+                    margin-bottom: .3rem;
+                }
+
+                .active_promotion_button {
+                    @include button();
+                    margin-top: 2rem;
+                    font-size: 16px;
+                }
+
+                .inactive_promotion_button {
+                    @include button(disabled);
+                    margin-top: 2rem;
+                    font-size: 16px;
+                }
+
+                h4 {
+                    @include h4();
+                    margin-top:1rem;
+
+                    &:hover {
+                        cursor: pointer;
+                        color:  $color_grey;
+                    }
+                }
+                
+                
+            }
+            .promote_container_background {
+                position: absolute;
+                pointer-events: all;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.75);
+            }
+        }
     }
 
     

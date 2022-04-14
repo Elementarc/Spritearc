@@ -258,6 +258,9 @@ export interface Server_response_email extends Server_response{
 export interface Server_response_public_user extends Server_response{
     public_user: Public_user
 }
+export interface Server_response_credits extends Server_response{
+    credits: number
+}
 export interface Server_response {
     success: boolean,
     message: string
