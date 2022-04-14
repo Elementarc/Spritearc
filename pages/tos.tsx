@@ -1,7 +1,5 @@
 import React, {useEffect} from 'react';
 import Footer from '../components/footer';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
 import Head from 'next/head';
 import Qick_legal_navigation from '../components/quick_legal_nav';
 
@@ -21,7 +19,7 @@ export default function Terms_of_service() {
 
 
     return (
-        <div className='tos_page'>
+        <>
             <Head>
 				<title>{`Spritearc - TOS`}</title>
 				<meta name="description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
@@ -39,7 +37,8 @@ export default function Terms_of_service() {
 				<meta name="twitter:description" content={`Spritearc Terms Of Service. Read about our Rules and Services.`}/>
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
-            <div className='content'>
+
+            <div className='legal_content'>
                 <div className='legal_content_container'>
                     <section>
                         <h1 className='tos_header'>TERMS OF SERVICE</h1>
@@ -87,8 +86,9 @@ export default function Terms_of_service() {
                 </div>
                 <Qick_legal_navigation />
             </div>
+
             <Footer />
-        </div>
+        </>
     );
 }
 

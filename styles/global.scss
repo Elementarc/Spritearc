@@ -1,35 +1,39 @@
 @import "./variables.module.scss";
-@import "./index.scss";
-@import "./footer.scss";
-@import "./layout.scss";
-@import "./navigation.scss";
-@import "./news.scss";
-@import "./patch.scss";
-@import "./browse.scss";
-@import "./pack.scss";
-@import "./signup.scss";
-@import "./app_notification.scss";
-@import "./login.scss";
-@import "./loading.scss";
-@import "./account.scss";
-@import "./profile.scss";
-@import "./packs_section.scss";
-@import "./create_pack.scss";
-@import "./steps.scss";
-@import "./fixed_app_content_overlay.scss";
-@import "./pack_stars_raiting.scss";
-@import "./search.scss";
-@import "./404.scss";
-@import "./tos.scss";
-@import "./cookie_alert.scss";
-@import "./reset_account_password.scss";
-@import "./forgot_password.scss";
-@import "./account_settings.scss";
-@import "./license.scss";
-@import "./users_section.scss";
-@import "./notifications.scss";
-@import "./drop_down.scss";
+
+@import "./components/footer.scss";
+@import "./pages/index.scss";
+@import "./pages/browse.scss";
+@import "./pages/news.scss";
+@import "./pages/account.scss";
+@import "./pages/account_settings.scss";
+@import "./pages/404.scss";
+@import "./pages/login.scss";
+@import "./pages/create_pack.scss";
+@import "./pages/pack.scss";
+@import "./pages/license.scss";
+@import "./pages/notifications.scss";
+@import "./pages/legal.scss";
+@import "./pages/signup.scss";
+@import "./pages/profile.scss";
+@import "./pages/search.scss";
+@import "./pages/reset_account_password.scss";
+@import "./pages/forgot_password.scss";
+
+@import "./components/drop_down.scss";
 @import "./components/sprite_credits.scss";
+@import "./components/app_notification.scss";
+@import "./components/fixed_app_content_overlay.scss";
+@import "./components/loading.scss";
+@import "./components/patch.scss";
+@import "./components/packs_section.scss";
+@import "./components/pack_stars_raiting.scss";
+@import "./components/steps.scss";
+@import "./components/users_section.scss";
+@import "./components/cookie_alert.scss";
+@import "./components/navigation.scss";
+
+
+@import "./layout.scss";
 
 html,
 body {

@@ -27,15 +27,12 @@ export default function Error_404() {
             </Head>
 
         
-            <div className='error_page'>
-
-                <div className='content'>
-                    <h1>We couldn’t find what you were looking for.</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut.</p>
-                    <button onClick={() => {router.push("/", "/", {scroll: false})}}>Back to Safety</button>
-                </div>
-                <Footer />
+            <div className='error_content'>
+                <h1>We couldn’t find what you were looking for.</h1>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut.</p>
+                <button onClick={() => {router.push("/", "/", {scroll: false})}}>Back to Safety</button>
             </div>
+            <Footer />
         </>
     );
 }

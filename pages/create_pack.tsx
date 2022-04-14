@@ -345,6 +345,7 @@ export default function Create_pack_page_handler() {
         </Protected_route>
     )
 }
+
 export function Create_pack_page() {
     const [create_pack_obj, dispatch] = useReducer(create_pack_reducer, initial_create_pack_obj)
     
@@ -390,33 +391,31 @@ export function Create_pack_page() {
 
         
             <create_pack_context.Provider value={create_pack}>
-                <div className='create_pack_page'>
-
-                    <div className='content'>
-                        
-                        <AnimatePresence exitBeforeEnter>
-
-                            {create_pack_obj.current_step === 0 &&
-                            
-                                <Step_1 key={"step_1"} />
-                            
-                            } 
-
-                            {create_pack_obj.current_step === 1 &&
-                                <Step_2 key="step_2"/>
-                            }
-
-                            {create_pack_obj.current_step === 2 &&
-                                <Step_3 key="step_3"/>
-                            }
-                        </AnimatePresence>
-
-                        <Steps steps={3} current_step={create_pack_obj.current_step} steps_available={create_pack_obj.steps_available}/>
-
-                    </div>
+                
+                <div className='create_pack_content'>
                     
-                    <Footer/>
+                    <AnimatePresence exitBeforeEnter>
+
+                        {create_pack_obj.current_step === 0 &&
+                        
+                            <Step_1 key={"step_1"} />
+                        
+                        } 
+
+                        {create_pack_obj.current_step === 1 &&
+                            <Step_2 key="step_2"/>
+                        }
+
+                        {create_pack_obj.current_step === 2 &&
+                            <Step_3 key="step_3"/>
+                        }
+                    </AnimatePresence>
+
+                    <Steps steps={3} current_step={create_pack_obj.current_step} steps_available={create_pack_obj.steps_available}/>
+
                 </div>
+                
+                <Footer/>
 
             </create_pack_context.Provider>
         </>

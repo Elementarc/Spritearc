@@ -17,9 +17,8 @@ export default function License_page() {
 
     
     return (
-        <div className='license_page'>
-            
-            <div className='content'>
+        <>
+            <div className='license_content'>
 
                 <div className='license_options_container'>
                     <H1_with_deco title="Our Licenses"/>
@@ -60,7 +59,7 @@ export default function License_page() {
             </div>
 
             <Footer />
-        </div>
+        </>
     );
 }
 

@@ -47,59 +47,57 @@ export default function Profile_page(props: {public_user: Public_user}) {
                 <meta property="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user?.profile_picture}`}/>
             </Head>
        
-            <div className='profile_page'>
+            
+            <div className='profile_content'>
+                <Nav_shadow/>
 
-                <div className='content'>
-                    <Nav_shadow/>
-
-                    <Fixed_app_content_overlay>
-                        <div className='fixed_profile_container'>
-                            {(public_user?.socials?.artstation.length > 0 || public_user?.socials?.instagram.length > 0 || public_user?.socials?.twitter.length > 0) &&
-                            
-                                <div className='socials_container'>
-                                    
-                                    <div className='socials'>
-                                        <div className='background_wrapper'>
-                                            <Profile_socials_background/>
-                                        </div>
-                                        
-                                        {public_user?.socials?.instagram.length > 0 &&
-                                            <a href={`https://www.instagram.com/${public_user.socials.instagram}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                                <Image loading='lazy' unoptimized={true} src={"/logos/instagram_color.png"} layout={"fill"} alt="Instagram Logo"></Image>
-                                            </a>
-                                        }
-                                        {public_user?.socials?.twitter.length > 0 &&
-                                            <a href={`https://www.twitter.com/${public_user.socials.twitter}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                                <Twitter_logo/>
-                                            </a>
-                                        }
-
-                                        {public_user?.socials?.artstation.length > 0 &&
-                                            
-                                            <a href={`https://www.artstation.com/${public_user.socials.artstation}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                                <Image loading='lazy' unoptimized={true} src={"/logos/artstation_color.png"} layout={"fill"} alt="Artstation Logo"></Image>
-                                            </a>
-                                        }
+                <Fixed_app_content_overlay>
+                    <div className='fixed_profile_container'>
+                        {(public_user?.socials?.artstation.length > 0 || public_user?.socials?.instagram.length > 0 || public_user?.socials?.twitter.length > 0) &&
+                        
+                            <div className='socials_container'>
+                                
+                                <div className='socials'>
+                                    <div className='background_wrapper'>
+                                        <Profile_socials_background/>
                                     </div>
+                                    
+                                    {public_user?.socials?.instagram.length > 0 &&
+                                        <a href={`https://www.instagram.com/${public_user.socials.instagram}`} target="_blank" rel='noreferrer' className='logo_container'>
+                                            <Image loading='lazy' unoptimized={true} src={"/logos/instagram_color.png"} layout={"fill"} alt="Instagram Logo"></Image>
+                                        </a>
+                                    }
+                                    {public_user?.socials?.twitter.length > 0 &&
+                                        <a href={`https://www.twitter.com/${public_user.socials.twitter}`} target="_blank" rel='noreferrer' className='logo_container'>
+                                            <Twitter_logo/>
+                                        </a>
+                                    }
+
+                                    {public_user?.socials?.artstation.length > 0 &&
+                                        
+                                        <a href={`https://www.artstation.com/${public_user.socials.artstation}`} target="_blank" rel='noreferrer' className='logo_container'>
+                                            <Image loading='lazy' unoptimized={true} src={"/logos/artstation_color.png"} layout={"fill"} alt="Artstation Logo"></Image>
+                                        </a>
+                                    }
                                 </div>
+                            </div>
 
-                            }
+                        }
 
 
 
-                        </div>
-                    </Fixed_app_content_overlay>
-                    
-                    <User_representation public_user={public_user} followers_count={followers_count} following_count={following_count}  set_followers_count={set_followers_count} set_following_count={set_following_count}/>
-                    <User_stats followers_count={followers_count} following_count={following_count}/>
-
-                    <div className='user_packs_container'>
-                        <Packs_section section_name={`Packs created by '${public_user?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs/${public_user?.username}`} method='POST'/>
                     </div>
+                </Fixed_app_content_overlay>
+                
+                <User_representation public_user={public_user} followers_count={followers_count} following_count={following_count}  set_followers_count={set_followers_count} set_following_count={set_following_count}/>
+                <User_stats followers_count={followers_count} following_count={following_count}/>
 
+                <div className='user_packs_container'>
+                    <Packs_section section_name={`Packs created by '${public_user?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs/${public_user?.username}`} method='POST'/>
                 </div>
-                <Footer/>
+
             </div>
+            <Footer/>
         </>
     );
 }

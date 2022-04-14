@@ -40,30 +40,28 @@ export default function Terms_of_service() {
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
         
-            <div className='tos_page'>
                 
-                <div className='content'>
-                    <div className='legal_content_container'>
-                        <section>
-                            <h1 className='tos_header'>COOKIE POLICY</h1>
-                            <h4 className='tos_update_date'>{`Last updated: 30/01/2022`}</h4>
-                        </section>
-                        <General_cookie/>
-                        <Cookie_usage/>
+            <div className='legal_content'>
+                <div className='legal_content_container'>
+                    <section>
+                        <h1 className='tos_header'>COOKIE POLICY</h1>
+                        <h4 className='tos_update_date'>{`Last updated: 30/01/2022`}</h4>
+                    </section>
+                    <General_cookie/>
+                    <Cookie_usage/>
 
-                        <What_information_is_collected_about_me/>
-                        <How_do_i_restrict_cookies/>
-                        <section>
-                            <h1>Contact Me</h1>
+                    <What_information_is_collected_about_me/>
+                    <How_do_i_restrict_cookies/>
+                    <section>
+                        <h1>Contact Me</h1>
 
-                            <p>Dont hesitate to contact me if you have any questions Via Email:</p>
-                            <a href={`mailto: arctale.work@gmail.com`}>{"Arctale.work@gmail.com"}</a>
-                        </section>
-                    </div>
-                    <Qick_legal_navigation/>
+                        <p>Dont hesitate to contact me if you have any questions Via Email:</p>
+                        <a href={`mailto: arctale.work@gmail.com`}>{"Arctale.work@gmail.com"}</a>
+                    </section>
                 </div>
-                <Footer />
+                <Qick_legal_navigation/>
             </div>
+            <Footer />
 
         </>
     );

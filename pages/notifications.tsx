@@ -84,18 +84,16 @@ export default function Notification_page(): ReactElement {
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 
-            <div className="notifications_page">
-                <div className="content">
+            <div className="notifications_content">
 
-                    {notifications &&
-                        <Notification_list notifications={notifications}/>
-                    }
-                    
-                    <Nav_shadow/>
-                </div>
+                {notifications &&
+                    <Notification_list notifications={notifications}/>
+                }
                 
-                <Footer/>
+                <Nav_shadow/>
             </div>
+            
+            <Footer/>
             
         </>
     );

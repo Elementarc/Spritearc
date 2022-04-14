@@ -1,4 +1,4 @@
-@import "./variables.module.scss";
+@import "../variables.module.scss";
 
 .nav_container_desktop{
     position: relative;
@@ -232,7 +232,16 @@
                                     h4{
                                         @include h4(medium);
                                     }
-                        
+                                    .sprite_coins_container {
+                                        position: relative;
+                                        display: flex;
+                                        align-items: center;
+                                        margin-top: .2rem;
+                                        p {
+                                            font-size: 14px;
+                                            margin: unset;
+                                        }
+                                    }
                                     p {
                                         display: inline;
                                         @include p(small);

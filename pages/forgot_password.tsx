@@ -71,35 +71,32 @@ export default function Forgot_password_page() {
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
         
-            <div className="forgot_password_page">
+            <div className="forgot_password_content">
+                <Nav_shadow/>
+                <div className="forgot_password_container">
+                    <H1_with_deco title="Reset password" />
+                    
+                    <input type="text" placeholder="Email" id="email_input" defaultValue=""/>
+                    <p className='forgot_password_error_message' id="forgot_password_error_message"></p>
+                    <button onClick={send_password_token}>
+                        <p style={loading ? {opacity: 0} : {opacity: 1}}>Request Password Reset</p>
+                        {loading ? <Loading loading={loading} main_color={false} scale={1}/> : null}
+                    </button>
 
-                <div className="content">
-                    <Nav_shadow/>
-                    <div className="forgot_password_container">
-                        <H1_with_deco title="Reset password" />
-                        
-                        <input type="text" placeholder="Email" id="email_input" defaultValue=""/>
-                        <p className='forgot_password_error_message' id="forgot_password_error_message"></p>
-                        <button onClick={send_password_token}>
-                            <p style={loading ? {opacity: 0} : {opacity: 1}}>Request Password Reset</p>
-                            {loading ? <Loading loading={loading} main_color={false} scale={1}/> : null}
-                        </button>
+                    <div className="forward_container">
 
-                        <div className="forward_container">
-
-                            <span className="bottom_section_line" />
-                            <div className="items">
-                                <p>{"Already have an account? "}<Link href="/login" scroll={false}>Login</Link></p>
-                                <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
-                            </div>
-                            
+                        <span className="bottom_section_line" />
+                        <div className="items">
+                            <p>{"Already have an account? "}<Link href="/login" scroll={false}>Login</Link></p>
+                            <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
                         </div>
-
+                        
                     </div>
 
                 </div>
-                <Footer />
+
             </div>
+            <Footer />
         </>
     );
 }

@@ -213,88 +213,86 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user,
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
         
-            <div className='account_page'>
-                
-                <AnimatePresence>
-                    {update_about_state &&
-                        
-                        <Fixed_app_content_overlay>
-                            <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}}  className='update_user_description_container'>
-
-                                <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: 0.1}}} exit={{scale: .8, transition: {duration: 0.1}}} className='update_user_description_box'>
-                                    <h1>Tell us about yourself</h1>
-                                    <input onKeyUp={event_valid_user_description} id="user_description_input" type="text" name="" placeholder={`${user.description}`}/>
-                                    <p className='update_user_description_error_message' id="update_user_description_error_message"></p>
-                                    <button onClick={update_user_description}>Ok</button>
-                                </motion.div>
-                                
-                                <div onClick={() => {set_update_about_state(false)}} className='update_user_description_background' />
-                            </motion.div>
-                        </Fixed_app_content_overlay>
-
-                    }
-                </AnimatePresence>
-
-                <div className='content'>
-                    <Nav_shadow/>
-                    <div className='user_preview_container'>
-
-                        <div className='profile_banner_container'>
-                            <Image loading='lazy' unoptimized={true}  id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
-                            <div className='blur' />
-
-                            <div className='profile_banner_hover_container'>
-                                <EditIcon/>
-                                <input id="input_profile_banner" type="file" accept="image/png, image/jpeg, image/jpg"/>
-                            </div>
-                        </div>
-                        
-                        <div className='user_portrait_container'>
-                            
-                            <div className='portrait'>
-                                <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user?.profile_picture}`} alt={`Profile banner for the user ${user?.username}`} layout='fill'></Image>
-                            
-                                <div className='portrait_hover_container'>
-                                    <EditIcon/>
-                                    <input id="input_profile_picture" type="file" accept="image/png, image/jpeg, image/jpg"/>
-                                </div>
-                            </div>
-                                
-                        </div>
-                    </div>
-
-                    <div className='user_info_container'>
-                        <Link href={`/user/${user?.username.toLowerCase()}`} scroll={false}>{user?.username}</Link>
-
-                        <div className='user_description_container'>
-
-                            <div className='description_wrapper'>
-                                <p>{user.description}</p>
-                                
-                                <div className='svg_wrapper' onClick={() => {set_update_about_state(true)}} >
-                                    <EditIcon/>
-                                </div>
-                            </div>
-                            
-                        </div>
-
-                    </div>
-
-                    <div className='user_navigator_cards'>
-
-                        <Navigation_card label='Profile' description='Visit your public profile and checkout what others will see when visiting your account!' callb={() => {go_to(`/user/${user.username}`)}} notification={null} icon={ProfileIcon}/>
-                        <Navigation_card label='Create Pack' description='Create your own Pixel art pack! Make yourself a name.' callb={() => {go_to('/create_pack')}} notification={null} icon={AddIcon}/>
-                        <Navigation_card label='Notifications' description='Stay up to date with anything new happening!' callb={() => {go_to('/notifications')}} notification={Unseen_notification?.unseen_notifications ? Unseen_notification?.unseen_notifications === 0 ? null : `${Unseen_notification?.unseen_notifications}` : null} icon={BellIcon}/>
-                        <Navigation_card label='Account Settings' description='Change important account informations of your account.' callb={() => {go_to('/account/settings')}} notification={null} icon={SettingsIcon}/>
-                        <Navigation_card label='Logout' description='Logout from your account.' callb={logout} notification={null} icon={LogoutIcon}/>
+            
+            <AnimatePresence>
+                {update_about_state &&
                     
-                    </div>
+                    <Fixed_app_content_overlay>
+                        <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}}  className='update_user_description_container'>
 
+                            <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: 0.1}}} exit={{scale: .8, transition: {duration: 0.1}}} className='update_user_description_box'>
+                                <h1>Tell us about yourself</h1>
+                                <input onKeyUp={event_valid_user_description} id="user_description_input" type="text" name="" placeholder={`${user.description}`}/>
+                                <p className='update_user_description_error_message' id="update_user_description_error_message"></p>
+                                <button onClick={update_user_description}>Ok</button>
+                            </motion.div>
+                            
+                            <div onClick={() => {set_update_about_state(false)}} className='update_user_description_background' />
+                        </motion.div>
+                    </Fixed_app_content_overlay>
+
+                }
+            </AnimatePresence>
+
+            <div className='account_content'>
+                <Nav_shadow/>
+                <div className='user_preview_container'>
+
+                    <div className='profile_banner_container'>
+                        <Image loading='lazy' unoptimized={true}  id="profile_banner" src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_banners/${user.profile_banner}`} alt={`Profile banner for the user ${user.username}`} layout='fill'></Image>
+                        <div className='blur' />
+
+                        <div className='profile_banner_hover_container'>
+                            <EditIcon/>
+                            <input id="input_profile_banner" type="file" accept="image/png, image/jpeg, image/jpg"/>
+                        </div>
+                    </div>
+                    
+                    <div className='user_portrait_container'>
+                        
+                        <div className='portrait'>
+                            <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user?.profile_picture}`} alt={`Profile banner for the user ${user?.username}`} layout='fill'></Image>
+                        
+                            <div className='portrait_hover_container'>
+                                <EditIcon/>
+                                <input id="input_profile_picture" type="file" accept="image/png, image/jpeg, image/jpg"/>
+                            </div>
+                        </div>
+                            
+                    </div>
+                </div>
+
+                <div className='user_info_container'>
+                    <Link href={`/user/${user?.username.toLowerCase()}`} scroll={false}>{user?.username}</Link>
+
+                    <div className='user_description_container'>
+
+                        <div className='description_wrapper'>
+                            <p>{user.description}</p>
+                            
+                            <div className='svg_wrapper' onClick={() => {set_update_about_state(true)}} >
+                                <EditIcon/>
+                            </div>
+                        </div>
+                        
+                    </div>
 
                 </div>
 
-                <Footer />
-            </ div>
+                <div className='user_navigator_cards'>
+
+                    <Navigation_card label='Profile' description='Visit your public profile and checkout what others will see when visiting your account!' callb={() => {go_to(`/user/${user.username}`)}} notification={null} icon={ProfileIcon}/>
+                    <Navigation_card label='Create Pack' description='Create your own Pixel art pack! Make yourself a name.' callb={() => {go_to('/create_pack')}} notification={null} icon={AddIcon}/>
+                    <Navigation_card label='Notifications' description='Stay up to date with anything new happening!' callb={() => {go_to('/notifications')}} notification={Unseen_notification?.unseen_notifications ? Unseen_notification?.unseen_notifications === 0 ? null : `${Unseen_notification?.unseen_notifications}` : null} icon={BellIcon}/>
+                    <Navigation_card label='Account Settings' description='Change important account informations of your account.' callb={() => {go_to('/account/settings')}} notification={null} icon={SettingsIcon}/>
+                    <Navigation_card label='Logout' description='Logout from your account.' callb={logout} notification={null} icon={LogoutIcon}/>
+                
+                </div>
+
+
+            </div>
+
+            <Footer />
         </>
     );
 }

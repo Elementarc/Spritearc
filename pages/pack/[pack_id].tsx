@@ -29,6 +29,7 @@ import HelpIcon from "../../public/icons/HelpIcon.svg"
 import { validate_paypal_donation_link } from '../../spritearc_lib/validate_lib';
 import Loading from '../../components/loading';
 import Sprite_credits from '../../components/sprite_credits';
+import useGetUserCredits from '../../hooks/useGetUserCredits';
 
 const PACK_PAGE_CONTEXT: any = React.createContext(null)
 
@@ -228,165 +229,161 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
     return (
         <PACK_PAGE_CONTEXT.Provider value={{pack: pack, toggle_asset}}>
 
-            <div className="pack_page" id="pack_page">
+            <AnimatePresence exitBeforeEnter>
+                <Fixed_app_content_overlay>
 
-                <AnimatePresence exitBeforeEnter>
-                    <Fixed_app_content_overlay>
+                    <div className='pack_fix_overlay'>
 
-                        <div className='pack_fix_overlay'>
-
-                            <div className='pack_nav_container'>
-                                
-                                <AnimatePresence exitBeforeEnter>
-
-                                    {delete_confirmation_state &&
-                                        <motion.div key="delete_pack" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
-                                            <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                                <h1>Delete Pack?</h1>
-                                                <p>Do you want to delete this pack? Remember, after deleting it wont be recoverable and all stats will be lost.</p>
-                                                <button onClick={delete_pack}>Yes, delete pack!</button>
-                                                <h4 onClick={() => {set_delete_confirmation_state(false)}}>No, dont delete pack</h4>
-                                            </motion.div>
-
-                                            <div onClick={() => {set_delete_confirmation_state(false)}} className='delete_pack_confirmation_background' />
-                                        </motion.div>
-                                    }
-
-                                    {report_confirmation_state &&
-                                        <motion.div key="report_pack"initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='report_pack_confirmation_container'>
-                                            
-                                            <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                                <h1>Report Pack</h1>
-                                                <input onKeyUp={report_pack_validation} type="text" placeholder='Reason' id="report_input"/>
-                                                <p className='report_pack_error_message' id="report_pack_error_message"></p>
-                                                <button className='disabled_button' id="report_submit_button" onClick={submit_pack_report}>Report pack</button>
-                                                <h4 onClick={() => {set_report_confirmation_state(false)}}>I changed my mind.</h4>
-                                            </motion.div>
-
-                                            <div onClick={() => {set_report_confirmation_state(false)}} className='report_pack_confirmation_background' />
-
-                                        </motion.div>
-                                    }
-
-                                </AnimatePresence>
-
-                                <div className='pack_actions_fixed_container'>
-
-                                    <div className='pack_positive_actions_container_wrapper'>
-                                        <div className='pack_positive_actions_container'>
-                                            <Pack_action Action_icon={CloseIcon} name='Close Pack' positive={true} callb={() => {go_back()}}/>
-
-                                            {user && (user.username === pack.username || user.role === "admin") &&
-                                                <Pack_action Action_icon={StarIcon} name='Promote Pack' positive={true} callb={() => {set_toggle_promote_window(true)}}/>
-                                            }
-                                            
-                                        </div>
-                                    </div>
-
-                                    <div className='pack_negative_actions_container_wrapper'>
-
-                                        <div className='pack_negative_actions_container'>
-
-                                            <Pack_action Action_icon={ReportIcon} name='Report Pack' positive={false} callb={() => {set_report_confirmation_state(!delete_confirmation_state)}}/>
-
-                                            {user && (user.username === pack.username || user.role === "admin") &&
-                                                <Pack_action Action_icon={ThrashIcon} name='Delete Pack' positive={false} callb={() => {set_delete_confirmation_state(!delete_confirmation_state)}}/>
-                                            }
-
-                                        </div>
-                                    </div>
-
-                                </div>
-                                    
-                            </div>
+                        <div className='pack_nav_container'>
                             
                             <AnimatePresence exitBeforeEnter>
-                                {typeof focus_img_src === "string" &&
-                                    
-                                    <motion.div onClick={() => {set_focus_img_src(null)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="focus_image_container">
+
+                                {delete_confirmation_state &&
+                                    <motion.div key="delete_pack" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_pack_confirmation_container'>
+                                        <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                            <h1>Delete Pack?</h1>
+                                            <p>Do you want to delete this pack? Remember, after deleting it wont be recoverable and all stats will be lost.</p>
+                                            <button onClick={delete_pack}>Yes, delete pack!</button>
+                                            <h4 onClick={() => {set_delete_confirmation_state(false)}}>No, dont delete pack</h4>
+                                        </motion.div>
+
+                                        <div onClick={() => {set_delete_confirmation_state(false)}} className='delete_pack_confirmation_background' />
+                                    </motion.div>
+                                }
+
+                                {report_confirmation_state &&
+                                    <motion.div key="report_pack"initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='report_pack_confirmation_container'>
                                         
-                                        <div onClick={() => {set_focus_img_src("/")}} className="asset_fixed_image_container">
-                                            <Image loading='lazy' unoptimized={true} src={focus_img_src} alt="Represents a pack assets but bigger in size." layout="fill" id="asset_fixed_image"></Image>
+                                        <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                            <h1>Report Pack</h1>
+                                            <input onKeyUp={report_pack_validation} type="text" placeholder='Reason' id="report_input"/>
+                                            <p className='report_pack_error_message' id="report_pack_error_message"></p>
+                                            <button className='disabled_button' id="report_submit_button" onClick={submit_pack_report}>Report pack</button>
+                                            <h4 onClick={() => {set_report_confirmation_state(false)}}>I changed my mind.</h4>
+                                        </motion.div>
 
-                                            <div className="close_asset" id="close_pack">
-
-                                                <div className="close">
-                                                    <CloseIcon className="close_icon"/>
-                                                </div>
-
-                                            </div>
-                                        </div>
+                                        <div onClick={() => {set_report_confirmation_state(false)}} className='report_pack_confirmation_background' />
 
                                     </motion.div>
-                                    
                                 }
+
                             </AnimatePresence>
 
-                            <AnimatePresence exitBeforeEnter>
-                                {toggle_download_container &&
+                            <div className='pack_actions_fixed_container'>
 
-                                    <motion.div key={`Download_popup`} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.2}}} exit={{opacity: 0, transition: {duration: 0.2}}} className='pack_download_container'>
-                                        <Download_popup username={pack.username} pack={pack} set_toggle_download_container={set_toggle_download_container}/>
-                                    </motion.div>
+                                <div className='pack_positive_actions_container_wrapper'>
+                                    <div className='pack_positive_actions_container'>
+                                        <Pack_action Action_icon={CloseIcon} name='Close Pack' positive={true} callb={() => {go_back()}}/>
 
-                                }
-                            </AnimatePresence>
-                            
-                            <AnimatePresence exitBeforeEnter>
-                                {toggle_promote_window &&
+                                        {user && (user.username === pack.username || user.role === "admin") &&
+                                            <Pack_action Action_icon={StarIcon} name='Promote Pack' positive={true} callb={() => {set_toggle_promote_window(true)}}/>
+                                        }
+                                        
+                                    </div>
+                                </div>
 
-                                    <motion.div key={`Promote_popup`} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.2}}} exit={{opacity: 0, transition: {duration: 0.2}}} className='pack_promote_container'>
-                                        <Promote_popup pack={pack} set_toggle_promote_window={set_toggle_promote_window} set_app_notification={App_notification.dispatch}/>
-                                    </motion.div>
+                                <div className='pack_negative_actions_container_wrapper'>
 
-                                }
-                            </AnimatePresence>
+                                    <div className='pack_negative_actions_container'>
+
+                                        <Pack_action Action_icon={ReportIcon} name='Report Pack' positive={false} callb={() => {set_report_confirmation_state(!delete_confirmation_state)}}/>
+
+                                        {user && (user.username === pack.username || user.role === "admin") &&
+                                            <Pack_action Action_icon={ThrashIcon} name='Delete Pack' positive={false} callb={() => {set_delete_confirmation_state(!delete_confirmation_state)}}/>
+                                        }
+
+                                    </div>
+                                </div>
+
+                            </div>
+                                
                         </div>
-
                         
-                    </Fixed_app_content_overlay>
-                </AnimatePresence>
+                        <AnimatePresence exitBeforeEnter>
+                            {typeof focus_img_src === "string" &&
+                                
+                                <motion.div onClick={() => {set_focus_img_src(null)}} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}} className="focus_image_container">
+                                    
+                                    <div onClick={() => {set_focus_img_src("/")}} className="asset_fixed_image_container">
+                                        <Image loading='lazy' unoptimized={true} src={focus_img_src} alt="Represents a pack assets but bigger in size." layout="fill" id="asset_fixed_image"></Image>
 
-                <div className="content" id="content">
-        
-                    <div className="preview_container" id="preview_container">
-                        <div className="background">
-						    <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack.username.toLowerCase()}_${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" className="preview_image" id="title_pack_background_image"/>
-                            <div className="background_blur" />
-                        </div>
+                                        <div className="close_asset" id="close_pack">
 
-                        <div className="pack_info">
-                            <div className="header_container">
+                                            <div className="close">
+                                                <CloseIcon className="close_icon"/>
+                                            </div>
 
-                                <H1_with_deco title={pack.title}/>
+                                        </div>
+                                    </div>
 
-                                <p>{pack.description}</p>
-                                <button onClick={download_pack}>Download Pack</button>
-                                <div onClick={() => {set_toggle_download_container(true)}} id="download_pack_link" style={{display: "none", opacity: 0, pointerEvents: "none"}}>download</div>
-                            </div>
-
-                            {!own_pack &&
-                                <Memo_rate_pack user={user} set_prev_pack_ratings={set_prev_pack_ratings} prev_pack_ratings={prev_pack_ratings} App_notification={App_notification}/>
+                                </motion.div>
+                                
                             }
-                            
+                        </AnimatePresence>
 
-                            <Pack_stats pack={pack} own_pack={own_pack} prev_pack_ratings={prev_pack_ratings}/>
+                        <AnimatePresence exitBeforeEnter>
+                            {toggle_download_container &&
 
-                            <div className="arrow_container">
-                                <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
-                            </div>
+                                <motion.div key={`Download_popup`} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.2}}} exit={{opacity: 0, transition: {duration: 0.2}}} className='pack_download_container'>
+                                    <Download_popup username={pack.username} pack={pack} set_toggle_download_container={set_toggle_download_container}/>
+                                </motion.div>
+
+                            }
+                        </AnimatePresence>
+                        
+                        <AnimatePresence exitBeforeEnter>
+                            {toggle_promote_window &&
+
+                                <motion.div key={`Promote_popup`} initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.2}}} exit={{opacity: 0, transition: {duration: 0.2}}} className='pack_promote_container'>
+                                    <Promote_popup pack={pack} set_toggle_promote_window={set_toggle_promote_window} set_app_notification={App_notification.dispatch}/>
+                                </motion.div>
+
+                            }
+                        </AnimatePresence>
+                    </div>
+
+                    
+                </Fixed_app_content_overlay>
+            </AnimatePresence>
+
+            <div className="pack_content" id="content">
+    
+                <div className="preview_container" id="preview_container">
+                    <div className="background">
+                        <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack.username.toLowerCase()}_${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" className="preview_image" id="title_pack_background_image"/>
+                        <div className="background_blur" />
+                    </div>
+
+                    <div className="pack_info">
+                        <div className="header_container">
+
+                            <H1_with_deco title={pack.title}/>
+
+                            <p>{pack.description}</p>
+                            <button onClick={download_pack}>Download Pack</button>
+                            <div onClick={() => {set_toggle_download_container(true)}} id="download_pack_link" style={{display: "none", opacity: 0, pointerEvents: "none"}}>download</div>
                         </div>
 
-                    </div>
-                    
-                    <Pack_assets_section pack={pack}/>
+                        {!own_pack &&
+                            <Memo_rate_pack user={user} set_prev_pack_ratings={set_prev_pack_ratings} prev_pack_ratings={prev_pack_ratings} App_notification={App_notification}/>
+                        }
+                        
 
-                    <Nav_shadow/>
+                        <Pack_stats pack={pack} own_pack={own_pack} prev_pack_ratings={prev_pack_ratings}/>
+
+                        <div className="arrow_container">
+                            <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
+                        </div>
+                    </div>
+
                 </div>
                 
-                <Footer/>
+                <Pack_assets_section pack={pack}/>
 
+                <Nav_shadow/>
             </div>
+            
+            <Footer/>
 
         </PACK_PAGE_CONTEXT.Provider>
     );
@@ -545,45 +542,10 @@ function Download_popup(props: {username: string, pack: Pack, set_toggle_downloa
     );
 }
 function Promote_popup(props: {pack: Pack, set_toggle_promote_window: React.Dispatch<React.SetStateAction<boolean>>, set_app_notification: React.Dispatch<{type: string; payload: App_dispatch_notification | null}>}) {
-    const [credits, set_credits] = useState<string | null>(null)
-    const [loading, set_loading] = useState(false)
-
     const set_toggle_promote_window = props.set_toggle_promote_window
-   
-    useEffect(() => {
-        const controller = new AbortController()
-
-        async function get_credits() {
-
-            try {
-               
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_credits`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    credentials: "include",
-                    signal: controller.signal,
-                })
-
-                const response_obj = await response.json() as Server_response_credits
-                const credits = response_obj?.credits as number | undefined
-                    
-                set_credits(`${credits ? credits : "Something went wrong!"}`)
-                
-            } catch(err) {
-                //Could not reach server
-            }
-            
-        }
-        get_credits()
-
-        return(() => {
-            controller.abort()
-        })
-    }, [set_toggle_promote_window, set_credits])
-
+    const credits = useGetUserCredits()
     const router = useRouter()
+    
     async function buy_promotion() {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/promote_pack/${router.query.pack_id}`, {
@@ -613,7 +575,7 @@ function Promote_popup(props: {pack: Pack, set_toggle_promote_window: React.Disp
                     <h2>Your Sprite-Credits</h2>
                     <Sprite_credits credits={credits}/>
                     
-                    <button onClick={buy_promotion} className={`${parseInt(credits ? credits : "0") >= 250 ? 'active_promotion_button' : 'inactive_promotion_button'}`}>Pay 250 Sprite-Credits</button>
+                    <button onClick={buy_promotion} className={`${credits >= 250 ? 'active_promotion_button' : 'inactive_promotion_button'}`}>Pay 250 Sprite-Credits</button>
                     <h4 onClick={() => {set_toggle_promote_window(false)}}>No, thank you</h4>
                 </>
                 

@@ -27,31 +27,30 @@ export default function Terms_of_service() {
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
         
-            <div className='tos_page'>
                 
-                <div className='content'>
-                    <div className='legal_content_container'>
-                        <section>
-                            <h1 className='tos_header'>CONTACT ME</h1>
-                        </section>
+            <div className='legal_content'>
+                <div className='legal_content_container'>
+                    <section>
+                        <h1 className='tos_header'>CONTACT ME</h1>
+                    </section>
 
-                        <section>
-                            <h1>Details</h1>
-                            <br />
-                            <p>Hamit Kiziltas</p>
-                            <p>Obere Str. 19</p>
-                            <p>74369 Löchgau</p>
-                            <p>Germany</p>
-                            <br />
-                            <p>Dont hesitate to contact me if you have any questions Via Email:</p>
-                            <a href={`mailto: arctale.work@gmail.com`}>{"Arctale.work@gmail.com"}</a>
-                            
-                        </section>
-                    </div>
-                    <Qick_legal_navigation />
+                    <section>
+                        <h1>Details</h1>
+                        <br />
+                        <p>Hamit Kiziltas</p>
+                        <p>Obere Str. 19</p>
+                        <p>74369 Löchgau</p>
+                        <p>Germany</p>
+                        <br />
+                        <p>Dont hesitate to contact me if you have any questions Via Email:</p>
+                        <a href={`mailto: arctale.work@gmail.com`}>{"Arctale.work@gmail.com"}</a>
+                        
+                    </section>
                 </div>
-                <Footer />
+                <Qick_legal_navigation />
             </div>
+            
+            <Footer />
         </>
     );
 }

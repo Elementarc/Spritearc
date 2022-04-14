@@ -236,39 +236,37 @@ export default function Sign_up_page() {
             </Head>
        
             <SIGNUP_CONTEXT.Provider value={PAGE_CONTEXT}>
-                <div className="signup_page" id="signup_page">
-                    
-                    <div className="content">
-                        <Nav_shadow/>
-                        <div className="steps">
-                            <AnimatePresence exitBeforeEnter>
+                
+                <div className="signup_content">
+                    <Nav_shadow/>
+                    <div className="steps">
+                        <AnimatePresence exitBeforeEnter>
 
-                                {current_step === 1 &&
-                                    <Step_1 key="step_1"/>
-                                } : {current_step === 2 &&
-                                    <Step_2 key="step_2"/>
-                                } : { current_step === 3 &&
-                                    <Step_3 key="step_3"/>
-                                }
+                            {current_step === 1 &&
+                                <Step_1 key="step_1"/>
+                            } : {current_step === 2 &&
+                                <Step_2 key="step_2"/>
+                            } : { current_step === 3 &&
+                                <Step_3 key="step_3"/>
+                            }
 
-                            </AnimatePresence>
+                        </AnimatePresence>
 
-                            <Step_displayer />
+                        <Step_displayer />
 
-                            <div className="forward_container">
+                        <div className="forward_container">
 
-                                <span className="bottom_section_line" />
-                                <div className="items">
-                                    <p>{"Already a member? "}<Link href="/login" scroll={false}>Sign In</Link></p>
-                                </div>
-                                
+                            <span className="bottom_section_line" />
+                            <div className="items">
+                                <p>{"Already a member? "}<Link href="/login" scroll={false}>Sign In</Link></p>
                             </div>
+                            
                         </div>
-
                     </div>
-                    
-                    <Footer />
+
                 </div>
+                
+                <Footer />
             </SIGNUP_CONTEXT.Provider>
         </>
     );

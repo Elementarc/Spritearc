@@ -18,6 +18,8 @@ import DonationIcon from "../../public/icons/DonationIcon.svg"
 import Image from 'next/image';
 import Protected_route from '../../components/protected_router';
 import Sprite_credits from '../../components/sprite_credits';
+import useGetUserCredits from '../../hooks/useGetUserCredits';
+import useGetUserSafeEmail from '../../hooks/useGetUserSafeEmail';
 
 export default function Account_settings_handler() {
 
@@ -28,14 +30,15 @@ export default function Account_settings_handler() {
     )
 }
 export function Account_settings_page() {
-    const [safe_email, set_safe_email] = useState<null | string>(null)
+    
     const App_notification: App_notification_context_type = useContext(App_notification_context)
     const Auth: Auth_context_type = useContext(Auth_context)
     const [account_delete_warning, set_account_delete_warning] = useState(false)
     const [delete_account, set_delete_account] = useState(false)
     const [settings_state, set_settings_state] = useState("account")
     const router = useRouter()
-    const Public_user = Auth.user.public_user
+    const public_user = Auth.user.public_user
+    const safe_email = useGetUserSafeEmail()
 
     async function submit_account_deletion() {
         try {
@@ -63,33 +66,6 @@ export function Account_settings_page() {
         }
     }
 
-    //Getting save email from server
-    useEffect(() => {
-
-        async function get_account_safe_email() {
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_email`,{
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    credentials: "include",
-                    body: JSON.stringify({user: Public_user.username})
-                })
-
-                const response_obj = await response.json() as Server_response_email
-
-                if(!response_obj.success) return set_safe_email("undefined")
-                set_safe_email(response_obj.email)
-
-            } catch(err) {
-                //COuldnt reach server
-            }
-        }
-        get_account_safe_email()
-        
-    }, [Public_user])
-
     return (
 
         <>
@@ -112,94 +88,89 @@ export function Account_settings_page() {
             </Head>
         
         
-            <div className='account_settings_page'>
-                
-                <Fixed_app_content_overlay>
-                    <div className='fixed_account_settings_container'>
-                        <AnimatePresence exitBeforeEnter>
-                            { account_delete_warning &&
+            <Fixed_app_content_overlay>
+                <div className='fixed_account_settings_container'>
+                    <AnimatePresence exitBeforeEnter>
+                        { account_delete_warning &&
 
-                                <motion.div key="delete_account_warning" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_confirmation_container'>
-                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                        <h1>Delete Account</h1>
-                                        <p>Remember, all your packs will be deleted and they wont be recoverable anymore. There is no going back afterwards!</p>
-                                        <button onClick={() => {set_account_delete_warning(false); set_delete_account(true)}}>Yes, delete account!</button>
-                                        <h4 onClick={() => {set_account_delete_warning(false)}}>No, dont delete account</h4>
-                                    </motion.div>
-
-                                    <div onClick={() => {set_account_delete_warning(false)}} className='delete_account_confirmation_background' />
+                            <motion.div key="delete_account_warning" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_confirmation_container'>
+                                <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
+                                    <h1>Delete Account</h1>
+                                    <p>Remember, all your packs will be deleted and they wont be recoverable anymore. There is no going back afterwards!</p>
+                                    <button onClick={() => {set_account_delete_warning(false); set_delete_account(true)}}>Yes, delete account!</button>
+                                    <h4 onClick={() => {set_account_delete_warning(false)}}>No, dont delete account</h4>
                                 </motion.div>
-                            }
 
-                            { delete_account &&
+                                <div onClick={() => {set_account_delete_warning(false)}} className='delete_account_confirmation_background' />
+                            </motion.div>
+                        }
 
-                                <motion.div key="delete_account" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_container'>
-                                    <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='delete_account_content'>
-                                        <h1>Please enter your password</h1>
-                                        <p>To delete your account please enter your account password as your final step.</p>
-                                        <input id="account_password_input" type="password" placeholder='Password'/>
-                                        <button onClick={submit_account_deletion}>DELETE ACCOUNT</button>
-                                        <h4 onClick={() => {set_delete_account(false)}}>I changed my mind.</h4>
-                                    </motion.div>
+                        { delete_account &&
 
-                                    <div onClick={() => {set_delete_account(false)}} className='delete_account_background' />
+                            <motion.div key="delete_account" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_container'>
+                                <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='delete_account_content'>
+                                    <h1>Please enter your password</h1>
+                                    <p>To delete your account please enter your account password as your final step.</p>
+                                    <input id="account_password_input" type="password" placeholder='Password'/>
+                                    <button onClick={submit_account_deletion}>DELETE ACCOUNT</button>
+                                    <h4 onClick={() => {set_delete_account(false)}}>I changed my mind.</h4>
                                 </motion.div>
-                            }
 
-                        </AnimatePresence>
-                    </div>
-                </Fixed_app_content_overlay>
-                
-                
-
-                <div className='content'>
-                    <Nav_shadow />
-
-                    
-                    <div className='account_settings_navigation'>
-
-                        <div className='account_navigation_items_container'>
-                        
-                            <Account_navigation_item state="account" icon={ProfileIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                            <Account_navigation_item state="email" icon={EmailIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                            <Account_navigation_item state="password"icon={KeyIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                            <Account_navigation_item state="socials" icon={GroupIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                            <Account_navigation_item state="donation"icon={DonationIcon} current_state={settings_state} set_current_state={set_settings_state} />
-
-                        </div>
-
-                    </div>
-                    
-
-                    <div className='account_content'>
-                        {settings_state === "account" &&
-                            <Account_informations set_account_delete_warning={set_account_delete_warning} public_user={Public_user} App_notification={App_notification} safe_email={safe_email}/>
+                                <div onClick={() => {set_delete_account(false)}} className='delete_account_background' />
+                            </motion.div>
                         }
 
-                        {settings_state === "email" &&
-                            <Email_settings App_notification={App_notification}/>
-                        }
-                        
-                        {settings_state === "password" &&
-                            <Password_settings App_notification={App_notification}/>
-                        }
-
-                        {settings_state === "socials" &&
-                            <Social_settings public_user={Public_user} App_notification={App_notification}/>
-                        }
-
-                        {settings_state === "donation" &&
-                            <Donation_settings public_user={Public_user} App_notification={App_notification}/>
-                        }
-                    </div>
-
-                    <div className='account_background_blob_container'>
-                        <Image loading='lazy' unoptimized={true} src={"/blobs/blob_3.svg"} layout="fill"  alt="Big wave blob"></Image>
-                    </div>
+                    </AnimatePresence>
                 </div>
-                <Footer/>
+            </Fixed_app_content_overlay>
+            
+
+            <div className='account_settings_content'>
+                <Nav_shadow />
+
                 
+                <div className='account_settings_navigation'>
+
+                    <div className='account_navigation_items_container'>
+                    
+                        <Account_navigation_item state="account" icon={ProfileIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                        <Account_navigation_item state="email" icon={EmailIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                        <Account_navigation_item state="password"icon={KeyIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                        <Account_navigation_item state="socials" icon={GroupIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                        <Account_navigation_item state="donation"icon={DonationIcon} current_state={settings_state} set_current_state={set_settings_state} />
+
+                    </div>
+
+                </div>
+                
+
+                <div className='account_content'>
+                    {settings_state === "account" &&
+                        <Account_informations set_account_delete_warning={set_account_delete_warning} public_user={public_user} App_notification={App_notification} safe_email={safe_email}/>
+                    }
+
+                    {settings_state === "email" &&
+                        <Email_settings App_notification={App_notification}/>
+                    }
+                    
+                    {settings_state === "password" &&
+                        <Password_settings App_notification={App_notification}/>
+                    }
+
+                    {settings_state === "socials" &&
+                        <Social_settings public_user={public_user} App_notification={App_notification}/>
+                    }
+
+                    {settings_state === "donation" &&
+                        <Donation_settings public_user={public_user} App_notification={App_notification}/>
+                    }
+                </div>
+
+                <div className='account_background_blob_container'>
+                    <Image loading='lazy' unoptimized={true} src={"/blobs/blob_3.svg"} layout="fill"  alt="Big wave blob"></Image>
+                </div>
             </div>
+            <Footer/>
 
         </>
     );
@@ -220,41 +191,11 @@ export function Account_navigation_item(props: {state: string, icon: any, curren
 
 export function Account_informations(props: {set_account_delete_warning: React.Dispatch<React.SetStateAction<boolean>>, public_user: Public_user, safe_email: string | null | undefined, App_notification: App_notification_context_type}) {
     const public_user = props.public_user
-    const [credits, set_credits] = useState<string | null>(null)
+    const credits = useGetUserCredits()
     const safe_email = props.safe_email
     const set_account_delete_warning = props.set_account_delete_warning
 
-    useEffect(() => {
-        const controller = new AbortController()
-
-        async function get_credits() {
-
-            try {
-               
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_credits`, {
-                    method: "POST",
-                    headers: {
-						"Content-Type": "application/json",
-					},
-                    credentials: "include",
-                    signal: controller.signal,
-                })
-
-                const response_obj = await response.json() as Server_response_credits
-                const credits = response_obj?.credits
-                    
-                set_credits(`${credits}`)
-            } catch(err) {
-                //Could not reach server
-            }
-            
-        }
-        get_credits()
-
-        return(() => {
-            controller.abort()
-        })
-    }, [set_credits])
+    
     return(
         <div className='account_informations_container'>
             <div className='header_content'>
@@ -272,11 +213,6 @@ export function Account_informations(props: {set_account_delete_warning: React.D
                 <div className='grid_item'>
                     <p className='grid_property'>Email:</p>
                     <p className='grid_value'>{safe_email ? safe_email : "undefined"}</p>
-                </div>
-
-                <div className='grid_item'>
-                    <p className='grid_property'>Sprite-Credits:</p>
-                    <p style={{marginLeft: "1.55rem"}} className='grid_value'><Sprite_credits credits={credits ? credits : 0}/></p>
                 </div>
 
                 <div className='grid_item'>

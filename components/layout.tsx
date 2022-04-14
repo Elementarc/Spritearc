@@ -54,7 +54,9 @@ export default function Layout({children}: any ) {
 
                                     <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
                                         <motion.main key={router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
-                                            {children}
+                                            <div className='page'>
+                                                {children}
+                                            </div>
                                         </motion.main>
                                     </AnimatePresence>
 

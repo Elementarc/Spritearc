@@ -163,51 +163,48 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
                 <meta property="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
         
-            <div className="login_page">
-
-                <div className="content">
-                    <Nav_shadow/>
-                    <div className="login_container">
-                        <H1_with_deco title="Sign In" />
+            <div className="login_content">
+                <Nav_shadow/>
+                <div className="login_container">
+                    <H1_with_deco title="Sign In" />
+                    
+                    <input ref={(el) => {return refs.current["email"] = el}} type="text" placeholder="Email" id="email_input"/>
+                    
+                    <div className='password_input_container'>
+                        <input ref={(el) => {return refs.current["password"] = el}} type="password" placeholder="Password" id="password_input"/>
                         
-                        <input ref={(el) => {return refs.current["email"] = el}} type="text" placeholder="Email" id="email_input"/>
-                        
-                        <div className='password_input_container'>
-                            <input ref={(el) => {return refs.current["password"] = el}} type="password" placeholder="Password" id="password_input"/>
-                            
-                            {!password_visibility &&
-                                <div onClick={toggle_password_type} className='password_visibility_icon_container'>
-                                    <VisibilityOffIcon/>
-                                </div>
-                            }
-                            {password_visibility &&
-                                <div onClick={toggle_password_type} className='password_visibility_icon_container'>
-                                    <VisibilityIcon/>
-                                </div>
-                            }
-                            
-                        </div>
-
-                        <button ref={(el) => {return refs.current["button"] = el}} onClick={login}>
-                            <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
-                            {loading ? <Loading loading={loading} main_color={false} scale={1}/> : null}
-                        </button>
-
-                        <div className="forward_container">
-
-                            <span className="bottom_section_line" />
-                            <div className="items">
-                                <p>{"Did you forget your password? "}<Link href="/forgot_password" scroll={false}>Reset Password</Link></p>
-                                <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
+                        {!password_visibility &&
+                            <div onClick={toggle_password_type} className='password_visibility_icon_container'>
+                                <VisibilityOffIcon/>
                             </div>
-                            
-                        </div>
+                        }
+                        {password_visibility &&
+                            <div onClick={toggle_password_type} className='password_visibility_icon_container'>
+                                <VisibilityIcon/>
+                            </div>
+                        }
+                        
+                    </div>
 
+                    <button ref={(el) => {return refs.current["button"] = el}} onClick={login}>
+                        <p style={loading ? {opacity: 0} : {opacity: 1}}>Sign In</p>
+                        {loading ? <Loading loading={loading} main_color={false} scale={1}/> : null}
+                    </button>
+
+                    <div className="forward_container">
+
+                        <span className="bottom_section_line" />
+                        <div className="items">
+                            <p>{"Did you forget your password? "}<Link href="/forgot_password" scroll={false}>Reset Password</Link></p>
+                            <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
+                        </div>
+                        
                     </div>
 
                 </div>
-                <Footer />
+
             </div>
+            <Footer />
         </>
     );
 }

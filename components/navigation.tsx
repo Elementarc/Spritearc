@@ -21,6 +21,8 @@ import Link from "next/link"
 import { format_date } from "../lib/date_lib";
 import { App_notification_context, NOTIFICATION_ACTIONS } from "../context/app_notification_context_provider";
 import { IUnseen_notification_context_provider, Unseen_notification_context } from "../context/unseen_notifications_provider";
+import useGetUserCredits from "../hooks/useGetUserCredits";
+import Sprite_credits from "./sprite_credits";
 
 
 export default function Navigation(): ReactElement {
@@ -419,6 +421,8 @@ function User_profile() {
     const user = Auth.user.public_user
     const controller = useRef(new AbortController)
 
+    const credits = useGetUserCredits()
+
     async function logout () {
 
         try {
@@ -497,6 +501,9 @@ function User_profile() {
                     <Link href={`/profile?user=${user.username.toLowerCase()}`}>{user.username}</Link>
                     <div>
                         <h4>User since: {format_date(new Date(user.created_at))}</h4>
+                        <div className="sprite_coins_container" style={{marginLeft: "1.6rem"}}>
+                            <Sprite_credits credits={credits}/>
+                        </div>
                     </div>
                     <p onClick={logout}>Logout</p>
                     

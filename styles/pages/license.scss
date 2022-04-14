@@ -1,0 +1,124 @@
+@import "../variables.module.scss";
+
+
+.license_content {
+    position: relative;
+    z-index: 1;
+    background: $color_background_dark;
+    min-height: 100vh;
+    padding-bottom: 3rem;
+    .license_options_container{
+        padding-top: 5rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        
+        width: 100%;
+        .h1_with_deco {
+            @include h1_with_deco();
+            text-align: center;
+            padding: 0 1rem;
+        }
+        .intro_license_message {
+            @include p(medium);
+            padding: 0 1rem;
+            padding-bottom: 1.5rem;
+            width: 50%;
+            padding-top: .5rem;
+            text-align: center;
+
+            @include breakpoint(laptop) {
+                width: 70%;
+            }
+            @include breakpoint(mobile) {
+                width: 100%;
+            }
+        }
+        
+        .license_flex_wrapper{
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 30%;
+            height: auto;
+            box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, .1);
+            @include breakpoint(laptop) {
+                width: 50%;
+            }
+            @include breakpoint(mobile) {
+                width: 90%;
+            }
+            .license_header {
+                text-align: center;
+                background: $color_main_blue;
+                width: 100%;
+                user-select: none;
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                h1 {
+                    @include h1(small);
+                    padding: .7rem;
+                    
+                }
+                &:hover {
+                    cursor: pointer;
+                }
+            }
+
+            .license_options {
+                width: 100%;
+                
+                ul {
+                    position: absolute;
+                    list-style: none;
+                    width: 100%;
+                    box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, .1);
+                    li {
+                        text-align: center;
+                        background: $color_main_blue;
+                        padding: 0.5rem;
+                        @include p();
+                        &:hover {
+                            cursor: pointer;
+                            background: $color_main_blue_hover;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .license_explanation{
+        .license_description {
+            padding: 5rem;
+            width: 50%;
+            @include breakpoint(laptop) {
+                padding: 4rem;
+                width: 90%;
+            }
+            @include breakpoint(mobile) {
+                padding: 1rem;
+                padding-top: 4rem;
+                width: 100%;
+            }
+            h1 {
+                @include h1(medium);
+                margin-bottom: .5rem
+            }
+            a {
+                @include a(medium)
+            }
+            p {
+                b {
+                    font-weight: unset;
+                    color: white
+                }
+                @include p(medium);
+            }
+        }
+    }
+}

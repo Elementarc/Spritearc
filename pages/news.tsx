@@ -43,45 +43,42 @@ export default  function News(props: {patchnoteListOrdered: string}): ReactEleme
 				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 			
-			<div className="news_page">
+			<div className="news_content">
 
-				<div className="content">
+				<div className="header_container">
 
-					<div className="header_container">
-
-						<div className="background">
-							<Image priority={true} src={Eclipse} layout="fill" alt="A pixel art image that displays a universe" className="background_image" id="news_background_image"/>
-							<div className="background_blur" />
-						</div>
-						
-						<div className="patch_list">
-							<h2>Recent Updates</h2>
-							<h1>Everything New About {process.env.NEXT_PUBLIC_APP_NAME}</h1>
-							<p>We will occasionally release updates for {process.env.NEXT_PUBLIC_APP_NAME}. Here you can find our newest upcoming features that you might be interested in. Take a look!</p>
-							<span />
-						</div>
-
+					<div className="background">
+						<Image priority={true} src={Eclipse} layout="fill" alt="A pixel art image that displays a universe" className="background_image" id="news_background_image"/>
+						<div className="background_blur" />
 					</div>
-
-					<div className="content_container">
-
-						<div className="news_all_patch_container">
-							{patchnoteListOrdered && patchnoteListOrdered.length > 0 &&
-								<Patchnote_templates patchnotes={patchnoteListOrdered}/>
-							}
-							{patchnoteListOrdered === null &&
-								<Loading loading={true} main_color={true}/>
-							}
-
-						</div>
-
+					
+					<div className="patch_list">
+						<h2>Recent Updates</h2>
+						<h1>Everything New About {process.env.NEXT_PUBLIC_APP_NAME}</h1>
+						<p>We will occasionally release updates for {process.env.NEXT_PUBLIC_APP_NAME}. Here you can find our newest upcoming features that you might be interested in. Take a look!</p>
+						<span />
 					</div>
-
-					<Nav_shadow/>
 
 				</div>
-				<Footer />
+
+				<div className="content_container">
+
+					<div className="news_all_patch_container">
+						{patchnoteListOrdered && patchnoteListOrdered.length > 0 &&
+							<Patchnote_templates patchnotes={patchnoteListOrdered}/>
+						}
+						{patchnoteListOrdered === null &&
+							<Loading loading={true} main_color={true}/>
+						}
+
+					</div>
+
+				</div>
+
+				<Nav_shadow/>
+
 			</div>
+			<Footer />
 		</>
 	);
 }

@@ -21,7 +21,7 @@ export default function Guidelines() {
 
 
     return (
-        <div className='tos_page'>
+        <>
 
             <Head>
 				<title>{`Spritearc - Community Guidelines`}</title>
@@ -41,7 +41,7 @@ export default function Guidelines() {
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 
-            <div className='content'>
+            <div className='legal_content'>
                 <div className='legal_content_container'>
                     <section>
                         <h1 className='tos_header'>Spritearc Community Guidelines</h1>
@@ -62,7 +62,7 @@ export default function Guidelines() {
                 <Qick_legal_navigation />
             </div>
             <Footer />
-        </div>
+        </>
     );
 }
 

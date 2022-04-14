@@ -160,19 +160,17 @@ export function Reset_account_password() {
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
         
-            <div className="reset_password_page">
-                <div className='content'>
-                    <div className='reset_password_container'>
-                        <H1_with_deco title='Enter new password'></H1_with_deco>
-                        <input onKeyUp={input_e_password}  type="password" placeholder={"Password"} id="input_password" />
-                        <p className="input_error_message" id="input_error_message_password"></p>
-                        <input onKeyUp={input_e_password_repeat} type="password" placeholder={"Password-repeat"} id="input_password_repeat" />
-                        <p className="input_error_message" id="input_error_message_password_repeat"></p>
-                        <button onClick={reset_password} id="password_reset_button">Reset Password</button>
-                    </div>
+            <div className='reset_password_content'>
+                <div className='reset_password_container'>
+                    <H1_with_deco title='Enter new password'></H1_with_deco>
+                    <input onKeyUp={input_e_password}  type="password" placeholder={"Password"} id="input_password" />
+                    <p className="input_error_message" id="input_error_message_password"></p>
+                    <input onKeyUp={input_e_password_repeat} type="password" placeholder={"Password-repeat"} id="input_password_repeat" />
+                    <p className="input_error_message" id="input_error_message_password_repeat"></p>
+                    <button onClick={reset_password} id="password_reset_button">Reset Password</button>
                 </div>
-                <Footer/>
             </div>
+            <Footer/>
         </>
     );
 }

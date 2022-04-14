@@ -1,0 +1,107 @@
+@import "../variables.module.scss";
+
+
+.notifications_content{
+    position: relative;
+    z-index: 1;
+    background: $color_background_dark;
+    min-height: 100vh;
+    height: auto;
+    padding: 6rem 10% 6rem 10%;
+
+    @include breakpoint(mobile) {
+        padding: 4rem 1rem 4rem 1rem;
+    }
+    .notification_list_container {
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        width: 100%;
+        
+        height: auto;
+        row-gap: .5rem;
+        h1 {
+            @include h1()
+        }
+        
+        .notification_container {
+            align-self: start;
+            padding: 1rem 2rem;
+            width: 100%;
+            height: auto;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            background: $color_main_blue;
+            box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.25);
+            .profile_img_container {
+                padding: 1rem 2rem;
+                position: relative;
+                width: 65px;
+                height: 65px;
+                border-radius: 50%;
+                overflow: hidden;
+                img {
+                    object-fit: cover;
+                    object-position: center;
+                    transition: .1s ease-in-out;
+                }
+                &:hover {
+                    cursor: pointer;
+
+                    img {
+                        transform: scale(1.1);
+                    }
+                }
+            }
+
+            .notification_content_container {
+                position: relative;
+                display: flex;
+                flex-direction: column;
+                margin-top: .5rem;
+                padding: 0rem 1rem;
+                padding-bottom: .6rem;
+                
+                .username {
+                    align-self: flex-start;
+                    @include a(default);
+                }
+                h4{
+                    @include h4(medium);
+                    position: absolute;
+                    bottom: 0;
+                    right: 0;
+                    color: $color_dark_grey;
+                    
+                }
+                .visit_pack{
+                    @include a(default);
+                    color: white;
+                    &:hover {
+                        cursor: pointer;
+                        color: white;
+                        font-weight: 700;
+                    }
+                    text-decoration: underline;
+                    align-self: flex-start;
+                    margin-top: .3rem
+                }
+                p {
+                    @include p(default);
+                    padding-right: 5.5rem;
+
+                    @include breakpoint(laptop) {
+                        padding-right: 2.5rem;
+                    }
+                    @include breakpoint(mobile) {
+                        padding-right: 0rem;
+                    }
+                }
+            }
+            
+        }
+        .notification_container_unseen {
+            background: $color_main_blue_hover;
+        }
+    }
+}

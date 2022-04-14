@@ -30,18 +30,15 @@ export default function Browse() {
 				<meta name="twitter:description" content="Find sprites and assets from thousands of packs and download them."/>
 				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
-
-			<div className="browse_page">
-				
-				<div className="content">
-					<Title_pack_section/>
-					<Packs_section section_name='Most Popular' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/most_popular_packs`} method='POST'/>
-					<Packs_section section_name='Recent Packs' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/recent_packs`} method='POST'/>
-					<Nav_shadow/>
-				</div>
-
-				<Footer/>
+			
+			<div className="browse_content">
+				<Title_pack_section/>
+				<Packs_section section_name='Most Popular' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/most_popular_packs`} method='POST'/>
+				<Packs_section section_name='Recent Packs' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/recent_packs`} method='POST'/>
+				<Nav_shadow/>
 			</div>
+
+			<Footer/>
 		</>
 	);
 }
