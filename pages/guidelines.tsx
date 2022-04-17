@@ -30,14 +30,15 @@ export default function Guidelines() {
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Community Guidelines`}/>
-				<meta property="og:description" content={`Spritearc Community Guidelines. Read about our guidelines that makes our platform stay safe!`}/>
+				<meta property="og:description" content={`Spritearc Community Guidelines. These guidelines are developed to make sure everyone on spritearc.com has a good time making great memories.`}/>
                 <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
+                
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Community Guidelines`}/>
-				<meta name="twitter:description" content={`Spritearc Community Guidelines. Read about our guidelines that makes our platform stay safe!`}/>
+				<meta name="twitter:description" content={`Spritearc Community Guidelines. These guidelines are developed to make sure everyone on spritearc.com has a good time making great memories.`}/>
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 

@@ -3,6 +3,7 @@ import H1_with_deco from '../components/h1_with_deco';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import { LICENSE_TYPES } from '../spritearc_lib/validate_lib';
 import Footer from '../components/footer';
+import Head from 'next/head';
 
 export default function License_page() {
     const [license, set_license] = useState<null|string>(null)
@@ -18,6 +19,24 @@ export default function License_page() {
     
     return (
         <>
+            <Head>
+				<title>{`Spritearc - License`}</title>
+				<meta name="description" content={`Find Pixel art assets and sprites with just one click. You can search by tags to find specific genres.`}/>
+
+				<meta property="og:url" content="https://Spritearc.com/"/>
+				<meta property="og:type" content="website" />
+				<meta property="og:title" content={`Spritearc - License`}/>
+				<meta property="og:description" content={`Read about licenses spritearc.com offers to you when uploading a pixel art pack!`}/>
+				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
+
+
+				<meta name="twitter:card" content="summary_large_image"/>
+				<meta property="twitter:domain" content="Spritearc.com"/>
+				<meta property="twitter:url" content="https://Spritearc.com/"/>
+				<meta name="twitter:title" content={`Spritearc - License`}/>
+				<meta name="twitter:description" content={`Read about licenses spritearc.com offers to you when uploading a pixel art pack!`}/>
+				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
+            </Head>
             <div className='license_content'>
 
                 <div className='license_options_container'>

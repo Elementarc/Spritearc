@@ -77,7 +77,6 @@ export function Verify_account({verification_obj}: {verification_obj: {success: 
                 <meta property="og:description" content={`Verify your account.`}/>
                 <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
-
                 <meta name="twitter:card" content="summary_large_image"/>
                 <meta property="twitter:domain" content="Spritearc.com"/>
                 <meta property="twitter:url" content="https://Spritearc.com/"/>

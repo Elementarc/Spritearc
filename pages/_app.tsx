@@ -31,6 +31,8 @@ export default function MyApp({ Component, pageProps}: any) {
 
             <Head>
                 <meta name="theme-color" content="#111F35" />
+                <meta name="@spritearc" content="twitter:creator"/>
+				<meta name="@spritearc" content="twitter:site"/>
             </Head>
             
             <React.StrictMode>

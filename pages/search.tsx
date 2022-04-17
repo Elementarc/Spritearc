@@ -144,16 +144,16 @@ export default function Search_page() {
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content={`Spritearc - Search packs`}/>
-				<meta property="og:description" content={`Find Pixel art assets and sprites with just one click. You can search by tags to find specific genres.`}/>
+				<meta property="og:title" content={`Spritearc - Search`}/>
+				<meta property="og:description" content={`Find pixel art game assets and sprites by tags, size and perspective. You can search for specific sizes like 16x16, 32x32, 64x64 and more!`}/>
 				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
-				<meta name="twitter:title" content={`Spritearc - Search packs`}/>
-				<meta name="twitter:description" content={`Find Pixel art assets and sprites with just one click. You can search by tags to find specific genres.`}/>
+				<meta name="twitter:title" content={`Spritearc - Search`}/>
+				<meta name="twitter:description" content={`Find pixel art game assets and sprites by tags, size and perspective. You can search for specific sizes like 16x16, 32x32, 64x64 and more! `}/>
 				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 		

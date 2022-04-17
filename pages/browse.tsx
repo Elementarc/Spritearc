@@ -18,16 +18,16 @@ export default function Browse() {
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Browse through thousands of free Pixel art assets and sprites"/>
-				<meta property="og:description" content="Find sprites and assets from thousands of packs and download them."/>
+				<meta property="og:title" content="Discover pixel art game assets and sprites for free."/>
+				<meta property="og:description" content="Discover the most popular pixel art game assets and sprites like tilesets, characters, weapons, backgrounds, icons and more for free on spritearc.com, the platform for pixel artists."/>
 				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
-
+				
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
-				<meta name="twitter:title" content="Browse through thousands of free Pixel art assets and sprites"/>
-				<meta name="twitter:description" content="Find sprites and assets from thousands of packs and download them."/>
+				<meta name="twitter:title" content="Discover pixel art game assets and sprites for free."/>
+				<meta name="twitter:description" content="Discover the most popular pixel art game assets and sprites like tilesets, characters, weapons, backgrounds, icons and more for free on spritearc.com, the platform for pixel artists."/>
 				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 			

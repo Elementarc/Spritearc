@@ -68,7 +68,7 @@ export default function Notification_page(): ReactElement {
                 <link rel="canonical" href="https://spritearc.com" />
                 <link rel="shortlink" href="https://spritearc.com" />
                 <meta name="keywords" content="pixelart, pixel art, free, sprites, game assets, free game assets, 2d"></meta>
-				<meta name="description" content={``}/>
+				<meta name="description" content={`Your Spritearc notifications! Stay up to date with your community`}/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />

@@ -25,19 +25,19 @@ export default function Home(): ReactElement {
                 <link rel="canonical" href="https://spritearc.com" />
                 <link rel="shortlink" href="https://spritearc.com" />
                 <meta name="keywords" content="pixelart, pixel art, free, sprites, game assets, free game assets, 2d"></meta>
-				<meta name="description" content={`Discover thousands of pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
+				<meta name="description" content={`Spritearc.com is a simple way to find, download and upload your free pixel art game assets. Pixel artists can build themselves a community by uploading sprites focused on games. Join our growing community of 2D artists today!`}/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Home`}/>
-				<meta property="og:description" content={`Discover thousands of pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
+				<meta property="og:description" content={`Spritearc.com is a simple way to find, download and upload your free pixel art game assets. Pixel artists can build themselves a community by uploading sprites focused on games. Join our growing community of 2D artists today!`}/>
 				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 				<meta name="twitter:card" content="summary_large_image"/>
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Home`}/>
-				<meta name="twitter:description" content={`Discover thousands of pixel art assets and sprites for free. You can download and create your own pixel art packs that will be shared with the world!`}/>
+				<meta name="twitter:description" content={`Spritearc.com is a simple way to find, download and upload your free pixel art game assets. Pixel artists can build themselves a community by uploading sprites focused on games. Join our growing community of 2D artists today!`}/>
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
 

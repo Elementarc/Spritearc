@@ -151,7 +151,7 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />
 				<meta property="og:title" content={`Spritearc - Login`}/>
-				<meta property="og:description" content={`Create an account to rate and create Pixel art packs!`}/>
+				<meta property="og:description" content={`Sign into your spritearc.com account to rate and publish pixel art packs.`}/>
                 <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
 
 
@@ -159,7 +159,7 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
 				<meta property="twitter:domain" content="Spritearc.com"/>
 				<meta property="twitter:url" content="https://Spritearc.com/"/>
 				<meta name="twitter:title" content={`Spritearc - Login`}/>
-				<meta name="twitter:description" content={`Create an account to rate and create Pixel art packs!`}/>
+				<meta name="twitter:description" content={`Sign into your spritearc.com account to rate and publish pixel art packs.`}/>
                 <meta property="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
         

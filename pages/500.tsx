@@ -31,7 +31,7 @@ export default function Error_404() {
 
                 <div className='content'>
                     <h1>We had issues delivering this page</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et lectus eu tincidunt faucibus. Vel venenatis eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut. eget euismod nulla ut.</p>
+                    <p>Something went wrong while trying to deliver the page. Please make sure to contact an admin!</p>
                     <button onClick={() => {router.push("/", "/", {scroll: false})}}>Back to Safety</button>
                 </div>
                 <Footer />
