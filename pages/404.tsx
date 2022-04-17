@@ -28,7 +28,7 @@ export default function Error_404() {
 
         
             <div className='error_content'>
-                <h1>We couldn’t find what you were looking for.</h1>
+                <h1>We couldn't find what you were looking for.</h1>
                 <p>The page you were looking for probably got removed! We're sorry that you had to experience this.</p>
                 <button onClick={() => {router.push("/", "/", {scroll: false})}}>Back to Safety</button>
             </div>
