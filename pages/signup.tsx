@@ -219,7 +219,7 @@ export default function Sign_up_page() {
         <>
             <Head>
                 <title>{`Spritearc - Signup`}</title>
-                <meta name="description" content={`Create an account to share your own Pixel art assets and sprites with the world.`}/>
+                <meta name="description" content={`Create an account to publish your own pixel art game assets and sprites to build yourself a community on spritearc.com!`}/>
 
                 <meta property="og:url" content="https://Spritearc.com/"/>
                 <meta property="og:type" content="website" />

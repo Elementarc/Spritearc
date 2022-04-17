@@ -146,7 +146,7 @@ export function Login_page(props: { Auth: Auth_context_type, App_notification: A
         <>
             <Head>
 				<title>{`Spritearc - Login`}</title>
-				<meta name="description" content={`Create an account to rate and create Pixel art packs!`}/>
+				<meta name="description" content={`Sign into your spritearc.com account to rate and publish pixel art packs.`}/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />

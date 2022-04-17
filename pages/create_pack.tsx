@@ -372,7 +372,7 @@ export function Create_pack_page() {
         <>
             <Head>
 				<title>{`Spritearc - Create Pack`}</title>
-				<meta name="description" content={`Create a pack that you can share around the world. People will be able to download & rate your art.`}/>
+				<meta name="description" content={`Create a pixel art pack that you can publish. People will be able to download, use and rate your pack.`}/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />

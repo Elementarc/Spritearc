@@ -14,7 +14,7 @@ export default function Browse() {
 		<>
 			<Head>
 				<title>{`Spritearc - Discover thousands of free pixel art game assets and sprites`}</title>
-				<meta name="description" content="Discover free 2D pixel art game assets and sprites. Browse through thousands of different genres of pixel art and download it for free! "/>
+				<meta name="description" content="Discover the most popular pixel art game assets and sprites like tilesets, characters, weapons, backgrounds, icons and more for free on spritearc.com, the platform for pixel artists."/>
 
 				<meta property="og:url" content="https://Spritearc.com/"/>
 				<meta property="og:type" content="website" />

@@ -22,6 +22,8 @@ export default function Home(): ReactElement {
         <>
             <Head>
 				<title>{`Spritearc - Home`}</title>
+                <meta name="description" content={`Spritearc.com is a simple way to find, download and upload your free pixel art game assets. Pixel artists can build themselves a community by uploading sprites focused on games. Join our growing community of 2D artists today!`}/>
+
                 <link rel="canonical" href="https://spritearc.com" />
                 <link rel="shortlink" href="https://spritearc.com" />
                 <meta name="keywords" content="pixelart, pixel art, free, sprites, game assets, free game assets, 2d"></meta>
