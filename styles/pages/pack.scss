@@ -359,6 +359,7 @@
                 height: 260px;
             }
             img{
+                pointer-events: none;
                 object-fit: contain;
                 object-position: center;
                 transform: scale(.8);
@@ -1116,7 +1117,7 @@
                         transform: scale(1.1);
                     }
                     img{
-                        pointer-events: all;
+                        pointer-events: none;
                         transition: 0.1s ease-in-out;
                         transform: scale(1);
                         object-fit: contain;

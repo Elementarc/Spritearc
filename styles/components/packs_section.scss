@@ -175,6 +175,7 @@
         height: 100%;
         background: $color_main_blue;
         .background_image{
+            pointer-events: none;
             transition: 0.2s ease-in-out;
             image-rendering: pixelated;
             image-rendering: -moz-crisp-edges;

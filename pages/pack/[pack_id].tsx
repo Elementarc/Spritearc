@@ -232,7 +232,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
             <AnimatePresence exitBeforeEnter>
                 <Fixed_app_content_overlay>
 
-                    <div className='pack_fix_overlay'>
+                    <div onContextMenu={(e) => {e.preventDefault()}} className='pack_fix_overlay'>
 
                         <div className='pack_nav_container'>
                             
@@ -346,7 +346,7 @@ function User_pack(props: {pack: Pack, App_notification: App_notification_contex
                 </Fixed_app_content_overlay>
             </AnimatePresence>
 
-            <div className="pack_content" id="content">
+            <div onContextMenu={(e) => {e.preventDefault()}} className="pack_content" id="content">
     
                 <div className="preview_container" id="preview_container">
                     <div className="background">
