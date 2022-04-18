@@ -498,7 +498,9 @@ function User_profile() {
                 </div>
 
                 <motion.div animate={user_info_animation} className="user_info">
-                    <Link href={`/profile?user=${user.username.toLowerCase()}`}>{user.username}</Link>
+                    <div onClick={() => {Navigation.set_nav_state(false)}}>
+                        <Link href={`/user/${user.username.toLowerCase()}`}>{user.username}</Link>
+                    </div>
                     <div>
                         <h4>User since: {format_date(new Date(user.created_at))}</h4>
                         <div className="sprite_coins_container" style={{marginLeft: "1.6rem"}}>
