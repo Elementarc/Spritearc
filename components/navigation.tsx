@@ -63,7 +63,7 @@ const Navigation_desktop = React.memo((props: {Navigation: any, APP: any, Auth: 
     const Navigation: any = props.Navigation
     const APP: App_context = props.APP
     const nav_content_container_animations = useAnimation()
-    const user = props.Auth.user as any
+    const user = props.Auth.user
     
     //Toggle Animation for navigation When NavState changes For mobile & Desktop
     useEffect(() => {
@@ -173,6 +173,11 @@ const Navigation_desktop = React.memo((props: {Navigation: any, APP: any, Auth: 
                                 <Nav_item_container icon={HomeIcon} label="Home" link="/" />
                                 <Nav_item_container icon={NewsIcon} label="News" link="/news"/>
                                 <Nav_item_container icon={BrowseIcon} label="Browse" link="/browse"/>
+
+                                {user.auth &&
+                                    <Nav_item_container icon={BrowseIcon} label="Achievements" link="/achievements"/>
+                                }
+                                
                                 <Nav_item_container icon={SearchIcon} label="Search" link="/search"/>
                             </div>
                             

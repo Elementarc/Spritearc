@@ -1,0 +1,27 @@
+@import "../variables.module.scss";
+
+
+.achievements_content {
+    position: relative;
+    
+    height: auto;
+    z-index: 1;
+    background: $color_background_dark;
+    min-height: 960px;
+
+    .achievements_section_container {
+        position: relative;
+        width: 100%;
+        padding: 2rem;
+        .achievements_section{
+            .achievements_container {
+                display: grid;
+                width: 100%;
+                grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+                column-gap: 1rem;
+                row-gap: 1rem;
+            }
+        }
+
+    }
+}
