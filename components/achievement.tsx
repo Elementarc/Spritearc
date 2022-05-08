@@ -1,5 +1,8 @@
 import { ObjectId } from 'mongodb';
 import React from 'react';
+import Sprite_credits from './sprite_credits';
+import Image from 'next/image';
+import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 
 export interface IAchievement {
     _id: ObjectId
@@ -15,10 +18,17 @@ export default function Achievement(props: {achievment: IAchievement}) {
     return(
         <div className='achievement_container'>
             <h1>{achievment.label}</h1>
+
+            <div className='achievement_preview_container'>
+                <div className='achievement_preview_image_wrapper'>
+                    <Image src="/images/CROWN_EMOTE.png" layout="fill" />
+                </div>
+            </div>
+
             <ul>
-                <Achievement_stat label='Difficulty' value={achievment.difficulty}/>
-                <Achievement_stat label='Counter' value={12}/>
-                <Achievement_stat label='Reward' value={achievment.reward}/>
+                <Achievement_stat label='Difficulty' value={achievment.difficulty} reward={false}/>
+                <Achievement_stat label='Counter' value={12} reward={false} />
+                <Achievement_stat label='Reward' value={achievment.reward} reward={true}/>
 
                 <span></span>
             </ul>
@@ -29,11 +39,21 @@ export default function Achievement(props: {achievment: IAchievement}) {
 }
 
 
-function Achievement_stat(props: {label: string, value: string | number}) {
+function Achievement_stat(props: {label: string, value: string | number, reward: boolean}) {
     return (
         <li>
             <p className='achievement_stat_label'>{`${props.label}: `}</p>
-            <p className='achievement_stat_value'>{props.value}</p>
+
+            {props.reward &&
+                <div className='credits_wrapper'>
+                    <Sprite_credits credits={capitalize_first_letter_rest_lowercase(`${props.value}`)}/>
+                </div>
+            }
+
+            {!props.reward &&
+                <p className='achievement_stat_value'>{capitalize_first_letter_rest_lowercase(`${props.value}`)}</p>
+            }
+            
         </li>
     );
 }

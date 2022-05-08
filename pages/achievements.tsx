@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Footer from '../components/footer';
 import { ObjectId } from 'mongodb';
 import Achievement, { IAchievement } from '../components/achievement';
+import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 
 let id = "asdaiosdas" as unknown as ObjectId
 let id2 = "asdaiosdasasd" as unknown as ObjectId
@@ -23,8 +24,32 @@ const test_achievement2: IAchievement = {
 }
 
 export default function Achievements_page() {
+    const [sorted_achievements_section_jsx, set_sorted_achievements_section_jsx] = useState<ReactElement[]>([])
 
-    
+    useEffect(() => {
+        //FETCH ALL ACHIEVEMENTS
+        const achievements_arr = [test_achievement,test_achievement, test_achievement, test_achievement2]
+
+        const achievement_map = new Map()
+
+        for(let achievement of achievements_arr) {
+            achievement_map.set(achievement.difficulty, achievement_map.get(achievement.difficulty) ? [...achievement_map.get(achievement.difficulty), achievement] : [achievement])
+        }
+
+        function generate_achievements_jsx() {
+            let achievements_section_jsx = []
+            for(let [difficulty, achievements] of achievement_map) {
+                achievements_section_jsx.push(
+                    <Achievement_sections key={difficulty} label={difficulty} achievements={achievements}/>
+                )
+            }
+
+            set_sorted_achievements_section_jsx(achievements_section_jsx)
+        }
+        
+        generate_achievements_jsx()
+
+    }, [set_sorted_achievements_section_jsx])
 
     return (
         <>
@@ -47,7 +72,7 @@ export default function Achievements_page() {
             </Head>
 
             <div className='achievements_content'>
-                <Achievement_sections achievements={[test_achievement,test_achievement, test_achievement, test_achievement2]}/>
+                {sorted_achievements_section_jsx}
             </div>
 
             <Footer/>
@@ -55,50 +80,34 @@ export default function Achievements_page() {
     );
 }
 
-function Achievement_sections(props: {achievements: IAchievement[]}) {
+function Achievement_sections(props: {label: string, achievements: IAchievement[]}) {
+    const [display_achievement_section, set_display_achievement_section] = useState(true)
+
     const achievements = props.achievements
     const achievments_by_difficulty = new Map<string, IAchievement[]>()
+    
+    function generate_achievement_jsx(): ReactElement[] {
 
-    for(let achievement of achievements) {
-        const prev_map = achievments_by_difficulty.get(achievement.difficulty) as undefined | IAchievement[]
+        let jsx_achievements = props.achievements.map((achievement) => {
+            return <Achievement key={`${achievement._id}`} achievment={achievement}/>
+        })
 
-        if(prev_map) achievments_by_difficulty.set(achievement.difficulty, [...prev_map, achievement])
-        else achievments_by_difficulty.set(achievement.difficulty, [achievement]) 
-        
+        return jsx_achievements
     }
-
-    function create_achievement_section() {
-        let jsx = []
-
-        for(let [difficulty, achievements_arr] of achievments_by_difficulty) {
-
-            const jsx_achievements = achievements_arr.map((achievement) => {
-                return (
-                    <Achievement key={`${achievement._id}`} achievment={achievement}/>
-                )
-            })
-
-            jsx.push(
-                <div key={difficulty} className='achievements_section'>
-
-                    <h1>{difficulty}</h1>
-
-                    <div className='achievements_container'>
-                        {jsx_achievements}
-                    </div>
-                    
-                </div>
-            )
-        }
-
-        return jsx
-        
-    }
-
-    console.log(achievments_by_difficulty)
+    
     return (
         <div className='achievements_section_container'>
-            {create_achievement_section()}
+            <div key={`achievements_${props.label}`} className='achievements_section'>
+
+                <div className="achievements_section_info">
+                    <h1 onClick={() => {set_display_achievement_section(!display_achievement_section)}}>{display_achievement_section ? `–` : "+"} {capitalize_first_letter_rest_lowercase(props.label)}</h1>
+                </div>
+
+                <div style={display_achievement_section ? {display: "grid"} : {display: "none"}} className='achievements_container'>
+                    {generate_achievement_jsx()}
+                </div>
+
+            </div>
         </div>
     )
 }

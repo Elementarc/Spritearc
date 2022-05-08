@@ -26,6 +26,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 		
 	})
 	const [available_pages, set_available_pages] = useState(0)
+
 	useEffect(() => {
 		sessionStorage.setItem(section_name, `${current_page}`)
 	}, [section_name, current_page])
@@ -65,7 +66,7 @@ export default function Packs_section({section_name, api, method, body}: {sectio
 	useEffect(() => {
 		const controller = new AbortController()
 		async function get_packs() {
-			
+			console.log("Getting packs")
 			try {
 			
 				const response = await fetch(`${api}?page=${current_page}`, {

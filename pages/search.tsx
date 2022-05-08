@@ -57,10 +57,20 @@ export default function Search_page() {
 	}
 	
 	useEffect(() => {
-		if(sessionStorage.getItem("search_size")) sessionStorage.getItem("search_size")?.toLowerCase() === "all" ? set_search_perspective(null) : sessionStorage.getItem("search_size")
-		if(sessionStorage.getItem("search_perspective")) set_search_perspective(sessionStorage.getItem("search_perspective")) 
-		if(sessionStorage.getItem("search_license")) set_search_license(sessionStorage.getItem("search_license")) 
-	}, [set_search_size, set_search_perspective, set_search_license])
+		if(sessionStorage.getItem("search_size")) set_search_size(sessionStorage.getItem("search_size"))
+		if(sessionStorage.getItem("search_license")) set_search_license(sessionStorage.getItem("search_license"))
+		if(sessionStorage.getItem("search_perspective")) set_search_perspective(sessionStorage.getItem("search_perspective"))
+	}, [set_search_perspective, set_search_license, set_search_size])
+
+	useEffect(() => {
+		if(!search_size) sessionStorage.removeItem("search_size")
+		else sessionStorage.setItem("search_size", search_size)
+		if(!search_license) sessionStorage.removeItem("search_license")
+		else sessionStorage.setItem("search_license", search_license)
+		if(!search_perspective) sessionStorage.removeItem("search_perspective")
+		else sessionStorage.setItem("search_perspective", search_perspective)
+
+	}, [search_size, search_license, search_perspective])
 
 	useEffect(() => {
 		const search_input = refs.current["search_input"]
@@ -253,7 +263,7 @@ function Search_results_packs({search_query, search_perspective, search_size, se
 	
 	return(
 		<div className='search_results_user_container'>
-			<Packs_section section_name={`Packs that includes '${search_query}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/packs/${search_query}`} method='POST' body={JSON.stringify({search_perspective, search_size, search_license})}/>
+			<Packs_section section_name={`Searching for '${search_query}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/packs/${search_query}`} method='POST' body={JSON.stringify({search_perspective, search_size, search_license})}/>
 		</div>
 	)
 }
