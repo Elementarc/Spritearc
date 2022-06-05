@@ -6,15 +6,14 @@ import { Signup_obj } from "../types";
 import H1_with_deco from '../components/h1_with_deco';
 import DoneIcon from "../public/icons/DoneIcon.svg"
 import { Nav_shadow } from "../components/navigation";
-import {NOTIFICATION_ACTIONS} from "../context/app_notification_context_provider"
 import Loading from "../components/loading";
 import router from "next/router";
 import { Device_context } from "../context/device_context_provider";
-import { App_notification_context } from "../context/app_notification_context_provider";
 import Head from "next/head";
 import VisibilityIcon from "../public/icons/VisibilityIcon.svg"
 import VisibilityOffIcon from "../public/icons/VisibilityOffIcon.svg"
 import { validate_email, validate_password, validate_username } from "../spritearc_lib/validate_lib";
+import { PopupProviderContext } from "../context/popupProvider";
 const SIGNUP_CONTEXT: any = React.createContext(null)
 
 const username_regex = new RegExp(/^(?=.{3,16}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/)
@@ -473,7 +472,7 @@ export function Step_2() {
 export function Step_3() {
     const PAGE_CONTEXT: SignupContext = useContext(SIGNUP_CONTEXT)
     const Device = useContext(Device_context)
-    const App_notification: any = useContext(App_notification_context)
+    const popupContext = useContext(PopupProviderContext)
     const [loading, set_loading] = useState(false)
     const [password_visibility, set_password_visibility] = useState(false)
     const refs = useRef<any>([])
@@ -541,11 +540,29 @@ export function Step_3() {
                 })
                 
                 const response_obj = await response.json()
-                if(response_obj.success === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${response_obj.message}`, message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
-                
+                if(response_obj.success === false) {
+                    popupContext?.setPopup({
+                        success: false,
+                        title: "Something Went Wrong!",
+                        message: "Please refill the registration form!",
+                        buttonLabel: "Okay",
+                        cancelLabel: "Close window",
+                        buttonOnClick: () => {PAGE_CONTEXT.reset_signup(); popupContext.setPopup(null)}
+                        
+                    })
+                    return
+                } 
+
+                popupContext?.setPopup({
+                    success: false,
+                    title: "Confirm Your Email!",
+                    message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.",
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window",
+                    buttonOnClick: () => {router.push("/login", "/login", {scroll: false})}
+                })
                    
                 
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Confirm Your Email!", message: "Please confirm your email address. We have sent you a confirmation email that will activate your account.", button_label: "Ok", callb: () => {router.push("/login", "/login", {scroll: false})}}})
                 set_loading(false)
     
             } catch(err) {
@@ -554,7 +571,14 @@ export function Step_3() {
             
 
         } else {
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Please refill the registration form!", button_label: "Ok", callb: () => {PAGE_CONTEXT.reset_signup()}}})
+            popupContext?.setPopup({
+                success: false,
+                title: "Something Went Wrong!",
+                message: "Please refill the registration form!",
+                buttonLabel: "Okay",
+                cancelLabel: "Close window",
+                buttonOnClick: () => {PAGE_CONTEXT.reset_signup(); popupContext.setPopup(null)}
+            })
             set_loading(false)
         }
     }

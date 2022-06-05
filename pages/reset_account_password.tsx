@@ -1,11 +1,10 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/router';
-import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import H1_with_deco from '../components/h1_with_deco';
 import Footer from '../components/footer';
 import { validate_password } from '../spritearc_lib/validate_lib';
-import { App_notification_context_type } from '../types';
 import Head from 'next/head';
+import { PopupProviderContext } from '../context/popupProvider';
 
 export default function Reset_account_password_page_handler() {
     const [success, set_success] = useState<null | boolean>(null)
@@ -60,7 +59,7 @@ export default function Reset_account_password_page_handler() {
 export function Reset_account_password() {
     const [password, set_password] = useState<string>("")
     const [password_repeat, set_password_repeat] = useState<string>("")
-    const App_notification: App_notification_context_type = useContext(App_notification_context)
+    const popupContext = useContext(PopupProviderContext)
     const router = useRouter()
 
     function set_error_messsage(element_id: string, message: string) {
@@ -131,8 +130,24 @@ export function Reset_account_password() {
                 body: JSON.stringify({password: password})
             })
 
-            if(response.status !== 200) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong!", message: "Something went wrong while trying to set your password. Please message an admin or try it again later", button_label: "Ok"}})
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully set password", message: "You have successfully resetted your password. You now can login into your with your new password.", button_label: "Login", callb: () => {router.push("/login", "/login", {scroll: false})}}})
+            if(response.status !== 200) {
+                popupContext?.setPopup({
+                    success: false,
+                    title: "Something went wrong!",
+                    message: "Something went wrong while trying to set your password. Please message an admin or try it again later",
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window"
+                })
+                return
+            }
+
+            popupContext?.setPopup({
+                success: true,
+                title: "Successfully set password",
+                message: "You have successfully resetted your password. You now can login into your with your new password.",
+                buttonLabel: "Okay",
+                cancelLabel: "Close window"
+            })
         
         } catch (err) {
             //Couldnt reach server

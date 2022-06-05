@@ -13,7 +13,6 @@ import { AnimatePresence, motion, useAnimation } from 'framer-motion';
 import ThrashIcon from "../public/icons/ThrashIcon.svg"
 import { Device_context } from '../context/device_context_provider';
 import { create_form_data as create_form_data } from '../lib/create_lib';
-import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
 import { useRouter } from 'next/router';
 import Loading from "../components/loading"
 import Head from 'next/head';

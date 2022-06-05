@@ -1,8 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/router';
-import { App_notification_context, NOTIFICATION_ACTIONS } from '../../context/app_notification_context_provider';
 import Head from 'next/head';
 import { Server_response } from '../../types';
+import { PopupProviderContext } from '../../context/popupProvider';
 
 
 export default function Verify_account_page_handler() {
@@ -51,14 +51,31 @@ export default function Verify_account_page_handler() {
 }
 
 export function Verify_account({verification_obj}: {verification_obj: {success: boolean, message: string}}) {
-    const App_notification: any = useContext(App_notification_context)
+    const popupContext = useContext(PopupProviderContext)
     const router = useRouter()
 
     //verifieng account
     useEffect(() => {
         if(!verification_obj) return
-        if(verification_obj.success === true) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully verified!", message: "Thank you for verifying your account! We will now redirect you to our login page.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
-        if(verification_obj.success === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Token has been expired!", message: "Your token has been expired. Please login to resend you a verification email.", button_label: "Okay", callb: () => {router.push("/login", "/login", {scroll: false})}}})
+        if(verification_obj.success === true) {
+            popupContext?.setPopup({
+                success: true,
+                title: "Success!",
+                message: "Thank you for verifying your account! We will now redirect you to our login page.",
+                buttonLabel: "Okay",
+                cancelLabel: "Close window",
+                buttonOnClick: () => {router.push("/login", "/login", {scroll: false}); popupContext.setPopup(null)}
+            })
+            return
+        }
+        popupContext?.setPopup({
+            success: false,
+            title: "Token Expired!",
+            message: "Your token has been expired. Please login to resend you a verification email.",
+            buttonLabel: "Okay",
+            cancelLabel: "Close window",
+            buttonOnClick: () => {router.push("/login", "/login", {scroll: false}); popupContext.setPopup(null)}
+        })
         
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [verification_obj])

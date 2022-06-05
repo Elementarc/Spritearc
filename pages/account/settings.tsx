@@ -1,8 +1,7 @@
 import React, {useEffect, useState, useContext, useRef} from 'react';
-import { App_notification_context_type, Auth_context_type, Server_response, Server_response_email, Public_user, Server_response_credits } from '../../types';
+import { Auth_context_type, Server_response, Server_response_email, Public_user,  } from '../../types';
 import Footer from '../../components/footer';
 import { format_date } from '../../lib/date_lib';
-import { App_notification_context, NOTIFICATION_ACTIONS } from '../../context/app_notification_context_provider';
 import Fixed_app_content_overlay from '../../components/fixed_app_content_overlay';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
@@ -20,6 +19,7 @@ import Protected_route from '../../components/protected_router';
 import Sprite_credits from '../../components/sprite_credits';
 import useGetUserCredits from '../../hooks/useGetUserCredits';
 import useGetUserSafeEmail from '../../hooks/useGetUserSafeEmail';
+import { PopupProviderContext } from '../../context/popupProvider';
 
 export default function Account_settings_handler() {
 
@@ -30,8 +30,7 @@ export default function Account_settings_handler() {
     )
 }
 export function Account_settings_page() {
-    
-    const App_notification: App_notification_context_type = useContext(App_notification_context)
+    const popupContext = useContext(PopupProviderContext)
     const Auth: Auth_context_type = useContext(Auth_context)
     const [account_delete_warning, set_account_delete_warning] = useState(false)
     const [delete_account, set_delete_account] = useState(false)
@@ -57,9 +56,25 @@ export function Account_settings_page() {
             const response_obj = await response.json() as Server_response
 
             
-            if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: response_obj.message, button_label: "Okay"}})
+            if(!response_obj.success) {
+                popupContext?.setPopup({
+                    success: false,
+                    title: "Something went wrong!",
+                    message: response_obj.message,
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window"
+                })
+                return
+            } 
 
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully deleted your account!", message: "We have successfully deleted your account. We are sorry that we could'nt reach your expectations! We will work on to improve our service. Thank you for trying!", button_label: "Okay", callb: () => {router.push("/", "/", {scroll: false}); Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})}}})
+            popupContext?.setPopup({
+                success: true,
+                title: "Successfully deleted your account!",
+                message: "We have successfully deleted your account. We are sorry that we could'nt reach your expectations! We will work on to improve our service. Thank you for trying!",
+                buttonLabel: "Okay",
+                cancelLabel: "Close window",
+                buttonOnClick: () => {router.push("/", "/", {scroll: false}); Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})}
+            })
 
         } catch(err) {
             //COuldnt reach server
@@ -146,23 +161,23 @@ export function Account_settings_page() {
 
                 <div className='account_content'>
                     {settings_state === "account" &&
-                        <Account_informations set_account_delete_warning={set_account_delete_warning} public_user={public_user} App_notification={App_notification} safe_email={safe_email}/>
+                        <Account_informations set_account_delete_warning={set_account_delete_warning} public_user={public_user} safe_email={safe_email}/>
                     }
 
                     {settings_state === "email" &&
-                        <Email_settings App_notification={App_notification}/>
+                        <Email_settings />
                     }
                     
                     {settings_state === "password" &&
-                        <Password_settings App_notification={App_notification}/>
+                        <Password_settings />
                     }
 
                     {settings_state === "socials" &&
-                        <Social_settings public_user={public_user} App_notification={App_notification}/>
+                        <Social_settings public_user={public_user} />
                     }
 
                     {settings_state === "donation" &&
-                        <Donation_settings public_user={public_user} App_notification={App_notification}/>
+                        <Donation_settings public_user={public_user}/>
                     }
                 </div>
 
@@ -189,7 +204,8 @@ export function Account_navigation_item(props: {state: string, icon: any, curren
     )
 }
 
-export function Account_informations(props: {set_account_delete_warning: React.Dispatch<React.SetStateAction<boolean>>, public_user: Public_user, safe_email: string | null | undefined, App_notification: App_notification_context_type}) {
+export function Account_informations(props: {set_account_delete_warning: React.Dispatch<React.SetStateAction<boolean>>, public_user: Public_user, safe_email: string | null | undefined}) {
+    const popupContext = useContext(PopupProviderContext)
     const public_user = props.public_user
     const credits = useGetUserCredits()
     const safe_email = props.safe_email
@@ -230,10 +246,9 @@ export function Account_informations(props: {set_account_delete_warning: React.D
         </div>
     )
 }
-export function Email_settings(props: {App_notification: App_notification_context_type}) {
+export function Email_settings() {
     const refs = useRef<any>([])
-    const App_notification = props.App_notification
-
+    const popupContext = useContext(PopupProviderContext)
     function disable_button(state: boolean) {
         if(state === true) {
             refs.current["update_email_button"].classList.add("disabled_button")
@@ -277,10 +292,39 @@ export function Email_settings(props: {App_notification: App_notification_contex
             
             const response_obj = await response.json() as Server_response
             
-            if(response.status !== 200) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: response_obj.message, button_label: "Okay", callb: () => {refs.current["new_email"].value = ""; refs.current["current_password"].value = "";disable_button(true)}}})
+            if(response.status !== 200) {
+                popupContext?.setPopup({
+                    success: false,
+                    title: "Something went wrong!",
+                    message: response_obj.message,
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window",
+                    buttonOnClick: () => {refs.current["new_email"].value = ""; refs.current["current_password"].value = "";disable_button(true)}
+                })
+                return
+            } 
             
-            if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Email is already in use!", message: "Please choose an email that is not in use! Make sure that you are the owner of that email address!", button_label: "Okay", callb: () => {refs.current["new_email"].value = ""; refs.current["current_password"].value = ""; disable_button(true)}}})
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your email!", message: "You have successfully updated your email. You can now login with your new email address.", button_label: "Okay", callb: () => {refs.current["new_email"].value = ""; refs.current["current_password"].value = ""; disable_button(true)}}})
+            if(!response_obj.success) {
+                popupContext?.setPopup({
+                    success: false,
+                    title: "Email is already in use!",
+                    message: "Please choose an email that is not in use! Make sure that you are the owner of that email address!",
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window",
+                    buttonOnClick: () => {refs.current["new_email"].value = ""; refs.current["current_password"].value = "";disable_button(true)}
+
+                })
+                return
+            } 
+
+            popupContext?.setPopup({
+                success: true,
+                title: "Successfully updated your email!",
+                message: "You have successfully updated your email. You can now login with your new email address.",
+                buttonLabel: "Okay",
+                cancelLabel: "Close window",
+                buttonOnClick: () => {refs.current["new_email"].value = ""; refs.current["current_password"].value = "";disable_button(true)}
+            })
 
         } catch(err) {
             //Couldnt reach server
@@ -301,9 +345,9 @@ export function Email_settings(props: {App_notification: App_notification_contex
         </div>
     )
 }
-export function Password_settings(props: {App_notification: App_notification_context_type}) {
+export function Password_settings() {
     const refs = useRef<any>([])
-    const App_notification = props.App_notification
+    const popupContext = useContext(PopupProviderContext)
 
     function disable_button(state: boolean) {
         if(state === true) {
@@ -360,9 +404,23 @@ export function Password_settings(props: {App_notification: App_notification_con
             const response_obj = await response.json() as {success: boolean, message: string}
 
             if(response_obj.success) {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your Password!", message: "You have successfully updated your Password.", button_label: "Okay", callb: () => {reset_inputs(); disable_button(true)}}})
+                popupContext?.setPopup({
+                    success: true,
+                    title: "Successfully updated your Password!",
+                    message: "You have successfully updated your Password.",
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window",
+                    buttonOnClick: () => {reset_inputs(); disable_button(true); popupContext.setPopup(null)}
+                })
             } else {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `${response_obj.message}`, message: `We could'nt update what you wanted because: ${response_obj.message}`, button_label: "Okay", callb: () => {reset_inputs(); disable_button(true)}}})
+                popupContext?.setPopup({
+                    success: true,
+                    title: "Something went wrong!",
+                    message: `We could'nt update what you wanted because: ${response_obj.message}`,
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window",
+                    buttonOnClick: () => {reset_inputs(); disable_button(true); popupContext.setPopup(null)}
+                })
             }
 
         } catch(err) {
@@ -384,10 +442,11 @@ export function Password_settings(props: {App_notification: App_notification_con
         </div>
     )
 }
-export function Social_settings(props: {public_user: Public_user, App_notification: App_notification_context_type, }) {
+
+export function Social_settings(props: {public_user: Public_user}) {
     const refs = useRef<any>([])
+    const popupContext = useContext(PopupProviderContext)
     const public_user = props.public_user
-    const App_notification = props.App_notification
 
     async function submit_updated_socials() {
         try {
@@ -409,13 +468,31 @@ export function Social_settings(props: {public_user: Public_user, App_notificati
                 const response_obj = await response.json() as {success: boolean, message: string}
 
                 if(response_obj.success) {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully updated your Socials!", message: "You have successfully updated your Socials.", button_label: "Okay"}})
+                    popupContext?.setPopup({
+                        success: true,
+                        title: "Success!",
+                        message: "You have successfully updated your Socials.",
+                        buttonLabel: "Okay",
+                        cancelLabel: "Close window"
+                    })
                 } else {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: `We could not update your socials`, message: `We could'nt update what you wanted because: ${response_obj.message}`, button_label: "Okay"}})
+                    popupContext?.setPopup({
+                        success: false,
+                        title: "Something went wrong!",
+                        message: `We could'nt update what you wanted because: ${response_obj.message}`,
+                        buttonLabel: "Okay",
+                        cancelLabel: "Close window"
+                    })
                 }
 
             } else {
-                App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "For some reason we could not update your social inputs! Please contact an admin.", button_label: "Okay"}})
+                popupContext?.setPopup({
+                    success: true,
+                    title: "Something went wrong!",
+                    message: `For some reason we could not update your social inputs! Please contact an admin.`,
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window"
+                })
             }
         } catch(err) {
             //COuldnt reach server
@@ -451,10 +528,10 @@ export function Social_settings(props: {public_user: Public_user, App_notificati
         </div>
     )
 }
-export function Donation_settings(props: {public_user: Public_user, App_notification: App_notification_context_type, }) {
+export function Donation_settings(props: {public_user: Public_user}) {
     const refs = useRef<any>([])
     const public_user = props.public_user
-    const App_notification = props.App_notification
+    const popupContext = useContext(PopupProviderContext)
 
     function disable_button(state: boolean) {
         if(state === true) {
@@ -498,10 +575,40 @@ export function Donation_settings(props: {public_user: Public_user, App_notifica
             
             const response_obj = await response.json() as Server_response
             
-            if(response.status !== 200) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: response_obj.message, button_label: "Okay", callb: () => {refs.current["donation_link"].value = ""; refs.current["current_password"].value = "";disable_button(true)}}})
+            if(response.status !== 200) {
+                popupContext?.setPopup({
+                    success: false,
+                    title: "Something went wrong!",
+                    message: response_obj.message,
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window",
+                    buttonOnClick: () => {refs.current["donation_link"].value = ""; refs.current["current_password"].value = "";disable_button(true); popupContext.setPopup(null)}
+                })
+                return
+            } 
             
-            if(!response_obj.success) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Email is already in use!", message: "Please choose an email that is not in use! Make sure that you are the owner of that email address!", button_label: "Okay", callb: () => {refs.current["donation_link"].value = ""; refs.current["current_password"].value = ""; disable_button(true)}}})
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Success!", message: "You have successfully updated your donation link.", button_label: "Okay", callb: () => {refs.current["donation_link"].value = ""; refs.current["current_password"].value = ""; disable_button(true)}}})
+            if(!response_obj.success) {
+                popupContext?.setPopup({
+                    success: false,
+                    title: "Email is already in use!",
+                    message: "Please choose an email that is not in use! Make sure that you are the owner of that email address!",
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window",
+                    buttonOnClick: () => {refs.current["donation_link"].value = ""; refs.current["current_password"].value = "";disable_button(true); popupContext.setPopup(null)}
+                }) 
+                return
+
+
+            } 
+
+            popupContext?.setPopup({
+                success: true,
+                title: "Success!",
+                message: "You have successfully updated your donation link.",
+                buttonLabel: "Okay",
+                cancelLabel: "Close window",
+                buttonOnClick: () => {refs.current["donation_link"].value = ""; refs.current["current_password"].value = "";disable_button(true); popupContext.setPopup(null)}
+            }) 
 
         } catch(err) {
             //Couldnt reach server

@@ -18,7 +18,24 @@ import MetaGenerator from '../components/MetaGenerator';
 
 const search_context: any = React.createContext(null)
 
-export default function Search_page() {
+
+export default function PageRenderer() {
+  return (
+	<>
+		<MetaGenerator
+				title='Spritearc - Search'
+				description='Search pixel art assets and sprites with just one click. You can search by tags to find specific genres.' 
+				url='https://Spritearc.com/search'
+				imageLinkSecure={`https://${process.env.NEXT_PUBLIC_APP_NAME}.com/images/spritearc_wallpaper.png`}
+		/>
+	
+		<SearchPage/>
+		<Footer/>
+	</>
+  );
+}
+
+function SearchPage() {
 	const router = useRouter()
 	const refs: any = useRef([])
 	const [show_delete_search_query_icon, set_show_delete_search_query_icon] = useState(false)
@@ -150,102 +167,90 @@ export default function Search_page() {
 
 	const searchQuery = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/packs/${search_query}?perspective=${search_perspective}&size=${search_size}&license=${search_license}&`
 	return (
-		<>
-			<MetaGenerator
-				title='Spritearc - Search'
-				description='Search pixel art assets and sprites with just one click. You can search by tags to find specific genres.' 
-				url='https://Spritearc.com/search'
-				imageLinkSecure={`https://${process.env.NEXT_PUBLIC_APP_NAME}.com/images/spritearc_wallpaper.png`}
-			/>
-
+		<PageContent>
 			<search_context.Provider value={{search}}>
-				<PageContent>
-					<Nav_shadow/>
-					<div className='searching_container'>
+				<div className='searching_container'>
 
-						<div className='search_input_container'>
+					<div className='search_input_container'>
 
-							<div className='input_container'>
-								<input ref={(el) => {refs.current["search_input"] = el}} onKeyUp={validate_input_value} onChange={validate_input_value} onBlur={validate_input_value} type="text" placeholder={search_packs ? "Search Packs" : "Search Creators"} id="search_input"/>
+						<div className='input_container'>
+							<input ref={(el) => {refs.current["search_input"] = el}} onKeyUp={validate_input_value} onChange={validate_input_value} onBlur={validate_input_value} type="text" placeholder={search_packs ? "Search Packs" : "Search Creators"} id="search_input"/>
+							
+							<div className='delete_search_query_container'>
+
+								{show_delete_search_query_icon &&
+									<div onClick={delete_input_value} className='svg_wrapper'>
+										<CloseIcon/>
+									</div>
+								}
 								
-								<div className='delete_search_query_container'>
+							</div>
 
-									{show_delete_search_query_icon &&
-										<div onClick={delete_input_value} className='svg_wrapper'>
-											<CloseIcon/>
-										</div>
+							<div className='toggle_search_state_container'>
+
+								<AnimatePresence exitBeforeEnter>
+
+									{search_packs === false &&
+										<motion.div key="search_users" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.12}}} onClick={() => {set_search_packs(!search_packs)}} className='svg_wrapper'>
+											<PacksIcon />
+										</motion.div>
+									}
+
+									{search_packs === true &&
+										<motion.div key="search_packs" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.12}}} onClick={() => {set_search_packs(!search_packs)}} className='svg_wrapper'>
+											<ProfileIcon />
+										</motion.div>
 									}
 									
-								</div>
+									
 
-								<div className='toggle_search_state_container'>
-
-									<AnimatePresence exitBeforeEnter>
-
-										{search_packs === false &&
-											<motion.div key="search_users" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.12}}} onClick={() => {set_search_packs(!search_packs)}} className='svg_wrapper'>
-												<PacksIcon />
-											</motion.div>
-										}
-
-										{search_packs === true &&
-											<motion.div key="search_packs" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.12}}} onClick={() => {set_search_packs(!search_packs)}} className='svg_wrapper'>
-												<ProfileIcon />
-											</motion.div>
-										}
-										
-										
-
-									</AnimatePresence>
-								</div>
-								
+								</AnimatePresence>
 							</div>
-
-							<button onClick={search} id="search_button">Search</button>
+							
 						</div>
 
-						
-						{search_packs &&
-							<div className='extra_options_container_wrapper'>
-								<Dropdown label='Perspective' reset_option='All'  options={["Top-Down", "Side-Scroller", "Isometric", "UI"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
-								<Dropdown label='Size' reset_option='All' options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
-								<Dropdown label='License' reset_option='All' options={["Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
-							</div>
-						}
-						
-
+						<button onClick={search} id="search_button">Search</button>
 					</div>
 
-					{search_packs === true &&
-						<Search_recommendations set_search_query={set_search_query}/>
+					
+					{search_packs &&
+						<div className='extra_options_container_wrapper'>
+							<Dropdown label='Perspective' reset_option='All'  options={["Top-Down", "Side-Scroller", "Isometric", "UI"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
+							<Dropdown label='Size' reset_option='All' options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
+							<Dropdown label='License' reset_option='All' options={["Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
+						</div>
 					}
 					
 
-					{search_query &&
-						<>
-							{search_packs === false &&
-								<div className='search_results_user_container'>
-									<Users_section search_query={search_query} />
-								</div>
-							}
+				</div>
 
-							{search_packs === true &&
-								<PackPreviewsSection label={`Searching for '${search_query.split("?")[0]}'`} api={searchQuery}/>
-							}
-							
-						</>
-					} 
+				{search_packs === true &&
+					<Search_recommendations set_search_query={set_search_query}/>
+				}
+				
 
-					{!search_query &&
-						<div className='empty_container'>
-							<h1>It looks empty in here :(</h1>
-						</div>
-					}
-				</PageContent>
-				<Footer />
+				{search_query &&
+					<>
+						{search_packs === false &&
+							<div className='search_results_user_container'>
+								<Users_section search_query={search_query} />
+							</div>
+						}
+
+						{search_packs === true &&
+							<PackPreviewsSection label={`Searching for '${search_query.split("?")[0]}'`} api={searchQuery}/>
+						}
+						
+					</>
+				} 
+
+				{!search_query &&
+					<div className='empty_container'>
+						<h1>It looks empty in here :(</h1>
+					</div>
+				}
 			</search_context.Provider>
-
-		</>
+		</PageContent>
 	);
 }
 

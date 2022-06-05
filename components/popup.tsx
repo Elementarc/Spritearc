@@ -14,6 +14,12 @@ export interface IPopup {
     COMPONENT?: JSX.Element
 }
 
+export enum EPopupType {
+    SUCCESS = "success",
+    ERROR = "error",
+    DEFAULT = "default"
+}
+
 /**
  * This component does make sure to render a Popup whenever the global State Popup is set via setPopup(). 
  * @param success
@@ -112,12 +118,13 @@ function Popup(props: {popup: IPopup, setPopup: React.Dispatch<React.SetStateAct
         abortControllerRef.current.abort()
       };
     }, [abortControllerRef])
+    
     return (
         <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className='popup'>
             <motion.div initial={{scale: .8}} animate={{scale: 1}} exit={{scale: .8}} className='popup_content_container'>
                 {!COMPONENT &&
                     <>
-                        {title && <h1 className={`big ${success ? '' : 'error'}`}>{title}</h1>}
+                        {title && <h1 className={`big ${success ? 'success' : 'error'}`}>{title}</h1>}
 
                         {message && <p className='default'>{message}</p>}
 

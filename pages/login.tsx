@@ -5,10 +5,7 @@ import Link from 'next/link';
 import { Auth_context } from '../context/auth_context_provider';
 import { useRouter } from 'next/router';
 import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
-import Loading from '../components/loading';
-import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
-import { Nav_shadow } from '../components/navigation';
-import { App_notification_context_type, Auth_context_type, Public_user, Server_response, Server_response_login } from '../types';
+import { Auth_context_type, Public_user, Server_response, Server_response_login } from '../types';
 import Head from 'next/head';
 import VisibilityIcon from "../public/icons/VisibilityIcon.svg"
 import VisibilityOffIcon from "../public/icons/VisibilityOffIcon.svg"

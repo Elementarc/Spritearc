@@ -5,14 +5,12 @@ import Link from 'next/link';
 import Loading from '../components/loading';
 import { Nav_shadow } from '../components/navigation';
 import { validate_email } from '../spritearc_lib/validate_lib';
-import { App_notification_context, NOTIFICATION_ACTIONS } from '../context/app_notification_context_provider';
-import { App_notification_context_type } from '../types';
 import Head from 'next/head';
+import { PopupProviderContext } from '../context/popupProvider';
 
 export default function Forgot_password_page() {
     const [loading, setloading] = useState(false)
-    const App_notification: App_notification_context_type = useContext(App_notification_context)
-    
+    const popupContext = useContext(PopupProviderContext)    
     function set_error_message(message: string) {
         const error_message_text = document.getElementById("forgot_password_error_message") as HTMLParagraphElement
         if(!error_message_text) return
@@ -40,8 +38,13 @@ export default function Forgot_password_page() {
                 setloading(false)
                 return set_error_message(response_obj.message)
             }
-
-            App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Please visit your email", message: "We have sent you an email with further instructions to reset your password.", button_label: "Ok"}})
+            popupContext?.setPopup({
+                success: true,
+                title: "Check your email!",
+                message: "We have sent you an email with further instructions to reset your password.",
+                buttonLabel: "Okay",
+                cancelLabel: "Close window"
+            })
             setloading(false)
             return set_error_message("")
 

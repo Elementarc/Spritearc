@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext, useMemo, useRef} from 'react';
 import Image from "next/image"
 import Link from "next/link"
-import { App_notification_context_type, Auth_context_type, Public_user, Server_response, Server_response_public_user } from '../../types';
+import { Auth_context_type, Public_user, Server_response, Server_response_public_user } from '../../types';
 import Footer from '../../components/footer';
 import { useParallax } from '../../lib/custom_hooks';
 import { Nav_shadow } from '../../components/navigation';
@@ -17,10 +17,10 @@ import HeartBrokenIcon from "../../public/icons/HeartBrokenIcon.svg"
 import { Auth_context } from '../../context/auth_context_provider';
 import { useRouter } from 'next/router';
 import { AnimatePresence, motion } from 'framer-motion';
-import { App_notification_context, NOTIFICATION_ACTIONS } from '../../context/app_notification_context_provider';
 import PackPreviewsSection from '../../components/packPreviewsSection';
 import PageContent from '../../components/layout/pageContent';
 import MetaGenerator from '../../components/MetaGenerator';
+import { PopupProviderContext } from '../../context/popupProvider';
 
 
 export default function PageRenderer(props: {public_user: Public_user}) {
@@ -99,10 +99,17 @@ function UserProfilePage(props: {publicUser: Public_user}) {
 }
 
 function User_stats(props: {followers_count: number, following_count: number}) {
-    const App_notification: App_notification_context_type = useContext(App_notification_context)
+    const popupContext = useContext(PopupProviderContext)
+
 
     function Feature_coming() {
-        App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Coming Soon", message: "This feature is coming soon!", button_label: "Ok"}})
+        popupContext?.setPopup({
+            success: true,
+            title: "Coming Soon!",
+            message: "This feature is coming soon!",
+            buttonLabel: "Okay",
+            cancelLabel: "Close window"
+        })
     }
 
     return(
@@ -128,12 +135,21 @@ function User_stats(props: {followers_count: number, following_count: number}) {
 
 function User_representation(props: {public_user: Public_user, followers_count: number, following_count: number, set_followers_count: React.Dispatch<React.SetStateAction<number>>, set_following_count: React.Dispatch<React.SetStateAction<number>>,}) {
     const Auth: Auth_context_type = useContext(Auth_context)
-    const App_notification: App_notification_context_type = useContext(App_notification_context)
+    const popupContext = useContext(PopupProviderContext)
     const public_user = props.public_user
     const [visitor_has_followed, set_visitor_has_followed] = useState<null | boolean>(null)
 
     async function follow_user() {
-        if(Auth.user.auth === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login", message: "You have to login into your account to be able to follow people!", button_label: "Ok"}})
+        if(Auth.user.auth === false) {
+            popupContext?.setPopup({
+                success: true,
+                title: "Please Login!",
+                message: "You have to login into your account to be able to follow people!",
+                buttonLabel: "Okay",
+                cancelLabel: "Close window"
+            })
+            return
+        } 
 
         try {
 
@@ -159,7 +175,16 @@ function User_representation(props: {public_user: Public_user, followers_count: 
     async function unfollow_user() {
 
         try {
-            if(Auth.user.auth === false) return App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Please Login", message: "You have to login into your account to be able to unfollow people!", button_label: "Ok"}})
+            if(Auth.user.auth === false) {
+                popupContext?.setPopup({
+                    success: true,
+                    title: "Please Login!",
+                    message: "You have to login into your account to be able to unfollow people!",
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window"
+                })
+                return
+            }
             
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/unfollow/${public_user._id}`, {
                 method: "POST",

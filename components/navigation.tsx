@@ -1,7 +1,7 @@
 /*eslint-disable */
 import React, {ReactElement, useContext, useEffect, useRef} from "react"
 import {motion, useAnimation, AnimatePresence } from "framer-motion";
-import { Nav_item, App_context, Public_user, Auth_context_type, App_notification_context_type} from "../types"
+import { Nav_item, App_context, Auth_context_type, } from "../types"
 //SVG Components (ICONS)
 import NavIcon from "../public/icons/NavIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
@@ -19,7 +19,6 @@ import { Navigation_context } from "../context/navigation_context_provider";
 import Image from "next/image"
 import Link from "next/link"
 import { format_date } from "../lib/date_lib";
-import { App_notification_context, NOTIFICATION_ACTIONS } from "../context/app_notification_context_provider";
 import { IUnseen_notification_context_provider, Unseen_notification_context } from "../context/unseen_notifications_provider";
 import useGetUserCredits from "../hooks/useGetUserCredits";
 import Sprite_credits from "./sprite_credits";
@@ -31,14 +30,6 @@ export default function Navigation(): ReactElement {
     const APP: App_context = useContext(APP_CONTEXT)
     const Auth: Auth_context_type = useContext(Auth_context)
 
-    const App_notification: App_notification_context_type = useContext(App_notification_context)
-    
-    useEffect(() => {
-        if(localStorage.getItem("warned_alpha")) return
-        App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Spritearc Alpha", message: "Welcome to Spritearc! We are currently in Alpha phase. That means we will reset everything and delete all data we have collected from you before release. Have fun exploring :)", button_label: "Okay"}})
-
-        localStorage.setItem("warned_alpha", "true")
-    }, [])
     return(
         <>
             {Device.is_mobile === false &&
@@ -518,7 +509,6 @@ function User_profile() {
                 
             </div>
 
-            
         </div>
     )
 }
