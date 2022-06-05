@@ -64,6 +64,7 @@ export interface Pack {
     perspective: string,
     resolution: string,
     title: string,
+    avg_rating: number,
     license: string,
     description: string,
     date: Date,
@@ -237,6 +238,11 @@ export interface Server_response_pack{
     success: boolean,
     message: string,
     pack: Pack | null,
+}
+export interface Server_response_pack_id{
+    success: boolean,
+    message: string,
+    pack_id: string
 }
 export interface Server_response_packs extends Server_response{
     packs: Pack[] | [],

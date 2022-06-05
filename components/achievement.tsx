@@ -6,6 +6,8 @@ import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 
 export interface IAchievement {
     _id: ObjectId
+    preview_image: string
+    counter: number
     label: string
     difficulty: string
     reward: number
@@ -21,18 +23,18 @@ export default function Achievement(props: {achievment: IAchievement}) {
 
             <div className='achievement_preview_container'>
                 <div className='achievement_preview_image_wrapper'>
-                    <Image src="/images/CROWN_EMOTE.png" layout="fill" />
+                    <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/achievement_images/${achievment.preview_image}`} layout="fill" />
                 </div>
             </div>
 
             <ul>
                 <Achievement_stat label='Difficulty' value={achievment.difficulty} reward={false}/>
-                <Achievement_stat label='Counter' value={12} reward={false} />
+                <Achievement_stat label='Counter' value={achievment.counter} reward={false} />
                 <Achievement_stat label='Reward' value={achievment.reward} reward={true}/>
 
                 <span></span>
             </ul>
-            <p className='achievement_requirement'>Win one Game of Chess</p>
+            <p className='achievement_requirement'>{achievment.requirement}</p>
             <button className='disabled_button'>Collect Rewards</button>
         </div>
     )
@@ -46,7 +48,7 @@ function Achievement_stat(props: {label: string, value: string | number, reward:
 
             {props.reward &&
                 <div className='credits_wrapper'>
-                    <Sprite_credits credits={capitalize_first_letter_rest_lowercase(`${props.value}`)}/>
+                    <Sprite_credits/>
                 </div>
             }
 

@@ -1,22 +1,24 @@
 
 import React, {useEffect, useContext} from 'react';
-import {App_context, App_navigation_context_type} from "../types"
+import {App_context, App_navigation_context_type} from "../../types"
 import { AnimatePresence, motion } from 'framer-motion';
-import App_notification from './app_notification';
+import App_notification from '../app_notification';
 import { useRouter } from 'next/router';
-import Navigation from './navigation';
-import Device_context_provider from '../context/device_context_provider';
-import App_notification_context_provider from '../context/app_notification_context_provider';
-import Navigation_context_provider, {Navigation_context} from '../context/navigation_context_provider';
-import Cookie_alert from './cookie_alert';
-import Fixed_app_content_overlay from './fixed_app_content_overlay';
-import Unseen_notification_context_provider from '../context/unseen_notifications_provider';
+import Navigation from '../navigation';
+import Device_context_provider from '../../context/device_context_provider';
+import App_notification_context_provider from '../../context/app_notification_context_provider';
+import Navigation_context_provider, {Navigation_context} from '../../context/navigation_context_provider';
+import Cookie_alert from '../cookie_alert';
+import Fixed_app_content_overlay from '../fixed_app_content_overlay';
+import Unseen_notification_context_provider from '../../context/unseen_notifications_provider';
+import Page from './page';
+import PopupProvider from '../../context/popupProvider';
+import ViewPort from './viewPort';
 
 export const APP_CONTEXT: any = React.createContext(null)
 
 export default function Layout({children}: any ) {
     const router = useRouter()
-    
     //Disabling auto scroll when going back history
 
     useEffect(() => {
@@ -43,32 +45,34 @@ export default function Layout({children}: any ) {
                 <Navigation_context_provider>
                     <App_notification_context_provider>
                         <Unseen_notification_context_provider>
-                            <div className="app_container" id="app_container">
+                            <PopupProvider>
+                                <div className="app_container" id="app_container">
 
-                                <Navigation/>
+                                    <Navigation/>
 
-                                <div className="app_content_container" id="app_content_container">
-
-
-                                    <App_content_blur/>
-
-                                    <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
-                                        <motion.main key={router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
-                                            <div className='page'>
-                                                {children}
-                                            </div>
-                                        </motion.main>
-                                    </AnimatePresence>
+                                    <div className="app_content_container" id="app_content_container">
 
 
-                                    <Fixed_app_content_overlay>
-                                        <App_notification/>
-                                    </Fixed_app_content_overlay>
+                                        <App_content_blur/>
 
+                                        <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
+                                            <motion.main key={router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
+                                                <Page>
+                                                    {children}
+                                                </Page>
+                                            </motion.main>
+                                        </AnimatePresence>
+
+
+                                        <Fixed_app_content_overlay>
+                                            <App_notification/>
+                                        </Fixed_app_content_overlay>
+
+                                    </div>
+                                    
+                                    <Cookie_alert/>
                                 </div>
-                                
-                                <Cookie_alert/>
-                            </div>
+                            </PopupProvider>
                         </Unseen_notification_context_provider>
                     </App_notification_context_provider>
                 </Navigation_context_provider>

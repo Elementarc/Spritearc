@@ -4,7 +4,7 @@ import { App_notification_context } from '../context/app_notification_context_pr
 import {motion} from "framer-motion";
 import { NOTIFICATION_ACTIONS } from "../context/app_notification_context_provider"
 import { App_notification_context_type } from '../types';
-import { APP_CONTEXT } from './layout';
+import { APP_CONTEXT } from './layout/layout';
 
 //Component that renders an App notification
 export default function App_notification() {

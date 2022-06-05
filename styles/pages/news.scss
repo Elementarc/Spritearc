@@ -33,7 +33,7 @@
         }
         .patch_list{
             position: relative;
-            color: $color_bright_grey;
+            color: $color_grey_hover;
             font-family: $font_alatsi;
             display: flex;
             flex-direction: column;
@@ -187,7 +187,7 @@
                         font-size: $font_p_mobile;
                     }
                     &:hover{
-                        color: $color_main_bright;
+                        color: $color_main_hover;
                         cursor: pointer;
                     }
                 }

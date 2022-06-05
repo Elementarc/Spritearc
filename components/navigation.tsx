@@ -11,7 +11,7 @@ import BrowseIcon from "../public/icons/PacksIcon.svg"
 import SearchIcon from "../public/icons/SearchIcon.svg"
 import SignInIcon from "../public/icons/LoginIcon.svg"
 //Context
-import { APP_CONTEXT } from "../components/layout";
+import { APP_CONTEXT } from "./layout/layout";
 import { useRouter } from "next/router";
 import { Auth_context, USER_DISPATCH_ACTIONS } from "../context/auth_context_provider";
 import { Device_context } from "../context/device_context_provider";
@@ -144,7 +144,7 @@ const Navigation_desktop = React.memo((props: {Navigation: any, APP: any, Auth: 
         <motion.nav className="nav_container_desktop" id="nav_container">
             <motion.div animate={nav_content_container_animations} className="content_container" id="content_container">
 
-                <div className="content" id="nav_content">
+                <div className="nav_content" id="nav_content">
 
                     <motion.div className="nav_button_container" id="nav_button_container">
 
@@ -509,7 +509,7 @@ function User_profile() {
                     <div>
                         <h4>User since: {format_date(new Date(user.created_at))}</h4>
                         <div className="sprite_coins_container" style={{marginLeft: "1.6rem"}}>
-                            <Sprite_credits credits={credits}/>
+                            <Sprite_credits/>
                         </div>
                     </div>
                     <p onClick={logout}>Logout</p>

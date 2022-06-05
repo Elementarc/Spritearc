@@ -1,21 +1,23 @@
 import React from 'react';
 import Image from 'next/image';
 import Loading from './loading';
+import useGetUserCredits from '../hooks/useGetUserCredits';
 
-export default function Sprite_credits(props: {credits: string | number | null | undefined}) {
-    const sprite_credits = props.credits
+export default function Sprite_credits() {
+    const credits = useGetUserCredits()
+
     return (
         <div className='sprite_credits_container'>
-            {!sprite_credits &&
+            {!credits &&
                 <Loading loading={true} main_color={true} scale={.8}/>
             }
 
-            {sprite_credits &&
+            {credits &&
                 <>
                     <div className='sprite_credits_icon_container'>
-                        <Image src={"/images/sprite-coin.gif"} layout="fill"></Image>
+                        <Image loading='lazy' unoptimized={true} src={"/images/sprite-coin.gif"} layout="fill"></Image>
                     </div>
-                    <p>{sprite_credits}</p>
+                    <p>{credits}</p>
                 </>
             }
             

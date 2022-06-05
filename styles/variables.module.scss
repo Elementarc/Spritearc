@@ -6,16 +6,23 @@
     font-family: "Alata";
     src: url("/fonts/Alata-Regular.ttf");
 }
+
 $mobile_breakpoint: 1024px;
 $desktop_breakpoint: 1920px;
 
 //Colors
 $color_main: #F7C35E;
-$color_main_bright: #FFE0A3;
+$color_main_hover: #FFE0A3;
+$color_main_active: #e4a422;
 
-$color_dark_grey: #808080;
 $color_grey: #C4C4C4;
-$color_bright_grey: #D3D3D3;
+$color_grey_hover: #D3D3D3;
+$color_grey_active: #808080;
+
+$color_error: #F75E5E;
+$color_error_hover: #fa8787;
+$color_error_active: #ff3d3d;
+
 $color_white: #ffffff;
 
 $color_app_tip: #5EF7AE;
@@ -26,9 +33,9 @@ $color_background_dark_hover: #09192f;
 $color_main_blue: #111F35;
 $color_main_blue_hover: #192b49;
 $color_main_blue_hover_2: #283e62;
+$color_background_blur: rgba(0, 0, 0, 0.7);
 
-$color_error: #F75E5E;
-$color_error_hover: #fa8787;
+
 //Font-family
 $font_alatsi: 'Alatsi';
 $font_alata: 'Alata';
@@ -89,6 +96,14 @@ $pack_preview_height: 232px;
     background: rgb(255,255,255);
     background: $next_section_line_gradiant;
 }
+@mixin Button {
+    position: relative;
+    font-family: "Alatsi";
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
 @mixin button($type: default) {
     position: relative;
     font-family: "Alatsi";
@@ -103,7 +118,7 @@ $pack_preview_height: 232px;
         font-size: 1.125rem;
         padding: .75rem 3.8rem;
         &:hover{
-            background-color: $color_main_bright;
+            background-color: $color_main_hover;
             cursor: pointer;
         }
         
@@ -153,7 +168,7 @@ $pack_preview_height: 232px;
     font-size: 18px;
     padding: .3rem 1rem;
     &::placeholder{
-        color: $color_dark_grey
+        color: $color_grey_active
     }
 }
 //Main Links
@@ -163,7 +178,7 @@ $pack_preview_height: 232px;
     color: $color_main;
     &:hover{
         cursor: pointer;
-        color: $color_main_bright;
+        color: $color_main_hover;
     }
     @if($size == default) {
         font-size: 1.125rem;
@@ -193,7 +208,7 @@ $pack_preview_height: 232px;
     font-family: $font_alata;
     font-weight: unset;
     line-height: 2rem;
-    color: $color_bright_grey;
+    color: $color_grey_hover;
 
     @if($size == default) {
         font-size: 1.125rem;
@@ -223,7 +238,7 @@ $pack_preview_height: 232px;
 @mixin h5() {
     font-family: $font_alatsi;
     font-weight: unset;
-    color: $color_dark_grey;
+    color: $color_grey_active;
     opacity: .3;
     font-size: $font_h5_desktop;
 
@@ -235,7 +250,7 @@ $pack_preview_height: 232px;
 @mixin h4($size: default) {
     font-family: $font_alatsi;
     font-weight: unset;
-    color: $color_dark_grey;
+    color: $color_grey_active;
 
     @if($size == default) {
         font-size: 1rem;
@@ -291,7 +306,7 @@ $pack_preview_height: 232px;
 @mixin h2($size: default) {
     font-family: $font_alatsi;
     font-weight: unset;
-    color: $color_main_bright;
+    color: $color_main_hover;
 
     @if($size == default) {
         font-size: 1.125rem;

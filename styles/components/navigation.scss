@@ -13,7 +13,7 @@
         top: 0;
         background: $gradiant_main;
 
-        .content{
+        .nav_content{
             .nav_button_container{
                 position: relative;
                 display: flex;
@@ -67,6 +67,18 @@
                                 }
                                 p{
                                     color: $color_white;
+                                }
+                            }
+                            
+                        }
+                        &:active{
+            
+                            .nav_item{
+                                .icon_svg{
+                                    fill: $color_main_active;
+                                }
+                                p{
+                                    color: $color_main_active;
                                 }
                             }
                             
@@ -174,7 +186,7 @@
 
                                     &:hover {
                                         cursor: pointer;
-                                        background: $color_main_bright;
+                                        background: $color_main_hover;
                                     }
                                 }
                                 .portrait {
@@ -641,7 +653,7 @@
 
     &:hover {
         cursor: pointer;
-        background: $color_main_bright;
+        background: $color_main_hover;
     }
 }
 

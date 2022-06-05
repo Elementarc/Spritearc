@@ -19,6 +19,8 @@ import Loading from "../components/loading"
 import Head from 'next/head';
 import Protected_route from '../components/protected_router';
 import HelpIcon from "../public/icons/HelpIcon.svg"
+import { PopupProviderContext } from '../context/popupProvider';
+import apiCaller from '../lib/apiCaller';
 // @ts-ignore: Unreachable code error
 
 //Context
@@ -437,10 +439,12 @@ function Step_1() {
         
         if(error) {
             input.classList.add("input_error")
-            button.classList.add("button_disabled")
+            button.classList.add("disabled_button")
+            button.classList.remove("primary_button")
         } else {
             input.classList.remove("input_error")
-            button.classList.remove("button_disabled")
+            button.classList.remove("disabled_button")
+            button.classList.add("primary_button")
         }
     }
     //Validating section name
@@ -453,8 +457,6 @@ function Step_1() {
         }
 
         return new Promise((resolve) => {
-            
-            
             
             const error_message = document.getElementById("section_name_error_message") as HTMLParagraphElement
             
@@ -486,7 +488,6 @@ function Step_1() {
     
         })
     }
-
     async function dispatch_section_name_with_input_value() {
         const valid = await validate_section_name()
         if(!valid) return
@@ -600,7 +601,7 @@ function Step_1() {
                                     
 
                                     
-                                    <button onClick={dispatch_section_name_with_input_value} id='add_section_button' className='button_disabled'>Add section</button>
+                                    <button onClick={dispatch_section_name_with_input_value} id='add_section_button' className='disabled_button'>Add section</button>
 
                                 </motion.div>
                                 
@@ -623,7 +624,7 @@ function Step_1() {
             </div>
 
             <div className='button_container'>
-                <button onClick={() => {dispatch({type: CREATE_PACK_ACTIONS.NEXT_STEP})}} className={create_pack_obj.steps_available.includes(create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Next Step</button>
+                <button onClick={() => {dispatch({type: CREATE_PACK_ACTIONS.NEXT_STEP})}} className={create_pack_obj.steps_available.includes(create_pack_obj.current_step + 1) ? `primary_button` : 'disabled_button'}>Next Step</button>
             </div>
         </>
     );
@@ -750,10 +751,9 @@ function Step_2() {
 
                 <div className='button_container'>
                     {create_pack.create_pack_obj.current_step > 0 &&
-                        <button onClick={() => {create_pack.dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="prev_button">Prev Step</button>
-
+                        <button onClick={() => {create_pack.dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="secondary_button">Prev Step</button>
                     }
-                    <button onClick={go_next_step} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>Next Step</button>
+                    <button onClick={go_next_step} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `primary_button` : 'disabled_button'}>Next Step</button>
                 </div>
             </div>
         </>
@@ -763,6 +763,7 @@ function Step_2() {
 function Step_3() {
     const create_pack: Create_pack_context_type = useContext(create_pack_context)
     const device = useContext(Device_context)
+    const popupProvider = useContext(PopupProviderContext)
     const [selection_state, set_selection_state] = useState(false)
     const [tag_jsx, set_tag_jsx] = useState<ReactElement[]>([])
     const [loading, set_loading] = useState(false)
@@ -925,44 +926,56 @@ function Step_3() {
         };
     }, [timer])
 
-    const App_notification: any = useContext(App_notification_context)
     const router = useRouter()
     
-    function send_pack_to_api() {
+    async function send_pack_to_api() {
         set_loading(true)
-        async function send_pack() {
-            const Form_data = create_form_data(create_pack.create_pack_obj)
-            
-            if(typeof Form_data === "string") return
-            
-            try {
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/create_pack`, {
-                    method: "POST",
-                    credentials: "include",
-                    body: Form_data
-                })
-                
-                if(response.status === 200) {
-                    const body = await response.json()
-                    function go_to_pack() {
+        
+        const Form_data = create_form_data(create_pack.create_pack_obj)
+        if(typeof Form_data === "string") return
+        
+        try {
+            const serverResponse = await apiCaller.createPack(Form_data)
+            if(!serverResponse) {
+                popupProvider?.setPopup({
+                    success:  false,
+                    title: "Could'nt create pack!",
+                    message: "We couldn't create your pack! Please relog and try again!",
+                    buttonLabel: "Retry",
+                    cancelLabel: "Close window",
+                    buttonOnClick: () => {
                         create_pack.dispatch({type: CREATE_PACK_ACTIONS.RESET_ALL})
-                        router.push(`/pack/${body.pack_id}`, `/pack/${body.pack_id}`, {scroll: false})
+                    },
+                    cancelOnClick: () => {
+                        create_pack.dispatch({type: CREATE_PACK_ACTIONS.RESET_ALL})
                     }
-    
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.SUCCESS, payload: {title: "Successfully created pack!", message: "Your pack is now live and can be viewed by everyone.", button_label: "Visit pack", callb: go_to_pack}})
-                    set_loading(false)
-                } else {
-                    App_notification.dispatch({type: NOTIFICATION_ACTIONS.ERROR, payload: {title: "Something went wrong", message: "We couldn't create your pack! Please relog and try again!", button_label: "Ok"}})
-                    set_loading(false)
-                }
-                
-            } catch(err) {
-                //Coudlnt reach server
+                })
+                set_loading(false)
+                return
+            }
+            function go_to_pack() {
+                create_pack.dispatch({type: CREATE_PACK_ACTIONS.RESET_ALL})
+                router.push(`/pack/${serverResponse?.pack_id}`, `/pack/${serverResponse?.pack_id}`, {scroll: false})
             }
 
+            popupProvider?.setPopup({
+                success:  true,
+                title: "Successfully created a pack!",
+                message: "You've successfully uploaded your pack! It now can be viewed by everyone!",
+                buttonLabel: "Show Pack",
+                cancelLabel: "Close window",
+                buttonOnClick: go_to_pack,
+                cancelOnClick: () => {
+                    create_pack.dispatch({type: CREATE_PACK_ACTIONS.RESET_ALL})
+                }
+            })
+            set_loading(false)
             
+        } catch(err) {
+            //Coudlnt reach server
         }
-        send_pack()
+
+        
     }
 
     function select_recommendation(e: any) {
@@ -1046,10 +1059,10 @@ function Step_3() {
             <div className='button_container'>
 
                 {create_pack.create_pack_obj.current_step > 0 &&
-                    <button onClick={() => {create_pack.dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="prev_button">Prev Step</button>
+                    <button onClick={() => {create_pack.dispatch({type: CREATE_PACK_ACTIONS.PREV_STEP})}} className="secondary_button">Prev Step</button>
                 }
 
-                <button onClick={send_pack_to_api} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `active_button` : 'disabled_button'}>
+                <button onClick={send_pack_to_api} className={create_pack.create_pack_obj.steps_available.includes(create_pack.create_pack_obj.current_step + 1) ? `primary_button` : 'disabled_button'}>
                     <p style={loading ? {opacity: 0} : {opacity: 1}}>Create Pack</p>
                     {loading ? <Loading loading={loading} main_color={false} scale={1}/> : null}
                 </button>

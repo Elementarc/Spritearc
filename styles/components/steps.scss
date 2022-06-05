@@ -54,9 +54,9 @@
             opacity: .6;
             &:hover {
                 cursor: pointer;
-                background: $color_main_bright;
+                background: $color_main_hover;
                 p { 
-                    color: $color_main_bright;
+                    color: $color_main_hover;
                 }
             }
             p {
@@ -66,10 +66,10 @@
         .step_focus {
             background: $color_main;
             &:hover {
-                background: $color_main_bright;
+                background: $color_main_hover;
                 cursor: pointer;
                 p { 
-                    color: $color_main_bright;
+                    color: $color_main_hover;
                 }
             }
             p {
@@ -77,10 +77,10 @@
             }
         }
         .step_inactive {
-            background: $color_dark_grey;
+            background: $color_grey_active;
             
             p {
-                color: $color_dark_grey;
+                color: $color_grey_active;
             }
         }
     }

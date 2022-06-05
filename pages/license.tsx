@@ -37,6 +37,7 @@ export default function License_page() {
 				<meta name="twitter:description" content={`Read about licenses spritearc.com offers to you when uploading a pixel art pack!`}/>
 				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
+            
             <div className='license_content'>
 
                 <div className='license_options_container'>

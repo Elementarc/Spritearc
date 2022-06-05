@@ -1,0 +1,81 @@
+@import "./variables.module.scss";
+
+
+button {
+    outline: none;
+    &.primary {
+        @include Button();
+        color: $color_background_dark;
+        background-color: $color_main;
+        padding: .75rem 3.8rem;
+        width:fit-content;
+        &:hover{
+            background-color: $color_main_hover;
+            cursor: pointer;
+        }
+        &:active {
+            background-color: $color_main_active;
+        }
+    }
+    &.secondary {
+        @include Button();
+        color: $color_background_dark;
+        background-color: $color_grey;
+        padding: .75rem 3.8rem;
+        
+        &:hover{
+            background-color: white;
+            cursor: pointer;
+        }
+        &:active {
+            background-color: rgb(149, 149, 149);
+        }
+    }
+    &.disabled {
+        @include Button();
+        opacity: .4;
+        color: $color_background_dark;
+        background-color: $color_main;
+        font-size: 1.125rem;
+        padding: .75rem 3.8rem;
+        pointer-events: none;
+    }
+    &.error {
+        @include Button();
+        color: $color_background_dark;
+        background-color: $color_error;
+        font-size: 1.125rem;
+        padding: .75rem 3.8rem;
+    
+        &:hover{
+            background-color: $color_error_hover;
+            cursor: pointer;
+        }
+        &:active {
+            background-color: $color_error_active;
+        }
+    }
+
+    //Sizes
+    &.big {
+        font-size: 1.125rem;
+
+        @include breakpoint(mobile) {
+            font-size: 1rem;
+        }
+    }
+    &.default {
+        font-size: 1rem;
+
+        @include breakpoint(mobile) {
+            font-size: .875rem;
+        }
+    }
+    &.small {
+        font-size: .875rem;
+
+        @include breakpoint(mobile) {
+            font-size: .75rem;
+        }
+    }
+}

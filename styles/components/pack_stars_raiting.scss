@@ -17,7 +17,7 @@
         svg{
             width: 30px;
             transform: scale(1.1);
-            fill: $color_main_bright;
+            fill: $color_main_hover;
             @include breakpoint(mobile) {
                 width: 25px;
                 transform: scale(1);

@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import React, {useState, useEffect, useContext, useRef, useCallback} from 'react';
 import Footer from '../components/footer';
 import { Nav_shadow } from '../components/navigation';
-import Packs_section from '../components/packs_section';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import ProfileIcon from "../public/icons/ProfileIcon.svg"
@@ -12,7 +11,10 @@ import CloseIcon from "../public/icons/CloseIcon.svg"
 import Head from 'next/head';
 import Users_section from '../components/users_section';
 import { validate_search_query } from '../spritearc_lib/validate_lib';
-import { Drop_down } from '../components/dropdown';
+import { Dropdown } from '../components/dropdown';
+import PackPreviewsSection from '../components/packPreviewsSection';
+import PageContent from '../components/layout/pageContent';
+import MetaGenerator from '../components/MetaGenerator';
 
 const search_context: any = React.createContext(null)
 
@@ -146,29 +148,18 @@ export default function Search_page() {
 		})
 	}, [refs, set_show_delete_search_query_icon])
 
+	const searchQuery = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/packs/${search_query}?perspective=${search_perspective}&size=${search_size}&license=${search_license}&`
 	return (
 		<>
-			<Head>
-				<title>{`Spritearc - Search`}</title>
-				<meta name="description" content={`Search pixel art assets and sprites with just one click. You can search by tags to find specific genres.`}/>
+			<MetaGenerator
+				title='Spritearc - Search'
+				description='Search pixel art assets and sprites with just one click. You can search by tags to find specific genres.' 
+				url='https://Spritearc.com/search'
+				imageLinkSecure={`https://${process.env.NEXT_PUBLIC_APP_NAME}.com/images/spritearc_wallpaper.png`}
+			/>
 
-				<meta property="og:url" content="https://Spritearc.com/"/>
-				<meta property="og:type" content="website" />
-				<meta property="og:title" content={`Spritearc - Search`}/>
-				<meta property="og:description" content={`Search pixel art game assets and sprites by tags, size and perspective. You can search for specific sizes like 16x16, 32x32, 64x64 and more!`}/>
-				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
-
-
-				<meta name="twitter:card" content="summary_large_image"/>
-				<meta property="twitter:domain" content="Spritearc.com"/>
-				<meta property="twitter:url" content="https://Spritearc.com/"/>
-				<meta name="twitter:title" content={`Spritearc - Search`}/>
-				<meta name="twitter:description" content={`Search pixel art game assets and sprites by tags, size and perspective. You can search for specific sizes like 16x16, 32x32, 64x64 and more! `}/>
-				<meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
-            </Head>
-		
 			<search_context.Provider value={{search}}>
-				<div className='search_content'>
+				<PageContent>
 					<Nav_shadow/>
 					<div className='searching_container'>
 
@@ -216,9 +207,9 @@ export default function Search_page() {
 						
 						{search_packs &&
 							<div className='extra_options_container_wrapper'>
-								<Drop_down label='Perspective' reset_option='All'  options={["Top-Down", "Side-Scroller", "Isometric", "UI"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
-								<Drop_down label='Size' reset_option='All' options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
-								<Drop_down label='License' reset_option='All' options={["Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
+								<Dropdown label='Perspective' reset_option='All'  options={["Top-Down", "Side-Scroller", "Isometric", "UI"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
+								<Dropdown label='Size' reset_option='All' options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
+								<Dropdown label='License' reset_option='All' options={["Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
 							</div>
 						}
 						
@@ -239,7 +230,7 @@ export default function Search_page() {
 							}
 
 							{search_packs === true &&
-								<Search_results_packs search_query={search_query} search_perspective={search_perspective} search_size={search_size} search_license={search_license}/>
+								<PackPreviewsSection label={`Searching for '${search_query.split("?")[0]}'`} api={searchQuery}/>
 							}
 							
 						</>
@@ -250,22 +241,12 @@ export default function Search_page() {
 							<h1>It looks empty in here :(</h1>
 						</div>
 					}
-				</div>
-
+				</PageContent>
 				<Footer />
 			</search_context.Provider>
 
 		</>
 	);
-}
-
-function Search_results_packs({search_query, search_perspective, search_size, search_license}: {search_query: string, search_perspective: null | string, search_size: null | string, search_license: null | string}) {
-	
-	return(
-		<div className='search_results_user_container'>
-			<Packs_section section_name={`Searching for '${search_query}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/packs/${search_query}`} method='POST' body={JSON.stringify({search_perspective, search_size, search_license})}/>
-		</div>
-	)
 }
 
 function Search_recommendations(props: {set_search_query: React.Dispatch<React.SetStateAction<string>>}) {

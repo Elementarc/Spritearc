@@ -8,7 +8,9 @@
     border-radius: 15px;
     display: flex;
     flex-direction: column;
+    opacity: .5;
     justify-content: center;
+    box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.25);
     h1 {
         @include h1(small);
         text-align: center;
@@ -89,7 +91,7 @@
     .achievement_requirement {
         @include p(medium);
         text-align: center;
-        color: $color_main_bright;
+        color: $color_main_hover;
         margin-top: 1rem;
     }
 

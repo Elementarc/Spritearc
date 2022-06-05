@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import { Server_response_credits } from "../types";
 
 
-function useGetUserCredits() {
+function useGetUserCredits(): number | null {
     const [credits, set_credits] = useState<null | string | number>(null)
 
     useEffect(() => {
@@ -37,7 +37,7 @@ function useGetUserCredits() {
         })
     }, [set_credits])
 
-    return parseInt(credits ? `${credits}` : `0`)
+    return credits ? parseInt(`${credits}`) :  null
 }
 
 export default useGetUserCredits

@@ -1,0 +1,32 @@
+.perk {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: auto;
+
+    .perk_header{
+        .perk_icon_wrapper{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 1rem 0;
+            svg {
+                fill: $color_main_hover;
+                transform: scale(2)
+            }
+        }
+        
+        h2{
+            @include h2()
+        }
+    }
+    
+
+    p{
+        @include p(medium);
+        margin-top: .5rem;
+        width: 100%;
+        text-align: center;
+    }
+}

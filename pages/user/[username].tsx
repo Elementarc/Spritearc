@@ -5,7 +5,6 @@ import { App_notification_context_type, Auth_context_type, Public_user, Server_r
 import Footer from '../../components/footer';
 import { useParallax } from '../../lib/custom_hooks';
 import { Nav_shadow } from '../../components/navigation';
-import Packs_section from '../../components/packs_section';
 import Head from 'next/head';
 import Fixed_app_content_overlay from '../../components/fixed_app_content_overlay';
 import Profile_socials_background from "../../public/images/profile_socials_background.svg"
@@ -19,41 +18,38 @@ import { Auth_context } from '../../context/auth_context_provider';
 import { useRouter } from 'next/router';
 import { AnimatePresence, motion } from 'framer-motion';
 import { App_notification_context, NOTIFICATION_ACTIONS } from '../../context/app_notification_context_provider';
+import PackPreviewsSection from '../../components/packPreviewsSection';
+import PageContent from '../../components/layout/pageContent';
+import MetaGenerator from '../../components/MetaGenerator';
 
-export default function Profile_page(props: {public_user: Public_user}) {
-    const public_user = props.public_user
-    const [followers_count, set_followers_count] = useState(public_user.followers_count)
-    const [following_count, set_following_count] = useState(public_user.following_count)
+
+export default function PageRenderer(props: {public_user: Public_user}) {
+    const publicUser = props.public_user
+
+    return (
+        <>
+            <MetaGenerator title={`${publicUser.username}`} description={`${publicUser.description}`} url={`https://Spritearc.com/user/${publicUser.username}`} imageLinkSecure={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${publicUser.profile_picture}`}/>
+            <UserProfilePage publicUser={publicUser}/>
+            <Footer/>
+        </>
+    );
+}
+
+function UserProfilePage(props: {publicUser: Public_user}) {
+    const publicUser = props.publicUser
+    const [followers_count, set_followers_count] = useState(publicUser.followers_count)
+    const [following_count, set_following_count] = useState(publicUser.following_count)
 
     useParallax("profile_banner")
     
     return (
         <>
-            <Head>
-				<title>{`${public_user?.username}`}</title>
-				<meta property="description" content={`${public_user?.description}`}/>
-                <meta property="og:url" content={`https://Spritearc.com/user/${public_user?.username}`}/>
-				<meta property="og:type" content="website" />
-				<meta property="og:title" content={`${public_user?.username}`}/>
-				<meta property="og:description" content={`${public_user?.description}`}/>
-				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user?.profile_picture}`}/>
-				<meta property="og:image:secure_url" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user?.profile_picture}`}/>
-
-				<meta property="twitter:card" content="summary"/>
-				<meta property="twitter:domain" content="Spritearc.com"/>
-				<meta property="twitter:url" content={`https://Spritearc.com/user/${public_user?.username}`}/>
-				<meta property="twitter:title" content={`${public_user?.username}`}/>
-				<meta property="twitter:description" content={`${public_user?.description}`}/>
-                <meta property="twitter:image" content={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${public_user?.profile_picture}`}/>
-            </Head>
-       
-            
-            <div className='profile_content'>
+            <PageContent>
                 <Nav_shadow/>
 
                 <Fixed_app_content_overlay>
                     <div className='fixed_profile_container'>
-                        {(public_user?.socials?.artstation.length > 0 || public_user?.socials?.instagram.length > 0 || public_user?.socials?.twitter.length > 0) &&
+                        {(publicUser?.socials?.artstation.length > 0 || publicUser?.socials?.instagram.length > 0 || publicUser?.socials?.twitter.length > 0) &&
                         
                             <div className='socials_container'>
                                 
@@ -62,20 +58,20 @@ export default function Profile_page(props: {public_user: Public_user}) {
                                         <Profile_socials_background/>
                                     </div>
                                     
-                                    {public_user?.socials?.instagram.length > 0 &&
-                                        <a href={`https://www.instagram.com/${public_user.socials.instagram}`} target="_blank" rel='noreferrer' className='logo_container'>
+                                    {publicUser?.socials?.instagram.length > 0 &&
+                                        <a href={`https://www.instagram.com/${publicUser.socials.instagram}`} target="_blank" rel='noreferrer' className='logo_container'>
                                             <Image loading='lazy' unoptimized={true} src={"/logos/instagram_color.png"} layout={"fill"} alt="Instagram Logo"></Image>
                                         </a>
                                     }
-                                    {public_user?.socials?.twitter.length > 0 &&
-                                        <a href={`https://www.twitter.com/${public_user.socials.twitter}`} target="_blank" rel='noreferrer' className='logo_container'>
+                                    {publicUser?.socials?.twitter.length > 0 &&
+                                        <a href={`https://www.twitter.com/${publicUser.socials.twitter}`} target="_blank" rel='noreferrer' className='logo_container'>
                                             <Twitter_logo/>
                                         </a>
                                     }
 
-                                    {public_user?.socials?.artstation.length > 0 &&
+                                    {publicUser?.socials?.artstation.length > 0 &&
                                         
-                                        <a href={`https://www.artstation.com/${public_user.socials.artstation}`} target="_blank" rel='noreferrer' className='logo_container'>
+                                        <a href={`https://www.artstation.com/${publicUser.socials.artstation}`} target="_blank" rel='noreferrer' className='logo_container'>
                                             <Image loading='lazy' unoptimized={true} src={"/logos/artstation_color.png"} layout={"fill"} alt="Artstation Logo"></Image>
                                         </a>
                                     }
@@ -89,14 +85,14 @@ export default function Profile_page(props: {public_user: Public_user}) {
                     </div>
                 </Fixed_app_content_overlay>
                 
-                <User_representation public_user={public_user} followers_count={followers_count} following_count={following_count}  set_followers_count={set_followers_count} set_following_count={set_following_count}/>
+                <User_representation public_user={publicUser} followers_count={followers_count} following_count={following_count}  set_followers_count={set_followers_count} set_following_count={set_following_count}/>
                 <User_stats followers_count={followers_count} following_count={following_count}/>
 
                 <div className='user_packs_container'>
-                    <Packs_section section_name={`Packs created by '${public_user?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs/${public_user?.username}`} method='POST'/>
+                    <PackPreviewsSection label={`Packs created by '${publicUser?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs/${publicUser?.username}?`}/>
                 </div>
+            </PageContent>
 
-            </div>
             <Footer/>
         </>
     );

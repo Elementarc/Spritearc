@@ -1,0 +1,167 @@
+.content_segment_container {
+    position: relative;
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    margin-top: .3rem;
+    &.left {
+        align-items: center;
+    }
+
+    .segment_content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        z-index: 1;
+        width: 100%;
+        padding-top: 14rem;
+        padding-bottom: 14rem;
+        &.left {
+            align-items: flex-start;
+            padding-left: 12rem;
+            text-align: start;
+
+            @include breakpoint(laptop) {
+                padding-left: 4rem;
+            }
+    
+            @include breakpoint(mobile) {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        &.center {
+            align-items: center;
+            text-align: center;
+        }
+
+        &.right {
+            align-items: flex-end;
+            padding-right: 12rem;
+            text-align: end;
+
+            @include breakpoint(laptop) {
+                padding-right: 4rem;
+            }
+    
+            @include breakpoint(mobile) {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        button {
+            margin-top: 2rem;
+        }
+    }
+    
+    .segment_background{
+        position: absolute;
+        z-index: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        
+        &.left {
+            background: rgba(3, 12, 24, 0.5);
+            background: linear-gradient(120deg, $color_background_dark 10%, rgba(3,12,24,0) 85%);
+
+            @include breakpoint(mobile) {
+                background: linear-gradient(120deg, $color_background_dark 15%, rgba(3,12,24,0) 100%);
+            }
+        }
+
+        &.center {
+            background: rgba(3, 12, 24, 0.5);
+            background: radial-gradient(circle, rgba(3,12,24,0) -100%, $color_background_dark 95%);
+        }
+
+        &.right {
+            background: rgba(3, 12, 24, 0.5);
+            background: linear-gradient(240deg, $color_background_dark 10%, rgba(3,12,24,0) 150%);
+
+            @include breakpoint(mobile) {
+                background: linear-gradient(240deg, $color_background_dark 15%, rgba(3,12,24,0) 100%);
+            }
+        }
+        background: rgba(3, 12, 24, 0.5);
+        background: linear-gradient(120deg, $color_background_dark 10%, rgba(3,12,24,0) 85%);
+
+        @include breakpoint(mobile) {
+            background: linear-gradient(120deg, $color_background_dark 15%, rgba(3,12,24,0) 100%);
+        }
+    }
+}
+
+.news_section_container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    margin-bottom: .25rem;
+    
+    .news_section_content{
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        z-index: 1;
+        width: 100%;
+        padding-right: 12rem;
+        text-align: end;
+
+        @include breakpoint(laptop) {
+            padding-right: 4rem;
+        }
+        @include breakpoint(mobile) {
+            padding-right: unset;
+            padding: 0 1rem
+        }
+    }
+    .news_section_background_blur{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(3, 12, 24, 0.5);
+        background: linear-gradient(240deg, $color_background_dark 10%, rgba(3,12,24,0) 150%);
+
+        @include breakpoint(mobile) {
+            background: linear-gradient(240deg, $color_background_dark 15%, rgba(3,12,24,0) 100%);
+        }
+    }
+}
+
+.signup_section_container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: hidden;
+    .signup_section_content{
+        z-index: 1;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        font-family: $font_alatsi;
+        text-align: center;
+        padding: 0 1rem;
+        
+        button{ 
+            @include button;
+            font-size: 16px;
+            margin-top: 1.8rem;
+        }
+    }
+    .signup_section_background_blur{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: rgba(3, 12, 24, 0.5);
+        background: radial-gradient(circle, rgba(3,12,24,0) -100%, $color_background_dark 95%);
+    }
+}

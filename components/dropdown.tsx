@@ -4,7 +4,7 @@ import { useRef } from "react"
 import { capitalize_first_letter_rest_lowercase } from "../lib/custom_lib"
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 
-export function Drop_down(props: {label: string, reset_option: string, options: string[], active_state: string | null, set_active_state: React.Dispatch<React.SetStateAction<string | null>>}) {
+export function Dropdown(props: {label: string, reset_option: string, options: string[], active_state: string | null, set_active_state: React.Dispatch<React.SetStateAction<string | null>>}) {
 	const options = [props.reset_option, ...props.options ]
 	const label = props.label
 	const active_state = props.active_state

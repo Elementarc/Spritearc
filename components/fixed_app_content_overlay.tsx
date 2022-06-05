@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from 'react';
 import {motion} from "framer-motion"
-import { APP_CONTEXT } from './layout';
+import { APP_CONTEXT } from './layout/layout';
 
 export default function Fixed_app_content_overlay({children}: any) {
     const APP: any = useContext(APP_CONTEXT)

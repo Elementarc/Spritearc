@@ -32,7 +32,7 @@ export default function Error_404() {
                 <div className='content'>
                     <h1>We had issues delivering this page</h1>
                     <p>Something went wrong while trying to deliver the page. Please make sure to contact an admin!</p>
-                    <button onClick={() => {router.push("/", "/", {scroll: false})}}>Back to Safety</button>
+                    <button className='primary_button' onClick={() => {router.push("/", "/", {scroll: false})}}>Back to Safety</button>
                 </div>
                 <Footer />
             </div>

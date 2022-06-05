@@ -6,7 +6,6 @@
     width: 100%;
     height: 100%;
     min-width: 125px;    
-    
     z-index: 100;
     .option_header{
         position: relative;
@@ -16,10 +15,14 @@
         justify-content: center;
         height: 100%;
         width: 100%;
-        background: $color_main_blue_hover;
+        background: $color_main_blue;
         
         &:hover {
             cursor: pointer;
+            background: $color_main_blue_hover_2;
+        }
+        &:active {
+            background: $color_main_blue_hover;
         }
         p {
             @include p(small);
@@ -38,7 +41,7 @@
         position: absolute;
         overflow: hidden;
         left: 0;
-        background: $color_main_blue_hover;
+        background: $color_main_blue;
         width: 100%;
         height: 0px;
         max-height: 250px;
@@ -55,8 +58,9 @@
             background-color: $color_main;
             border-radius: 50px;
             &:hover{
-                background-color: $color_main_bright;
+                background-color: $color_main_hover;
             }
+            
         }
 
         
@@ -73,6 +77,9 @@
                 &:hover {
                     cursor: pointer;
                     background: $color_main_blue_hover_2;
+                }
+                &:active {
+                    background: $color_main_blue_hover;
                 }
             }
         }

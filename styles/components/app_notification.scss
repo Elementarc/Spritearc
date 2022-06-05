@@ -31,7 +31,7 @@
         }
         h1 {
             @include h1(medium);
-            color: $color_main_bright;
+            color: $color_main_hover;
             margin-top: 2rem;
             padding: 0 1rem;
         }
@@ -51,11 +51,11 @@
     .notification_success_container {
         
         h1 {
-            color: $color_main_bright;
+            color: $color_main_hover;
         }
     
         p {
-            color: $color_bright_grey;
+            color: $color_grey_hover;
         }
     
         button {
@@ -69,7 +69,7 @@
         }
     
         p {
-            color: $color_bright_grey;
+            color: $color_grey_hover;
         }
     
     }

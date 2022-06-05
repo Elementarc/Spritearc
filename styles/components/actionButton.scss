@@ -1,0 +1,86 @@
+.action_button_container {
+    display: flex;
+    align-items: center;
+    column-gap: .5rem;
+    .action_button {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        right: 0;
+        top: 0;
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.25);
+        pointer-events: all;
+        &:hover {
+            cursor: pointer;
+            background: $color_error_hover;
+        }
+        
+    
+        //Default styles
+        svg {
+            fill: $color_background_dark;
+            transform: scale(1.1);
+        }
+    }
+    .action_label {
+        @include p();
+        opacity: 0;
+        width: auto;
+        transition: .1s ease-in-out;
+        transform: translateX(0px);
+        pointer-events: none;
+    }
+
+    &.positive {
+        .action_button {
+            background: $color_main;
+
+            &:hover {
+                cursor: pointer;
+                background: $color_main_hover;
+                + .action_label {
+                    opacity: 1;
+                    transform: translateX(10px)
+                }
+            }
+            &:active {
+                background: $color_main_active;
+            }
+        }
+
+        .action_label {
+            color: $color_white;
+            padding-right: 1.5rem;
+        }
+    }
+    
+    &.negative {
+        .action_button {
+
+            background: $color_error;
+
+            &:hover {
+                cursor: pointer;
+                background: $color_error_hover;
+                + .action_label {
+                    opacity: 1;
+                    transform: translateX(-10px)
+                }
+            }
+            &:active {
+                background: $color_error_active;
+            }
+        }
+
+        .action_label {
+            color: $color_error;
+            padding-left: 1.5rem;
+        }
+    }
+
+    
+}

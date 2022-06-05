@@ -1,7 +1,10 @@
 import { Create_pack_frontend } from "../types"
 
+export interface PackFormData extends FormData{
+
+}
 //Creating a FormData that is used to send a pack files and infos to backend.
-export function create_form_data(pack: Create_pack_frontend): FormData | string {
+export function create_form_data(pack: Create_pack_frontend): PackFormData | string {
     if(!pack.license) return "No License found"
     if(!pack.content) return "No content found"
     if(!pack.title) return "No title found"

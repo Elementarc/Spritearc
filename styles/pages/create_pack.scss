@@ -61,7 +61,7 @@
                     background-color: $color_main;
                     border-radius: 50px;
                     &:hover{
-                        background-color: $color_main_bright;
+                        background-color: $color_main_hover;
                     }
                     }
                 ul {
@@ -90,14 +90,7 @@
             }
         }
         
-        
-        
         button {
-            @include button();
-            margin-top: 4rem
-        }
-        .button_disabled {
-            @include button(disabled);
             margin-top: 4rem
         }
 
@@ -168,7 +161,7 @@
                 
                 h1 {
                     @include h1(small);
-                    color: $color_dark_grey;
+                    color: $color_grey_active;
                 }
             }
             .drop_zone_error_message {
@@ -181,7 +174,7 @@
                 height: 450px;
                 padding: 1rem;
                 margin-top: .3rem;
-                border: 1px dashed $color_dark_grey;
+                border: 1px dashed $color_grey_active;
                 transition: .1s ease-in-out;
                 
                 @include breakpoint(mobile) {
@@ -293,7 +286,7 @@
                 width: 100%;
                 height: auto;
                 padding: 1rem;
-                border: 1px dashed $color_dark_grey;
+                border: 1px dashed $color_grey_active;
                 transition: .1s ease-in-out;
 
                 
@@ -366,7 +359,7 @@
                     h1 {
                         @include h1(small);
                         transition: .1s ease-in-out;
-                        color: $color_dark_grey;
+                        color: $color_grey_active;
                         @include breakpoint(mobile) {
                             font-size: 18px;
                         }
@@ -453,7 +446,7 @@
                         @include p(small);
                         position: absolute;
                         top: 2.2rem;
-                        color: $color_dark_grey;
+                        color: $color_grey_active;
                         right: 0;
                         bottom: 0rem;
                     }
@@ -524,7 +517,7 @@
                         right: 0;
                         margin-top: 1.3rem;
                         @include p(small);
-                        color: $color_dark_grey;
+                        color: $color_grey_active;
                         
                     }
                     p {
@@ -539,37 +532,6 @@
             
         }
 
-        .pack_tags_container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            h1{
-                @include h1(medium);
-                margin-bottom: 1rem;
-            }
-
-            .add_tag_container {
-                margin-top: 1rem;
-                display: flex;
-                column-gap: 3rem;
-                align-items: center;
-                input {
-                    @include input;
-                    @include p;
-                    display: inline-block;
-                    color: white
-                }
-
-                button {
-                    @include button;
-                    width: 60%;
-                    font-size: 16px;
-                }
-            }
-            
-        }
     }
 
     .step_3_container {
@@ -639,7 +601,7 @@
                         background-color: $color_main;
                         border-radius: 50px;
                         &:hover{
-                            background-color: $color_main_bright;
+                            background-color: $color_main_hover;
                         }
                         }
                     ul {
@@ -798,7 +760,7 @@
                     background-color: $color_main;
                     border-radius: 50px;
                     &:hover{
-                        background-color: $color_main_bright;
+                        background-color: $color_main_hover;
                     }
                 }
                 @include breakpoint(laptop) {
@@ -881,18 +843,6 @@
         @include breakpoint(mobile) {
             flex-direction: column;
             row-gap: 2rem;
-        }
-        .prev_button {
-            @include button(sub_button);
-            @include breakpoint(mobile) {
-                order: 2;
-            }
-        }
-        .active_button {
-            @include button;
-        }
-        .disabled_button {
-            @include button(disabled);
         }
     }
 

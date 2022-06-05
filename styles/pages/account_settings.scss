@@ -289,7 +289,7 @@
                 width: 100%;
                 background: $color_main;
                 &:hover {
-                    background: $color_main_bright;
+                    background: $color_main_hover;
                     cursor: pointer;
                 }
                 svg {
@@ -486,7 +486,7 @@
                     
                     p {
                         @include p();
-                        color: $color_dark_grey;
+                        color: $color_grey_active;
                     }
 
                     input {

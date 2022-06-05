@@ -1,133 +1,126 @@
 @import "../variables.module.scss";
 
 
-.login_content {
-    position: relative;
-    z-index: 1;
-    background: $color_background_dark;
-    .login_container {
-        display: flex;
-        flex-direction: column;
-        height: 100vh;
-        min-height: 800px;
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-        padding: 0 1rem;
+.login_container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-height: 800px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 0 1rem;
 
+    @include breakpoint(mobile) {
+        justify-content: start;
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+        min-height: unset;
+        height: auto
+    }
+
+    .h1_with_deco{
+        @include h1_with_deco;
+        margin-bottom: 2rem;
         @include breakpoint(mobile) {
-            justify-content: start;
-            padding-top: 5rem;
-            padding-bottom: 5rem;
-            min-height: unset;
-            height: auto
+            margin-bottom: 1rem
         }
+    }
 
-        .h1_with_deco{
-            @include h1_with_deco;
-            margin-bottom: 2rem;
-            @include breakpoint(mobile) {
-                margin-bottom: 1rem
-            }
-        }
-
-        input {
-            @include input();
-            @include p;
-            color: white;
-            margin-top: 2rem;
-            width: 30%;
-            @include breakpoint(laptop) {
-                width: 60%;
-                
-            }
-            @include breakpoint(mobile) {
-                width: 100%;
-            }
+    input {
+        @include input();
+        @include p;
+        color: white;
+        margin-top: 2rem;
+        width: 30%;
+        @include breakpoint(laptop) {
+            width: 60%;
             
+        }
+        @include breakpoint(mobile) {
+            width: 100%;
         }
         
-        .password_input_container {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            width: 30%;
-            @include breakpoint(laptop) {
-                width: 60%;
+    }
+    
+    .password_input_container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        width: 30%;
+        @include breakpoint(laptop) {
+            width: 60%;
+            
+        }
+        @include breakpoint(mobile) {
+            width: 100%;
+        }
+        input {
+            width: 100%;
+        }
+        
+
+        .password_visibility_icon_container {
+            position: absolute;
+            margin-bottom: .3rem;
+            bottom: 0;
+            right: .5rem;
+
+            svg {
+                fill: $color_grey;
+                
+                @include breakpoint(mobile) {
+                    transform: scale(.8);
+                }
+            }
+
+            &:hover {
+                svg {
+                    fill: white;
+                }
+                cursor: pointer;
                 
             }
-            @include breakpoint(mobile) {
-                width: 100%;
-            }
-            input {
-                width: 100%;
-            }
+        }
+    }
+    .login_button {
+        margin-top: 5rem;
+    }
+
+    .forward_container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 6rem;
+        width: 100%;
+        
+        span {
+            position: absolute;
+            top: 0;
+            @include next_section_line;
+            height: 1px;
+            width: 80%;
+        }
+        .items {
             
-
-            .password_visibility_icon_container {
-                position: absolute;
-                margin-bottom: .3rem;
-                bottom: 0;
-                right: .5rem;
-
-                svg {
-                    fill: $color_grey;
-                    
-                    @include breakpoint(mobile) {
-                        transform: scale(.8);
-                    }
-                }
-
-                &:hover {
-                    svg {
-                        fill: white;
-                    }
-                    cursor: pointer;
-                    
-                }
-            }
-        }
-        button {
-            @include button();
-            margin-top: 5rem;
-        }
-
-        .forward_container {
-            position: relative;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin-top: 6rem;
-            width: 100%;
+            margin-top: 2rem;
+            text-align: center;
             
-            span {
-                position: absolute;
-                top: 0;
-                @include next_section_line;
-                height: 1px;
-                width: 80%;
-            }
-            .items {
-                
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                margin-top: 2rem;
-                text-align: center;
-                
-                p {
-                    margin-top: .4rem;
-                    @include p(medium);
-                    a {
-                        @include a(medium);
-                    }
+            p {
+                margin-top: .4rem;
+                @include p(medium);
+                a {
+                    @include a(medium);
                 }
             }
-            
-            
         }
+        
+        
     }
-    
 }

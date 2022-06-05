@@ -223,7 +223,7 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user,
                                 <h1>Tell us about yourself</h1>
                                 <input onKeyUp={event_valid_user_description} id="user_description_input" type="text" name="" placeholder={`${user.description}`}/>
                                 <p className='update_user_description_error_message' id="update_user_description_error_message"></p>
-                                <button onClick={update_user_description}>Ok</button>
+                                <button className='primary_button' onClick={update_user_description}>Ok</button>
                             </motion.div>
                             
                             <div onClick={() => {set_update_about_state(false)}} className='update_user_description_background' />

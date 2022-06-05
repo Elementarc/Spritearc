@@ -1,0 +1,50 @@
+.grid_container {
+    position: relative;
+    display: grid;
+    width: 100%;
+    height: auto;
+    
+}
+
+.pack_overlay_grid {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: auto;
+    padding: 0 4rem;
+
+    @include breakpoint(mobile) {
+        display: none;
+    }
+}
+
+.stats_grid {
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-auto-rows: auto;
+    margin: 2rem 0rem;
+    column-gap: 2rem;
+    row-gap: 1rem;
+    
+    @include breakpoint(mobile) {
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    }
+    
+    .stat_grid {
+        grid-template-columns: 90px 1fr;
+
+        .stat_label_container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            width: 100%;
+            height: 100%;
+        }
+        .stat_value_container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            width: 100%;
+            height: 100%;
+
+        }
+    }
+}
