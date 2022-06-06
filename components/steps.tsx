@@ -1,21 +1,27 @@
-import React, { useEffect } from 'react';
+import React, { useCallback } from 'react';
 
-export default function Steps({steps, current_step, steps_available}: {steps: number, current_step: number, steps_available: number[]}) {
+export default function Steps(props: {steps: number, currentStep: number, setCurrentStep: React.Dispatch<React.SetStateAction<number>>, availableSteps: number[]}) {
+    const steps = props.steps
+    const currentStep = props.currentStep
+    const availableSteps = props.availableSteps
+    const setCurrentStep = props.setCurrentStep
+    
+    function goToStep(targetStep: number) {
+        if(availableSteps.includes(targetStep)) return setCurrentStep(targetStep)
+    }
     //Function that takes in the number of steps that needs to be created!
-    function create_steps(steps: number) {
+    const createSteps = useCallback(() => {
         const steps_jsx = []
-
-        for(let i = 0; i < steps; i++) {
-
+        for(let i = 1; i < steps + 1; i++) {
             steps_jsx.push(
 
-                <div className='step_items_container' key={`step_${i}`}>
+                <div className='step_container' key={`step_${i}`}>
 
-                    <div className="step step_inactive" data-step={`${i}`}>
-                        <p id="step_1">Step {i + 1}</p>
+                    <div onClick={() => goToStep(i)} className={`step ${currentStep === i ? 'target' : i < currentStep ? 'possible' : availableSteps.includes(i) ? 'possible' : 'inactive'}`} id={`step_${i}`} data-step={`${i}`}>
+                        <p>Step {i}</p>
                     </div>
 
-                    {i + 1 < steps &&
+                    {i < steps &&
                         <span />
                     }
                     
@@ -25,62 +31,12 @@ export default function Steps({steps, current_step, steps_available}: {steps: nu
         }
 
         return steps_jsx
-    }
-
-    //Setting styles for steps whenever signup_obj & current_step changes
-    useEffect(() => {
-        const steps = Array.from(document.getElementsByClassName("step") as HTMLCollection)
-        
-        for(let i = 0; i < steps.length; i++) {
-            
-            //Adding step_done class whenever a step gets available
-            if(steps_available.length === 0) {
-
-                steps[i].classList.add("step_inactive")
-                steps[i].classList.remove("step_focus")
-                steps[i].classList.remove("step_done")
-
-            } else {
-                //Making every step inactive
-                steps[i].classList.add("step_inactive")
-                steps[i].classList.remove("step_focus")
-                steps[i].classList.remove("step_done")
-
-                //Activating steps based on steps_available
-                for(let n = 0; n < steps_available.length; n++ ) {
-                    
-                    if(steps[i].getAttribute("data-step") === `${steps_available[n]}`) {
-                        steps[i].classList.remove("step_inactive")
-                        steps[i].classList.remove("step_focus")
-                        steps[i].classList.add("step_done")
-                    }
-                    
-                }
-            }
-
-            //Setting current step always focus
-            if(i === current_step) {
-                
-                steps[i].classList.add("step_focus")
-                steps[i].classList.remove("step_done")
-                steps[i].classList.remove("step_inactive")
-                
-            }
-
-            //Prev steps will always have step_done class
-            if(i < current_step) {
-                steps[i].classList.remove("step_inactive")
-                steps[i].classList.remove("step_focus")
-                steps[i].classList.add("step_done")
-            }
-        }
-
-    }, [current_step, steps_available])
-
+    }, [currentStep, availableSteps])
+    
     return (
-        <div className="steps_container">
+        <div className="step_displayer_container">
             
-            {create_steps(steps)}
+            {createSteps()}
 
         </div>
     );

@@ -7,6 +7,8 @@ interface IApiCaller {
     deletePack: (pack_id: string, signal: AbortSignal) => Promise<Server_response | null>
     createPack: (FormData: PackFormData, signal: AbortSignal) => Promise<Server_response_pack_id | null>
     buyPackPromotion: (pack_id: string, signal: AbortSignal) => Promise<Server_response| null>
+    usernameAvailable: (username: string, signal: AbortSignal) => Promise<Server_response| null>
+    createAccount: (username: string, email: string, password: string, legal: boolean, occasionalEmails: boolean, signal: AbortSignal) => Promise<Server_response| null>
 }
 
 
@@ -55,6 +57,73 @@ class ApiCaller implements IApiCaller {
                 },
                 signal: signal,
                 credentials: "include",
+            })
+
+            const responseObj = await response.json() as Server_response
+            return responseObj
+            
+        } catch (err: any) {
+            throw new Error(err)
+        }
+        
+    }
+    async usernameAvailable(username: string, signal: AbortSignal): Promise<Server_response | null> {
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/validate_username/${username}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                signal: signal,
+                credentials: "include",
+            })
+
+            const responseObj = await response.json() as Server_response
+            return responseObj
+            
+        } catch (err: any) {
+            throw new Error(err)
+        }
+        
+    }
+    async emailAvailable(email: string, signal: AbortSignal): Promise<Server_response | null> {
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/validate_email/${email}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                signal: signal,
+                credentials: "include",
+            })
+
+            const responseObj = await response.json() as Server_response
+            return responseObj
+            
+        } catch (err: any) {
+            throw new Error(err)
+        }
+        
+    }
+    async createAccount(username: string, email: string, password: string, legal: boolean, occasionalEmails: boolean, signal: AbortSignal): Promise<Server_response | null> {
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/create_account`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                signal: signal,
+                credentials: "include",
+                body: JSON.stringify({
+                    username,
+                    email,
+                    password,
+                    legal,
+                    occasionalEmails
+                })
             })
 
             const responseObj = await response.json() as Server_response

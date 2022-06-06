@@ -2,6 +2,8 @@
 
 h1 {
     color: $color_white;
+    font-weight: unset;
+
     font-family: $font_alatsi;
     &.error {
         color: $color_error;
@@ -11,7 +13,6 @@ h1 {
     }
     
     &.big {
-        font-weight: unset;
         font-size: 2.25rem;
 
         @include breakpoint(mobile) {
@@ -19,7 +20,6 @@ h1 {
         }
     }
     &.default {
-        font-weight: unset;
         font-size: 1.75rem;
 
         @include breakpoint(mobile) {
@@ -27,12 +27,15 @@ h1 {
         }
     }
     &.small {
-        font-weight: unset;
         font-size: 1.375rem;
 
         @include breakpoint(mobile) {
             font-size: .825rem;
         }
+    }
+
+    &.bold {
+        font-weight: 700;
     }
 }
 p {
@@ -41,6 +44,10 @@ p {
     line-height: 2rem;
     color: $color_grey_hover;
 
+    &.error {
+        color: $color_error;
+    }
+    
     &.big {
         font-size: 1.125rem;
 
@@ -62,6 +69,7 @@ p {
             font-size: .750rem;
         }
     }
+    
 }
 a {
     font-family: $font_alatsi;

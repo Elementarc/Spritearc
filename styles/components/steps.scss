@@ -1,7 +1,7 @@
 @import "../variables.module.scss";
 
 
-.steps_container {
+.step_displayer_container {
     position: relative;
     display: flex;
     justify-content: center;
@@ -14,7 +14,7 @@
         margin-top: 8rem;
     }
     
-    .step_items_container {
+    .step_container {
         position: relative;
         display: flex;
         column-gap: .3rem;
@@ -40,49 +40,50 @@
                 width: 50px;
                 text-align: center;
             }
-        }
-        span {
-            align-self: center;
-            justify-self: center;
-            margin: 0 1rem;
-            height: 1px;
-            width: 40px;
-            background: white;
-        }
-        .step_done {
-            background: $color_main;
-            opacity: .6;
-            &:hover {
-                cursor: pointer;
-                background: $color_main_hover;
-                p { 
-                    color: $color_main_hover;
+
+            &.target {
+                background: $color_main;
+                &:hover {
+                    background: $color_main_hover;
+                    cursor: pointer;
+                    p { 
+                        color: $color_main_hover;
+                    }
+                }
+                p {
+                    color: $color_main;
+                } 
+            }
+            &.possible {
+                background: $color_main;
+                opacity: .6;
+                &:hover {
+                    cursor: pointer;
+                    background: $color_main_hover;
+                    p { 
+                        color: $color_main_hover;
+                    }
+                }
+                p {
+                    color: $color_main;
                 }
             }
-            p {
-                color: $color_main;
-            }
-        }
-        .step_focus {
-            background: $color_main;
-            &:hover {
-                background: $color_main_hover;
-                cursor: pointer;
-                p { 
-                    color: $color_main_hover;
-                }
-            }
-            p {
-                color: $color_main;
-            }
-        }
-        .step_inactive {
-            background: $color_grey_active;
+            &.inactive {
+                pointer-events: none;
+                background: $color_grey_active;
             
-            p {
-                color: $color_grey_active;
+                p {
+                    color: $color_grey_active;
+                }
             }
         }
     }
-
+    span {
+        align-self: center;
+        justify-self: center;
+        margin: 0 1rem;
+        height: 1px;
+        width: 40px;
+        background: $color_grey_active;
+    }
 }

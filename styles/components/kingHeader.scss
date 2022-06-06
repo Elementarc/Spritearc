@@ -1,11 +1,10 @@
 .king_header_container {
     position: relative;
     display: grid;
-    grid-template-columns: 1fr minmax(40%, 1fr) 1fr;
+    grid-template-columns: minmax(50px, 1fr) auto minmax(50px, 1fr);
     column-gap: 3rem;
     width: 90%;
     @include breakpoint(laptop) {
-        grid-template-columns: 1fr minmax(60%, 1fr) 1fr;
         width: 100%;
     }
     @include breakpoint(mobile) {
@@ -36,7 +35,7 @@
     }
     h1{
         justify-self: center;
-        @include h1;
+        text-align: center;
         margin-top: -.2rem;
         padding: 0 1rem;
         @include breakpoint(mobile) {
