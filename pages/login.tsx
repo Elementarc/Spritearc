@@ -31,7 +31,7 @@ export default function PageRenderer() {
                 imageLinkSecure={`https://${process.env.NEXT_PUBLIC_APP_NAME}.com/images/spritearc_wallpaper.png`}
             />
 
-            <MemoLoginPage Auth={Auth} />
+            <LoginPage Auth={Auth} />
 
             <Footer/>
         </>
@@ -160,9 +160,9 @@ export function LoginPage(props: { Auth: Auth_context_type}) {
                 <KingHeader title="Sign In" />
                 
                 <div className='input_container'>
-                    <input ref={(el) => {emailInputRef.current = el}} type="text" placeholder="Email" className='big'/>
+                    <input ref={(el) => {emailInputRef.current = el}} type="text" placeholder="Email" className='primary big'/>
                     
-                    <PasswordInput placeholder='Password' className='big' refCallb={(el) => {setRef(el)}}/>
+                    <PasswordInput placeholder='Password' className='primary big' refCallb={(el) => {setRef(el)}}/>
                 </div>
 
                 <div className='button_wrapper'>
@@ -186,5 +186,4 @@ export function LoginPage(props: { Auth: Auth_context_type}) {
         </PageContent>
     );
 }
-export const MemoLoginPage = React.memo(LoginPage)
 

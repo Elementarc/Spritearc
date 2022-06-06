@@ -67,7 +67,7 @@ function ForgotPasswordPage() {
                     <KingHeader title="Reset password" />
                     
                     <div className='input_container'>
-                        <input ref={(el) => {emailInputRef.current = el}} className='big' type="text" placeholder="What's your account E-mail?"/>
+                        <input ref={(el) => {emailInputRef.current = el}} className='primary big' type="text" placeholder="What's your account E-mail?"/>
                         <p ref={(el) => messageRef.current = el} className='error' id="forgot_password_error_message"></p>
                     </div>
 

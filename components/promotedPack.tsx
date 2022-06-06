@@ -4,6 +4,7 @@ import { Pack } from '../types';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import Button from './button';
 
 export default function PromotedPack() {
     const [promo_pack, set_promo_pack] = useState<Pack | null | false>(null)
@@ -51,10 +52,13 @@ export default function PromotedPack() {
 					<div className="promoted_pack_preview_container">
 							
 						<div className="promoted_pack_content_container">
-							<h2>Promoted Pack</h2>
-							<h1 className='default'>{promo_pack.title}</h1>
-							<p className='default'>{promo_pack.description}</p>
-							<button onClick={() => {router.push(`/pack/${promo_pack._id}`, `/pack/${promo_pack._id}`, {scroll: false})}} className='button primary default'>View Pack</button>
+							<h2 className='big'>Promoted Pack</h2>
+							<h1 className='big'>{promo_pack.title}</h1>
+							<p className='big'>{promo_pack.description}</p>
+							
+							<div className='button_wrapper'>
+								<Button clickWithEnter={true} onClick={() => {router.push(`/pack/${promo_pack._id}`, `/pack/${promo_pack._id}`, {scroll: false})}} className='button primary default' btnLabel='View Pack'/>
+							</div>
 						</div>
 
 						<div className="background_container">

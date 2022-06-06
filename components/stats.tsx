@@ -16,13 +16,13 @@ export default function Stats(props: {stats: IStats[]}) {
             return (
                 <Grid key={stat.label} className='stat_grid'>
                     <div className="stat_label_container">
-                        <p className='p small'>{`${stat.label}:`}</p>
+                        <p className='p default'>{`${stat.label}:`}</p>
                     </div>
 
                     <div className='stat_value_container'>
                         {stat.Component && stat.Component}
                         {!stat.Component &&
-                            <p style={{color: 'white'}} className='p small'>{stat.value}</p>
+                            <p style={{color: 'white'}} className='p default'>{stat.value}</p>
                         }
                     </div>
                 </Grid>
@@ -35,7 +35,7 @@ export default function Stats(props: {stats: IStats[]}) {
 
     return (
         
-        <Grid className="stats_grid">
+        <Grid className="stats_container">
             
             {generateStats()}
 

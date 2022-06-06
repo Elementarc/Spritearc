@@ -33,6 +33,7 @@ import Rating from '../../components/rating';
 import Flex from '../../components/layout/flex';
 import Stats, {IStats} from '../../components/stats';
 import Button from '../../components/button';
+import PackStats from '../../components/packStats';
 
 export default function PageRenderer(props: {pack: Pack}) {
     const Auth = useContext(Auth_context) as Auth_context_type
@@ -110,15 +111,26 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
                 return
             }
             
-            popupProvider?.setPopup({
-                success: true, 
-                title: "Successfully deleted pack!", 
-                message: "We will now redirect you to our browse page", 
-                buttonLabel: "Okay", 
-                cancelLabel: "Close Window",
-                cancelOnClick: () => {router.push("/browse", "/browse", {scroll: false})},  
-                buttonOnClick: async() => {router.push("/browse", "/browse", {scroll: false}); popupProvider.setPopup(null)}, 
-            })
+
+            if(serverResponse.success) {
+                popupProvider?.setPopup({
+                    success: true, 
+                    title: "Successfully deleted pack!", 
+                    message: "We will now redirect you to our browse page", 
+                    buttonLabel: "Okay", 
+                    cancelLabel: "Close Window",
+                    cancelOnClick: () => {router.push("/browse", "/browse", {scroll: false})},  
+                    buttonOnClick: async() => {router.push("/browse", "/browse", {scroll: false}); popupProvider.setPopup(null)}, 
+                })
+            } else {
+                popupProvider?.setPopup({
+                    success: false, 
+                    title: "Could'nt delete Pack!", 
+                    message: serverResponse.message, 
+                    buttonLabel: "Okay", 
+                })
+            }
+            
         } catch (error) {
             //Err handling
         }
@@ -232,17 +244,16 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
                         
                     </Sticky>
                 </Overlay>
+
                 <PackPreview pack={pack} authUser={user}/>
                 
                 {createAssetsSections()}
-
 
             </PageContent>
         </>
     );
 }
 
-//Pack Preview component
 function PackPreview(props: {pack: Pack, authUser: Public_user}) {
     const authUser: Public_user = props.authUser
     const ref = useRef<null | HTMLElement>(null)
@@ -301,7 +312,6 @@ function PackPreview(props: {pack: Pack, authUser: Public_user}) {
                     }
 
                     <PackStats pack={pack} ownPack={own_pack}></PackStats>
-                    {/* <Stats pack={pack} own_pack={own_pack} prev_pack_ratings={prev_pack_ratings}/> */}
 
                     <div className="arrow_container">
                         <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
@@ -312,7 +322,7 @@ function PackPreview(props: {pack: Pack, authUser: Public_user}) {
         </>
     )
 }
-//Pack Rate
+
 function PackRate(props: {authUser: Public_user | null, set_prev_pack_ratings: any, prev_pack_ratings: any}) {
     const popupProvider = useContext(PopupProviderContext)
     const set_prev_pack_ratings = props.set_prev_pack_ratings
@@ -477,73 +487,7 @@ function PackRate(props: {authUser: Public_user | null, set_prev_pack_ratings: a
         </div>
     );  
 }
-//Pack stats
-function PackStats(props: {pack: Pack, ownPack: boolean}) {
-    const router = useRouter()
-    const pack = props.pack
-    const ownPack = props.ownPack
 
-    function createPackTagsJsx() {
-        const tags = pack?.tags
-
-        try {
-            const tags_jsx = tags.map((tag) => {
-                return  <a key={`tag_${tag}`} className='white small' onClick={() => {router.push(`/search?query=${tag.toLowerCase()}`,`/search?query=${tag.toLowerCase()}`, {scroll: false})}}>{tag.toUpperCase()}</a>
-            })
-
-            return (
-                <Flex className='pack_tags_flex'>
-                    {tags_jsx}
-                </Flex>
-            )
-        } catch(err) {
-            return []
-        }
-        
-    }
-    function visitUser() {
-        router.push(`/user/${pack?.username.toLowerCase()}`, `/user/${pack?.username.toLowerCase()}`, {scroll: false})
-    }
-    function visitLicense() {
-        router.push(`/license`, `/license`, {scroll: false})
-    }
-    const packStats: IStats[] = [
-        {
-            label: "Creator",
-            Component: <a className='main small' onClick={visitUser} >{pack?.username}</a>
-        },
-        {
-            label: "Released",
-            value: `${format_date(new Date(pack?.date))}`
-        },
-        {
-            label: "Raiting",
-            Component: <Rating avgRating={pack.avg_rating} raitingCount={pack.ratings.length}/>
-        },
-        {
-            label: "Downloads",
-            value: `${pack?.downloads}`
-        },
-        {
-            label: "License",
-            Component: <a onClick={visitLicense} className='white small' >{`${capitalize_first_letter_rest_lowercase(pack?.license)}`}</a>
-        },
-        {
-            label: "Tags",
-            Component: createPackTagsJsx()
-        },
-    ]
-
-    return (
-        <div style={ownPack ? {marginTop: "16rem"} : {}} className="pack_stats_wrapper"> 
-            <span className="top_line" />
-
-            <Stats stats={packStats}/>
-
-            <span className="bottom_line" />
-        </div>
-    )
-}
 
 //API CALL TO GET PACK
 export const getServerSideProps: GetServerSideProps = async (context) => {

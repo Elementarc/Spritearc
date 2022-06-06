@@ -38,6 +38,25 @@ h1 {
         font-weight: 700;
     }
 }
+h2 {
+    font-family: $font_alatsi;
+    font-weight: unset;
+    color: $color_main_hover;
+
+    &.big {
+        font-size: 1.125rem;
+    }
+
+    &.default {
+        font-size: 1rem;
+    }
+
+    &.small {
+        font-size: .875rem;
+    }
+   
+}
+
 p {
     font-family: $font_alata;
     font-weight: unset;

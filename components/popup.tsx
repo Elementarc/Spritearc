@@ -132,7 +132,7 @@ function Popup(props: {popup: IPopup, setPopup: React.Dispatch<React.SetStateAct
                             <Button id='popup_button' clickWithEnter={true} onClick={buttonFunc} className={success ? 'primary default' : 'error default'} btnLabel={timer ? `${timer}` : buttonLabel} loading={loading} />
                         }
 
-                        {cancelLabel && <h4 onClick={memoCancelFunc}>{cancelLabel}</h4>}
+                        <h4 onClick={memoCancelFunc}>{cancelLabel ?? "Close window"}</h4>
                         
                     </>
                 }

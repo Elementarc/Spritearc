@@ -1,5 +1,14 @@
 @import "../variables.module.scss";
 
+.pack_overlay_grid {
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: auto;
+    padding: 0 4rem;
+
+    @include breakpoint(mobile) {
+        display: none;
+    }
+}
 
 .preview_container{
     position: relative;
@@ -163,39 +172,6 @@
                 fill: $color_main;
                 transform: rotate(90deg);
             }
-        }
-    }
-}
-
-.pack_stats_wrapper {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80%;
-    height: auto;
-    margin-top: 3.5rem;
-    @include breakpoint(mobile) {
-        width: 100%;
-        padding: 0 1rem;
-        margin-bottom: 2rem
-    }
-    .top_line {
-        @include next_section_line;
-        width: 110%;
-        position: absolute;
-        top: 0;
-        @include breakpoint(mobile) {
-            width: 100%;
-        }
-    }
-    .bottom_line {
-        @include next_section_line;
-        width: 110%;
-        position: absolute;
-        bottom: 0;
-        @include breakpoint(mobile) {
-            width: 100%;
         }
     }
 }

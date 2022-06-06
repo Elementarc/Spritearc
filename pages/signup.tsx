@@ -282,7 +282,7 @@ function StepOne(props: {username: string | null, setUsername: React.Dispatch<Re
             <KingHeader title="Please enter an username"/>
             
             <div className="input_container">
-                <input onKeyUp={validateUserInput} ref={(el) => {usernameInputRef.current = el}} type="text" placeholder={"Username"} className="big" defaultValue={username ? username : ""}></input>
+                <input onKeyUp={validateUserInput} ref={(el) => {usernameInputRef.current = el}} type="text" placeholder={"Username"} className="primary big" defaultValue={username ? username : ""}></input>
             </div>
 
             <p ref={(el) => {errorMessageRef.current = el}} className="error"></p>
@@ -393,7 +393,7 @@ function StepTwo(props: {email: string | null, setEmail: React.Dispatch<React.Se
             <KingHeader title="Please enter an email"/>
             
             <div className="input_container">
-                <input onKeyUp={validateUserInput} ref={(el) => {emailInputRef.current = el}} type="text" placeholder={"Example@domain.com"} className="big" defaultValue={email ? email : ''}></input>
+                <input onKeyUp={validateUserInput} ref={(el) => {emailInputRef.current = el}} type="text" placeholder={"Example@domain.com"} className="primary big" defaultValue={email ? email : ''}></input>
             </div>
 
             <p ref={(el) => {errorMessageRef.current = el}} className="error"></p>
@@ -513,12 +513,12 @@ function StepThree(props: {password: string | null, setPassword: React.Dispatch<
             
             <div className="input_container">
                 <div>
-                    <PasswordInput defaultValue={password ? password : ""} type="password" onKeyUp={validateUserInput} placeholder={"Password"} className="big" refCallb={refPasswordInput}/>
+                    <PasswordInput defaultValue={password ? password : ""} type="password" onKeyUp={validateUserInput} placeholder={"Password"} className="primary big" refCallb={refPasswordInput}/>
                     <p ref={(el) => {passwordErrorMessageRef.current = el}} className="error"></p>
                 </div>
                 
                 <div>
-                    <PasswordInput defaultValue={password ? password : ""} type="password" onKeyUp={validateUserInput} placeholder={"Password"} className="big" refCallb={refPasswordRepeatInput}/>
+                    <PasswordInput defaultValue={password ? password : ""} type="password" onKeyUp={validateUserInput} placeholder={"Password"} className="primary big" refCallb={refPasswordRepeatInput}/>
                     <p ref={(el) => {passwordRepeatErrorMessageRef.current = el}} className="error"></p>
                 </div>
             </div>

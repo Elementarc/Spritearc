@@ -2,13 +2,18 @@ input {
     font-family: $font_alata;
     color: $color_grey_hover;
     background: unset;
-    border-bottom: 1px solid $color_grey;
     width: 100%;
     color: white;
     outline: none;
     line-height: 2rem;
-    text-align: center;
-
+    &.primary {
+        border-bottom: 1px solid $color_grey;
+        width: 100%;
+        color: white;
+        outline: none;
+        line-height: 2rem;
+        text-align: center;
+    }
     &.big {
         font-size: 1.125rem;
 
