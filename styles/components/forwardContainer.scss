@@ -1,0 +1,32 @@
+.forward_container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    
+    span {
+        position: absolute;
+        top: 0;
+        @include next_section_line;
+        width: 80%;
+    }
+    .items {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1rem;
+        text-align: center;
+        
+        p {
+            margin-top: .4rem;
+            @include p(medium);
+            a {
+                @include a(medium);
+            }
+        }
+    }
+    
+}

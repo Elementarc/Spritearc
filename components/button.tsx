@@ -6,12 +6,10 @@ import { PopupProviderContext } from '../context/popupProvider';
 
 interface IButton {
     loading?: boolean | null | undefined,
-    btnClassName?: string,
-    containerClassName?: string,
+    className?: string,
     btnLabel: string,
     id?: string
     clickWithEnter?: boolean
-    keyUpCondition?: (e?: any) => boolean
     onClick?: (e?: any) => any
 }
 
@@ -19,8 +17,7 @@ interface IButton {
  * Button component that do a lot of different things. 
  * @param loading if truthy displays a loading animation, otherwise just the btnLabel
  * @param btnLabel the button label that should be used for that button.
- * @param containerClassName recommended to add when custom styling is needed for the whole container.
- * @param btnClassName used to give the button element it's classnames.
+ * @param className used to give the button element it's classnames.
  * @param onClick function that gets triggert when button is clicked.
  * @returns 
  */
@@ -66,7 +63,7 @@ export default function Button(props: IButton) {
     }, [button, popup, clickWithEnter])
 
     return (
-        <div className={`button_container ${props.containerClassName ?? ""}`}>
+        <div className={`button_container`}>
             {props.loading && 
                 <div className="spinner_container">
                     <div className='image_container'>
@@ -75,7 +72,7 @@ export default function Button(props: IButton) {
                 </div>
             }
 
-            <button id={props.id ?? ""} ref={(el) => button.current = el} style={loading ? {color: "rgba(0,0,0,0)"} : {color: "rgba(0,0,0,1)"}} onClick={async(e) => {await btnOnClick(e)}} className={props.btnClassName ?? ""}>
+            <button id={props.id ?? ""} ref={(el) => button.current = el} style={loading ? {color: "rgba(0,0,0,0)"} : {color: "rgba(0,0,0,1)"}} onClick={async(e) => {await btnOnClick(e)}} className={props.className ?? ""}>
                 {props.btnLabel}
             </button>
             

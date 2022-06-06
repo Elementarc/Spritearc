@@ -1,105 +1,94 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import Footer from '../components/footer';
-import H1_with_deco from '../components/h1_with_deco';
 import Link from 'next/link';
-import Loading from '../components/loading';
-import { Nav_shadow } from '../components/navigation';
 import { validate_email } from '../spritearc_lib/validate_lib';
-import Head from 'next/head';
 import { PopupProviderContext } from '../context/popupProvider';
+import MetaGenerator from '../components/MetaGenerator';
+import PageContent from '../components/layout/pageContent';
+import ForwardContainer from '../components/forwardContainer';
+import Button from '../components/button';
+import KingHeader from '../components/kingHeader';
+import apiCaller from '../lib/apiCaller';
 
-export default function Forgot_password_page() {
+
+export default function PageRenderer() {
+    return (
+        <>
+            <MetaGenerator
+                title='Spritearc - Forgot Password'
+                description='Request a password token that will enable you to reset your password by providing us your email.'
+                imageLinkSecure={`https://${process.env.NEXT_PUBLIC_APP_NAME}.com/images/spritearc_wallpaper.png`}
+                url="https://Spritearc.com/forgot_password"
+            />
+
+            <ForgotPasswordPage/>
+
+            <Footer/>
+        </>
+    );
+}
+
+function ForgotPasswordPage() {
+    const emailInputRef = useRef<null | HTMLInputElement>(null)
+    const messageRef = useRef<null | HTMLParagraphElement>(null)
     const [loading, setloading] = useState(false)
-    const popupContext = useContext(PopupProviderContext)    
+    const abortControllerRef = useRef(new AbortController())
+    const popupContext = useContext(PopupProviderContext)
+
     function set_error_message(message: string) {
-        const error_message_text = document.getElementById("forgot_password_error_message") as HTMLParagraphElement
-        if(!error_message_text) return
-        error_message_text.innerText = message
+        if(!messageRef.current) return
+        messageRef.current.innerText = message
     }
 
     async function send_password_token() {
-        setloading(true)
-        const email_input = document.getElementById("email_input") as HTMLInputElement
-        const valid_email = validate_email(email_input.value)
-
+        const emailValue = emailInputRef.current?.value.trim()
+        if(!emailValue) return
+        const valid_email = validate_email(emailValue)
         if(typeof valid_email === "string") return set_error_message(valid_email)
 
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/forgot_password`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({email: email_input.value})
-            })
-
-            const response_obj = await response.json() as {success: boolean, message: string}
-            if(!response_obj.success) {
-                setloading(false)
-                return set_error_message(response_obj.message)
-            }
-            popupContext?.setPopup({
-                success: true,
-                title: "Check your email!",
-                message: "We have sent you an email with further instructions to reset your password.",
-                buttonLabel: "Okay",
-                cancelLabel: "Close window"
-            })
-            setloading(false)
-            return set_error_message("")
-
-        } catch(err) {
-            //Couldnt reach server
-        }
+        setloading(true)
+        await apiCaller.forgotPassword(emailValue, abortControllerRef.current.signal)
+        
+        popupContext?.setPopup({
+            success: true,
+            title: "Success!",
+            message: "If there is an exisiting account with that email then we have send an password reset link.",
+            buttonLabel: "Okay",
+        })
+        setloading(false)
+        return set_error_message("")
 
     }
 
     return (
-        <>
-            <Head>
-				<title>{`Spritearc - Forgot Password`}</title>
-				<meta name="description" content={`Request a password token that will enable you to reset your password by providing us your email.`}/>
-				<meta property="og:url" content="https://Spritearc.com/"/>
-				<meta property="og:type" content="website" />
-				<meta property="og:title" content={`Spritearc - Forgot Password`}/>
-				<meta property="og:description" content={`Request a password token that will enable you to reset your password by providing us your email.`}/>
-                <meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
-
-				<meta name="twitter:card" content="summary_large_image"/>
-				<meta property="twitter:domain" content="Spritearc.com"/>
-				<meta property="twitter:url" content="https://Spritearc.com/"/>
-				<meta name="twitter:title" content={`Spritearc - Forgot Password`}/>
-				<meta name="twitter:description" content={`Request a password token that will enable you to reset your password by providing us your email.`}/>
-                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
-            </Head>
-        
+        <PageContent>
             <div className="forgot_password_content">
-                <Nav_shadow/>
                 <div className="forgot_password_container">
-                    <H1_with_deco title="Reset password" />
+                    <KingHeader title="Reset password" />
                     
-                    <input type="text" placeholder="Email" id="email_input" defaultValue=""/>
-                    <p className='forgot_password_error_message' id="forgot_password_error_message"></p>
-                    <button onClick={send_password_token}>
-                        <p style={loading ? {opacity: 0} : {opacity: 1}}>Request Password Reset</p>
-                        {loading ? <Loading loading={loading} main_color={false} scale={1}/> : null}
-                    </button>
+                    <div className='input_container'>
+                        <input ref={(el) => {emailInputRef.current = el}} className='big' type="text" placeholder="What's your account E-mail?"/>
+                        <p ref={(el) => messageRef.current = el} className='error' id="forgot_password_error_message"></p>
+                    </div>
 
-                    <div className="forward_container">
+                    <div className='button_wrapper'>
+                        <Button clickWithEnter={true} className='primary default' onClick={send_password_token} btnLabel='Request Password Reset' loading={loading}/>
+                    </div>
 
-                        <span className="bottom_section_line" />
-                        <div className="items">
-                            <p>{"Already have an account? "}<Link href="/login" scroll={false}>Login</Link></p>
-                            <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
-                        </div>
+                    <div className="forward_wrapper">
+
+                        <ForwardContainer
+                            componentsArr={[
+                                <p key={"Key 1"}>{"Already have an account? "}<Link href="/login" scroll={false}>Login</Link></p>,
+                                <p key={"Key 2"}>{"Don't have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
+                            ]}
+                        />
                         
                     </div>
 
                 </div>
-
             </div>
-            <Footer />
-        </>
+        </PageContent>
     );
 }
 

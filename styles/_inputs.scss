@@ -1,0 +1,49 @@
+input {
+    font-family: $font_alata;
+    color: $color_grey_hover;
+    background: unset;
+    border-bottom: 1px solid $color_grey;
+    width: 100%;
+    color: white;
+    outline: none;
+    line-height: 2rem;
+    text-align: center;
+
+    &.big {
+        font-size: 1.125rem;
+
+        @include breakpoint(mobile) {
+            font-size: 1rem;
+        }
+    }
+    &.default {
+        font-size: 1rem;
+
+        @include breakpoint(mobile) {
+            font-size: .875rem;
+        }
+    }
+    &.small {
+        font-size: .875rem;
+
+        @include breakpoint(mobile) {
+            font-size: .750rem;
+        }
+    }
+    &.error {
+        color: $color_error;
+        border-bottom: 1px solid $color_error;
+    }
+}
+
+.input_container {
+    width: 30%;
+    
+    @include breakpoint(laptop) {
+        width: 55%;
+    }
+
+    @include breakpoint(mobile) {
+        width: 90%;
+    }
+}

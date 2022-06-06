@@ -20,6 +20,7 @@ import Steps from "../components/steps";
 import PasswordInput from "../components/passwordInput";
 import CheckBox from "../components/checkBox";
 import apiCaller from "../lib/apiCaller";
+import ForwardContainer from "../components/forwardContainer";
 
 interface Isignup {
     addAvailableStep: (step: number) => void,
@@ -160,7 +161,17 @@ function SignupPage() {
                     <div className="steps_tracker_container">
                         <Steps steps={3} currentStep={currentStep} setCurrentStep={setCurrentStep} availableSteps={availableSteps}/>
                     </div>
-                    <ForwardContainer/>
+
+                    <div className="forward_wrapper">
+                        <ForwardContainer 
+                            componentsArr=
+                            {
+                                [
+                                    <p>{"Already a member? "}<Link href="/login" scroll={false}>Sign In</Link></p>,
+                                ]
+                            }
+                        />
+                    </div>
                 </div>
             </PageContent>
         </signupContext.Provider>
@@ -276,8 +287,8 @@ function StepOne(props: {username: string | null, setUsername: React.Dispatch<Re
 
             <p ref={(el) => {errorMessageRef.current = el}} className="error"></p>
 
-            <div className="button_container">
-                <Button clickWithEnter={true} onClick={triggerNextStep} btnClassName={`${username ? "primary" : "disabled"} default`} btnLabel="Next Step" loading={loading}/>
+            <div className="button_wrapper">
+                <Button clickWithEnter={true} onClick={triggerNextStep} className={`${username ? "primary" : "disabled"} default`} btnLabel="Next Step" loading={loading}/>
             </div>
             
         </motion.div>
@@ -387,8 +398,8 @@ function StepTwo(props: {email: string | null, setEmail: React.Dispatch<React.Se
 
             <p ref={(el) => {errorMessageRef.current = el}} className="error"></p>
 
-            <div className="button_container">
-                <Button clickWithEnter={true} onClick={triggerNextStep} btnClassName={`${email ? "primary" : "disabled"} default`} btnLabel="Next Step" loading={loading}/>
+            <div className="button_wrapper">
+                <Button clickWithEnter={true} onClick={triggerNextStep} className={`${email ? "primary" : "disabled"} default`} btnLabel="Next Step" loading={loading}/>
             </div>
             
         </motion.div>
@@ -529,23 +540,11 @@ function StepThree(props: {password: string | null, setPassword: React.Dispatch<
 
             </div>
 
-            <div className="button_container">
-                <Button clickWithEnter={true} onClick={triggerNextStep} btnClassName={`${(password && legal) ? "primary" : "disabled"} default`} btnLabel="Create Account" loading={loading}/>
+            <div className="button_wrapper">
+                <Button clickWithEnter={true} onClick={triggerNextStep} className={`${(password && legal) ? "primary" : "disabled"} default`} btnLabel="Create Account" loading={loading}/>
             </div>
             
         </motion.div>
     );
 }
 
-function ForwardContainer() {
-    return (
-      <div className="signup_forward_container">
-  
-          <span className="bottom_section_line" />
-          <div className="items">
-              <p>{"Already a member? "}<Link href="/login" scroll={false}>Sign In</Link></p>
-          </div>
-          
-      </div>
-    );
-  }

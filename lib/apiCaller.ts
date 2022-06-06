@@ -1,6 +1,6 @@
 import { ServerResponse } from "http";
 import { ObjectId } from "mongodb";
-import { Server_response, Server_response_pack_id } from "../types";
+import { Server_response, Server_response_login, Server_response_pack_id } from "../types";
 import { PackFormData } from "./create_lib";
 
 interface IApiCaller {
@@ -9,6 +9,9 @@ interface IApiCaller {
     buyPackPromotion: (pack_id: string, signal: AbortSignal) => Promise<Server_response| null>
     usernameAvailable: (username: string, signal: AbortSignal) => Promise<Server_response| null>
     createAccount: (username: string, email: string, password: string, legal: boolean, occasionalEmails: boolean, signal: AbortSignal) => Promise<Server_response| null>
+    login: (email: string, password: string, signal: AbortSignal) => Promise<Server_response_login| null>
+    forgotPassword: (email: string, signal: AbortSignal) => Promise<Server_response| null>
+
 }
 
 
@@ -133,6 +136,47 @@ class ApiCaller implements IApiCaller {
             throw new Error(err)
         }
         
+    }
+    async login(email: string, password: string, signal: AbortSignal): Promise<Server_response_login| null>{
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/login`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                signal: signal,
+                credentials: "include",
+                body: JSON.stringify({
+                    email,
+                    password,
+                })
+            })
+
+            const responseObj = await response.json() as Server_response_login
+            return responseObj
+            
+        } catch (err: any) {
+            throw new Error(err)
+        }
+    }
+    async forgotPassword(email: string, signal: AbortSignal): Promise<Server_response| null>{
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/forgot_password/${email}`, {
+                method: "POST",
+                signal: signal,
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+
+            const responseObj = await response.json() as Server_response_login
+            return responseObj
+            
+        } catch (err: any) {
+            throw new Error(err)
+        }
     }
 }
 

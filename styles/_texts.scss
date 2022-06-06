@@ -73,21 +73,18 @@ p {
 }
 a {
     font-family: $font_alatsi;
-    color: $color_white;
     line-height: 2rem;
     font-weight: unset;
-
-    &.main {
-        color: $color_main;
-        &:hover{
-            cursor: pointer;
-            color: $color_main_hover;
-        }
-        &:active{
-            cursor: pointer;
-            color: $color_main_active;
-        }
+    color: $color_main;
+    &:hover{
+        cursor: pointer;
+        color: $color_main_hover;
     }
+    &:active{
+        cursor: pointer;
+        color: $color_main_active;
+    }
+
     &.white {
         color: $color_white;
         text-decoration: underline;
@@ -100,6 +97,7 @@ a {
             color: $color_main_active;
         }
     }
+    
     &.big {
         font-size: 1.125rem;
     }

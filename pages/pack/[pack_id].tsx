@@ -291,7 +291,9 @@ function PackPreview(props: {pack: Pack, authUser: Public_user}) {
                         <H1_with_deco title={pack.title}/>
 
                         <p>{pack.description}</p>
-                        <Button containerClassName='button_container' btnClassName='primary big' clickWithEnter={true} onClick={() => displayDownloadPopup()} btnLabel='Download Pack'/>
+                        <div className='button_wrapper'>
+                            <Button className='primary big' clickWithEnter={true} onClick={() => displayDownloadPopup()} btnLabel='Download Pack'/>
+                        </div>
                     </div>
 
                     {!own_pack &&

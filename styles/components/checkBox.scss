@@ -1,0 +1,36 @@
+.check_box_container{
+    display: grid;
+    grid-template-columns: 15px 1fr;
+    column-gap: 1rem;
+    align-items: start;
+    justify-items: start;
+    margin-top: .5rem;
+    
+    .check_box {
+        margin-top: .55rem;
+        position: relative;
+        align-self: start;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 15px;
+        width: 15px;
+        border: 1px solid white;
+        margin-right: 1rem;
+        &:hover {
+            cursor: pointer;
+        }
+        @include breakpoint(mobile) {
+            margin-top: .5rem;
+        }
+        svg{
+            position: absolute;
+            transform: scale(1.4);
+            fill: $color_main;
+        }
+    }
+    p {
+        align-self: start;
+        line-height: 1.5rem;
+    }
+}

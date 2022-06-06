@@ -251,7 +251,8 @@ export interface Server_response_packs extends Server_response{
 export interface Server_response_login extends Server_response{
     public_user: Public_user | null, 
     token: string | null,
-    verified: boolean,
+    banned?: boolean
+    verified: boolean | null | undefined,
     email: string | undefined | null,
 }
 export interface Server_response_pack_rating extends Server_response{

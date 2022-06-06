@@ -13,6 +13,10 @@ import MetaGenerator from '../components/MetaGenerator';
 import PageContent from '../components/layout/pageContent';
 import { PopupProviderContext } from '../context/popupProvider';
 import Button from '../components/button';
+import PasswordInput from '../components/passwordInput';
+import apiCaller from '../lib/apiCaller';
+import ForwardContainer from '../components/forwardContainer';
+import KingHeader from '../components/kingHeader';
 
 
 export default function PageRenderer() {
@@ -38,8 +42,9 @@ export default function PageRenderer() {
 export function LoginPage(props: { Auth: Auth_context_type}) {
     const [loading, set_loading] = useState(false)
     const popupContext = useContext(PopupProviderContext)
-    const [password_visibility, set_password_visibility] = useState(false)
-    const refs = useRef<any>([])
+    const abortControllerRef = useRef(new AbortController())
+    const passwordInputRef = useRef<null | HTMLInputElement>(null)
+    const emailInputRef = useRef<null | HTMLInputElement>(null)
     const buttonRef = useRef<null | HTMLButtonElement>(null)
     const router = useRouter()
     const Auth = props.Auth
@@ -61,76 +66,79 @@ export function LoginPage(props: { Auth: Auth_context_type}) {
         }
         
     }
+    function resetInputs() {
+        if(!passwordInputRef.current) return
+        if(!emailInputRef.current) return
+        passwordInputRef.current.value = ""
+
+        emailInputRef.current.focus()
+    }
     async function login() {
-        set_loading(true)
-        const email_input = document.getElementById("email_input") as HTMLInputElement
-        const password_input = document.getElementById("password_input") as HTMLInputElement
+        const passwordValue = passwordInputRef.current?.value
+        if(!passwordValue) return
+        const emailValue = emailInputRef.current?.value
+        if(!emailValue) return
         
         try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-                body: JSON.stringify({
-                    email: email_input.value,
-                    password: password_input.value
+            set_loading(true)
+            const response = await apiCaller.login(emailValue.trim(), passwordValue, abortControllerRef.current.signal)
+            if(!response) {
+                popupContext?.setPopup({
+                    title: "Something went wrong!",
+                    message: "Something went wrong while trying to log you in. Please try again later.",
+                    buttonLabel: "Retry",
+                    success: false,
+                    buttonOnClick: () => {resetInputs(); popupContext.setPopup(null)},
                 })
-            })
+                return
+            }
 
-            const response_obj = await response.json() as Server_response_login
-            const email = response_obj.email
-            const public_user = response_obj.public_user
-            
-            if(response.status === 403) {
+
+            const public_user = response?.public_user
+            const email = response?.email
+            const banned = response?.banned
+
+            if(banned) {
                 set_loading(false)
                 popupContext?.setPopup({
                     title: "Banned!",
                     message: "You're banned! Please contact an admin for more informations.",
                     buttonLabel: "Ok",
-                    success: false
+                    success: false,
+                    buttonOnClick: () => {resetInputs(); popupContext.setPopup(null)}
+
                 })
                 return
             }
 
-            if(!response_obj.success) {
+            if(response?.verified === false) {
                 set_loading(false)
-                popupContext?.setPopup({
-                    title: "Wrong Credentials",
-                    message: "We couldn't find any match for your credentials",
-                    buttonLabel: "Ok",
-                    success: false,
-                    buttonOnClick: () => {refs.current["email"].focus(), popupContext.setPopup(null)},
-                })
-                return
-            } 
+                if(!email) return
 
-            if(response_obj.verified === false) {
-                if(!email) {
-                    popupContext?.setPopup({
-                        title: "Something went wrong!",
-                        message: "Something went wrong while trying to log you in. Please try again later.",
-                        buttonLabel: "Retry",
-                        success: false,
-                        buttonOnClick: () => {refs.current["email"].focus(); popupContext.setPopup(null)},
-                    })
-                    return
-                }
-                
                 popupContext?.setPopup({
                     title: "Please confirm your email!",
                     message: "You have to confirm your email address to be able to log into your account!",
                     buttonLabel: "Send confirmation",
-                    success: false,
-                    buttonOnClick: () => {resend_email_verification(email); refs.current["email"].focus(); popupContext.setPopup(null)}
+                    success: true,
+                    buttonOnClick: () => {resend_email_verification(email); resetInputs(); popupContext.setPopup(null)}
                 })
-                set_loading(false)
                 return
             }
 
-            if(!public_user) return 
+            if(!response.success) {
+                set_loading(false)
+                popupContext?.setPopup({
+                    success: false,
+                    title: "Failed!",
+                    message: response.message,
+                    buttonLabel: "Okay",
+                    buttonOnClick: () => {resetInputs(); popupContext.setPopup(null)}
+                })
+            }
             
+            
+
+            if(!public_user) return
             Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGIN, payload: {auth: true, public_user: {...public_user}, callb: () => {router.push("/account", "/account", {scroll: false})}}})
             set_loading(false)
 
@@ -139,88 +147,38 @@ export function LoginPage(props: { Auth: Auth_context_type}) {
         }
     }
 
-    function keyPressFunc(e: any) {
-        if(document.activeElement === refs.current["email"] || document.activeElement == refs.current["password"]) {
-                
-            if(e.keyCode !== 13) return
-            refs.current["email"].blur()
-            refs.current["password"].blur()
-        }
-    }
-    //Eventlistener to login when pressing enter
-    useEffect(() => {
-        /* let timer: any
-        function click_login_button(e: any) {
-            
-            if(document.activeElement === refs.current["email"] || document.activeElement == refs.current["password"]) {
-                
-                if(e.keyCode !== 13) return
-                refs.current["email"].blur()
-                refs.current["password"].blur()
-            }
-        }
-
-        window.addEventListener("keyup", click_login_button)
-        return(() => {
-            window.removeEventListener("keyup", click_login_button)
-            clearTimeout(timer)
-        }) */
-    }, [])
-
-    function toggle_password_type() {
-        if(refs.current["password"].type === "password") {
-            refs.current["password"].type = "text"
-            set_password_visibility(true)
-        } else {
-            refs.current["password"].type = "password"
-            set_password_visibility(false)
-        }
+    function setRef(el: HTMLInputElement | null) {
+        passwordInputRef.current = el
     }
 
-    function keyUpCondition(e: any) {
-        if(document.activeElement === refs.current["email"] || document.activeElement == refs.current["password"]) {
-            if(e.keyCode !== 13) return false
-            refs.current["email"].blur()
-            refs.current["password"].blur()
 
-            return true
-        } else {
-            return false
-        }
-    }
+
     return (
         <PageContent>
             
             <div className="login_container">
-                <H1_with_deco title="Sign In" />
+                <KingHeader title="Sign In" />
                 
-                <input ref={(el) => {return refs.current["email"] = el}} type="text" placeholder="Email" id="email_input"/>
-                
-                <div className='password_input_container'>
-                    <input ref={(el) => {return refs.current["password"] = el}} type="password" placeholder="Password" id="password_input"/>
+                <div className='input_container'>
+                    <input ref={(el) => {emailInputRef.current = el}} type="text" placeholder="Email" className='big'/>
                     
-                    {!password_visibility &&
-                        <div onClick={toggle_password_type} className='password_visibility_icon_container'>
-                            <VisibilityOffIcon/>
-                        </div>
-                    }
-                    {password_visibility &&
-                        <div onClick={toggle_password_type} className='password_visibility_icon_container'>
-                            <VisibilityIcon/>
-                        </div>
-                    }
-                    
+                    <PasswordInput placeholder='Password' className='big' refCallb={(el) => {setRef(el)}}/>
                 </div>
 
-                <Button clickWithEnter={true} containerClassName='login_button' onClick={() => login()} btnClassName='primary default' btnLabel='Login' loading={loading} />
-                <div className="forward_container">
-
-                    <span className="bottom_section_line" />
-                    <div className="items">
-                        <p>{"Did you forget your password? "}<Link href="/forgot_password" scroll={false}>Reset Password</Link></p>
-                        <p>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
-                    </div>
-                    
+                <div className='button_wrapper'>
+                    <Button clickWithEnter={true} onClick={login} className='primary default' btnLabel='Login' loading={loading} />
+                </div>
+                
+                <div className='forward_wrapper'>
+                    <ForwardContainer 
+                        componentsArr=
+                        {
+                            [
+                                <p key={"forgot_password"}>{"Did you forget your password? "}<Link href="/forgot_password" scroll={false}>Reset Password</Link></p>,
+                                <p key={"signup"}>{"Don’t have an account? "}<Link href="/signup" scroll={false}>Create Account</Link></p>
+                            ]
+                        }
+                    />
                 </div>
 
             </div>
