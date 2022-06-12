@@ -57,23 +57,24 @@ function SignupPage() {
     const [currentStep, setCurrentStep] = useState(1)
     const [availableSteps, setAvailableSteps] = useState<number[]>([1])
 
-    function addAvailableStep(step: number) {
+    
+    const addAvailableStep = (step: number) => {
         if(!availableSteps.includes(step)) setAvailableSteps([...availableSteps, step])
     }
-    function removeAvailableStep(step: number) {
+    const removeAvailableStep = (step: number) => {
         const index = availableSteps.indexOf(step)
         if(availableSteps[index]) {
             availableSteps.splice(index, 1)
             setAvailableSteps([...availableSteps])
         }
     }
-    function nextStep() {
+    const nextStep = () => {
         const nextStep = currentStep + 1
         if(!availableSteps?.includes(nextStep)) return
 
         setCurrentStep(nextStep)
     }
-    function resetSignup() {
+    const resetSignup = () => {
         setUsername(null)
         setEmail(null)
         setPassword(null)
@@ -82,7 +83,7 @@ function SignupPage() {
         setCurrentStep(1)
         setAvailableSteps([])
     }
-    async function createAccount(signal: AbortSignal) {
+    const createAccount = async(signal: AbortSignal) => {
         if(!username || !email || !password || !legal) return
 
         try {
@@ -106,12 +107,10 @@ function SignupPage() {
                 })
             }
         } catch (error) {
-            
+            //Error
         }
     }
-
-    const setErrorMessage = useCallback((paragraphElement: React.MutableRefObject<HTMLParagraphElement | null>, inputElement: React.MutableRefObject<HTMLParagraphElement | null>, error: boolean, message?: string) => {
-        
+    const setErrorMessage = (paragraphElement: React.MutableRefObject<HTMLParagraphElement | null>, inputElement: React.MutableRefObject<HTMLParagraphElement | null>, error: boolean, message?: string) => {
         if(error) {
             inputElement.current?.classList.add("error")
             if(paragraphElement.current) paragraphElement.current.innerText = message ?? ""
@@ -119,8 +118,7 @@ function SignupPage() {
             inputElement.current?.classList.remove("error")
             if(paragraphElement.current) paragraphElement.current.innerText = ""
         }
-        
-    }, [])
+    }
 
     //Adding smooth scroll to page.
     useEffect(() => {
@@ -167,7 +165,7 @@ function SignupPage() {
                             componentsArr=
                             {
                                 [
-                                    <p>{"Already a member? "}<Link href="/login" scroll={false}>Sign In</Link></p>,
+                                    <p key={"Login"}>{"Already a member? "}<Link href="/login" scroll={false}>Sign In</Link></p>,
                                 ]
                             }
                         />
@@ -255,7 +253,7 @@ function StepOne(props: {username: string | null, setUsername: React.Dispatch<Re
         })
     }, [usernameInputRef, abortControllerRef, timerRef, addAvailableStep, usernameAvailable, setLoading, setErrorMessage])
     
-    async function triggerNextStep() {
+    const triggerNextStep = async() => {
         const success = await validateUserInput()
         if(!success) return
 

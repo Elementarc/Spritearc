@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import {AnimatePresence, motion} from "framer-motion";
 import { PopupProviderContext } from '../context/popupProvider';
 import Button from './button';
+import useButtonEnter from '../hooks/useButtonEnter';
 
 export interface IPopup {
     success?: boolean,
@@ -20,21 +21,16 @@ export enum EPopupType {
     DEFAULT = "default"
 }
 
-/**
- * This component does make sure to render a Popup whenever the global State Popup is set via setPopup(). 
- * @param success
- * @returns 
- */
-export default function PopupHandler() {
+export default function PopupRenderer() {
     const popupProvider = useContext(PopupProviderContext)
     if(!popupProvider) return null
-
     const popup = popupProvider.popup
     const setPopup = popupProvider.setPopup
+    const random_number = Math.random()
 
     return (
         <AnimatePresence exitBeforeEnter>
-            {popup && <Popup popup={popup} setPopup={setPopup}/>}
+            {popup && <Popup key={`popup_${random_number}`} popup={popup} setPopup={setPopup}/>}
         </AnimatePresence>
     );
 }
@@ -44,7 +40,7 @@ export default function PopupHandler() {
  * @param props.COMPONENT If given, will only render component.
  * @param props.timer will set a timer when the main button will be available to click.
  * @param props.success does change the theme of the info box. Negative / successful infobox.
- * @param props.doNotClosePopup if true stops normal behavior of closing the popup on button click.
+ * @param props.buttonOnClick callback function that will be triggert when button is clicked. If callback given it wont close on its own. You would have call setPopup(null) in its callback.
  * @returns 
  */
 function Popup(props: {popup: IPopup, setPopup: React.Dispatch<React.SetStateAction<IPopup | null>>}) {
@@ -60,33 +56,26 @@ function Popup(props: {popup: IPopup, setPopup: React.Dispatch<React.SetStateAct
     const buttonOnClick = props.popup.buttonOnClick
     const cancelOnClick = props.popup.cancelOnClick
 
-    async function buttonFunc() {
-        if(timer !== 0) return
+    const onClick = useCallback(async() => {
+        if(timer) return
 
         if(buttonOnClick) {
             setLoading(true)
             await buttonOnClick(abortControllerRef.current.signal)
-            setLoading(false)
         } else {
             props.setPopup(null)
         }
-        
-        
-    }
+    }, [timer])
     
     //memoized because used in event when pressing ESC to close popup
     const memoCancelFunc = useCallback(() => {
-        async function cancelFunc() {
-            if(cancelOnClick) cancelOnClick(abortControllerRef.current.signal)
-            props.setPopup(null)
-        }
-        cancelFunc()
-    }, [props.setPopup, cancelOnClick])
+        if(cancelOnClick) cancelOnClick(abortControllerRef.current.signal)
+        props.setPopup(null)
 
+    }, [props.setPopup, cancelOnClick])
 
     //Timer
     useEffect(() => {
-        
         let timerId: NodeJS.Timer
 
         if(timer > 0) {
@@ -94,6 +83,8 @@ function Popup(props: {popup: IPopup, setPopup: React.Dispatch<React.SetStateAct
                 setTimer(timer - 1)
             }, 1000);
         }
+
+        
 
         return () => {
             clearTimeout(timerId)
@@ -129,7 +120,7 @@ function Popup(props: {popup: IPopup, setPopup: React.Dispatch<React.SetStateAct
                         {message && <p className='default'>{message}</p>}
 
                         {buttonLabel && 
-                            <Button id='popup_button' clickWithEnter={true} onClick={buttonFunc} className={success ? 'primary default' : 'error default'} btnLabel={timer ? `${timer}` : buttonLabel} loading={loading} />
+                            <Button onClick={onClick} timer={timer} className={success ? 'primary default' : 'error default'} btnLabel={buttonLabel} loading={loading} />
                         }
 
                         <h4 onClick={memoCancelFunc}>{cancelLabel ?? "Close window"}</h4>

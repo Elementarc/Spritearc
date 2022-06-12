@@ -6,7 +6,6 @@ import Footer from '../../components/footer';
 import { useParallax } from '../../lib/custom_hooks';
 import { Nav_shadow } from '../../components/navigation';
 import Head from 'next/head';
-import Fixed_app_content_overlay from '../../components/fixed_app_content_overlay';
 import Profile_socials_background from "../../public/images/profile_socials_background.svg"
 import Twitter_logo from "../../public/logos/twitter_logo.svg"
 import { GetServerSideProps } from 'next'
@@ -47,44 +46,6 @@ function UserProfilePage(props: {publicUser: Public_user}) {
             <PageContent>
                 <Nav_shadow/>
 
-                <Fixed_app_content_overlay>
-                    <div className='fixed_profile_container'>
-                        {(publicUser?.socials?.artstation.length > 0 || publicUser?.socials?.instagram.length > 0 || publicUser?.socials?.twitter.length > 0) &&
-                        
-                            <div className='socials_container'>
-                                
-                                <div className='socials'>
-                                    <div className='background_wrapper'>
-                                        <Profile_socials_background/>
-                                    </div>
-                                    
-                                    {publicUser?.socials?.instagram.length > 0 &&
-                                        <a href={`https://www.instagram.com/${publicUser.socials.instagram}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                            <Image loading='lazy' unoptimized={true} src={"/logos/instagram_color.png"} layout={"fill"} alt="Instagram Logo"></Image>
-                                        </a>
-                                    }
-                                    {publicUser?.socials?.twitter.length > 0 &&
-                                        <a href={`https://www.twitter.com/${publicUser.socials.twitter}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                            <Twitter_logo/>
-                                        </a>
-                                    }
-
-                                    {publicUser?.socials?.artstation.length > 0 &&
-                                        
-                                        <a href={`https://www.artstation.com/${publicUser.socials.artstation}`} target="_blank" rel='noreferrer' className='logo_container'>
-                                            <Image loading='lazy' unoptimized={true} src={"/logos/artstation_color.png"} layout={"fill"} alt="Artstation Logo"></Image>
-                                        </a>
-                                    }
-                                </div>
-                            </div>
-
-                        }
-
-
-
-                    </div>
-                </Fixed_app_content_overlay>
-                
                 <User_representation public_user={publicUser} followers_count={followers_count} following_count={following_count}  set_followers_count={set_followers_count} set_following_count={set_following_count}/>
                 <User_stats followers_count={followers_count} following_count={following_count}/>
 
@@ -142,7 +103,7 @@ function User_representation(props: {public_user: Public_user, followers_count: 
     async function follow_user() {
         if(Auth.user.auth === false) {
             popupContext?.setPopup({
-                success: true,
+                success: false,
                 title: "Please Login!",
                 message: "You have to login into your account to be able to follow people!",
                 buttonLabel: "Okay",

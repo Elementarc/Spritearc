@@ -2,7 +2,6 @@ import React, {useEffect, useState, useContext, useRef} from 'react';
 import { Auth_context_type, Server_response, Server_response_email, Public_user,  } from '../../types';
 import Footer from '../../components/footer';
 import { format_date } from '../../lib/date_lib';
-import Fixed_app_content_overlay from '../../components/fixed_app_content_overlay';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
 import { Auth_context, USER_DISPATCH_ACTIONS } from '../../context/auth_context_provider';
@@ -103,43 +102,6 @@ export function Account_settings_page() {
             </Head>
         
         
-            <Fixed_app_content_overlay>
-                <div className='fixed_account_settings_container'>
-                    <AnimatePresence exitBeforeEnter>
-                        { account_delete_warning &&
-
-                            <motion.div key="delete_account_warning" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_confirmation_container'>
-                                <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='confirmation_content'>
-                                    <h1>Delete Account</h1>
-                                    <p>Remember, all your packs will be deleted and they wont be recoverable anymore. There is no going back afterwards!</p>
-                                    <button onClick={() => {set_account_delete_warning(false); set_delete_account(true)}}>Yes, delete account!</button>
-                                    <h4 onClick={() => {set_account_delete_warning(false)}}>No, dont delete account</h4>
-                                </motion.div>
-
-                                <div onClick={() => {set_account_delete_warning(false)}} className='delete_account_confirmation_background' />
-                            </motion.div>
-                        }
-
-                        { delete_account &&
-
-                            <motion.div key="delete_account" initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, transition: {duration: .2, type: "tween"}}} className='delete_account_container'>
-                                <motion.div initial={{opacity: 0, scale: .8}} animate={{opacity: 1, scale: 1, transition: {duration: .2, type: "tween"}}} exit={{opacity: 0, scale: .8, transition: {duration: .2, type: "tween"}}}  className='delete_account_content'>
-                                    <h1>Please enter your password</h1>
-                                    <p>To delete your account please enter your account password as your final step.</p>
-                                    <input id="account_password_input" type="password" placeholder='Password'/>
-                                    <button onClick={submit_account_deletion}>DELETE ACCOUNT</button>
-                                    <h4 onClick={() => {set_delete_account(false)}}>I changed my mind.</h4>
-                                </motion.div>
-
-                                <div onClick={() => {set_delete_account(false)}} className='delete_account_background' />
-                            </motion.div>
-                        }
-
-                    </AnimatePresence>
-                </div>
-            </Fixed_app_content_overlay>
-            
-
             <div className='account_settings_content'>
                 <Nav_shadow />
 

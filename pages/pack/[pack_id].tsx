@@ -34,6 +34,7 @@ import Flex from '../../components/layout/flex';
 import Stats, {IStats} from '../../components/stats';
 import Button from '../../components/button';
 import PackStats from '../../components/packStats';
+import useButtonEnter from '../../hooks/useButtonEnter';
 
 export default function PageRenderer(props: {pack: Pack}) {
     const Auth = useContext(Auth_context) as Auth_context_type
@@ -278,7 +279,7 @@ function PackPreview(props: {pack: Pack, authUser: Public_user}) {
     function downloadPack() {
         const download_button = ref.current
         if(!download_button) return
-
+        
         download_button.setAttribute("href", downloadLink)
         download_button.setAttribute("download", downloadLink.split(" ").join("_"))
         download_button.click()
@@ -286,7 +287,6 @@ function PackPreview(props: {pack: Pack, authUser: Public_user}) {
         download_button.removeAttribute("download")
         popupProvider?.setPopup(null)
     }
-    
     return(
         <>
             <a style={{display: "none"}} ref={(el) => {ref.current = el}}></a>
@@ -303,7 +303,7 @@ function PackPreview(props: {pack: Pack, authUser: Public_user}) {
 
                         <p>{pack.description}</p>
                         <div className='button_wrapper'>
-                            <Button className='primary big' clickWithEnter={true} onClick={() => displayDownloadPopup()} btnLabel='Download Pack'/>
+                            <Button className='primary big' onClick={displayDownloadPopup} btnLabel='Download Pack'/>
                         </div>
                     </div>
 

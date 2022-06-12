@@ -9,6 +9,9 @@ button {
         background-color: $color_main;
         padding: .75rem 3.8rem;
         width:fit-content;
+        &:focus {
+            background-color: $color_main_hover;
+        }
         &:hover{
             background-color: $color_main_hover;
             cursor: pointer;
@@ -16,6 +19,7 @@ button {
         &:active {
             background-color: $color_main_active;
         }
+        
     }
     &.secondary {
         @include Button();

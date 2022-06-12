@@ -1,15 +1,16 @@
 import Image from 'next/image';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { PopupProviderContext } from '../context/popupProvider';
+import useButtonEnter from '../hooks/useButtonEnter';
 
 
 
 interface IButton {
     loading?: boolean | null | undefined,
     className?: string,
+    tabIndex?: number;
     btnLabel: string,
-    id?: string
-    clickWithEnter?: boolean
+    timer?: number,
     onClick?: (e?: any) => any
 }
 
@@ -22,58 +23,30 @@ interface IButton {
  * @returns 
  */
 export default function Button(props: IButton) {
-    const popupContext = useContext(PopupProviderContext)
-    const popup = popupContext?.popup
-    const clickWithEnter = props.clickWithEnter
-    const button = useRef<null | HTMLButtonElement>(null)
     const loading = props.loading
-
+    const buttonRef = useRef<null | HTMLButtonElement>(null)
+    
     async function btnOnClick(e: any) {
-        if(props?.onClick && !loading) await props.onClick()
+        buttonRef.current?.blur()
+        if(props?.onClick && !loading && !props.timer) {
+            await props.onClick()
+        }
     }
-
-    //Eventlistener to trigger button with enter.
-    useEffect(() => {
-        if(!clickWithEnter) return
-        
-        function keyEvent(e: any) {
-            if(e.keyCode !== 13) return
-
-            switch (button.current?.id) {
-                //Pressing enter checks if id of button is popup_button to then click the button.
-                case "popup_button": {
-                    button.current?.click() 
-                    break;
-                }
-                    
-                //Pressing enter does not trigger any button clicks unless there is no popup anymore.
-                default: {
-                    if(popupContext?.popup) break
-                    button.current?.click() 
-                    break;
-                }
-            }
-             
-        }
-
-        window.addEventListener("keyup", keyEvent)
-        return() => {
-            window.removeEventListener("keyup", keyEvent)
-        }
-    }, [button, popup, clickWithEnter])
-
+    
     return (
         <div className={`button_container`}>
-            {props.loading && 
+            {props.loading && !props.timer &&
                 <div className="spinner_container">
                     <div className='image_container'>
                         <Image unoptimized={true}  src={`/images/loading_fast.gif`} layout="fill" />
                     </div>
                 </div>
             }
-
-            <button id={props.id ?? ""} ref={(el) => button.current = el} style={loading ? {color: "rgba(0,0,0,0)"} : {color: "rgba(0,0,0,1)"}} onClick={async(e) => {await btnOnClick(e)}} className={props.className ?? ""}>
-                {props.btnLabel}
+            <button tabIndex={props.tabIndex ?? undefined} type='button' ref={buttonRef} style={loading ? {color: "rgba(0,0,0,0)"} : {color: "rgba(0,0,0,1)"}} onClick={async(e) => {await btnOnClick(e)}} className={props.className ?? ""}>
+                {props.timer 
+                    ? `${props.timer}`
+                    : `${props.btnLabel}`
+                } 
             </button>
             
         </div>

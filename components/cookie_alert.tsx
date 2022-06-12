@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
 import { AnimatePresence, motion, useAnimation } from 'framer-motion';
-import { App_context } from '../types';
-import { APP_CONTEXT } from './layout/layout';
 
 export default function Cookie_alert() {
     const [acknowledged_cookie, set_acknowledged_cookie] = useState<null | boolean>(null)
-    const App: App_context = useContext(APP_CONTEXT)
 
     useEffect(() => {
         const acknowledged = localStorage.getItem("acknowledged_cookie")

@@ -3,15 +3,13 @@ import React, {useEffect, useContext} from 'react';
 import {App_context, App_navigation_context_type} from "../../types"
 import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter } from 'next/router';
-import Navigation from '../navigation';
+import NavigationRenderer from '../navigation';
 import Device_context_provider from '../../context/device_context_provider';
 import Navigation_context_provider, {Navigation_context} from '../../context/navigation_context_provider';
 import Cookie_alert from '../cookie_alert';
-import Unseen_notification_context_provider from '../../context/unseen_notifications_provider';
 import Page from './page';
 import PopupProvider from '../../context/popupProvider';
 
-export const APP_CONTEXT: any = React.createContext(null)
 
 export default function Layout({children}: any ) {
     const router = useRouter()
@@ -36,37 +34,33 @@ export default function Layout({children}: any ) {
     }
 
     return (
-        <APP_CONTEXT.Provider value={APP}>
-            <Device_context_provider>
-                <Navigation_context_provider>
-                        <Unseen_notification_context_provider>
-                            <PopupProvider>
-                                <div className="app_container" id="app_container">
+        <Device_context_provider>
+            <Navigation_context_provider>
+                    <PopupProvider>
+                        <div className="app_container" id="app_container">
 
-                                    <Navigation/>
+                            <NavigationRenderer/>
 
-                                    <div className="app_content_container" id="app_content_container">
+                            <div className="app_content_container" id="app_content_container">
 
 
-                                        <App_content_blur/>
+                                <App_content_blur/>
 
-                                        <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
-                                            <motion.main key={router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
-                                                <Page>
-                                                    {children}
-                                                </Page>
-                                            </motion.main>
-                                        </AnimatePresence>
+                                <AnimatePresence exitBeforeEnter onExitComplete={on_unmount}>
+                                    <motion.main key={router.pathname} initial={{ opacity: 0}} animate={{opacity: 1, transition: {duration: 0.25}}} exit={{opacity: 0, transition: {duration: 0.1}}}>
+                                        <Page>
+                                            {children}
+                                        </Page>
+                                    </motion.main>
+                                </AnimatePresence>
 
-                                    </div>
-                                    
-                                    <Cookie_alert/>
-                                </div>
-                            </PopupProvider>
-                        </Unseen_notification_context_provider>
-                </Navigation_context_provider>
-            </Device_context_provider>
-        </APP_CONTEXT.Provider>
+                            </div>
+                            
+                            <Cookie_alert/>
+                        </div>
+                    </PopupProvider>
+            </Navigation_context_provider>
+        </Device_context_provider>
     );
 }
 

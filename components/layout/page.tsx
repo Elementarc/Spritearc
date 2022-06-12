@@ -1,6 +1,6 @@
 import React from 'react'
 import ViewPort from './viewPort';
-import PopupHandler from '../popup';
+import PopupRenderer from '../popup';
 
 /**
  * A Simple Component that is used as a page. Used in layout to wrap all content in a page wrapper.
@@ -15,7 +15,7 @@ export default function Page({children}: any) {
             {children}
 
             <ViewPort >
-                <PopupHandler />
+                <PopupRenderer />
             </ViewPort>
 
             <ViewPort zIndex={-1}>

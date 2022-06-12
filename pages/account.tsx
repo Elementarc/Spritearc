@@ -14,12 +14,10 @@ import { Nav_shadow } from '../components/navigation';
 import { useParallax } from '../lib/custom_hooks';
 import EditIcon from "../public/icons/EditIcon.svg"
 import BellIcon from "../public/icons/BellIcon.svg"
-import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
 import { AnimatePresence, motion } from 'framer-motion';
 import { validate_user_description } from '../spritearc_lib/validate_lib';
 import Head from 'next/head';
 import Protected_route from '../components/protected_router';
-import { IUnseen_notification_context_provider, Unseen_notification_context } from '../context/unseen_notifications_provider';
 import { PopupProviderContext } from '../context/popupProvider';
 
 export default function Account_page_handler() {
@@ -54,7 +52,6 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user}
     const Auth = props.Auth
     const user = props.user
     const controller = useRef(new AbortController())
-    const Unseen_notification: IUnseen_notification_context_provider = useContext(Unseen_notification_context)
     
     function coming_soon() {
         popupContext?.setPopup({
@@ -257,27 +254,6 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user}
                 <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
             </Head>
         
-            
-            <AnimatePresence>
-                {update_about_state &&
-                    
-                    <Fixed_app_content_overlay>
-                        <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: 0.1}}} exit={{opacity: 0, transition: {duration: 0.1}}}  className='update_user_description_container'>
-
-                            <motion.div initial={{scale: .8}} animate={{scale: 1, transition: {duration: 0.1}}} exit={{scale: .8, transition: {duration: 0.1}}} className='update_user_description_box'>
-                                <h1>Tell us about yourself</h1>
-                                <input onKeyUp={event_valid_user_description} id="user_description_input" type="text" name="" placeholder={`${user.description}`}/>
-                                <p className='update_user_description_error_message' id="update_user_description_error_message"></p>
-                                <button className='primary_button' onClick={update_user_description}>Ok</button>
-                            </motion.div>
-                            
-                            <div onClick={() => {set_update_about_state(false)}} className='update_user_description_background' />
-                        </motion.div>
-                    </Fixed_app_content_overlay>
-
-                }
-            </AnimatePresence>
-
             <div className='account_content'>
                 <Nav_shadow/>
                 <div className='user_preview_container'>
@@ -327,7 +303,6 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user}
 
                     <Navigation_card label='Profile' description='Visit your public profile and checkout what others will see when visiting your account!' callb={() => {go_to(`/user/${user.username}`)}} notification={null} icon={ProfileIcon}/>
                     <Navigation_card label='Create Pack' description='Create your own Pixel art pack! Make yourself a name.' callb={() => {go_to('/create_pack')}} notification={null} icon={AddIcon}/>
-                    <Navigation_card label='Notifications' description='Stay up to date with anything new happening!' callb={() => {go_to('/notifications')}} notification={Unseen_notification?.unseen_notifications ? Unseen_notification?.unseen_notifications === 0 ? null : `${Unseen_notification?.unseen_notifications}` : null} icon={BellIcon}/>
                     <Navigation_card label='Account Settings' description='Change important account informations of your account.' callb={() => {go_to('/account/settings')}} notification={null} icon={SettingsIcon}/>
                     <Navigation_card label='Logout' description='Logout from your account.' callb={logout} notification={null} icon={LogoutIcon}/>
                 

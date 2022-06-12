@@ -17,6 +17,7 @@ import PasswordInput from '../components/passwordInput';
 import apiCaller from '../lib/apiCaller';
 import ForwardContainer from '../components/forwardContainer';
 import KingHeader from '../components/kingHeader';
+import useButtonEnter from '../hooks/useButtonEnter';
 
 
 export default function PageRenderer() {
@@ -67,11 +68,11 @@ export function LoginPage(props: { Auth: Auth_context_type}) {
         
     }
     function resetInputs() {
-        if(!passwordInputRef.current) return
+        /* if(!passwordInputRef.current) return
         if(!emailInputRef.current) return
         passwordInputRef.current.value = ""
 
-        emailInputRef.current.focus()
+        emailInputRef.current.focus() */
     }
     async function login() {
         const passwordValue = passwordInputRef.current?.value
@@ -151,8 +152,6 @@ export function LoginPage(props: { Auth: Auth_context_type}) {
         passwordInputRef.current = el
     }
 
-
-
     return (
         <PageContent>
             
@@ -166,7 +165,7 @@ export function LoginPage(props: { Auth: Auth_context_type}) {
                 </div>
 
                 <div className='button_wrapper'>
-                    <Button clickWithEnter={true} onClick={login} className='primary default' btnLabel='Login' loading={loading} />
+                    <Button innerRef={buttonRef} onClick={login} className='primary default' btnLabel='Login' loading={loading} />
                 </div>
                 
                 <div className='forward_wrapper'>
