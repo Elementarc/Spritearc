@@ -1,0 +1,39 @@
+.pack_stats_container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    height: auto;
+    margin-top: 4rem;
+    @include breakpoint(mobile) {
+        width: 100%;
+        padding: 0 1rem;
+        margin-bottom: 2rem
+    }
+    .top_line {
+        @include next_section_line;
+        width: 110%;
+        position: absolute;
+        top: 0;
+        @include breakpoint(mobile) {
+            width: 100%;
+        }
+    }
+
+
+    
+    /*StatsContainer*/
+
+
+
+    .bottom_line {
+        @include next_section_line;
+        width: 110%;
+        position: absolute;
+        bottom: 0;
+        @include breakpoint(mobile) {
+            width: 100%;
+        }
+    }
+}

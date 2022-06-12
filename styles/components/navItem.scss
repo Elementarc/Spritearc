@@ -1,0 +1,122 @@
+.nav_item_container {
+    position: relative;
+    display: grid;
+    grid-template-columns: 85px 1fr;
+    column-gap: .3rem;
+    height: 75px;
+    align-items: center;
+    justify-items: center;
+    width: 100%;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;      
+    -moz-user-select: none; 
+    -ms-user-select: none;
+    pointer-events: all;
+    .icon_container {
+        position: relative;
+        h2 {
+            font-family: $font_alatsi;
+            color: $color_main;
+            text-shadow: 3px 3px 10px 0px black;
+            position: absolute;
+            top: -1.2rem;
+            left: 1.3rem;
+        }
+    }
+    p {
+        justify-self: start;
+        white-space: nowrap;
+        font-family: $font_alatsi;
+    }
+
+    
+    span {
+        position: absolute;
+        opacity: 0;
+        left: 0;
+        height: 100%;
+        width: 3px;
+        background: $color_main;
+    }
+    
+    &:hover {
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    &:active {
+        background: rgba(255, 255, 255, 0.05);
+
+        .icon_container {
+            h2 {
+                color: $color_main_active;
+            }
+        }
+    }
+
+    &.active {
+        svg {
+            fill: $color_main;
+            transform: scale(1.3);
+            
+        }
+
+        p {
+            color: $color_main;
+        }
+
+        &:hover {
+            svg {
+                fill: $color_main_hover;
+            }
+            p {
+                color: $color_main_hover;
+            }
+        }
+
+        &:active {
+            svg {
+                fill: $color_main_active;
+            }
+            p {
+                color: $color_main_active;
+            }
+        }
+
+        span {
+            opacity: 1;
+        }
+    }
+
+    &.inactive {
+
+        &:hover {
+            svg {
+                fill: $color_white;
+            }
+            p {
+                color: $color_white;
+            }
+        }
+
+        &:active {
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.05);
+
+            svg {
+                fill: $color_grey_active;
+            }
+            p {
+                color:  $color_grey_active;
+            }
+        }
+
+        svg {
+            fill: $color_grey;
+            transform: scale(1.3);
+        }
+    }
+    
+    
+}

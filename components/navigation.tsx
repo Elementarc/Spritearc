@@ -120,7 +120,7 @@ function NavigationDesktop() {
                             <NavItem icon={HomeIcon} label="Home" link="/" />
                             <NavItem icon={NewsIcon} label="News" link="/news"/>
                             <NavItem icon={BrowseIcon} label="Browse" link="/browse"/>
-                            <NavItem icon={TrophyIcon} label="Achievements" link="/achievements"/>
+                            <NavItem icon={TrophyIcon} label="Achievements" link="/achievements" new="New"/>
                             <NavItem icon={SearchIcon} label="Search" link="/search" />
                         </div>
 
