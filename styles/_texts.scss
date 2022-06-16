@@ -115,7 +115,18 @@ a {
         cursor: pointer;
         color: $color_main_active;
     }
+    &.error {
+        color: $color_error;
 
+        &:hover{
+            cursor: pointer;
+            color: $color_error_hover;
+        }
+        &:active{
+            cursor: pointer;
+            color: $color_error_active;
+        }
+    }
     &.white {
         color: $color_white;
         text-decoration: underline;

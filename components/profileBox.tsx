@@ -1,9 +1,8 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { Auth_context, USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 import { Auth_context_type } from '../types';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Navigation_context } from '../context/navigation_context_provider';
 import { format_date } from '../lib/date_lib';
@@ -43,9 +42,7 @@ export default function ProfileBox() {
             //Aborted
         }
     }
-    const isActive = () => {
-        if(router.asPath.toLowerCase().includes("/account")) return "active"
-    }
+    
     useEffect(() => {
         return () => {
             console.log("Aborted")
@@ -65,8 +62,8 @@ export default function ProfileBox() {
             <Line display={Navigation.nav_state} opacity={.3}/>
             <div className="profile_box_container">
                 
-                <div onClick={() => {router.push("/account", "/account", {scroll: false}); Navigation.set_nav_state(false)}} className={`portrait ${isActive()}`}>
-                    <Image className='profile_picture' loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user.profile_picture}`} layout="fill"/>
+                <div className='portrait_wrapper'>
+                    <ProfilePicture imageLink={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user.profile_picture}`}/>
                 </div>
 
                 <motion.div className="user_info">
@@ -75,10 +72,27 @@ export default function ProfileBox() {
                     <div className='credits_wrapper'>
                         <SpriteCredits credits={credits}/>
                     </div>
-                    <a onClick={logout} className='small white'>Logout</a>
+                    <a onClick={logout} className='small error'>Logout</a>
                 </motion.div>
             </div>
             <Line display={Navigation.nav_state} opacity={.3}/>
         </>
     );
 }
+
+export function ProfilePicture(props: {imageLink: string}) {
+    const router = useRouter()
+    const Navigation: any = useContext(Navigation_context)
+    const isActive = () => {
+        if(router.asPath.toLowerCase().includes("/account")) return "active"
+    }
+    
+    return (
+        <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} onClick={() => {router.push("/account", "/account", {scroll: false}); Navigation.set_nav_state(false)}} className={`portrait ${isActive()}`}>
+            <Image className='profile_picture' loading='lazy' unoptimized={true} src={props.imageLink} layout="fill"/>
+        </motion.div>
+    );
+}
+
+
+

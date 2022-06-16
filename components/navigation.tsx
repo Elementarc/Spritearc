@@ -27,7 +27,7 @@ import NavItem from "./navItem";
 import ToggleIcon from "./toggleIcon";
 import ScrollList from "./scrollList";
 import useDevice, { EDevice } from "../hooks/useDevice";
-import ProfileBox from "./profileBox";
+import ProfileBox, { ProfilePicture } from "./profileBox";
 
 export default function NavigationRenderer(): ReactElement {
     const device = useDevice()
@@ -105,7 +105,7 @@ function NavigationDesktop() {
 function NavigationMobile() {
     const Navigation: any = useContext(Navigation_context)
     const Auth: Auth_context_type = useContext(Auth_context)
-    
+
     const mobileNavAnimation = useAnimation()
     useEffect(() => {
         if(Navigation.nav_state) {
@@ -120,10 +120,16 @@ function NavigationMobile() {
             })
         }
     }, [Navigation.nav_state])
+
     return (
         <motion.div initial={{height: "55px"}} animate={mobileNavAnimation} className="mobile_navigation_container">
             <div className="top_container">
                 <ToggleIcon iconOne={CloseIcon2} iconTwo={MenuIcon} state={Navigation.nav_state} setState={Navigation.set_nav_state}/>
+                <div className="profile_picture_container">
+                    <AnimatePresence>
+                        {Auth.user.auth && !Navigation.nav_state && <ProfilePicture imageLink={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${Auth.user.public_user.profile_picture}`}/>}
+                    </AnimatePresence>
+                </div>
             </div>
 
             <ScrollList className="nav_items_container">
@@ -134,9 +140,9 @@ function NavigationMobile() {
                 <NavItem icon={SearchIcon} label="Search" link="/search" />
 
                 <div className="nav_item_wrapper">
-                        {Auth.user.auth === null && null}
-                        {Auth.user.auth === false && <NavItem icon={SignInIcon} label="Sign in" link="/login"/> }
-                        {Auth.user.auth === true && <ProfileBox/>}
+                    {Auth.user.auth === null && null}
+                    {Auth.user.auth === false && <NavItem icon={SignInIcon} label="Sign in" link="/login"/> }
+                    {Auth.user.auth === true && <ProfileBox/>}
                 </div>
             </ScrollList>
         </motion.div>

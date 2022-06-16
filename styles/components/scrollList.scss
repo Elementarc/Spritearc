@@ -1,3 +1,18 @@
 .scroll_list_container {
+    position: relative;
     transition: .2s ease-in-out;
+
+    .top_shadow {
+        position: absolute;
+        top: 0;
+        width: 100%;
+        background-color: hotpink;
+    }
+
+    .bottom_shadow {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background-color: hotpink;
+    }
 }
