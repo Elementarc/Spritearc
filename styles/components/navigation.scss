@@ -40,7 +40,7 @@
             }
             .nav_items_container {
                 position: relative;
-                height: 50vh;
+                height: 100%;
                 max-height: 413px;
                 max-height: auto;
                 align-self: start;
@@ -58,7 +58,6 @@
                 position: relative;
                 align-self: end;
                 height: max-content;
-                margin-bottom: 2rem;
             }
         }
 
