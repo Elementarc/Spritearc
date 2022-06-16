@@ -11,6 +11,7 @@ import apiCaller from '../lib/apiCaller';
 import { PopupProviderContext } from '../context/popupProvider';
 import SpriteCredits from './spriteCredits';
 import Line from './line';
+import useGetUserCredits from '../hooks/useGetUserCredits';
 
 export default function ProfileBox() {
     const Auth: Auth_context_type = useContext(Auth_context)
@@ -18,6 +19,8 @@ export default function ProfileBox() {
     const popupProvider = useContext(PopupProviderContext)
     const router = useRouter()
     const abortControllerRef = useRef<AbortController>(new AbortController())
+    const {credits, refetch} = useGetUserCredits()
+
     const visitPublicAccount = () => {
         router.push(`/user/${user.username.toLowerCase()}`, `/user/${user.username.toLowerCase()}`, {scroll: false})
     }
@@ -40,7 +43,6 @@ export default function ProfileBox() {
             //Aborted
         }
     }
-    
     const isActive = () => {
         if(router.asPath.toLowerCase().includes("/account")) return "active"
     }
@@ -50,6 +52,10 @@ export default function ProfileBox() {
             abortControllerRef.current.abort()
         };
     }, [])
+    //refetching credits everytime user opens navigation
+    useEffect(() => {
+        if(Navigation.nav_state) refetch()
+    }, [Navigation, refetch])
 
     if(!popupProvider) return null
     if(!Auth.user.auth) return null
@@ -67,7 +73,7 @@ export default function ProfileBox() {
                     <a className="default" onClick={visitPublicAccount}>{user.username}</a>
                     <p className='user_since_text'>User since: {format_date(new Date(user.created_at))}</p>
                     <div className='credits_wrapper'>
-                        <SpriteCredits/>
+                        <SpriteCredits credits={credits}/>
                     </div>
                     <a onClick={logout} className='small white'>Logout</a>
                 </motion.div>

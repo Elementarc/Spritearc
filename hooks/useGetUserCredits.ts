@@ -1,32 +1,36 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useCallback, useRef} from "react";
 import apiCaller from "../lib/apiCaller";
 
 
-function useGetUserCredits(): number | null {
+function useGetUserCredits(): {credits: number | null, refetch: () => Promise<void>} {
     const [credits, setCredits] = useState<null | string | number>(null)
+    const controllerRef = useRef(new AbortController())
 
-    useEffect(() => {
-        const controller = new AbortController()
+    const getCredits = useCallback(async() => {
+        console.log("Refetched")
+        try {
+            const response = await apiCaller.getCredits(controllerRef.current.signal)
+            if(!response?.success) return
 
-        const credits = async() => {
-            try {
-                const response = await apiCaller.getCredits(controller.signal)
-                if(!response?.success) return
-
-                setCredits(response.credits)
-            } catch(err) {
-                //
-            }
+            setCredits(response.credits)
+        } catch(err) {
+            //
         }
 
-        credits()
+    }, [setCredits, controllerRef])
+
+    useEffect(() => {
+        getCredits()
 
         return(() => {
-            controller.abort()
+            controllerRef.current.abort()
         })
-    }, [setCredits])
+    }, [getCredits])
 
-    return credits ? parseInt(`${credits}`) :  null
+    return {
+        credits: credits ? parseInt(`${credits}`) :  null,
+        refetch: getCredits
+    }
 }
 
 export default useGetUserCredits

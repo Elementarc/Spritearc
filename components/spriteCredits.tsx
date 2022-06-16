@@ -1,10 +1,7 @@
 import React from 'react';
 import Image from 'next/image';
-import Loading from './loading';
-import useGetUserCredits from '../hooks/useGetUserCredits';
 
-export default function SpriteCredits() {
-    const credits = useGetUserCredits()
+export default function SpriteCredits({credits}: {credits: number | null}) {
 
     return (
         <div className='sprite_credits_container'>
