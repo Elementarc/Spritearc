@@ -1,41 +1,30 @@
 import React, {useState, useEffect} from "react";
-import { Server_response_credits } from "../types";
+import apiCaller from "../lib/apiCaller";
 
 
 function useGetUserCredits(): number | null {
-    const [credits, set_credits] = useState<null | string | number>(null)
+    const [credits, setCredits] = useState<null | string | number>(null)
 
     useEffect(() => {
         const controller = new AbortController()
 
-        async function get_credits() {
-
+        const credits = async() => {
             try {
-               
-                const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_credits`, {
-                    method: "POST",
-                    headers: {
-						"Content-Type": "application/json",
-					},
-                    credentials: "include",
-                    signal: controller.signal,
-                })
+                const response = await apiCaller.getCredits(controller.signal)
+                if(!response?.success) return
 
-                const response_obj = await response.json() as Server_response_credits
-                const credits = response_obj?.credits
-                    
-                set_credits(`${credits}`)
+                setCredits(response.credits)
             } catch(err) {
-                //Could not reach server
+                //
             }
-            
         }
-        get_credits()
+
+        credits()
 
         return(() => {
             controller.abort()
         })
-    }, [set_credits])
+    }, [setCredits])
 
     return credits ? parseInt(`${credits}`) :  null
 }

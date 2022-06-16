@@ -37,3 +37,9 @@
         }
     }
 }
+
+.pack_tags_flex {
+    display: flex;
+    column-gap: .7rem;
+    flex-wrap: wrap;
+}

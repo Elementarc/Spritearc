@@ -139,7 +139,7 @@ function HomePage(): ReactElement {
                 title="Our Recent Updates"
                 description={`Are you curious about our newest features? You can visit our news page and read all about the changes and updates we have made.`}
                 imagePath="/images/wallpaper_4.jpg"
-                component={<a className="main default" onClick={() => router.push("/news", "/news", {scroll: false})}  >Read News</a>}
+                component={<a className="main default" onClick={() => router.push("/news", "/news", {scroll: false})}>Read News</a>}
                 alignDirection={ESegmentAlignment.LEFT}
             />
 

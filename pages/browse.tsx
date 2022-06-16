@@ -33,7 +33,6 @@ function BrowsePage() {
 			<PromotedPack/>
 			<PackPreviewsSection label='Most Popular' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/most_popular_packs?`}/>
 			<PackPreviewsSection label='Recently Uploaded' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/recent_packs?`}/>
-			<Nav_shadow/>
 		</PageContent>
 	);
 }

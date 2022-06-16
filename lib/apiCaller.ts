@@ -1,6 +1,6 @@
 import { ServerResponse } from "http";
 import { ObjectId } from "mongodb";
-import { Server_response, Server_response_login, Server_response_pack_id } from "../types";
+import { Server_response, Server_response_credits, Server_response_login, Server_response_pack_id } from "../types";
 import { PackFormData } from "./create_lib";
 
 interface IApiCaller {
@@ -10,8 +10,9 @@ interface IApiCaller {
     usernameAvailable: (username: string, signal: AbortSignal) => Promise<Server_response| null>
     createAccount: (username: string, email: string, password: string, legal: boolean, occasionalEmails: boolean, signal: AbortSignal) => Promise<Server_response| null>
     login: (email: string, password: string, signal: AbortSignal) => Promise<Server_response_login| null>
+    logout: (signal: AbortSignal) => Promise<Server_response| null>
     forgotPassword: (email: string, signal: AbortSignal) => Promise<Server_response| null>
-
+    getCredits: (signal: AbortSignal) => Promise<Server_response_credits| null>
 }
 
 
@@ -172,6 +173,43 @@ class ApiCaller implements IApiCaller {
             })
 
             const responseObj = await response.json() as Server_response_login
+            return responseObj
+            
+        } catch (err: any) {
+            throw new Error(err)
+        }
+    }
+    async logout(signal: AbortSignal): Promise<Server_response| null> {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                signal: signal,
+                credentials: "include",
+            })
+
+            const responseObj = await response.json() as Server_response
+            return responseObj
+            
+        } catch (err: any) {
+            throw new Error(err)
+        }
+    }
+    async getCredits(signal: AbortSignal): Promise<Server_response_credits| null> {
+        try {
+            
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_credits`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                signal: signal,
+                credentials: "include",
+            })
+
+            const responseObj = await response.json() as Server_response_credits
             return responseObj
             
         } catch (err: any) {

@@ -10,11 +10,6 @@
     @include breakpoint(mobile) {
         grid-template-columns: unset;
         grid-template-rows: auto 1fr;
-        .app_content_container{
-            .app_content_blur{
-                display: none;
-            }
-        }
     }
     
     .app_content_container{
@@ -22,11 +17,10 @@
         align-self: start;
         width: 100%;
         height: auto;
-        //background: $color_background_dark;
+        
         @include breakpoint(mobile) {
             margin-top: 55px;
         }
-
         main {
             position: relative;
             z-index: 0;

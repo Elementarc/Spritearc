@@ -1,6 +1,5 @@
 import { useAnimation } from 'framer-motion';
 import React, {useEffect} from 'react';
-import Grid from './layout/grid';
 import { motion } from 'framer-motion';
 
 export default function Pagination(props: {currentPage: number, lastPage: number | null | undefined, setPage: React.Dispatch<React.SetStateAction<number>>}) {
@@ -31,13 +30,13 @@ export default function Pagination(props: {currentPage: number, lastPage: number
 
     return (
         <motion.div animate={paginationAnimation}>
-            <Grid className='pagination_grid'>
+            <div className='pagination_grid'>
                 <span className='left_line' />
                 <div className='next_page_container'>
                     <p onClick={increasePage} className='p default'>Load More</p>
                 </div>
                 <span className='right_line'/>
-            </Grid>
+            </div>
             
         </motion.div>
         

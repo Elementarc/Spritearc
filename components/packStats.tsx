@@ -3,7 +3,6 @@ import React from 'react';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import { format_date } from '../lib/date_lib';
 import { Pack } from '../types';
-import Flex from './layout/flex';
 import Rating from './rating';
 import Stats, { IStats } from './stats';
 
@@ -24,9 +23,9 @@ export default function PackStats(props: {pack: Pack, ownPack: boolean}) {
             })
 
             return (
-                <Flex className='pack_tags_flex'>
+                <div className='pack_tags_flex'>
                     {tags_jsx}
-                </Flex>
+                </div>
             )
         } catch(err) {
             return []

@@ -1,6 +1,5 @@
 import { ObjectId } from 'mongodb';
 import React from 'react';
-import Sprite_credits from './sprite_credits';
 import Image from 'next/image';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 
@@ -48,7 +47,7 @@ function Achievement_stat(props: {label: string, value: string | number, reward:
 
             {props.reward &&
                 <div className='credits_wrapper'>
-                    <Sprite_credits/>
+                    
                 </div>
             }
 

@@ -1,0 +1,19 @@
+.sprite_credits_container {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 18px;
+    column-gap: .3rem;
+    p {
+        line-height: 1rem;
+    }
+
+    .sprite_credits_icon_container {
+        position: relative;
+        height: 15px;
+        width: 15px;
+        img {
+            object-fit: contain;
+            object-position: center;
+        }
+    }
+}

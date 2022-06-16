@@ -20,7 +20,6 @@ import http from "http"
 import Overlay from '../../components/layout/overlay';
 import Action_button from '../../components/actionButton';
 import Sticky from '../../components/layout/sticky';
-import Grid from '../../components/layout/grid';
 import Conditional from '../../components/conditional';
 import { PopupProviderContext } from '../../context/popupProvider';
 import apiCaller from '../../lib/apiCaller';
@@ -221,9 +220,9 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
                 <Overlay>
                     <Sticky top='3.5rem'>
 
-                        <Grid className='pack_overlay_grid'>
+                        <div className='pack_overlay_grid'>
 
-                            <Grid templateColumn='1fr' templateRow='auto' rowGap='2rem' justifyItems='start' alignContent='start'>
+                            <div className='positive_container'>
 
                                 <Action_button Icon={CloseIcon} label='Close Pack' positive={true} onClickFunc={() => {goBack()}}/>
 
@@ -231,17 +230,17 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
                                     <Action_button Icon={StarIcon} label='Promote Pack' positive={true} onClickFunc={() => {displayPromoPopup()}}/>
                                 </Conditional>
 
-                            </Grid>
+                            </div>
 
-                            <Grid templateColumn='1fr' templateRow='auto' justifyItems='end' alignContent='start' rowGap='2rem'>
+                            <div className='negative_container'>
 
                                 <Conditional checkFunc={checkDeleteAction}> 
                                     <Action_button Icon={ThrashIcon} label='Delete Pack' positive={false} onClickFunc={() => {displayPackDeletePopup()}}/>
                                 </Conditional>
 
-                            </Grid>
+                            </div>
 
-                        </Grid>
+                        </div>
                         
                     </Sticky>
                 </Overlay>

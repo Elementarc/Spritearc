@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import useGetPacks from '../hooks/useGetPacks';
 import { capitalize_first_letter_rest_lowercase, sortPacks, SORT_ACTIONS } from '../lib/custom_lib';
 import { Dropdown } from './dropdown';
-import Grid from './layout/grid';
 import PackPreview from './packPreview';
 import Pagination from './pagination';
 import Section from './section';
@@ -42,11 +41,11 @@ export default function PackPreviewsSection(props: {label: string, api: string})
 
     return (
         <Section label={label} SectionInfoComponent={<Dropdown label="Sort by" reset_option='None' options={formatSortActions()} active_state={sort} set_active_state={setSort}/>}>
-            <Grid className='pack_previews_grid'>
+            <div className='pack_previews_grid'>
                 <LayoutGroup>
                     {packPreviewsJsx}
                 </LayoutGroup>
-            </Grid>
+            </div>
             <Pagination currentPage={page} lastPage={packsObj?.availablePages} setPage={setPage}/>
         </Section>
     );

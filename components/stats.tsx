@@ -1,5 +1,4 @@
 import React from 'react';
-import Grid from './layout/grid';
 
 export interface IStats {
     label: string,
@@ -14,7 +13,7 @@ export default function Stats(props: {stats: IStats[]}) {
         const jsxStats = stats.map((stat) => {
 
             return (
-                <Grid key={stat.label} className='stat_grid'>
+                <div key={stat.label} className='stat_grid'>
                     <div className="stat_label_container">
                         <p className='p default'>{`${stat.label}:`}</p>
                     </div>
@@ -25,7 +24,7 @@ export default function Stats(props: {stats: IStats[]}) {
                             <p style={{color: 'white'}} className='p default'>{stat.value}</p>
                         }
                     </div>
-                </Grid>
+                </div>
             )
 
         })
@@ -35,11 +34,11 @@ export default function Stats(props: {stats: IStats[]}) {
 
     return (
         
-        <Grid className="stats_container">
+        <div className="stats_container">
             
             {generateStats()}
 
-        </Grid>
+        </div>
 
     )
 }

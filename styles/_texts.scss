@@ -45,17 +45,30 @@ h2 {
 
     &.big {
         font-size: 1.125rem;
+
+        @include breakpoint(mobile) {
+            font-size: 1rem;
+        }
     }
 
     &.default {
         font-size: 1rem;
+
+        @include breakpoint(mobile) {
+            font-size: .875rem;
+        }
     }
 
     &.small {
         font-size: .875rem;
+
+        @include breakpoint(mobile) {
+            font-size: .750rem;
+        }
     }
    
 }
+
 
 p {
     font-family: $font_alata;
@@ -66,7 +79,6 @@ p {
     &.error {
         color: $color_error;
     }
-    
     &.big {
         font-size: 1.125rem;
 
@@ -119,12 +131,21 @@ a {
     
     &.big {
         font-size: 1.125rem;
+        @include breakpoint(mobile) {
+            font-size: 1rem;
+        }
     }
     &.default {
         font-size: 1rem;
+        @include breakpoint(mobile) {
+            font-size: .875rem;
+        }
     }
     &.small {
         font-size: .875rem;
+        @include breakpoint(mobile) {
+            font-size: .75rem;
+        }
     }
 
 }

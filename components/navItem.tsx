@@ -51,7 +51,7 @@ export default function NavItem(props: INavItemProps) {
                {/*  <div ref={labelRef} className="hover_label">
                     <p className={`default ${setClassname()}`}>{props.label}</p>
                 </div> */}
-            <p>{props.label}</p>
+            <p className="default">{props.label}</p>
             <span />
         </motion.div>
     )

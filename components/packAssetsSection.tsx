@@ -1,6 +1,5 @@
 import React from 'react';
 import { Pack } from '../types';
-import Grid from './layout/grid';
 import PackAsset from './packAsset';
 
 export default function PackAssetsSection(props: {pack: Pack, images: string[]}) {
@@ -18,8 +17,8 @@ export default function PackAssetsSection(props: {pack: Pack, images: string[]})
         return assetsJsx
     }
     return(
-        <Grid className='pack_assets_section'>
+        <div className='pack_assets_section'>
             {createAssetSection()}
-        </Grid>
+        </div>
     )
 }

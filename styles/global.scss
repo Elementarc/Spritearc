@@ -21,9 +21,9 @@
 @import "./pages/forgot_password.scss";
 @import "./pages/achievements.scss";
 @import "./components/promotedPack.scss";
-
+@import "./components/line.scss";
 @import "./components/dropDown.scss";
-@import "./components/sprite_credits.scss";
+@import "./components/spriteCredits.scss";
 @import "./components/loading.scss";
 @import "./components/patch.scss";
 @import "./components/pack_stars_raiting.scss";
@@ -48,13 +48,15 @@
 @import "./components/stats.scss";
 @import "./components/packStats.scss";
 @import "./components/navItem.scss";
+@import "./components/toggleIcon.scss";
+@import "./components/scrollList.scss";
+@import "./components/profileBox.scss";
 //Building Blocks
 @import "./components/section.scss";
 @import "./components/layout/page.scss";
 @import "./components/layout/pageContent.scss";
 @import "./components/layout/overlay.scss";
 @import "./components/layout/sticky.scss";
-@import "./components/layout/grid.scss";
 @import "./components/layout/flex.scss";
 @import "./components/layout/viewPort.scss";
 
