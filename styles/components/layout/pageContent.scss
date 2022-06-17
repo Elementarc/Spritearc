@@ -4,4 +4,15 @@
     background: $color_background_dark;
     padding-bottom: .7rem;
     min-height: 960px;
+
+    .page_content_left_shadow{
+        position: absolute;
+        top: 0;
+        left: -2px;
+        height: 100%;
+        width: 1px;
+        z-index: 100;
+        box-shadow: 3px 0px 6px 0px rgba(0, 0, 0, 0.75);
+        pointer-events: none;
+    }
 }

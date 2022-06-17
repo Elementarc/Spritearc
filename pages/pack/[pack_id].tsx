@@ -2,13 +2,10 @@ import React, {ReactElement, useEffect, useContext, useState, useCallback, useRe
 import Footer from '../../components/footer';
 import {Public_user, Pack_rating, Auth_context_type, Server_response_pack, Server_response_pack_rating, Server_response_public_user, Server_response_credits, App_dispatch_notification} from "../../types"
 import Image from 'next/dist/client/image';
-import { Nav_shadow } from '../../components/navigation';
 import { useParallax } from '../../lib/custom_hooks';
 import ArrowIcon from "../../public/icons/ArrowIcon.svg"
 import CloseIcon from "../../public/icons/CloseIcon.svg"
 import { useRouter } from 'next/router';
-import H1_with_deco from '../../components/h1_with_deco';
-import { format_date } from '../../lib/date_lib';
 import { capitalize_first_letter_rest_lowercase } from '../../lib/custom_lib';
 import StarEmptyIcon from "../../public/icons/StarEmptyIcon.svg"
 import StarIcon from "../../public/icons/StarIcon.svg"
@@ -28,12 +25,9 @@ import PageContent from '../../components/layout/pageContent';
 import Section from '../../components/section';
 import PackAssetsSection from '../../components/packAssetsSection';
 import { Pack } from '../../types';
-import Rating from '../../components/rating';
-import Flex from '../../components/layout/flex';
-import Stats, {IStats} from '../../components/stats';
 import Button from '../../components/button';
 import PackStats from '../../components/packStats';
-import useButtonEnter from '../../hooks/useButtonEnter';
+import KingHeader from '../../components/kingHeader';
 
 export default function PageRenderer(props: {pack: Pack}) {
     const Auth = useContext(Auth_context) as Auth_context_type
@@ -298,8 +292,7 @@ function PackPreview(props: {pack: Pack, authUser: Public_user}) {
                 <div className="pack_info">
                     <div className="header_container">
 
-                        <H1_with_deco title={pack.title}/>
-
+                        <KingHeader title={pack.title}/>
                         <p>{pack.description}</p>
                         <div className='button_wrapper'>
                             <Button className='primary big' onClick={displayDownloadPopup} btnLabel='Download Pack'/>

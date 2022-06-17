@@ -5,8 +5,8 @@ export default function Steps(props: {steps: number, currentStep: number, setCur
     const currentStep = props.currentStep
     const availableSteps = props.availableSteps
     const setCurrentStep = props.setCurrentStep
-    
-    function goToStep(targetStep: number) {
+
+    async function goToStep(targetStep: number) {
         if(availableSteps.includes(targetStep)) return setCurrentStep(targetStep)
     }
     //Function that takes in the number of steps that needs to be created!

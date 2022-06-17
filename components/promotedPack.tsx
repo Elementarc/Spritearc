@@ -57,7 +57,7 @@ export default function PromotedPack() {
 							<p className='big'>{promo_pack.description}</p>
 							
 							<div className='button_wrapper'>
-								<Button clickWithEnter={true} onClick={() => {router.push(`/pack/${promo_pack._id}`, `/pack/${promo_pack._id}`, {scroll: false})}} className='button primary default' btnLabel='View Pack'/>
+								<Button onClick={() => {router.push(`/pack/${promo_pack._id}`, `/pack/${promo_pack._id}`, {scroll: false})}} className='button primary default' btnLabel='View Pack'/>
 							</div>
 						</div>
 

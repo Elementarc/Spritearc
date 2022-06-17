@@ -1,9 +1,5 @@
 import Image from 'next/image';
 import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { PopupProviderContext } from '../context/popupProvider';
-import useButtonEnter from '../hooks/useButtonEnter';
-
-
 
 interface IButton {
     loading?: boolean | null | undefined,

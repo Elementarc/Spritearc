@@ -7,7 +7,6 @@ import { useRouter } from 'next/router';
 import { Auth_context, USER_DISPATCH_ACTIONS } from '../../context/auth_context_provider';
 import { validate_email, validate_password, validate_paypal_donation_link } from '../../spritearc_lib/validate_lib';
 import Head from 'next/head';
-import { Nav_shadow } from '../../components/navigation';
 import ProfileIcon from "../../public/icons/ProfileIcon.svg"
 import KeyIcon from "../../public/icons/KeyIcon.svg"
 import EmailIcon from "../../public/icons/EmailIcon.svg"
@@ -15,7 +14,6 @@ import GroupIcon from "../../public/icons/GroupIcon.svg"
 import DonationIcon from "../../public/icons/DonationIcon.svg"
 import Image from 'next/image';
 import Protected_route from '../../components/protected_router';
-import Sprite_credits from '../../components/sprite_credits';
 import useGetUserCredits from '../../hooks/useGetUserCredits';
 import useGetUserSafeEmail from '../../hooks/useGetUserSafeEmail';
 import { PopupProviderContext } from '../../context/popupProvider';
@@ -103,8 +101,6 @@ export function Account_settings_page() {
         
         
             <div className='account_settings_content'>
-                <Nav_shadow />
-
                 
                 <div className='account_settings_navigation'>
 

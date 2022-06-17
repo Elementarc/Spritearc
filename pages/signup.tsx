@@ -210,46 +210,49 @@ function StepOne(props: {username: string | null, setUsername: React.Dispatch<Re
                 
     }, [])
 
-    //Validates userinput and calls usernameAvailable. Also sets errorMessages
     const validateUserInput = useCallback(async() => {
         return new Promise((resolve) => {
         
             if(timerRef.current) clearTimeout(timerRef.current)
             
-            timerRef.current = setTimeout(async() => {
-                abortControllerRef.current = new AbortController()
+            try {
+                timerRef.current = setTimeout(async() => {
+                    abortControllerRef.current = new AbortController()
 
-                if(!usernameInputRef.current) {
-                    setErrorMessage(errorMessageRef,usernameInputRef, true, "Could not find inputfield")
-                    setUsername(null)
-                    removeAvailableStep(2)
-                    return resolve(false)
-                } 
+                    if(!usernameInputRef.current) {
+                        setErrorMessage(errorMessageRef,usernameInputRef, true, "Could not find inputfield")
+                        setUsername(null)
+                        removeAvailableStep(2)
+                        return resolve(false)
+                    } 
 
-                const validUsername = validate_username(usernameInputRef.current.value)
-                if (typeof validUsername === "string") {
-                    setErrorMessage(errorMessageRef,usernameInputRef,true, validUsername)
-                    setUsername(null)
-                    removeAvailableStep(2)
-                    return resolve(false)
-                }
+                    const validUsername = validate_username(usernameInputRef.current.value)
+                    if (typeof validUsername === "string") {
+                        setErrorMessage(errorMessageRef,usernameInputRef,true, validUsername)
+                        setUsername(null)
+                        removeAvailableStep(2)
+                        return resolve(false)
+                    }
 
-                setLoading(true)
-                const available = await usernameAvailable(usernameInputRef.current.value, abortControllerRef.current.signal)
-                setLoading(false)
+                    setLoading(true)
+                    const available = await usernameAvailable(usernameInputRef.current.value, abortControllerRef.current.signal)
+                    setLoading(false)
 
-                if(!available) {
-                    setErrorMessage(errorMessageRef,usernameInputRef, true, "Username is already taken!")
-                    setUsername(null)
-                    removeAvailableStep(2)
-                    return resolve(false)
-                } 
-                
-                setUsername(usernameInputRef.current.value)
-                addAvailableStep(2)
-                setErrorMessage(errorMessageRef,usernameInputRef,false)
-                return resolve(true)
-            }, 250);
+                    if(!available) {
+                        setErrorMessage(errorMessageRef,usernameInputRef, true, "Username is already taken!")
+                        setUsername(null)
+                        removeAvailableStep(2)
+                        return resolve(false)
+                    } 
+                    
+                    setUsername(usernameInputRef.current.value)
+                    addAvailableStep(2)
+                    setErrorMessage(errorMessageRef,usernameInputRef,false)
+                    return resolve(true)
+                }, 250);
+            } catch (error) {
+                resolve(false)
+            }
         })
     }, [usernameInputRef, abortControllerRef, timerRef, addAvailableStep, usernameAvailable, setLoading, setErrorMessage])
     
@@ -286,7 +289,7 @@ function StepOne(props: {username: string | null, setUsername: React.Dispatch<Re
             <p ref={(el) => {errorMessageRef.current = el}} className="error"></p>
 
             <div className="button_wrapper">
-                <Button clickWithEnter={true} onClick={triggerNextStep} className={`${username ? "primary" : "disabled"} default`} btnLabel="Next Step" loading={loading}/>
+                <Button onClick={triggerNextStep} className={`${username ? "primary" : "disabled"} default`} btnLabel="Next Step" loading={loading}/>
             </div>
             
         </motion.div>
@@ -324,45 +327,51 @@ function StepTwo(props: {email: string | null, setEmail: React.Dispatch<React.Se
         }
                 
     }, [])
-    //Validates userinput and calls usernameAvailable. Also sets errorMessages
+
     const validateUserInput = useCallback(async() => {
         return new Promise((resolve) => {
             if(timerRef.current) clearTimeout(timerRef.current)
             
-            timerRef.current = setTimeout(async() => {
-                abortControllerRef.current = new AbortController()
+            try {
+            
+                timerRef.current = setTimeout(async() => {
+                    abortControllerRef.current = new AbortController()
 
-                if(!emailInputRef.current) {
-                    setErrorMessage(errorMessageRef, emailInputRef,true, "Could not find inputfield")
-                    setEmail(null)
-                    removeAvailableStep(3)
-                    return resolve(false)
-                } 
+                    if(!emailInputRef.current) {
+                        setErrorMessage(errorMessageRef, emailInputRef,true, "Could not find inputfield")
+                        setEmail(null)
+                        removeAvailableStep(3)
+                        return resolve(false)
+                    } 
 
-                const validEmail = validate_email(emailInputRef.current.value)
-                if (typeof validEmail === "string") {
-                    setErrorMessage(errorMessageRef, emailInputRef,true, validEmail)
-                    setEmail(null)
-                    removeAvailableStep(3)
-                    return resolve(false)
-                }
+                    const validEmail = validate_email(emailInputRef.current.value)
+                    if (typeof validEmail === "string") {
+                        setErrorMessage(errorMessageRef, emailInputRef,true, validEmail)
+                        setEmail(null)
+                        removeAvailableStep(3)
+                        return resolve(false)
+                    }
 
-                setLoading(true)
-                const available = await emailAvailable(emailInputRef.current.value, abortControllerRef.current.signal)
-                setLoading(false)
+                    setLoading(true)
+                    const available = await emailAvailable(emailInputRef.current.value, abortControllerRef.current.signal)
+                    setLoading(false)
 
-                if(!available) {
-                    setErrorMessage(errorMessageRef, emailInputRef,true, "Email is already taken!")
-                    setEmail(null)
-                    removeAvailableStep(3)
-                    return resolve(false)
-                } 
-                
-                setEmail(emailInputRef.current.value)
-                addAvailableStep(3)
-                setErrorMessage(errorMessageRef, emailInputRef,false)
-                return resolve(true)
-            }, 250);
+                    if(!available) {
+                        setErrorMessage(errorMessageRef, emailInputRef,true, "Email is already taken!")
+                        setEmail(null)
+                        removeAvailableStep(3)
+                        return resolve(false)
+                    } 
+                    
+                    setEmail(emailInputRef.current.value)
+                    addAvailableStep(3)
+                    setErrorMessage(errorMessageRef, emailInputRef,false)
+                    return resolve(true)
+                }, 250);
+
+            } catch (error) {
+                resolve(false)
+            }
         })
     }, [emailInputRef, abortControllerRef, timerRef, addAvailableStep, emailAvailable, setLoading, setErrorMessage])
     async function triggerNextStep() {
@@ -397,7 +406,7 @@ function StepTwo(props: {email: string | null, setEmail: React.Dispatch<React.Se
             <p ref={(el) => {errorMessageRef.current = el}} className="error"></p>
 
             <div className="button_wrapper">
-                <Button clickWithEnter={true} onClick={triggerNextStep} className={`${email ? "primary" : "disabled"} default`} btnLabel="Next Step" loading={loading}/>
+                <Button onClick={triggerNextStep} className={`${email ? "primary" : "disabled"} default`} btnLabel="Next Step" loading={loading}/>
             </div>
             
         </motion.div>
@@ -410,7 +419,7 @@ function StepThree(props: {password: string | null, setPassword: React.Dispatch<
     const passwordRepeatInputRef = useRef<null | HTMLInputElement>(null)
     const passwordErrorMessageRef = useRef<null | HTMLParagraphElement>(null)
     const passwordRepeatErrorMessageRef = useRef<null | HTMLParagraphElement>(null)
-    const abortControllerRef = useRef<null | AbortController>(null)
+    const abortControllerRef = useRef<AbortController>(new AbortController())
     const timerRef = useRef<NodeJS.Timer | null>(null)
     const password = props.password
     const legal = props.legal
@@ -425,47 +434,49 @@ function StepThree(props: {password: string | null, setPassword: React.Dispatch<
     const createAccount = props.createAccount
     if(!addAvailableStep || !removeAvailableStep || !nextStep || !setErrorMessage) return null
 
-    //Validates userinput and calls usernameAvailable. Also sets errorMessages
     const validateUserInput = useCallback(async() => {
         return new Promise((resolve) => {
         
             if(timerRef.current) clearTimeout(timerRef.current)
             
-            timerRef.current = setTimeout(async() => {
-                abortControllerRef.current = new AbortController()
+            try {
+                timerRef.current = setTimeout(async() => {
 
-                if(!passwordInputRef.current || !passwordRepeatInputRef.current) {
-                    setErrorMessage(passwordErrorMessageRef, passwordInputRef, true, "Could not find inputfield")
-                    setErrorMessage(passwordRepeatErrorMessageRef, passwordRepeatInputRef, true, "Could not find inputfield")
-                    setPassword(null)
-                    removeAvailableStep(4)
-                    return resolve(false)
-                } 
-                
-                const validPassword = validate_password(passwordInputRef.current.value)
-                if (typeof validPassword === "string") {
-                    setErrorMessage(passwordErrorMessageRef, passwordInputRef, true, validPassword)
-                    setPassword(null)
-                    removeAvailableStep(4)
-                    return resolve(false)
-                }
-                if(passwordRepeatInputRef.current.value !== passwordInputRef.current.value) {
+                    if(!passwordInputRef.current || !passwordRepeatInputRef.current) {
+                        setErrorMessage(passwordErrorMessageRef, passwordInputRef, true, "Could not find inputfield")
+                        setErrorMessage(passwordRepeatErrorMessageRef, passwordRepeatInputRef, true, "Could not find inputfield")
+                        setPassword(null)
+                        removeAvailableStep(4)
+                        return resolve(false)
+                    } 
+                    
+                    const validPassword = validate_password(passwordInputRef.current.value)
+                    if (typeof validPassword === "string") {
+                        setErrorMessage(passwordErrorMessageRef, passwordInputRef, true, validPassword)
+                        setPassword(null)
+                        removeAvailableStep(4)
+                        return resolve(false)
+                    }
+                    if(passwordRepeatInputRef.current.value !== passwordInputRef.current.value) {
+                        setErrorMessage(passwordErrorMessageRef,passwordInputRef, false)
+                        setErrorMessage(passwordRepeatErrorMessageRef,passwordRepeatInputRef,  true, "Passwords do not match")
+                        setPassword(null)
+                        removeAvailableStep(4)
+                        return resolve(false)
+                    }
+
                     setErrorMessage(passwordErrorMessageRef,passwordInputRef, false)
-                    setErrorMessage(passwordRepeatErrorMessageRef,passwordRepeatInputRef,  true, "Passwords do not match")
-                    setPassword(null)
-                    removeAvailableStep(4)
-                    return resolve(false)
-                }
+                    setErrorMessage(passwordRepeatErrorMessageRef,passwordRepeatInputRef, false)
 
-                setErrorMessage(passwordErrorMessageRef,passwordInputRef, false)
-                setErrorMessage(passwordRepeatErrorMessageRef,passwordRepeatInputRef, false)
-
-                setPassword(passwordInputRef.current.value)
-                addAvailableStep(4)
-                return resolve(true)
-            }, 200);
+                    setPassword(passwordInputRef.current.value)
+                    addAvailableStep(4)
+                    return resolve(true)
+                }, 200);
+            } catch (error) {
+                resolve(false)
+            }
         })
-    }, [passwordInputRef, passwordRepeatInputRef, abortControllerRef, timerRef,legal, addAvailableStep, setLoading, setErrorMessage])
+    }, [passwordInputRef, passwordRepeatInputRef, timerRef,legal, addAvailableStep, setLoading, setErrorMessage])
 
     
 
@@ -539,7 +550,7 @@ function StepThree(props: {password: string | null, setPassword: React.Dispatch<
             </div>
 
             <div className="button_wrapper">
-                <Button clickWithEnter={true} onClick={triggerNextStep} className={`${(password && legal) ? "primary" : "disabled"} default`} btnLabel="Create Account" loading={loading}/>
+                <Button onClick={triggerNextStep} className={`${(password && legal) ? "primary" : "disabled"} default`} btnLabel="Create Account" loading={loading}/>
             </div>
             
         </motion.div>

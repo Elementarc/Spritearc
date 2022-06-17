@@ -4,9 +4,6 @@ import Link from "next/link"
 import { Auth_context_type, Public_user, Server_response, Server_response_public_user } from '../../types';
 import Footer from '../../components/footer';
 import { useParallax } from '../../lib/custom_hooks';
-import { Nav_shadow } from '../../components/navigation';
-import Head from 'next/head';
-import Profile_socials_background from "../../public/images/profile_socials_background.svg"
 import Twitter_logo from "../../public/logos/twitter_logo.svg"
 import { GetServerSideProps } from 'next'
 import http from "http"
@@ -44,8 +41,6 @@ function UserProfilePage(props: {publicUser: Public_user}) {
     return (
         <>
             <PageContent>
-                <Nav_shadow/>
-
                 <User_representation public_user={publicUser} followers_count={followers_count} following_count={following_count}  set_followers_count={set_followers_count} set_following_count={set_following_count}/>
                 <User_stats followers_count={followers_count} following_count={following_count}/>
 

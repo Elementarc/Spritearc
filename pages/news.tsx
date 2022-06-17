@@ -1,9 +1,8 @@
-import React, { ReactElement, useState} from 'react';
+import React, { ReactElement} from 'react';
 import Image from "next/image"
 import Eclipse from "../public/images/eclipse.jpg"
 import Router from "next/router"
 import Footer from '../components/footer';
-import { Nav_shadow } from "../components/navigation";
 import { Patchnote } from '../types';
 import { formatDistanceStrict } from "date-fns"
 import { useParallax } from '../lib/custom_hooks';
@@ -73,8 +72,6 @@ export default  function News(props: {patchnoteListOrdered: string}): ReactEleme
 					</div>
 
 				</div>
-
-				<Nav_shadow/>
 
 			</div>
 			<Footer />

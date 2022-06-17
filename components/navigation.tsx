@@ -13,14 +13,8 @@ import TrophyIcon from "../public/icons/TrophyIcon.svg"
 import SearchIcon from "../public/icons/SearchIcon.svg"
 import SignInIcon from "../public/icons/LoginIcon.svg"
 //Context
-import { useRouter } from "next/router";
 import { Auth_context, USER_DISPATCH_ACTIONS } from "../context/auth_context_provider";
-import { Device_context } from "../context/device_context_provider";
 import { Navigation_context } from "../context/navigation_context_provider";
-import Image from "next/image"
-import Link from "next/link"
-import { format_date } from "../lib/date_lib";
-import useGetUserCredits from "../hooks/useGetUserCredits";
 import ViewPort from "./layout/viewPort";
 import MenuIcon from "../public/icons/MenuIcon.svg"
 import NavItem from "./navItem";
@@ -39,14 +33,6 @@ export default function NavigationRenderer(): ReactElement {
         </>
     )
 }
-
-export function Nav_shadow(): ReactElement {
-
-    return(
-        <div className="nav_shadow"/>
-    )
-}
-
 
 function NavigationDesktop() {
     const Auth: Auth_context_type = useContext(Auth_context)

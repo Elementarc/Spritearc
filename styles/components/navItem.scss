@@ -13,20 +13,7 @@
     -moz-user-select: none; 
     -ms-user-select: none;
     pointer-events: all;
-    .icon_container {
-        position: relative;
-        svg {
-            transform: scale(1.3);
-        }
-        h2 {
-            font-family: $font_alatsi;
-            color: $color_main;
-            text-shadow: 3px 3px 10px 0px black;
-            position: absolute;
-            top: -1.2rem;
-            left: 1.3rem;
-        }
-    }
+    
     p {
         justify-self: start;
         white-space: nowrap;
@@ -115,6 +102,21 @@
         svg {
             fill: $color_grey;
             transform: scale(1.3);
+        }
+    }
+    
+    .icon_container {
+        position: relative;
+        svg {
+            transform: scale(1.3) translateY(2px);
+        }
+        h2 {
+            font-family: $font_alatsi;
+            color: $color_main;
+            text-shadow: 3px 3px 10px 0px black;
+            position: absolute;
+            top: -1.1rem;
+            left: 1.3rem;
         }
     }
     

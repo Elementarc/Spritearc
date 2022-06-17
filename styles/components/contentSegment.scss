@@ -51,11 +51,26 @@
             }
         }
 
+        p {
+            width: 40%;
+            @include breakpoint(laptop) {
+                width: 70%;
+            }
+
+            @include breakpoint(mobile) {
+                width: 95%;
+            }
+        }
+
         button {
             margin-top: 2rem;
         }
     }
     
+    img {
+        object-fit: cover;
+        object-position: center;
+    }
     .segment_background{
         position: absolute;
         z-index: 0;
@@ -85,6 +100,8 @@
                 background: linear-gradient(240deg, $color_background_dark 15%, rgba(3,12,24,0) 100%);
             }
         }
+
+        
         background: rgba(3, 12, 24, 0.5);
         background: linear-gradient(120deg, $color_background_dark 10%, rgba(3,12,24,0) 85%);
 
@@ -92,6 +109,8 @@
             background: linear-gradient(120deg, $color_background_dark 15%, rgba(3,12,24,0) 100%);
         }
     }
+
+    
 }
 
 .news_section_container {

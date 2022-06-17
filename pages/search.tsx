@@ -2,13 +2,11 @@ import { useAnimation, motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/router';
 import React, {useState, useEffect, useContext, useRef, useCallback} from 'react';
 import Footer from '../components/footer';
-import { Nav_shadow } from '../components/navigation';
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import ProfileIcon from "../public/icons/ProfileIcon.svg"
 import PacksIcon from "../public/icons/PacksIcon.svg"
 import CloseIcon from "../public/icons/CloseIcon.svg"
-import Head from 'next/head';
 import Users_section from '../components/users_section';
 import { validate_search_query } from '../spritearc_lib/validate_lib';
 import { Dropdown } from '../components/dropdown';
@@ -45,7 +43,7 @@ function SearchPage() {
 	const [search_packs, set_search_packs] = useState(true)
 	const [search_query, set_search_query] = useState("")
 	
-	function search() {
+	const search = () => {
 		const search_input = refs.current["search_input"] as HTMLInputElement
 		const valid_search_query = validate_search_query(search_input.value)
 		if(!valid_search_query) return
@@ -53,16 +51,16 @@ function SearchPage() {
 		router.push(`/search?query=${search_input.value.toLowerCase()}`, `/search?query=${search_input.value.toLowerCase()}`, {scroll: false})
 	}
 
-	function delete_input_value() {
+	const deleteInputValue = () => {
 		const search_input = refs.current["search_input"] as HTMLInputElement
 
 		search_input.value = ""
-		validate_input_value()
+		validateInputValue()
 		set_show_delete_search_query_icon(false)
 
 	}
 
-	function validate_input_value() {
+	const validateInputValue = () => {
 		const search_button = document.getElementById("search_button") as HTMLInputElement
 		const search = refs.current["search_input"].value as string
 		const valid_search = validate_search_query(search)
@@ -111,13 +109,12 @@ function SearchPage() {
 
 	//Checking if query and setting value of input + setting show_delete_search_query_icon.
 	useEffect(() => {
-
 		if(search_query.length === 0) {
 			set_show_delete_search_query_icon(false)
 		} else {
 			set_show_delete_search_query_icon(true)
 		}
-		validate_input_value()
+		validateInputValue()
 
 		window.scrollTo({
 			top: 0,
@@ -174,12 +171,12 @@ function SearchPage() {
 					<div className='search_input_container'>
 
 						<div className='input_container'>
-							<input ref={(el) => {refs.current["search_input"] = el}} onKeyUp={validate_input_value} onChange={validate_input_value} onBlur={validate_input_value} type="text" placeholder={search_packs ? "Search Packs" : "Search Creators"} id="search_input"/>
+							<input ref={(el) => {refs.current["search_input"] = el}} onKeyUp={validateInputValue} onChange={validateInputValue} onBlur={validateInputValue} type="text" placeholder={search_packs ? "Search Packs" : "Search Creators"} id="search_input"/>
 							
 							<div className='delete_search_query_container'>
 
 								{show_delete_search_query_icon &&
-									<div onClick={delete_input_value} className='svg_wrapper'>
+									<div onClick={deleteInputValue} className='svg_wrapper'>
 										<CloseIcon/>
 									</div>
 								}

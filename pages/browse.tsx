@@ -1,6 +1,5 @@
 import React from 'react';
 import Footer from '../components/footer';
-import { Nav_shadow } from '../components/navigation';
 import PackPreviewsSection from '../components/packPreviewsSection';
 import MetaGenerator from '../components/MetaGenerator';
 import PageContent from '../components/layout/pageContent';

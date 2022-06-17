@@ -2,7 +2,6 @@ import React, { ReactElement } from 'react';
 import { GetStaticPaths, GetStaticProps } from 'next'
 import Link from "next/link"
 import Footer from '../../components/footer';
-import { Nav_shadow } from "../../components/navigation";
 import { Patchnote } from '../../types';
 import Image from "next/image"
 import {formatDistanceStrict} from "date-fns"
@@ -68,8 +67,6 @@ export default function Patch(props: {patchnote: string}) {
 
 					<Forward_container/>
 				</div>
-				
-				<Nav_shadow/>
 			</div>
 			<Footer/>
 	</>

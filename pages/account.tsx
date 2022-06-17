@@ -10,11 +10,8 @@ import SettingsIcon from "../public/icons/SettingsIcon.svg"
 import { useRouter } from 'next/router';
 import { USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
 import { Auth_context } from '../context/auth_context_provider';
-import { Nav_shadow } from '../components/navigation';
 import { useParallax } from '../lib/custom_hooks';
 import EditIcon from "../public/icons/EditIcon.svg"
-import BellIcon from "../public/icons/BellIcon.svg"
-import { AnimatePresence, motion } from 'framer-motion';
 import { validate_user_description } from '../spritearc_lib/validate_lib';
 import Head from 'next/head';
 import Protected_route from '../components/protected_router';
@@ -255,7 +252,6 @@ export function Account_page(props: {Auth: Auth_context_type, user: Public_user}
             </Head>
         
             <div className='account_content'>
-                <Nav_shadow/>
                 <div className='user_preview_container'>
 
                     <div className='profile_banner_container'>

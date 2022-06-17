@@ -107,14 +107,17 @@ a {
     line-height: 2rem;
     font-weight: unset;
     color: $color_main;
+
     &:hover{
         cursor: pointer;
         color: $color_main_hover;
     }
+    
     &:active{
         cursor: pointer;
         color: $color_main_active;
     }
+
     &.error {
         color: $color_error;
 
@@ -158,5 +161,7 @@ a {
             font-size: .75rem;
         }
     }
+
+    
 
 }
