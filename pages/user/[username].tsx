@@ -183,7 +183,6 @@ function User_representation(props: {public_user: Public_user, followers_count: 
         
                     const response_obj = await response.json()
                     
-                    console.log(response_obj)
                     set_visitor_has_followed(response_obj?.following ? response_obj.following : false)
                 } catch(err) {
                     //

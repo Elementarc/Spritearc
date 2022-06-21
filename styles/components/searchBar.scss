@@ -1,0 +1,80 @@
+.searchbar_container {
+    position: relative;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    height: auto;
+    width: 100%;
+    background: $color_main_blue;
+    @include breakpoint(laptop) {
+        width: 100%;
+    }
+    @include breakpoint(mobile) {
+        width: 100%;
+    }
+    .input_container {
+        position: relative;
+        height: 100%;
+        width: 100%;
+
+        .delete_search_query_container {
+            position: absolute;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            padding-right: 3.5rem;
+            pointer-events: none;
+            .svg_wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 100%;
+                svg {
+                    pointer-events: all;
+                    fill: white;
+                    transform: scale(1.15);
+
+                    &:hover {
+                        cursor: pointer;
+                    }
+                }
+            }
+            
+        }
+        .toggle_search_state_container{
+            position: absolute;
+            top: 0;
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 1.1rem;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            -webkit-tap-highlight-color: transparent;
+            pointer-events: none;
+
+            .svg_wrapper {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                svg {
+                    fill: $color_grey_active;
+                    pointer-events: all;
+                    &:hover {
+                        cursor: pointer;
+                        fill: $color_grey;
+                    }
+                }
+            }
+            
+        }
+    }
+    
+}

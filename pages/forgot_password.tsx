@@ -72,7 +72,7 @@ function ForgotPasswordPage() {
                     </div>
 
                     <div className='button_wrapper'>
-                        <Button clickWithEnter={true} className='primary default' onClick={send_password_token} btnLabel='Request Password Reset' loading={loading}/>
+                        <Button className='primary default' onClick={send_password_token} btnLabel='Request Password Reset' loading={loading}/>
                     </div>
 
                     <div className="forward_wrapper">

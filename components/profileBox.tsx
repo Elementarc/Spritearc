@@ -17,14 +17,14 @@ export default function ProfileBox() {
     const Navigation: any = useContext(Navigation_context)
     const popupProvider = useContext(PopupProviderContext)
     const router = useRouter()
-    const abortControllerRef = useRef<AbortController>(new AbortController())
+    const abortControllerRef = useRef<AbortController | null>(null)
     const {credits, refetch} = useGetUserCredits()
 
     const visitPublicAccount = () => {
         router.push(`/user/${user.username.toLowerCase()}`, `/user/${user.username.toLowerCase()}`, {scroll: false})
     }
     const logout = async() => {
-
+        abortControllerRef.current = new AbortController()
         try {
             const response = await apiCaller.logout(abortControllerRef.current.signal)
             if(!response?.success) {
@@ -45,10 +45,9 @@ export default function ProfileBox() {
     
     useEffect(() => {
         return () => {
-            console.log("Aborted")
-            abortControllerRef.current.abort()
+            if(abortControllerRef.current) abortControllerRef.current.abort()
         };
-    }, [])
+    }, [abortControllerRef])
     //refetching credits everytime user opens navigation
     useEffect(() => {
         if(Navigation.nav_state) refetch()

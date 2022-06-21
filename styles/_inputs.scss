@@ -11,8 +11,14 @@ input {
         width: 100%;
         color: white;
         outline: none;
-        line-height: 2rem;
         text-align: center;
+    }
+    &.secondary {
+        width: 100%;
+        background: $color_background_dark;
+        outline: none;
+        padding: .7rem 1rem;
+        line-height: 1rem;
     }
     &.big {
         font-size: 1.125rem;

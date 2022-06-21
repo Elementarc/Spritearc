@@ -13,18 +13,18 @@ import { Dropdown } from '../components/dropdown';
 import PackPreviewsSection from '../components/packPreviewsSection';
 import PageContent from '../components/layout/pageContent';
 import MetaGenerator from '../components/MetaGenerator';
+import SearchBar, { ESearchBarType } from '../components/searchBar';
 
-const search_context: any = React.createContext(null)
 
 
 export default function PageRenderer() {
   return (
 	<>
 		<MetaGenerator
-				title='Spritearc - Search'
-				description='Search pixel art assets and sprites with just one click. You can search by tags to find specific genres.' 
-				url='https://Spritearc.com/search'
-				imageLinkSecure={`https://${process.env.NEXT_PUBLIC_APP_NAME}.com/images/spritearc_wallpaper.png`}
+			title='Spritearc - Search'
+			description='Search pixel art assets and sprites with just one click. You can search by tags to find specific genres.' 
+			url='https://Spritearc.com/search'
+			imageLinkSecure={`https://${process.env.NEXT_PUBLIC_APP_NAME}.com/images/spritearc_wallpaper.png`}
 		/>
 	
 		<SearchPage/>
@@ -35,221 +35,52 @@ export default function PageRenderer() {
 
 function SearchPage() {
 	const router = useRouter()
-	const refs: any = useRef([])
-	const [show_delete_search_query_icon, set_show_delete_search_query_icon] = useState(false)
-	const [search_perspective, set_search_perspective] = useState<null | string>(null)
-	const [search_size, set_search_size] = useState<null | string>(null)
-	const [search_license, set_search_license] = useState<null | string>(null)
-	const [search_packs, set_search_packs] = useState(true)
-	const [search_query, set_search_query] = useState("")
+	const [perspective, setPerspective] = useState<null | string>(null)
+	const [size, setSize] = useState<null | string>(null)
+	const [license, setLicense] = useState<null | string>(null)
+	const [searchQuery, setSearchQuery] = useState<null | string>(null)
+
+	useEffect(() => {
+	 	setSearchQuery(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/packs/${router.query.query}?perspective=${perspective?? 'null'}&size=${size ?? 'null'}&license=${license ?? ''}`)
+	}, [router, license, perspective, size])
 	
-	const search = () => {
-		const search_input = refs.current["search_input"] as HTMLInputElement
-		const valid_search_query = validate_search_query(search_input.value)
-		if(!valid_search_query) return
-
-		router.push(`/search?query=${search_input.value.toLowerCase()}`, `/search?query=${search_input.value.toLowerCase()}`, {scroll: false})
-	}
-
-	const deleteInputValue = () => {
-		const search_input = refs.current["search_input"] as HTMLInputElement
-
-		search_input.value = ""
-		validateInputValue()
-		set_show_delete_search_query_icon(false)
-
-	}
-
-	const validateInputValue = () => {
-		const search_button = document.getElementById("search_button") as HTMLInputElement
-		const search = refs.current["search_input"].value as string
-		const valid_search = validate_search_query(search)
-
-
-		if(valid_search === true) {
-			search_button.classList.add("active_search_button")
-		} else {
-			search_button.classList.remove("active_search_button")
-		}
-	}
-	
-	useEffect(() => {
-		if(sessionStorage.getItem("search_size")) set_search_size(sessionStorage.getItem("search_size"))
-		if(sessionStorage.getItem("search_license")) set_search_license(sessionStorage.getItem("search_license"))
-		if(sessionStorage.getItem("search_perspective")) set_search_perspective(sessionStorage.getItem("search_perspective"))
-	}, [set_search_perspective, set_search_license, set_search_size])
-
-	useEffect(() => {
-		if(!search_size) sessionStorage.removeItem("search_size")
-		else sessionStorage.setItem("search_size", search_size)
-		if(!search_license) sessionStorage.removeItem("search_license")
-		else sessionStorage.setItem("search_license", search_license)
-		if(!search_perspective) sessionStorage.removeItem("search_perspective")
-		else sessionStorage.setItem("search_perspective", search_perspective)
-
-	}, [search_size, search_license, search_perspective])
-
-	useEffect(() => {
-		const search_input = refs.current["search_input"]
-
-		if(typeof router?.query?.query === "string") {
-			set_search_query(router?.query?.query)
-			search_input.value = router?.query?.query
-		} else {
-			set_search_query("")
-			search_input.value = ""
-		}
-
-	}, [refs, router])
-
-	useEffect(() => {
-		const search_input = refs.current["search_input"] as HTMLInputElement
-		search_input.focus()
-	}, [refs])
-
-	//Checking if query and setting value of input + setting show_delete_search_query_icon.
-	useEffect(() => {
-		if(search_query.length === 0) {
-			set_show_delete_search_query_icon(false)
-		} else {
-			set_show_delete_search_query_icon(true)
-		}
-		validateInputValue()
-
-		window.scrollTo({
-			top: 0,
-			behavior: "smooth"
-		})
-
-	}, [search_query, refs, set_show_delete_search_query_icon])
-
-	useEffect(() => {
-		const search_input = refs.current["search_input"] as HTMLInputElement
-
-		function search_by_pressing_enter(e: any) {
-			const valid_search = validate_search_query(search_input.value)
-			if(typeof valid_search === "string") return
-			
-			if(search_input === document.activeElement) {
-				if(e.keyCode === 13) {
-					const search_button = document.getElementById("search_button") as HTMLButtonElement
-					search_button.click()
-				}
-			}
-		}
-
-		window.addEventListener("keyup", search_by_pressing_enter)
-
-		return(() => {
-			window.removeEventListener("keyup", search_by_pressing_enter)
-		})
-	}, [refs])
-
-	//Setting event to input to show_delete_search_query_icon should be set to true / false on keyup.
-	useEffect(() => {
-		const search_input = refs.current["search_input"] as HTMLInputElement
-
-		function toggle_delete_search_query() {
-
-			if(search_input.value.length === 0) return set_show_delete_search_query_icon(false)
-			return set_show_delete_search_query_icon(true)
-		}
-		
-		search_input.addEventListener("keyup", toggle_delete_search_query)
-
-		return(() => {
-			search_input.removeEventListener("keyup", toggle_delete_search_query)
-		})
-	}, [refs, set_show_delete_search_query_icon])
-
-	const searchQuery = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/search/packs/${search_query}?perspective=${search_perspective}&size=${search_size}&license=${search_license}&`
 	return (
 		<PageContent>
-			<search_context.Provider value={{search}}>
-				<div className='searching_container'>
-
-					<div className='search_input_container'>
-
-						<div className='input_container'>
-							<input ref={(el) => {refs.current["search_input"] = el}} onKeyUp={validateInputValue} onChange={validateInputValue} onBlur={validateInputValue} type="text" placeholder={search_packs ? "Search Packs" : "Search Creators"} id="search_input"/>
-							
-							<div className='delete_search_query_container'>
-
-								{show_delete_search_query_icon &&
-									<div onClick={deleteInputValue} className='svg_wrapper'>
-										<CloseIcon/>
-									</div>
-								}
-								
-							</div>
-
-							<div className='toggle_search_state_container'>
-
-								<AnimatePresence exitBeforeEnter>
-
-									{search_packs === false &&
-										<motion.div key="search_users" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.12}}} onClick={() => {set_search_packs(!search_packs)}} className='svg_wrapper'>
-											<PacksIcon />
-										</motion.div>
-									}
-
-									{search_packs === true &&
-										<motion.div key="search_packs" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.12}}} onClick={() => {set_search_packs(!search_packs)}} className='svg_wrapper'>
-											<ProfileIcon />
-										</motion.div>
-									}
-									
-									
-
-								</AnimatePresence>
-							</div>
-							
-						</div>
-
-						<button onClick={search} id="search_button">Search</button>
-					</div>
-
-					
-					{search_packs &&
-						<div className='extra_options_container_wrapper'>
-							<Dropdown label='Perspective' reset_option='All'  options={["Top-Down", "Side-Scroller", "Isometric", "UI"]} active_state={search_perspective} set_active_state={set_search_perspective}/>
-							<Dropdown label='Size' reset_option='All' options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256"]} active_state={search_size} set_active_state={set_search_size}/>
-							<Dropdown label='License' reset_option='All' options={["Opensource", "Attribution"]} active_state={search_license} set_active_state={set_search_license}/>
-						</div>
-					}
-					
-
+			<div className='search_top_container'>
+				<div className='searchbar_wrapper'>
+					<SearchBar placeholder='Search by Tags' type={ESearchBarType.PACKS}/>
 				</div>
-
-				{search_packs === true &&
-					<Search_recommendations set_search_query={set_search_query}/>
-				}
-				
-
-				{search_query &&
-					<>
-						{search_packs === false &&
-							<div className='search_results_user_container'>
-								<Users_section search_query={search_query} />
-							</div>
-						}
-
-						{search_packs === true &&
-							<PackPreviewsSection label={`Searching for '${search_query.split("?")[0]}'`} api={searchQuery}/>
-						}
-						
-					</>
-				} 
-
-				{!search_query &&
-					<div className='empty_container'>
-						<h1>It looks empty in here :(</h1>
-					</div>
-				}
-			</search_context.Provider>
+				<div className='dropdowns'>
+					<Dropdown 
+						label='Perspective' 
+						reset_option='All'  
+						options={["Top-Down", "Side-Scroller", "Isometric", "UI"]} 
+						active_state={perspective} 
+						set_active_state={setPerspective}
+					/>
+					<Dropdown 
+						label='Size' 
+						reset_option='All' 
+						options={["8x8", "16x16", "32x32", "48x48", "64x64", "80x80", "96x96", "112x112", "128x128", "256x256"]} 
+						active_state={size} 
+						set_active_state={setSize}
+					/>
+					<Dropdown 
+						label='License' 
+						reset_option='All' 
+						options={["Opensource", "Attribution"]} 
+						active_state={license} 
+						set_active_state={setLicense}
+					/>
+				</div>
+			</div>
+			<div className='pack_previews_wrapper'>
+				<PackPreviewsSection label={`Searching for ${router.query.query ?? ''}`} api={searchQuery ?? ''}/>
+			</div>
 		</PageContent>
 	);
 }
+
 
 function Search_recommendations(props: {set_search_query: React.Dispatch<React.SetStateAction<string>>}) {
 	let recommandation_arr = [

@@ -155,7 +155,6 @@ export const getStaticProps: GetStaticProps = async (context) => {
 		
 
 	} catch(err) {
-		console.log(err)
 		return { props: {patchnote: null}}
 	}
 	

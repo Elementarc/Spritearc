@@ -135,7 +135,6 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
                 
             try {
                 const serverResponse = await apiCaller.buyPackPromotion(pack_id, signal)
-                
                 if(!serverResponse?.success) {
                     popupProvider?.setPopup({
                         success: false,
@@ -174,7 +173,6 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
     function displayPromoPopup() {
         const text = "Your pack will be added to the promotion list for 2 days. Promoted packs will be shown randomly at the top of our browse page. This is recommended to grow your community and increase your discoverability!"
         popupProvider?.setPopup({
-            success: true,
             title: "Promotion",
             message: text, 
             buttonLabel: "Pay 250 Sprite-Credits", 
@@ -260,7 +258,6 @@ function PackPreview(props: {pack: Pack, authUser: Public_user}) {
     function displayDownloadPopup() {
         const text = "Please make sure to read the license so you exactly know how to properly use all the assets and sprites from this pack! You can start the download by clicking the download button below!"
         popupProvider?.setPopup({
-            success: true,
             timer: 5,
             title: "Download",
             message: text,

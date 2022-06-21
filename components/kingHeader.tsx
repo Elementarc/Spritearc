@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function KingHeader(props: {title: string}) {
+export default function KingHeader(props: {title: string, className?: string}) {
     const title = props.title
 
     return (
@@ -10,7 +10,7 @@ export default function KingHeader(props: {title: string}) {
                 <div className="left_icon"/>
             </div>
             
-            <h1 className='big' id="h1_with_deco">{title}</h1>
+            <h1 className={props.className ?? 'big'} id="h1_with_deco">{title}</h1>
 
             <div className="right_container">
                 <div className="right_icon"/>

@@ -13,6 +13,9 @@ interface IApiCaller {
     logout: (signal: AbortSignal) => Promise<Server_response| null>
     forgotPassword: (email: string, signal: AbortSignal) => Promise<Server_response| null>
     getCredits: (signal: AbortSignal) => Promise<Server_response_credits| null>
+    setProfilePicture: (formData: FormData, signal: AbortSignal) => Promise<Server_response | null>
+    setProfileBanner: (formData: FormData, signal: AbortSignal) => Promise<Server_response | null>
+    setProfileDescription: (description: string, signal: AbortSignal) => Promise<Server_response | null>
 }
 
 
@@ -212,6 +215,57 @@ class ApiCaller implements IApiCaller {
             const responseObj = await response.json() as Server_response_credits
             return responseObj
             
+        } catch (err: any) {
+            throw new Error(err)
+        }
+    }
+    async setProfilePicture(formData: FormData, signal: AbortSignal): Promise<Server_response | null> {
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_image`, {
+                method: "POST",
+                credentials: "include",
+                signal,
+                body: formData
+            })
+
+            const responseObj = await response.json() as Server_response
+            return responseObj
+        } catch (err: any) {
+            throw new Error(err)
+        }
+    }
+    async setProfileBanner(formData: FormData, signal: AbortSignal): Promise<Server_response | null> {
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_banner`, {
+                method: "POST",
+                credentials: "include",
+                signal,
+                body: formData
+            })
+
+            const responseObj = await response.json() as Server_response
+            return responseObj
+        } catch (err: any) {
+            throw new Error(err)
+        }
+    }
+    async setProfileDescription(description: string, signal: AbortSignal): Promise<Server_response | null> {
+        console.log(description)
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_user_description`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    'Content-Type': "application/json"
+                },
+                signal,
+                body: JSON.stringify({description: description})
+            })
+
+            const responseObj = await response.json() as Server_response
+            return responseObj
         } catch (err: any) {
             throw new Error(err)
         }

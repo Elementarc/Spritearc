@@ -71,8 +71,8 @@ function HomePage(): ReactElement {
 
                 <div className="spritearc_info">
                     <KingHeader title="Explore Sprites" />
-                    <p>{`Discover thousands of different 2D game assets and sprites that you can use for free in your projects. Start improving your game's visuals with high quality character sprites, item art, backgrounds and more! You can browse pixel art packs by tags to find the exact kind of assets you're looking for.`}</p>
-                    <button onClick={() => {router.push("/browse", "/browse", {scroll: false})}}>Browse Packs</button>
+                    <p className="big">{`Discover thousands of different 2D game assets and sprites that you can use for free in your projects. Start improving your game's visuals with high quality character sprites, item art, backgrounds and more! You can browse pixel art packs by tags to find the exact kind of assets you're looking for.`}</p>
+                    <button className="primary default" onClick={() => {router.push("/browse", "/browse", {scroll: false})}}>Browse Packs</button>
                 </div>
 
                 <div className="packs_explanation_container">

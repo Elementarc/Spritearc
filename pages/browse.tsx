@@ -4,7 +4,7 @@ import PackPreviewsSection from '../components/packPreviewsSection';
 import MetaGenerator from '../components/MetaGenerator';
 import PageContent from '../components/layout/pageContent';
 import PromotedPack from '../components/promotedPack';
-
+import { Suspense } from 'react';
 
 export default function PageRenderer() {
   return (
@@ -30,8 +30,12 @@ function BrowsePage() {
 	return (
 		<PageContent>
 			<PromotedPack/>
-			<PackPreviewsSection label='Most Popular' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/most_popular_packs?`}/>
-			<PackPreviewsSection label='Recently Uploaded' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/recent_packs?`}/>
+			<Suspense>
+				<PackPreviewsSection label='Most Popular' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/most_popular_packs?`}/>
+			</Suspense>
+			<Suspense>
+				<PackPreviewsSection label='Recently Uploaded' api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/recent_packs?`}/>
+			</Suspense>
 		</PageContent>
 	);
 }

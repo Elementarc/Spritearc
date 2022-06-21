@@ -1,3 +1,4 @@
+import { useRouter } from "next/router"
 import {useEffect} from "react"
 
 //takes the id of an image component
@@ -21,3 +22,13 @@ export function useParallax(id: string, dependency?: any) {
     }, [id, depends])
 }
 
+export const useRouting = () => {
+    const router = useRouter()
+    const push = (pathname: string) => {
+        router.push(pathname, pathname, {scroll: false})
+    }
+    const replace = (pathname: string) => {
+        router.replace(pathname, pathname, {scroll: false})
+    }
+    return {push, replace}
+}

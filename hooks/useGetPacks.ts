@@ -17,7 +17,7 @@ export default function useGetPacks(api: string, page: number) {
 		async function getRecentPacks() {
 			try {
                 // `${process.env.NEXT_PUBLIC_SPRITEARC_API}/recent_packs?page=${page}`
-				const response = await fetch(`${api}page=${page}`, {
+				const response = await fetch(`${api}&page=${page}`, {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json"

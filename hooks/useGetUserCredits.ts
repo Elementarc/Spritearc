@@ -7,7 +7,6 @@ function useGetUserCredits(): {credits: number | null, refetch: () => Promise<vo
     const controllerRef = useRef(new AbortController())
 
     const getCredits = useCallback(async() => {
-        console.log("Refetched")
         try {
             const response = await apiCaller.getCredits(controllerRef.current.signal)
             if(!response?.success) return

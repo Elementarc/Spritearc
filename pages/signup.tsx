@@ -203,7 +203,6 @@ function StepOne(props: {username: string | null, setUsername: React.Dispatch<Re
             else return false
             
         } catch ( err ) {
-            console.log(err)
             //Error
             return false
         }
@@ -321,7 +320,6 @@ function StepTwo(props: {email: string | null, setEmail: React.Dispatch<React.Se
             else return false
             
         } catch ( err ) {
-            console.log(err)
             //Error
             return false
         }
