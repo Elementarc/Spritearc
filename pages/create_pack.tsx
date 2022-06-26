@@ -16,7 +16,7 @@ import { create_form_data as create_form_data } from '../lib/create_lib';
 import { useRouter } from 'next/router';
 import Loading from "../components/loading"
 import Head from 'next/head';
-import Protected_route from '../components/protected_router';
+import ProtectedRoute from '../components/protected_router';
 import HelpIcon from "../public/icons/HelpIcon.svg"
 import { PopupProviderContext } from '../context/popupProvider';
 import apiCaller from '../lib/apiCaller';
@@ -341,9 +341,9 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
 export default function Create_pack_page_handler() {
 
     return(
-        <Protected_route>
+        <ProtectedRoute>
             <Create_pack_page/>
-        </Protected_route>
+        </ProtectedRoute>
     )
 }
 

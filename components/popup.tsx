@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import {AnimatePresence, motion} from "framer-motion";
 import { PopupProviderContext } from '../context/popupProvider';
 import Button from './button';
-import useButtonEnter from '../hooks/useButtonEnter';
 import KingHeader from './kingHeader';
 
 export interface IPopup {
@@ -13,9 +12,8 @@ export interface IPopup {
     buttonLabel?: string,
     cancelLabel?: string, 
     component?: JSX.Element
-    buttonOnClick?: (signal: AbortSignal) => any,
+    buttonOnClick?: ((signal: AbortSignal) => Promise<any>) | (() => void),
     cancelOnClick?: () => any,
-    
 }
 
 export default function PopupRenderer() {
@@ -60,7 +58,9 @@ function Popup({popup, setPopup}: {popup: IPopup, setPopup: React.Dispatch<React
     //memoized because used in event when pressing ESC to close popup
     const memoCancelFunc = useCallback(() => {
         if(popup.cancelOnClick) popup.cancelOnClick()
-        setPopup(null)
+        else {
+            setPopup(null)
+        }
 
     }, [setPopup, popup])
 
@@ -100,7 +100,11 @@ function Popup({popup, setPopup}: {popup: IPopup, setPopup: React.Dispatch<React
         <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} className='popup'>
             <motion.div initial={{scale: .8}} animate={{scale: 1}} exit={{scale: .8}} className='popup_content_container'>
                 <>
-                    {popup.title && <KingHeader className={`${popup.success === undefined ? 'default' : popup.success ? 'success' : 'error'}`} title={popup.title}/>}
+                    {popup.title && 
+                        <div className='title_wrapper'>
+                            <KingHeader className={`${popup.success === undefined ? 'default' : popup.success ? 'success' : 'error'}`} title={popup.title}/>
+                        </div>
+                    }
 
                     {popup.message && <p className='default'>{popup.message}</p>}
 

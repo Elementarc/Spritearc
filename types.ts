@@ -263,7 +263,7 @@ export interface Server_response_email extends Server_response{
     email: string,
 }
 export interface Server_response_public_user extends Server_response{
-    public_user: Public_user
+    public_user: PublicUser
 }
 export interface Server_response_credits extends Server_response{
     credits: number
@@ -271,4 +271,23 @@ export interface Server_response_credits extends Server_response{
 export interface Server_response {
     success: boolean,
     message: string
+}
+export interface ServerResponseIsAuth extends Server_response{
+    public_user: PublicUser | null
+}
+
+export interface PublicUser {
+    _id: string
+    username: string
+    description: string
+    verified: boolean
+    created_at: Date
+    socials: Account_socials
+    profile_picture: string
+    profile_banner: string
+    following_count: number
+    followers_count: number
+    role: string
+    paypal_donation_link: string | null
+    banned: boolean
 }

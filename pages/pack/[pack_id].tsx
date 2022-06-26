@@ -1,6 +1,6 @@
 import React, {ReactElement, useEffect, useContext, useState, useCallback, useRef} from 'react';
 import Footer from '../../components/footer';
-import {Public_user, Pack_rating, Auth_context_type, Server_response_pack, Server_response_pack_rating, Server_response_public_user, Server_response_credits, App_dispatch_notification} from "../../types"
+import {Pack_rating,Server_response_pack, Server_response_pack_rating, PublicUser} from "../../types"
 import Image from 'next/dist/client/image';
 import { useParallax } from '../../lib/custom_hooks';
 import ArrowIcon from "../../public/icons/ArrowIcon.svg"
@@ -10,7 +10,6 @@ import { capitalize_first_letter_rest_lowercase } from '../../lib/custom_lib';
 import StarEmptyIcon from "../../public/icons/StarEmptyIcon.svg"
 import StarIcon from "../../public/icons/StarIcon.svg"
 import ThrashIcon from "../../public/icons/ThrashIcon.svg"
-import { Auth_context } from '../../context/auth_context_provider';
 import { GetServerSideProps } from 'next'
 import https from "https"
 import http from "http"
@@ -28,9 +27,12 @@ import { Pack } from '../../types';
 import Button from '../../components/button';
 import PackStats from '../../components/packStats';
 import KingHeader from '../../components/kingHeader';
+import { AccountContext, IAccountContext } from '../../context/accountContextProvider';
+import TipCreator from '../../components/tipCreator';
+import useGetPublicUser from '../../hooks/useGetPublicUser';
 
 export default function PageRenderer(props: {pack: Pack}) {
-    const Auth = useContext(Auth_context) as Auth_context_type
+    const account = useContext(AccountContext)
     const pack = props.pack
     const title = `${pack?.username} - ${pack?.title}`
     const description = `${pack?.description}`
@@ -41,23 +43,27 @@ export default function PageRenderer(props: {pack: Pack}) {
         <>
             <Header title={`${title}`} description={description} url={url} imageLinkSecure={imageLinkSecure}  />
 
-            <PackPage pack={pack} Auth={Auth}/>
+            <PackPage pack={pack} account={account} />
 
             <Footer/>
         </>
     )
 }
 
-function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
+function PackPage(props: {pack: Pack, account: IAccountContext | null}) {
     //Props
-    const user = props.Auth.user.public_user
+    const publicUser = props.account?.publicUser
     const pack: Pack = props.pack
-    
-    
+    const downloadLink = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${pack._id}&author=${pack.username}`
+    const own_pack = publicUser?.username.toLowerCase() === pack.username.toLowerCase() ? true : false
+    const creatorPublicUser = useGetPublicUser(pack.username)
+
     //states 
+    const [prev_pack_ratings, set_prev_pack_ratings] = useState<Pack_rating[]>(pack.ratings)
     const popupProvider = useContext(PopupProviderContext)
     const router = useRouter()
 
+    const ref = useRef<null | HTMLElement>(null)
     //Creating parallax effect for Image
     useParallax("title_pack_background_image")
 
@@ -81,14 +87,14 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
         })
     }, [])
     
-    function goBack() {
+    const goBack = () => {
         const prev_path = sessionStorage.getItem("prev_path")
         if(!prev_path) return router.push("/browse", "/browse", {scroll: false})
         
         router.push(prev_path, prev_path, {scroll: false})
         
     }
-    async function deletePack(signal: AbortSignal) {
+    const deletePack = async(signal: AbortSignal) => {
         const pack_id = router.query.pack_id as string;
         try {
         
@@ -129,7 +135,7 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
             //Err handling
         }
     }
-    async function buyPackPromotion(signal: AbortSignal) {
+    const buyPackPromotion = async(signal: AbortSignal) => {
         return new Promise(async(resolve) => {
             const pack_id = router.query.pack_id as string
                 
@@ -138,8 +144,8 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
                 if(!serverResponse?.success) {
                     popupProvider?.setPopup({
                         success: false,
-                        title: "Already Promoted",
-                        message: "You could not promote this pack because it probably already is promoted", 
+                        title: "Error",
+                        message: serverResponse?.message, 
                         buttonLabel: "Okay", 
                         cancelLabel: "Close window", 
                     })
@@ -161,16 +167,15 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
         })
 
     }
-
-    function checkPromoAction(): boolean {
-        if(user && (user.username === pack.username || user.role === "admin")) return true
+    const checkPromoAction = (): boolean => {
+        if(publicUser && (publicUser.username === pack.username || publicUser.role === "admin")) return true
         else return false
     }
-    function checkDeleteAction(): boolean {
-        if(user && (user.username === pack.username || user.role === "admin")) return true
+    const checkDeleteAction = (): boolean => {
+        if(publicUser && (publicUser.username === pack.username || publicUser.role === "admin")) return true
         else return false
     }
-    function displayPromoPopup() {
+    const displayPromoPopup = () => {
         const text = "Your pack will be added to the promotion list for 2 days. Promoted packs will be shown randomly at the top of our browse page. This is recommended to grow your community and increase your discoverability!"
         popupProvider?.setPopup({
             title: "Promotion",
@@ -180,7 +185,7 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
             buttonOnClick: (signal) => buyPackPromotion(signal),
         })
     }
-    function displayPackDeletePopup() {
+    const displayPackDeletePopup = () => {
         const text = "Are you sure that you want to delete this pack? Remember, it wont be recoverable again and all its stats will be lost."
         popupProvider?.setPopup({
             success: false, 
@@ -191,7 +196,7 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
             buttonOnClick: deletePack,
         })
     }
-    function createAssetsSections() {
+    const createAssetsSections = () => {
         let assetSectionsJsx = []
         for(let packContent of pack.content) {
             assetSectionsJsx.push(
@@ -203,8 +208,50 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
 
         return assetSectionsJsx
     }
-    
-
+    const displayCorrectPopup = () => {
+        if(creatorPublicUser?.paypal_donation_link) {
+            displayDonationPopup()
+        } else {
+            displayDownloadPopup()
+        }
+    }
+    const displayDonationPopup = () => {
+        popupProvider?.setPopup({
+            component: <TipCreator publicUser={creatorPublicUser}/>,
+            buttonLabel: "Tip Creator",
+            cancelLabel: "Proceed To Download",
+            buttonOnClick: () => {
+                console.log(creatorPublicUser?.paypal_donation_link)
+                if(creatorPublicUser?.paypal_donation_link) {
+                    window.open(creatorPublicUser.paypal_donation_link, "_blank")
+                }
+                displayDownloadPopup()
+            },
+            cancelOnClick: displayDownloadPopup
+        })
+    }
+    const displayDownloadPopup = () => {
+        const text = "Please make sure to read the license so you exactly know how to properly use all the assets and sprites from this pack! You can start the download by clicking the download button below!"
+        popupProvider?.setPopup({
+            timer: 5,
+            title: "Download",
+            message: text,
+            buttonLabel: "Download Pack",
+            cancelLabel: "Close window",
+            buttonOnClick: downloadPack
+        })
+    }
+    const downloadPack = () => {
+        const download_button = ref.current
+        if(!download_button) return
+        
+        download_button.setAttribute("href", downloadLink)
+        download_button.setAttribute("download", downloadLink.split(" ").join("_"))
+        download_button.click()
+        download_button.removeAttribute("href")
+        download_button.removeAttribute("download")
+        popupProvider?.setPopup(null)
+    }
     
     return (
         <>
@@ -237,7 +284,35 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
                     </Sticky>
                 </Overlay>
 
-                <PackPreview pack={pack} authUser={user}/>
+                <a style={{display: "none"}} ref={(el) => {ref.current = el}}></a>
+                <div className="preview_container" id="preview_container">
+                    <div className="background">
+                        <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack.username.toLowerCase()}_${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" className="preview_image" id="title_pack_background_image"/>
+                        <div className="background_blur" />
+                    </div>
+
+                    <div className="pack_info">
+                        <div className="header_container">
+
+                            <KingHeader title={pack.title}/>
+                            <p>{pack.description}</p>
+                            <div className='button_wrapper'>
+                                <Button className='primary big' onClick={displayCorrectPopup} btnLabel='Download Pack'/>
+                            </div>
+                        </div>
+
+                        {!own_pack &&
+                            <PackRate publicUser={publicUser} set_prev_pack_ratings={set_prev_pack_ratings} prev_pack_ratings={prev_pack_ratings}/>
+                        }
+
+                        <PackStats pack={pack} ownPack={own_pack}></PackStats>
+
+                        <div className="arrow_container">
+                            <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
+                        </div>
+                    </div>
+
+                </div>
                 
                 {createAssetsSections()}
 
@@ -246,77 +321,11 @@ function PackPage(props: {pack: Pack, Auth: Auth_context_type}) {
     );
 }
 
-function PackPreview(props: {pack: Pack, authUser: Public_user}) {
-    const authUser: Public_user = props.authUser
-    const ref = useRef<null | HTMLElement>(null)
-    const popupProvider = useContext(PopupProviderContext)
-    const pack = props.pack
-    const downloadLink = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${pack._id}&author=${pack.username}`
-    const own_pack = authUser?.username?.length ? authUser.username.toLowerCase() === pack.username.toLowerCase() : false
-    const [prev_pack_ratings, set_prev_pack_ratings] = useState<Pack_rating[]>(pack.ratings)
-
-    function displayDownloadPopup() {
-        const text = "Please make sure to read the license so you exactly know how to properly use all the assets and sprites from this pack! You can start the download by clicking the download button below!"
-        popupProvider?.setPopup({
-            timer: 5,
-            title: "Download",
-            message: text,
-            buttonLabel: "Download Pack",
-            cancelLabel: "Close window",
-            buttonOnClick: downloadPack
-        })
-    }
-    function downloadPack() {
-        const download_button = ref.current
-        if(!download_button) return
-        
-        download_button.setAttribute("href", downloadLink)
-        download_button.setAttribute("download", downloadLink.split(" ").join("_"))
-        download_button.click()
-        download_button.removeAttribute("href")
-        download_button.removeAttribute("download")
-        popupProvider?.setPopup(null)
-    }
-    return(
-        <>
-            <a style={{display: "none"}} ref={(el) => {ref.current = el}}></a>
-            <div className="preview_container" id="preview_container">
-                <div className="background">
-                    <Image loading='lazy' unoptimized={true} src={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/packs/${pack.username.toLowerCase()}_${pack._id}/${pack.preview}`} alt="Preview Image" layout="fill" className="preview_image" id="title_pack_background_image"/>
-                    <div className="background_blur" />
-                </div>
-
-                <div className="pack_info">
-                    <div className="header_container">
-
-                        <KingHeader title={pack.title}/>
-                        <p>{pack.description}</p>
-                        <div className='button_wrapper'>
-                            <Button className='primary big' onClick={displayDownloadPopup} btnLabel='Download Pack'/>
-                        </div>
-                    </div>
-
-                    {!own_pack &&
-                        <PackRate authUser={authUser} set_prev_pack_ratings={set_prev_pack_ratings} prev_pack_ratings={prev_pack_ratings}/>
-                    }
-
-                    <PackStats pack={pack} ownPack={own_pack}></PackStats>
-
-                    <div className="arrow_container">
-                        <ArrowIcon height="45px" width="45px" className="arrow_down" id="arrow_down"/>
-                    </div>
-                </div>
-
-            </div>
-        </>
-    )
-}
-
-function PackRate(props: {authUser: Public_user | null, set_prev_pack_ratings: any, prev_pack_ratings: any}) {
+function PackRate(props: {publicUser: PublicUser | null | undefined, set_prev_pack_ratings: any, prev_pack_ratings: any}) {
     const popupProvider = useContext(PopupProviderContext)
     const set_prev_pack_ratings = props.set_prev_pack_ratings
     const prev_pack_ratings = props.prev_pack_ratings
-    const user = props.authUser
+    const publicUser = props.publicUser
     const router = useRouter()
 
     //Filled stars
@@ -343,9 +352,9 @@ function PackRate(props: {authUser: Public_user | null, set_prev_pack_ratings: a
         function user_has_rated(): null | Pack_rating {
             let user_rated_obj: null | Pack_rating = null
             
-            if(user) {
+            if(publicUser) {
                 for(let rating of prev_pack_ratings) {
-                    if(rating.user_id === user._id) {
+                    if(rating.user_id === publicUser._id) {
                         
                         user_rated_obj = {
                             user_id: rating.user_id,
@@ -360,7 +369,7 @@ function PackRate(props: {authUser: Public_user | null, set_prev_pack_ratings: a
             return user_rated_obj
         }
         return user_has_rated()
-    }, [prev_pack_ratings, user])
+    }, [prev_pack_ratings, publicUser])
 
     function mouse_enter(e: any) {
         if(user_has_rated()) return
@@ -390,7 +399,7 @@ function PackRate(props: {authUser: Public_user | null, set_prev_pack_ratings: a
 
     async function submit_rating(e: any) {
         
-        if(user?.username.length === 0) {
+        if(publicUser?.username.length === 0) {
             popupProvider?.setPopup({
                 title: "Please Login!",
                 success: false,
@@ -421,9 +430,9 @@ function PackRate(props: {authUser: Public_user | null, set_prev_pack_ratings: a
             
             if(!response_obj.success) {
                 popupProvider?.setPopup({
-                    title: "Something went wrong!",
+                    title: "Please Login!",
                     success: false,
-                    message: response_obj?.message,
+                    message: "You need an account to rate packs!",
                     buttonLabel: "Okay",
                 })
             }

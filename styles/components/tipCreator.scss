@@ -1,0 +1,33 @@
+.tip_creator_container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: auto;
+    .creator_banner {
+        position: relative;
+        width: 100%;
+        height: 170px;
+
+        img {
+            object-fit: cover;
+            object-position: center;
+        }
+    }
+
+    .portrait_wrapper {
+        position: absolute;
+        margin-top: 5rem;
+        width: 120px;
+        height: 120px;
+        pointer-events: none;
+    }
+
+    a {
+        
+        text-align: center;
+        font-size: 24px !important;
+        margin-top: 2.5rem;
+    }
+}

@@ -1,40 +1,52 @@
-import React, {useEffect, useState, useContext, useRef} from 'react';
-import { Auth_context_type, Server_response, Server_response_email, Public_user,  } from '../../types';
+import React, {useState, useContext, useRef, useEffect} from 'react';
+import { Server_response, Public_user, PublicUser,  } from '../../types';
 import Footer from '../../components/footer';
 import { format_date } from '../../lib/date_lib';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useRouter } from 'next/router';
-import { Auth_context, USER_DISPATCH_ACTIONS } from '../../context/auth_context_provider';
 import { validate_email, validate_password, validate_paypal_donation_link } from '../../spritearc_lib/validate_lib';
-import Head from 'next/head';
 import ProfileIcon from "../../public/icons/ProfileIcon.svg"
 import KeyIcon from "../../public/icons/KeyIcon.svg"
 import EmailIcon from "../../public/icons/EmailIcon.svg"
 import GroupIcon from "../../public/icons/GroupIcon.svg"
 import DonationIcon from "../../public/icons/DonationIcon.svg"
 import Image from 'next/image';
-import Protected_route from '../../components/protected_router';
 import useGetUserCredits from '../../hooks/useGetUserCredits';
 import useGetUserSafeEmail from '../../hooks/useGetUserSafeEmail';
 import { PopupProviderContext } from '../../context/popupProvider';
+import { AccountContext, IAccountContext } from '../../context/accountContextProvider';
+import MetaGenerator from '../../components/MetaGenerator';
+import PageContent from '../../components/layout/pageContent';
+import { useRouting } from '../../lib/custom_hooks';
+import apiCaller from '../../lib/apiCaller';
+import PasswordInput from '../../components/passwordInput';
 
-export default function Account_settings_handler() {
 
-    return(
-        <Protected_route>
-            <Account_settings_page/>
-        </Protected_route>
-    )
+
+export default function PageRenderer() {
+
+    return (
+        <>
+            <MetaGenerator 
+                title={`Spritearc - Account Settings`} 
+                description={`Edit important account informations.`} 
+                url={`https://Spritearc.com/account`} 
+                imageLinkSecure={`https://${process.env.NEXT_PUBLIC_APP_NAME}.com/images/spritearc_wallpaper.png`}
+            />
+            <AccountPage />
+            <Footer/>
+        </>
+    );
 }
-export function Account_settings_page() {
+
+
+
+export function AccountPage() {
     const popupContext = useContext(PopupProviderContext)
-    const Auth: Auth_context_type = useContext(Auth_context)
+    const account = useContext(AccountContext)
     const [account_delete_warning, set_account_delete_warning] = useState(false)
     const [delete_account, set_delete_account] = useState(false)
     const [settings_state, set_settings_state] = useState("account")
-    const router = useRouter()
-    const public_user = Auth.user.public_user
-    const safe_email = useGetUserSafeEmail()
+    const {push} = useRouting()
+    
 
     async function submit_account_deletion() {
         try {
@@ -70,7 +82,10 @@ export function Account_settings_page() {
                 message: "We have successfully deleted your account. We are sorry that we could'nt reach your expectations! We will work on to improve our service. Thank you for trying!",
                 buttonLabel: "Okay",
                 cancelLabel: "Close window",
-                buttonOnClick: () => {router.push("/", "/", {scroll: false}); Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false}})}
+                buttonOnClick: () => {
+                    push("/")
+                    account?.refresh()
+                }
             })
 
         } catch(err) {
@@ -80,76 +95,56 @@ export function Account_settings_page() {
 
     return (
 
-        <>
-            <Head>
-				<title>{`Spritearc - Account Settings`}</title>
-				<meta name="description" content="Edit important account information."/>
+        <PageContent>
+            {account?.publicUser &&
+                <>
+                    <div className='account_settings_navigation'>
 
-				<meta property="og:url" content="https://Spritearc.com/"/>
-				<meta property="og:type" content="website" />
-				<meta property="og:title" content="Spritearc - Account Settings"/>
-				<meta property="og:description" content="Edit important account information."/>
-				<meta property="og:image" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
+                        <div className='account_navigation_items_container'>
+                        
+                            <AccountNavigationCard state="account" icon={ProfileIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                            <AccountNavigationCard state="email" icon={EmailIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                            <AccountNavigationCard state="password"icon={KeyIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                            <AccountNavigationCard state="socials" icon={GroupIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                            <AccountNavigationCard state="donation"icon={DonationIcon} current_state={settings_state} set_current_state={set_settings_state} />
 
-				<meta name="twitter:card" content="summary_large_image"/>
-				<meta property="twitter:domain" content="Spritearc.com"/>
-				<meta property="twitter:url" content="https://Spritearc.com/"/>
-				<meta name="twitter:title" content="Spritearc - Account Settings"/>
-				<meta name="twitter:description" content="Edit important account information."/>
-                <meta name="twitter:image:src" content={`${process.env.NEXT_PUBLIC_ENV === "development" ? `` : `https://${process.env.NEXT_PUBLIC_APP_NAME}.com`}/images/spritearc_wallpaper.png`}/>
-            </Head>
-        
-        
-            <div className='account_settings_content'>
-                
-                <div className='account_settings_navigation'>
-
-                    <div className='account_navigation_items_container'>
-                    
-                        <Account_navigation_item state="account" icon={ProfileIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                        <Account_navigation_item state="email" icon={EmailIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                        <Account_navigation_item state="password"icon={KeyIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                        <Account_navigation_item state="socials" icon={GroupIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                        <Account_navigation_item state="donation"icon={DonationIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                        </div>
 
                     </div>
-
-                </div>
-                
-
-                <div className='account_content'>
-                    {settings_state === "account" &&
-                        <Account_informations set_account_delete_warning={set_account_delete_warning} public_user={public_user} safe_email={safe_email}/>
-                    }
-
-                    {settings_state === "email" &&
-                        <Email_settings />
-                    }
                     
-                    {settings_state === "password" &&
-                        <Password_settings />
-                    }
 
-                    {settings_state === "socials" &&
-                        <Social_settings public_user={public_user} />
-                    }
+                    <div className='account_content'>
+                        {settings_state === "account" &&
+                            <AccountInformations account={account}/>
+                        }
 
-                    {settings_state === "donation" &&
-                        <Donation_settings public_user={public_user}/>
-                    }
-                </div>
+                        {settings_state === "email" &&
+                            <EmailSettings />
+                        }
+                        
+                        {settings_state === "password" &&
+                            <PasswordSettings />
+                        }
 
-                <div className='account_background_blob_container'>
-                    <Image loading='lazy' unoptimized={true} src={"/blobs/blob_3.svg"} layout="fill"  alt="Big wave blob"></Image>
-                </div>
-            </div>
-            <Footer/>
+                        {settings_state === "socials" &&
+                            <SocialSettings public_user={account.publicUser} />
+                        }
 
-        </>
+                        {settings_state === "donation" &&
+                            <DonationSettings public_user={account.publicUser}/>
+                        }
+                    </div>
+
+                    <div className='account_background_blob_container'>
+                        <Image loading='lazy' unoptimized={true} src={"/blobs/blob_3.svg"} layout="fill"  alt="Big wave blob"></Image>
+                    </div>
+                </>
+            }
+        </PageContent>
     );
 }
 
-export function Account_navigation_item(props: {state: string, icon: any, current_state: string, set_current_state: React.Dispatch<React.SetStateAction<string>>}) {
+export function AccountNavigationCard(props: {state: string, icon: any, current_state: string, set_current_state: React.Dispatch<React.SetStateAction<string>>}) {
     const Icon = props.icon
     const state = props.state
     const current_state = props.current_state
@@ -162,49 +157,116 @@ export function Account_navigation_item(props: {state: string, icon: any, curren
     )
 }
 
-export function Account_informations(props: {set_account_delete_warning: React.Dispatch<React.SetStateAction<boolean>>, public_user: Public_user, safe_email: string | null | undefined}) {
+function AccountInformations(props: {account: IAccountContext}) {
     const popupContext = useContext(PopupProviderContext)
-    const public_user = props.public_user
+    const abortControllerRef = useRef<null | AbortController>(null)
     const credits = useGetUserCredits()
-    const safe_email = props.safe_email
-    const set_account_delete_warning = props.set_account_delete_warning
-
+    const {push} = useRouting()
+    const publicUser = props.account.publicUser as PublicUser
+    const refresh = props.account.refresh
+    const safe_email = useGetUserSafeEmail()
+    const passwordInputRef = useRef<null | HTMLInputElement>(null)
     
+    const deleteAccountWarning = () => {
+        popupContext?.setPopup({
+            success: false,
+            title: "Delete Account?",
+            message: "Keep in mind that you will not be able to undo this action and all your data and progress will be lost. There is no going back!",
+            buttonLabel: "Delete Account",
+            cancelLabel: "No, changed my mind",
+            buttonOnClick: deleteAccountPopup
+            
+        })
+    }
+    
+    const deleteAccountPopup = () => {
+        popupContext?.setPopup({
+            success: false,
+            title: "Enter Password",
+            message: "Please confirm your choice by entering your account password.",
+            component: (
+                <InputContainer innerRef={passwordInputRef}/>
+            ),
+            buttonLabel: "Delete Account",
+            cancelLabel: "Close window",
+            buttonOnClick: deleteAccount
+        })
+    }
+    
+    const deleteAccount = async() => {
+        try {
+            abortControllerRef.current = new AbortController()
+            if(!passwordInputRef.current) return
+
+            const response = await apiCaller.deleteAccount(passwordInputRef.current.value, abortControllerRef.current.signal)
+
+            if(!response?.success) {
+                popupContext?.setPopup({
+                    success: false,
+                    title: "Something went wrong!",
+                    message: "Something went wrong while trying to delete your account. Please contact an admin.",
+                    buttonLabel: "Okay",
+                    cancelLabel: "Close window",
+                })
+                return
+
+            }
+
+            popupContext?.setPopup({
+                success: true,
+                title: "Successfully deleted your account!",
+                message: "We have successfully deleted your account. We are sorry that we could'nt reach your expectations! We will work on to improve our service. Thank you for trying!",
+                buttonLabel: "Okay",
+                cancelLabel: "Close window",
+                buttonOnClick: () => {
+                    push("/")
+                    refresh()
+                    popupContext?.setPopup(null)
+                }
+            })
+
+        } catch(err) {
+            //COuldnt reach server
+        }
+    }
+
     return(
-        <div className='account_informations_container'>
-            <div className='header_content'>
-                <h1>Account Informations</h1>
-                <p>Here you can find general informations about your account!</p>
+        <>
+            <div className='account_informations_container'>
+                <div className='header_content'>
+                    <h1>Account Informations</h1>
+                    <p>Here you can find general informations about your account!</p>
+                </div>
+
+                <div className='informations_grid_container'>
+
+                    <div className='grid_item'>
+                        <p className='grid_property'>Username:</p>
+                        <p className='grid_value'>{publicUser?.username}</p>
+                    </div>
+
+                    <div className='grid_item'>
+                        <p className='grid_property'>Email:</p>
+                        <p className='grid_value'>{safe_email ? safe_email : "undefined"}</p>
+                    </div>
+
+                    <div className='grid_item'>
+                        <p className='grid_property'>Role:</p>
+                        <p className='grid_value'>{publicUser?.role}</p>
+                    </div>
+
+                    <div className='grid_item'>
+                        <p className='grid_property'>User since:</p>
+                        <p className='grid_value'>{format_date(publicUser.created_at)}</p>
+                    </div>
+                </div>
+
+                <p className='delete_account_text' onClick={deleteAccountWarning}>DELETE YOUR ACCOUNT</p>
             </div>
-
-            <div className='informations_grid_container'>
-
-                <div className='grid_item'>
-                    <p className='grid_property'>Username:</p>
-                    <p className='grid_value'>{public_user?.username}</p>
-                </div>
-
-                <div className='grid_item'>
-                    <p className='grid_property'>Email:</p>
-                    <p className='grid_value'>{safe_email ? safe_email : "undefined"}</p>
-                </div>
-
-                <div className='grid_item'>
-                    <p className='grid_property'>Role:</p>
-                    <p className='grid_value'>{public_user?.role}</p>
-                </div>
-
-                <div className='grid_item'>
-                    <p className='grid_property'>User since:</p>
-                    <p className='grid_value'>{format_date(public_user?.created_at)}</p>
-                </div>
-            </div>
-
-            <p className='delete_account_text' onClick={() => {set_account_delete_warning(true)}}>DELETE YOUR ACCOUNT</p>
-        </div>
+        </>
     )
 }
-export function Email_settings() {
+function EmailSettings() {
     const refs = useRef<any>([])
     const popupContext = useContext(PopupProviderContext)
     function disable_button(state: boolean) {
@@ -303,7 +365,7 @@ export function Email_settings() {
         </div>
     )
 }
-export function Password_settings() {
+function PasswordSettings() {
     const refs = useRef<any>([])
     const popupContext = useContext(PopupProviderContext)
 
@@ -400,8 +462,7 @@ export function Password_settings() {
         </div>
     )
 }
-
-export function Social_settings(props: {public_user: Public_user}) {
+function SocialSettings(props: {public_user: Public_user}) {
     const refs = useRef<any>([])
     const popupContext = useContext(PopupProviderContext)
     const public_user = props.public_user
@@ -445,7 +506,7 @@ export function Social_settings(props: {public_user: Public_user}) {
 
             } else {
                 popupContext?.setPopup({
-                    success: true,
+                    success: false,
                     title: "Something went wrong!",
                     message: `For some reason we could not update your social inputs! Please contact an admin.`,
                     buttonLabel: "Okay",
@@ -486,7 +547,7 @@ export function Social_settings(props: {public_user: Public_user}) {
         </div>
     )
 }
-export function Donation_settings(props: {public_user: Public_user}) {
+function DonationSettings(props: {public_user: Public_user}) {
     const refs = useRef<any>([])
     const public_user = props.public_user
     const popupContext = useContext(PopupProviderContext)
@@ -585,4 +646,17 @@ export function Donation_settings(props: {public_user: Public_user}) {
             <button onClick={submit_donation_link} ref={(el) => refs.current["update_donation_link_button"] = el} className='disabled_button'>Save Donation Link</button>
         </div>
     )
+}
+
+
+function InputContainer({innerRef}: {innerRef: React.MutableRefObject<HTMLInputElement | null>}) {
+
+    useEffect(() => {
+        if(!innerRef?.current) return
+        innerRef.current.focus()
+    }, [innerRef])
+
+    return (
+        <PasswordInput refCallb={(el) => innerRef.current = el} className="primary default"/>
+    );
 }

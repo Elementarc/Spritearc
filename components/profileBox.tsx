@@ -1,6 +1,4 @@
 import React, { useContext, useEffect, useRef } from 'react';
-import { Auth_context, USER_DISPATCH_ACTIONS } from '../context/auth_context_provider';
-import { Auth_context_type } from '../types';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -11,18 +9,22 @@ import { PopupProviderContext } from '../context/popupProvider';
 import SpriteCredits from './spriteCredits';
 import Line from './line';
 import useGetUserCredits from '../hooks/useGetUserCredits';
+import { AccountContext } from '../context/accountContextProvider';
+import { useRouting } from '../lib/custom_hooks';
 
 export default function ProfileBox() {
-    const Auth: Auth_context_type = useContext(Auth_context)
+    const account = useContext(AccountContext)
     const Navigation: any = useContext(Navigation_context)
     const popupProvider = useContext(PopupProviderContext)
     const router = useRouter()
+    const {push} = useRouting()
     const abortControllerRef = useRef<AbortController | null>(null)
     const {credits, refetch} = useGetUserCredits()
 
     const visitPublicAccount = () => {
-        router.push(`/user/${user.username.toLowerCase()}`, `/user/${user.username.toLowerCase()}`, {scroll: false})
+        router.push(`/user/${account?.publicUser?.username.toLowerCase()}`, `/user/${account?.publicUser?.username.toLowerCase()}`, {scroll: false})
     }
+
     const logout = async() => {
         abortControllerRef.current = new AbortController()
         try {
@@ -37,7 +39,8 @@ export default function ProfileBox() {
                 return
             }
             Navigation.set_nav_state(false)
-            Auth.dispatch({type: USER_DISPATCH_ACTIONS.LOGOUT, payload: {auth: false, callb: () => {router.push("/login", "/login", {scroll: false})}}})
+            account?.refresh()
+            push("/login")
         } catch (error) {
             //Aborted
         }
@@ -54,20 +57,20 @@ export default function ProfileBox() {
     }, [Navigation, refetch])
 
     if(!popupProvider) return null
-    if(!Auth.user.auth) return null
-    const user = Auth.user.public_user
+    if(!account?.publicUser) return null
+
     return (
         <>
             <Line display={Navigation.nav_state} opacity={.3}/>
             <div className="profile_box_container">
                 
                 <div className='portrait_wrapper'>
-                    <ProfilePicture imageLink={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${user.profile_picture}`}/>
+                    <ProfilePicture imageLink={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${account.publicUser.profile_picture}`}/>
                 </div>
 
                 <motion.div className="user_info">
-                    <a className="default" onClick={visitPublicAccount}>{user.username}</a>
-                    <p className='user_since_text'>User since: {format_date(new Date(user.created_at))}</p>
+                    <a className="default" onClick={visitPublicAccount}>{account.publicUser.username}</a>
+                    <p className='user_since_text'>User since: {format_date(new Date(account.publicUser.created_at))}</p>
                     <div className='credits_wrapper'>
                         <SpriteCredits credits={credits}/>
                     </div>
@@ -84,6 +87,7 @@ export function ProfilePicture(props: {imageLink: string}) {
     const Navigation: any = useContext(Navigation_context)
     const isActive = () => {
         if(router.asPath.toLowerCase().includes("/account")) return "active"
+        else ""
     }
     
     return (

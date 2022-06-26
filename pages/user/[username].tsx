@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext, useMemo, useRef} from 'react';
 import Image from "next/image"
 import Link from "next/link"
-import { Auth_context_type, Public_user, Server_response, Server_response_public_user } from '../../types';
+import { Public_user, Server_response_public_user } from '../../types';
 import Footer from '../../components/footer';
 import { useParallax } from '../../lib/custom_hooks';
 import Twitter_logo from "../../public/logos/twitter_logo.svg"
@@ -10,13 +10,12 @@ import http from "http"
 import https from "https"
 import HeartIcon from "../../public/icons/HeartIcon.svg"
 import HeartBrokenIcon from "../../public/icons/HeartBrokenIcon.svg"
-import { Auth_context } from '../../context/auth_context_provider';
-import { useRouter } from 'next/router';
 import { AnimatePresence, motion } from 'framer-motion';
 import PackPreviewsSection from '../../components/packPreviewsSection';
 import PageContent from '../../components/layout/pageContent';
 import MetaGenerator from '../../components/MetaGenerator';
 import { PopupProviderContext } from '../../context/popupProvider';
+import { AccountContext } from '../../context/accountContextProvider';
 
 
 export default function PageRenderer(props: {public_user: Public_user}) {
@@ -48,8 +47,6 @@ function UserProfilePage(props: {publicUser: Public_user}) {
                     <PackPreviewsSection label={`Packs created by '${publicUser?.username}'`} api={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user_packs/${publicUser?.username}?`}/>
                 </div>
             </PageContent>
-
-            <Footer/>
         </>
     );
 }
@@ -90,13 +87,13 @@ function User_stats(props: {followers_count: number, following_count: number}) {
 }
 
 function User_representation(props: {public_user: Public_user, followers_count: number, following_count: number, set_followers_count: React.Dispatch<React.SetStateAction<number>>, set_following_count: React.Dispatch<React.SetStateAction<number>>,}) {
-    const Auth: Auth_context_type = useContext(Auth_context)
+    const account = useContext(AccountContext)
     const popupContext = useContext(PopupProviderContext)
     const public_user = props.public_user
     const [visitor_has_followed, set_visitor_has_followed] = useState<null | boolean>(null)
 
     async function follow_user() {
-        if(Auth.user.auth === false) {
+        if(!account?.publicUser) {
             popupContext?.setPopup({
                 success: false,
                 title: "Please Login!",
@@ -131,7 +128,7 @@ function User_representation(props: {public_user: Public_user, followers_count: 
     async function unfollow_user() {
 
         try {
-            if(Auth.user.auth === false) {
+            if(!account?.publicUser) {
                 popupContext?.setPopup({
                     success: true,
                     title: "Please Login!",
@@ -161,13 +158,11 @@ function User_representation(props: {public_user: Public_user, followers_count: 
         
     }
 
-    
-
     useEffect(() => {
-        if(public_user.username.toLowerCase() === Auth.user.public_user.username.toLowerCase()) return
+        if(public_user.username.toLowerCase() === account?.publicUser?.username.toLowerCase()) return
         const controller = new AbortController()
 
-        if(Auth.user.auth === true) {
+        if(account?.publicUser) {
         
             async function has_visitor_followed() {
 
@@ -191,14 +186,14 @@ function User_representation(props: {public_user: Public_user, followers_count: 
             }
             has_visitor_followed()
 
-        } else if(Auth.user.auth === false) {
+        } else if(!account?.publicUser) {
             return set_visitor_has_followed(false)
         }
         
         return(() => {
             controller.abort()
         })
-    }, [Auth, public_user])
+    }, [account, public_user])
 
     return (
         <div className='user_preview_container'>
