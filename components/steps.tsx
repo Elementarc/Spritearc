@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-export default function Steps(props: {steps: number, currentStep: number, setCurrentStep: React.Dispatch<React.SetStateAction<number>>, availableSteps: number[]}) {
+export default function Steps(props: {steps: number, currentStep: number, setCurrentStep: (targetStep: number) => void, availableSteps: number[]}) {
     const steps = props.steps
     const currentStep = props.currentStep
     const availableSteps = props.availableSteps

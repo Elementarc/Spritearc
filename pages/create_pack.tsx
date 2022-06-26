@@ -8,15 +8,6 @@ import ExpandIcon from "../public/icons/ExpandIcon.svg"
 import { capitalize_first_letter_rest_lowercase } from '../lib/custom_lib';
 import Image from 'next/image';
 import { validate_files , validate_pack_title, validate_pack_description, validate_pack_tag, validate_pack_section_name} from '../spritearc_lib/validate_lib';
-import Fixed_app_content_overlay from '../components/fixed_app_content_overlay';
-import { AnimatePresence, motion, useAnimation } from 'framer-motion';
-import ThrashIcon from "../public/icons/ThrashIcon.svg"
-import { Device_context } from '../context/device_context_provider';
-import { create_form_data as create_form_data } from '../lib/create_lib';
-import { useRouter } from 'next/router';
-import Loading from "../components/loading"
-import Head from 'next/head';
-import ProtectedRoute from '../components/protected_router';
 import HelpIcon from "../public/icons/HelpIcon.svg"
 import { PopupProviderContext } from '../context/popupProvider';
 import apiCaller from '../lib/apiCaller';
@@ -341,9 +332,9 @@ function create_pack_reducer(create_pack_obj: Create_pack_frontend, action: {typ
 export default function Create_pack_page_handler() {
 
     return(
-        <ProtectedRoute>
+        <Protected_route>
             <Create_pack_page/>
-        </ProtectedRoute>
+        </Protected_route>
     )
 }
 

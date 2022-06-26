@@ -16,6 +16,7 @@ import PageContent from '../../components/layout/pageContent';
 import MetaGenerator from '../../components/MetaGenerator';
 import { PopupProviderContext } from '../../context/popupProvider';
 import { AccountContext } from '../../context/accountContextProvider';
+import apiCaller from '../../lib/apiCaller';
 
 
 export default function PageRenderer(props: {public_user: Public_user}) {

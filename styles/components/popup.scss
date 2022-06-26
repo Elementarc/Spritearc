@@ -22,8 +22,10 @@
         pointer-events: all;
 
         .title_wrapper {
+            display: flex;
+            justify-content: center;
             padding-top: 1.5rem;
-            width: 95%;
+            width: 100%;
             height: auto;
         }
         

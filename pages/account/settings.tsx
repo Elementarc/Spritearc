@@ -9,7 +9,6 @@ import EmailIcon from "../../public/icons/EmailIcon.svg"
 import GroupIcon from "../../public/icons/GroupIcon.svg"
 import DonationIcon from "../../public/icons/DonationIcon.svg"
 import Image from 'next/image';
-import useGetUserCredits from '../../hooks/useGetUserCredits';
 import useGetUserSafeEmail from '../../hooks/useGetUserSafeEmail';
 import { PopupProviderContext } from '../../context/popupProvider';
 import { AccountContext, IAccountContext } from '../../context/accountContextProvider';
@@ -160,7 +159,6 @@ export function AccountNavigationCard(props: {state: string, icon: any, current_
 function AccountInformations(props: {account: IAccountContext}) {
     const popupContext = useContext(PopupProviderContext)
     const abortControllerRef = useRef<null | AbortController>(null)
-    const credits = useGetUserCredits()
     const {push} = useRouting()
     const publicUser = props.account.publicUser as PublicUser
     const refresh = props.account.refresh

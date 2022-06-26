@@ -75,7 +75,7 @@ function NavigationDesktop() {
                         <div className="nav_user_container">
                             {account?.publicUser === undefined && null}
                             {account?.publicUser === null && <NavItem icon={SignInIcon} label="Sign in" link="/login"/> }
-                            {account?.publicUser && <ProfileBox/>}
+                            {account?.publicUser && <ProfileBox publicUser={account.publicUser} accountRefresh={account?.refresh}/>}
                         </div>
                     </motion.div>
 
@@ -125,7 +125,7 @@ function NavigationMobile() {
                 <div className="nav_item_wrapper">
                     {account?.publicUser === undefined && null}
                     {account?.publicUser === null && <NavItem icon={SignInIcon} label="Sign in" link="/login"/> }
-                    {account?.publicUser && <ProfileBox/>}
+                    {account?.publicUser && <ProfileBox publicUser={account.publicUser} accountRefresh={account?.refresh}/>}
                 </div>
             </ScrollList>
         </motion.div>

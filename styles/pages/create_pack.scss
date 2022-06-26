@@ -167,52 +167,7 @@
             .drop_zone_error_message {
                 line-height: 1.5rem;
             }
-            .dropzone_container {
-                display: block;
-                position: relative;
-                width: 100%;
-                height: 450px;
-                padding: 1rem;
-                margin-top: .3rem;
-                border: 1px dashed $color_grey_active;
-                transition: .1s ease-in-out;
-                
-                @include breakpoint(mobile) {
-                    height: 250px;
-                }
-                
-                .asset {
-                    background: $color_main_blue;
-                    position: relative;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    height: 100%;
-                    width: 100%;
-                    background: purple;
-                    background: $color_main_blue;
-                    box-shadow: 3px 3px 6px 0px rgba(0, 0, 0, 0.25);
-                    transition: 0.2s ease-in-out;
-                    user-select: none;
-                    -moz-user-select: none;
-                    -khtml-user-select: none;
-                    -webkit-user-select: none;
-                    -o-user-select: none;
-                    overflow: hidden;
-                    
-                    span {
-                        pointer-events: none;
-                    }
-                    img {
-                        pointer-events: none;
-                        image-rendering: pixelated;
-                        object-position: center;
-                        object-fit: cover;
-                    }
-
-                }
-
-            }
+            
             .dropzone_hover {
                 border: 1px dashed $color_main;
                 .section_label {
@@ -846,4 +801,36 @@
         }
     }
 
+}
+
+.steps_wrapper {
+    margin-top: 6rem;
+}
+.step_one_container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    a {
+        align-self: flex-start;
+        display: block;
+        padding: 0 2rem;
+    }
+}
+
+.add_section_popup_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80%;
+    margin-top: .5rem;
+
+    .title_wrapper {
+        padding-top: 1.5rem;
+    }
+    input {
+        margin-top: 1rem;
+    }
+    button {
+        margin-top: 3rem;
+    }
 }

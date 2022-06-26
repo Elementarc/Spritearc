@@ -1,0 +1,44 @@
+.custom_input_container {
+    position: relative;
+    width: 100%;
+
+    .input_recommandations {
+        position: absolute;
+        display: block;
+        width: 100%;
+        z-index: 10;
+        max-height: 250px;
+        overflow-y: scroll;
+        background: rgba(0, 0, 0, 0.7);
+
+        &::-webkit-scrollbar{
+            width: 5px;
+        }
+        &::-webkit-scrollbar-thumb{
+            background-color: $color_main;
+            &:hover{
+                background-color: $color_main_hover;
+            }
+            
+        }
+        ul {
+            list-style: none;
+
+            li {
+                display: flex;
+                justify-content: center;
+                p {
+                    text-align: unset;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                    background: rgba(255, 255, 255, 0.3);
+                }
+                &:active {
+                    background: rgba(255, 255, 255, 0.2);
+                }
+            }
+        }
+    }
+}

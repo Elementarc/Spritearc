@@ -23,7 +23,7 @@ export default function PageRenderer() {
     <>
         <MetaGenerator 
             title="Spritearc - Home" 
-            description="Spritearc.com is a simple way to find, download and upload your free pixel art game assets. Pixel artists can build themselves a community by uploading sprites focused on games. Join our growing community of 2D artists today!"
+            description="Welcome to the Official Spritearc.com platform, where all mythical pixel artists and game developers can coexist in peace. Download and upload your own 2D pixel art sprites. Create yourself a community by creating awesome assets for 2D games."
             url="https://Spritearc.com"
             imageLinkSecure={`https://${process.env.NEXT_PUBLIC_APP_NAME}.com/images/spritearc_wallpaper.png`}
         />

@@ -1,0 +1,16 @@
+.dropzone_container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minMax(130px, 1fr));
+    column-gap: 1rem;
+    row-gap: 1rem;
+    grid-auto-rows: 130px;
+    min-height: calc(260px + 32px);
+    position: relative;
+    width: 100%;
+    height: auto;
+    padding: 1rem;
+    margin-top: .3rem;
+    border: 1px dashed $color_grey_active;
+    transition: .1s ease-in-out;
+    
+}

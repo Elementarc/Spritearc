@@ -8,21 +8,18 @@ import apiCaller from '../lib/apiCaller';
 import { PopupProviderContext } from '../context/popupProvider';
 import SpriteCredits from './spriteCredits';
 import Line from './line';
-import useGetUserCredits from '../hooks/useGetUserCredits';
-import { AccountContext } from '../context/accountContextProvider';
 import { useRouting } from '../lib/custom_hooks';
+import { PublicUser } from '../types';
 
-export default function ProfileBox() {
-    const account = useContext(AccountContext)
+export default function ProfileBox({publicUser, accountRefresh}: {publicUser: PublicUser, accountRefresh: () => void}) {
     const Navigation: any = useContext(Navigation_context)
     const popupProvider = useContext(PopupProviderContext)
     const router = useRouter()
     const {push} = useRouting()
     const abortControllerRef = useRef<AbortController | null>(null)
-    const {credits, refetch} = useGetUserCredits()
 
     const visitPublicAccount = () => {
-        router.push(`/user/${account?.publicUser?.username.toLowerCase()}`, `/user/${account?.publicUser?.username.toLowerCase()}`, {scroll: false})
+        router.push(`/user/${publicUser?.username.toLowerCase()}`, `/user/${publicUser?.username.toLowerCase()}`, {scroll: false})
     }
 
     const logout = async() => {
@@ -39,7 +36,7 @@ export default function ProfileBox() {
                 return
             }
             Navigation.set_nav_state(false)
-            account?.refresh()
+            accountRefresh()
             push("/login")
         } catch (error) {
             //Aborted
@@ -47,17 +44,13 @@ export default function ProfileBox() {
     }
     
     useEffect(() => {
+        
         return () => {
             if(abortControllerRef.current) abortControllerRef.current.abort()
         };
     }, [abortControllerRef])
-    //refetching credits everytime user opens navigation
-    useEffect(() => {
-        if(Navigation.nav_state) refetch()
-    }, [Navigation, refetch])
 
     if(!popupProvider) return null
-    if(!account?.publicUser) return null
 
     return (
         <>
@@ -65,14 +58,14 @@ export default function ProfileBox() {
             <div className="profile_box_container">
                 
                 <div className='portrait_wrapper'>
-                    <ProfilePicture imageLink={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${account.publicUser.profile_picture}`}/>
+                    <ProfilePicture imageLink={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${publicUser.profile_picture}`}/>
                 </div>
 
                 <motion.div className="user_info">
-                    <a className="default" onClick={visitPublicAccount}>{account.publicUser.username}</a>
-                    <p className='user_since_text'>User since: {format_date(new Date(account.publicUser.created_at))}</p>
+                    <a className="default" onClick={visitPublicAccount}>{publicUser.username}</a>
+                    <p className='user_since_text'>User since: {format_date(new Date(publicUser.created_at))}</p>
                     <div className='credits_wrapper'>
-                        <SpriteCredits credits={credits}/>
+                        <SpriteCredits credits={250}/>
                     </div>
                     <a onClick={logout} className='small error'>Logout</a>
                 </motion.div>
