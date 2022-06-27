@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { Navigation_context } from '../context/navigation_context_provider';
 import { format_date } from '../lib/date_lib';
 import apiCaller from '../lib/apiCaller';
 import { PopupProviderContext } from '../context/popupProvider';
@@ -10,9 +9,11 @@ import SpriteCredits from './spriteCredits';
 import Line from './line';
 import { useRouting } from '../lib/custom_hooks';
 import { PublicUser } from '../types';
+import useGetUserCredits from '../hooks/useGetUserCredits';
+import useStoreNav from '../stores/navigation';
 
 export default function ProfileBox({publicUser, accountRefresh}: {publicUser: PublicUser, accountRefresh: () => void}) {
-    const Navigation: any = useContext(Navigation_context)
+    const navigation = useStoreNav()
     const popupProvider = useContext(PopupProviderContext)
     const router = useRouter()
     const {push} = useRouting()
@@ -35,7 +36,7 @@ export default function ProfileBox({publicUser, accountRefresh}: {publicUser: Pu
                 })
                 return
             }
-            Navigation.set_nav_state(false)
+            navigation.closeNav()
             accountRefresh()
             push("/login")
         } catch (error) {
@@ -44,7 +45,6 @@ export default function ProfileBox({publicUser, accountRefresh}: {publicUser: Pu
     }
     
     useEffect(() => {
-        
         return () => {
             if(abortControllerRef.current) abortControllerRef.current.abort()
         };
@@ -54,7 +54,7 @@ export default function ProfileBox({publicUser, accountRefresh}: {publicUser: Pu
 
     return (
         <>
-            <Line display={Navigation.nav_state} opacity={.3}/>
+            <Line display={navigation.navState} opacity={.3}/>
             <div className="profile_box_container">
                 
                 <div className='portrait_wrapper'>
@@ -70,21 +70,21 @@ export default function ProfileBox({publicUser, accountRefresh}: {publicUser: Pu
                     <a onClick={logout} className='small error'>Logout</a>
                 </motion.div>
             </div>
-            <Line display={Navigation.nav_state} opacity={.3}/>
+            <Line display={navigation.navState} opacity={.3}/>
         </>
     );
 }
 
 export function ProfilePicture(props: {imageLink: string}) {
     const router = useRouter()
-    const Navigation: any = useContext(Navigation_context)
+    const navigation = useStoreNav()
     const isActive = () => {
         if(router.asPath.toLowerCase().includes("/account")) return "active"
         else ""
     }
     
     return (
-        <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} onClick={() => {router.push("/account", "/account", {scroll: false}); Navigation.set_nav_state(false)}} className={`portrait ${isActive()}`}>
+        <motion.div initial={{opacity: 0}} animate={{opacity: 1, transition: {duration: .2}}} exit={{opacity: 0, transition: {duration: .2}}} onClick={() => {router.push("/account", "/account", {scroll: false}); navigation.closeNav()}} className={`portrait ${isActive()}`}>
             <Image className='profile_picture' loading='lazy' unoptimized={true} src={props.imageLink} layout="fill"/>
         </motion.div>
     );

@@ -10,7 +10,6 @@ import TrophyIcon from "../public/icons/TrophyIcon.svg"
 import SearchIcon from "../public/icons/SearchIcon.svg"
 import SignInIcon from "../public/icons/LoginIcon.svg"
 //Context
-import { Navigation_context } from "../context/navigation_context_provider";
 import ViewPort from "./layout/viewPort";
 import MenuIcon from "../public/icons/MenuIcon.svg"
 import NavItem from "./navItem";
@@ -19,10 +18,11 @@ import ScrollList from "./scrollList";
 import useDevice, { EDevice } from "../hooks/useDevice";
 import ProfileBox, { ProfilePicture } from "./profileBox";
 import { AccountContext } from "../context/accountContextProvider";
+import useStoreNav from "../stores/navigation";
 
 export default function NavigationRenderer(): ReactElement {
     const device = useDevice()
-
+    
     return(
         <>
             {device === EDevice.DESKTOP && <NavigationDesktop/>}
@@ -32,14 +32,14 @@ export default function NavigationRenderer(): ReactElement {
 }
 
 function NavigationDesktop() {
+    const navigation = useStoreNav()
     const account = useContext(AccountContext)
-    const Navigation: any = useContext(Navigation_context)
     const navContainer = useAnimation()
-    
+
     //Animation to open Navigation
     useEffect(() => {
         
-        if(Navigation.nav_state) {
+        if(navigation.navState) {
             navContainer.start({
                 width: "385px",
                 transition: {duration: 0.2},
@@ -51,8 +51,11 @@ function NavigationDesktop() {
             })
         }
 
-    }, [navContainer, Navigation])
+    }, [navContainer, navigation])
     
+    useEffect(() => {
+        console.log("TEST")
+    }, [])
     return (
         <div className="desktop_navigation_container">
             <ViewPort>
@@ -61,7 +64,7 @@ function NavigationDesktop() {
                     <motion.div animate={navContainer} className="nav_content">
 
                         <div className="top_container">
-                            <ToggleIcon iconOne={CloseIcon2} iconTwo={MenuIcon} state={Navigation.nav_state} setState={Navigation.set_nav_state}/>
+                            <ToggleIcon iconOne={CloseIcon2} iconTwo={MenuIcon} state={navigation.navState} toggleNav={navigation.toggleNav}/>
                         </div>
                         
                         <ScrollList className="nav_items_container">
@@ -86,12 +89,12 @@ function NavigationDesktop() {
 }
 
 function NavigationMobile() {
-    const Navigation: any = useContext(Navigation_context)
+    const navigation = useStoreNav()
     const account = useContext(AccountContext);
 
     const mobileNavAnimation = useAnimation()
     useEffect(() => {
-        if(Navigation.nav_state) {
+        if(navigation.navState) {
             mobileNavAnimation.start({
                 height: "auto",
                 transition: {duration: .2}
@@ -102,15 +105,15 @@ function NavigationMobile() {
                 transition: {duration: .2}
             })
         }
-    }, [Navigation.nav_state])
+    }, [navigation.navState])
 
     return (
         <motion.div initial={{height: "55px"}} animate={mobileNavAnimation} className="mobile_navigation_container">
             <div className="top_container">
-                <ToggleIcon iconOne={CloseIcon2} iconTwo={MenuIcon} state={Navigation.nav_state} setState={Navigation.set_nav_state}/>
+                <ToggleIcon iconOne={CloseIcon2} iconTwo={MenuIcon} state={navigation.navState} toggleNav={navigation.toggleNav}/>
                 <div className="profile_picture_container">
                     <AnimatePresence>
-                        {account?.publicUser && !Navigation.nav_state && <ProfilePicture imageLink={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${account.publicUser.profile_picture}`}/>}
+                        {account?.publicUser && !navigation.navState && <ProfilePicture imageLink={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${account.publicUser.profile_picture}`}/>}
                     </AnimatePresence>
                 </div>
             </div>

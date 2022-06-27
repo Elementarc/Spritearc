@@ -1,7 +1,7 @@
-import React, {useContext, useEffect} from "react"
+import React, {useEffect} from "react"
 import { useAnimation, motion } from "framer-motion"
 import { useRouter } from "next/router"
-import { Navigation_context } from "../context/navigation_context_provider"
+import useStoreNav from "../stores/navigation"
 
 interface INavItemProps {
     label: string
@@ -11,17 +11,17 @@ interface INavItemProps {
 }
 
 export default function NavItem(props: INavItemProps) {
-    const Navigation: any = useContext(Navigation_context)
+    const navigation = useStoreNav()
     const router = useRouter()
     const navItemLabelAnimation = useAnimation()
     const goTo = () => {
         router.push(`${props.link}`, `${props.link}` , {scroll: false})
-        Navigation.set_nav_state(false)
+        navigation.closeNav()
     }
     
     //Showing Labels of navItems when toggling navState
     useEffect(() => {
-        if(Navigation.nav_state === true) {
+        if(navigation.navState === true) {
             navItemLabelAnimation.start({
                 transition: {duration: 0.2},
                 opacity: 1,
@@ -32,7 +32,7 @@ export default function NavItem(props: INavItemProps) {
                 opacity: 0,
             })
         }
-    }, [Navigation.nav_state, navItemLabelAnimation]);
+    }, [navigation.navState, navItemLabelAnimation]);
     
 
     function setClassname() {

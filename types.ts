@@ -249,7 +249,7 @@ export interface Server_response_packs extends Server_response{
     available_pages: number,
 }
 export interface Server_response_login extends Server_response{
-    public_user: Public_user | null, 
+    public_user: PublicUser | null, 
     token: string | null,
     banned?: boolean
     verified: boolean | null | undefined,

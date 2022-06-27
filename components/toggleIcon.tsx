@@ -5,11 +5,11 @@ interface IToggleIconProps {
     iconOne: React.ElementType,
     iconTwo: React.ElementType,
     state: boolean,
-    setState: React.Dispatch<React.SetStateAction<boolean>>
+    toggleNav: () => void,
     iconClassName?: string,
 }
 
-export default function ToggleIcon({iconOne, iconTwo, state, setState, iconClassName}: IToggleIconProps) {
+export default function ToggleIcon({iconOne, iconTwo, state, toggleNav, iconClassName}: IToggleIconProps) {
     const IconOne = iconOne
     const IconTwo = iconTwo
 
@@ -20,13 +20,13 @@ export default function ToggleIcon({iconOne, iconTwo, state, setState, iconClass
                 
                 {state === true &&
                     <motion.div key="menu" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.1}}}>
-                        <IconOne onClick={() => setState(!state)} className={`icon_svg ${iconClassName ?? ''}`} />
+                        <IconOne onClick={toggleNav} className={`icon_svg ${iconClassName ?? ''}`} />
                     </motion.div>
                 }
 
                 {state === false &&
                     <motion.div key="close" initial={{scale: 0.9}} animate={{scale: 1, transition: {duration: 0.18, type: "spring"}}} exit={{scale: 0, transition: {duration: 0.1}}}>
-                        <IconTwo onClick={() => setState(!state)} className={`icon_svg ${iconClassName ?? ''}`} />
+                        <IconTwo onClick={toggleNav} className={`icon_svg ${iconClassName ?? ''}`} />
                     </motion.div>
                 }
                 

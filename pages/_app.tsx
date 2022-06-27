@@ -7,14 +7,11 @@ import AccountContextProvider from '../context/accountContextProvider'
 
 export default function MyApp({ Component, pageProps}: any) {
     const router = useRouter()
-    
     //Setting prev_path to session storage
     useEffect(() => {
-        
         return(() => {
             sessionStorage.setItem("prev_path", router.asPath)
         })
-
     }, [router.asPath])
 
     return(
