@@ -27,12 +27,12 @@ import { Pack } from '../../types';
 import Button from '../../components/button';
 import PackStats from '../../components/packStats';
 import KingHeader from '../../components/kingHeader';
-import { AccountContext, IAccountContext } from '../../context/accountContextProvider';
 import TipCreator from '../../components/tipCreator';
 import useGetPublicUser from '../../hooks/useGetPublicUser';
+import useStoreAccount from '../../stores/account';
 
 export default function PageRenderer(props: {pack: Pack}) {
-    const account = useContext(AccountContext)
+    
     const pack = props.pack
     const title = `${pack?.username} - ${pack?.title}`
     const description = `${pack?.description}`
@@ -43,16 +43,17 @@ export default function PageRenderer(props: {pack: Pack}) {
         <>
             <Header title={`${title}`} description={description} url={url} imageLinkSecure={imageLinkSecure}  />
 
-            <PackPage pack={pack} account={account} />
+            <PackPage pack={pack}/>
 
             <Footer/>
         </>
     )
 }
 
-function PackPage(props: {pack: Pack, account: IAccountContext | null}) {
+function PackPage(props: {pack: Pack}) {
+    const account = useStoreAccount()
     //Props
-    const publicUser = props.account?.publicUser
+    const publicUser = account.userData
     const pack: Pack = props.pack
     const downloadLink = `${process.env.NEXT_PUBLIC_SPRITEARC_API}/download_pack?pack_id=${pack._id}&author=${pack.username}`
     const own_pack = publicUser?.username.toLowerCase() === pack.username.toLowerCase() ? true : false

@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect, useRef} from 'react';
+import React, {useContext, useState, useRef} from 'react';
 import Footer from '../components/footer';
 import Link from 'next/link';
 import MetaGenerator from '../components/MetaGenerator';
@@ -6,7 +6,6 @@ import PageContent from '../components/layout/pageContent';
 import { PopupProviderContext } from '../context/popupProvider';
 import Button from '../components/button';
 import PasswordInput from '../components/passwordInput';
-import apiCaller from '../lib/apiCaller';
 import ForwardContainer from '../components/forwardContainer';
 import KingHeader from '../components/kingHeader';
 import { useRouting } from '../lib/custom_hooks';
@@ -58,7 +57,7 @@ export function LoginPage() {
         }
         
     }
-    
+
     async function login() {
         abortControllerRef.current = new AbortController()
         const passwordValue = passwordInputRef.current?.value
@@ -67,6 +66,7 @@ export function LoginPage() {
         if(!emailValue) return
         
         const response = await account.login(emailValue, passwordValue, abortControllerRef.current.signal)
+        if(!response?.success) return
         
         push("/account")
     }

@@ -3,15 +3,17 @@ import apiCaller from "../lib/apiCaller";
 import { PublicUser, ServerResponseLogin, ServerResponse, ServerResponseCredits, ServerResponseIsAuth } from "../types";
 
 interface IGlobalAccount {
-  userData: PublicUser | null | undefined;
-  credits: number;
-  login: (email: string, password: string, signal: AbortSignal) => Promise<ServerResponseLogin | null>;
-  logout: (signal: AbortSignal) => Promise<ServerResponse | null>;
-  deleteAccount: (password: string, signal: AbortSignal) => Promise<ServerResponse | null>
-  isLoggedIn: (signal: AbortSignal) => Promise<ServerResponseIsAuth | null>;
-  fetchCredits: (signal: AbortSignal) => Promise<ServerResponseCredits | null>
-  editCredits: (editNumber: number) => void;
-
+    userData: PublicUser | null | undefined;
+    credits: number;
+    login: (email: string, password: string, signal: AbortSignal) => Promise<ServerResponseLogin | null>;
+    logout: (signal: AbortSignal) => Promise<ServerResponse | null>;
+    deleteAccount: (password: string, signal: AbortSignal) => Promise<ServerResponse | null>
+    isLoggedIn: (signal: AbortSignal) => Promise<ServerResponseIsAuth | null>;
+    fetchCredits: (signal: AbortSignal) => Promise<ServerResponseCredits | null>
+    editCredits: (editNumber: number) => void;
+    setProfileDescription: (description: string, signal: AbortSignal) => Promise<ServerResponse | null>
+    setProfilePicture: (formData: FormData, signal: AbortSignal) => Promise<ServerResponse | null>
+    setProfileBanner: (formData: FormData, signal: AbortSignal) => Promise<ServerResponse | null>
 }
 
 const useStoreAccount = create<IGlobalAccount>(set => ({
@@ -97,6 +99,40 @@ const useStoreAccount = create<IGlobalAccount>(set => ({
             return null
         }
     },
+    setProfileDescription: async(description: string, signal: AbortSignal) => {
+        try {
+            const response = await apiCaller.setProfileDescription(description, signal)
+            if(!response?.success) return response
+            
+            return response
+        } catch (err: any) {
+            return null
+        }
+    },
+    setProfilePicture: async(formData: FormData, signal: AbortSignal) => {
+
+        try {
+            const response = await apiCaller.setProfilePicture(formData, signal)
+            if(!response?.success) return response
+            
+            return response
+        } catch (err: any) {
+            console.log(err)
+            return null
+        }
+    },
+    setProfileBanner: async(formData: FormData, signal: AbortSignal) => {
+
+        try {
+            const response = await apiCaller.setProfileBanner(formData, signal)
+            if(!response?.success) return response
+
+
+            return response
+        } catch (err: any) {
+            return null
+        }
+    }
 }))
 
 export default useStoreAccount

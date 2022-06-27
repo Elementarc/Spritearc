@@ -15,8 +15,7 @@ import PackPreviewsSection from '../../components/packPreviewsSection';
 import PageContent from '../../components/layout/pageContent';
 import MetaGenerator from '../../components/MetaGenerator';
 import { PopupProviderContext } from '../../context/popupProvider';
-import { AccountContext } from '../../context/accountContextProvider';
-import apiCaller from '../../lib/apiCaller';
+import useStoreAccount from '../../stores/account';
 
 
 export default function PageRenderer(props: {public_user: Public_user}) {
@@ -88,13 +87,13 @@ function User_stats(props: {followers_count: number, following_count: number}) {
 }
 
 function User_representation(props: {public_user: Public_user, followers_count: number, following_count: number, set_followers_count: React.Dispatch<React.SetStateAction<number>>, set_following_count: React.Dispatch<React.SetStateAction<number>>,}) {
-    const account = useContext(AccountContext)
+    const account = useStoreAccount()
     const popupContext = useContext(PopupProviderContext)
     const public_user = props.public_user
     const [visitor_has_followed, set_visitor_has_followed] = useState<null | boolean>(null)
 
     async function follow_user() {
-        if(!account?.publicUser) {
+        if(!account.userData) {
             popupContext?.setPopup({
                 success: false,
                 title: "Please Login!",
@@ -129,7 +128,7 @@ function User_representation(props: {public_user: Public_user, followers_count: 
     async function unfollow_user() {
 
         try {
-            if(!account?.publicUser) {
+            if(!account.userData) {
                 popupContext?.setPopup({
                     success: true,
                     title: "Please Login!",
@@ -160,10 +159,10 @@ function User_representation(props: {public_user: Public_user, followers_count: 
     }
 
     useEffect(() => {
-        if(public_user.username.toLowerCase() === account?.publicUser?.username.toLowerCase()) return
+        if(public_user.username.toLowerCase() === account?.userData?.username.toLowerCase()) return
         const controller = new AbortController()
 
-        if(account?.publicUser) {
+        if(account?.userData) {
         
             async function has_visitor_followed() {
 
@@ -187,7 +186,7 @@ function User_representation(props: {public_user: Public_user, followers_count: 
             }
             has_visitor_followed()
 
-        } else if(!account?.publicUser) {
+        } else if(!account?.userData) {
             return set_visitor_has_followed(false)
         }
         
