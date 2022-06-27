@@ -1,27 +1,27 @@
-import { ServerResponseIsAuth, Server_response, Server_response_credits, Server_response_login, Server_response_pack_id, Server_response_public_user } from "../types";
+import { ServerResponseIsAuth, ServerResponse, ServerResponseCredits, ServerResponseLogin, Server_response_pack_id, ServerResponsePublicUser } from "../types";
 import { PackFormData } from "./create_lib";
 
 interface IApiCaller {
-    deletePack: (pack_id: string, signal: AbortSignal) => Promise<Server_response | null>
+    deletePack: (pack_id: string, signal: AbortSignal) => Promise<ServerResponse | null>
     createPack: (FormData: PackFormData, signal: AbortSignal) => Promise<Server_response_pack_id | null>
-    buyPackPromotion: (pack_id: string, signal: AbortSignal) => Promise<Server_response| null>
-    usernameAvailable: (username: string, signal: AbortSignal) => Promise<Server_response| null>
-    createAccount: (username: string, email: string, password: string, legal: boolean, occasionalEmails: boolean, signal: AbortSignal) => Promise<Server_response| null>
-    login: (email: string, password: string, signal: AbortSignal) => Promise<Server_response_login| null>
+    buyPackPromotion: (pack_id: string, signal: AbortSignal) => Promise<ServerResponse| null>
+    usernameAvailable: (username: string, signal: AbortSignal) => Promise<ServerResponse| null>
+    createAccount: (username: string, email: string, password: string, legal: boolean, occasionalEmails: boolean, signal: AbortSignal) => Promise<ServerResponse| null>
+    login: (email: string, password: string, signal: AbortSignal) => Promise<ServerResponseLogin| null>
     isAuth: (signal: AbortSignal) => Promise<ServerResponseIsAuth| null>
-    logout: (signal: AbortSignal) => Promise<Server_response| null>
-    forgotPassword: (email: string, signal: AbortSignal) => Promise<Server_response| null>
-    getCredits: (signal: AbortSignal) => Promise<Server_response_credits| null>
-    setProfilePicture: (formData: FormData, signal: AbortSignal) => Promise<Server_response | null>
-    setProfileBanner: (formData: FormData, signal: AbortSignal) => Promise<Server_response | null>
-    setProfileDescription: (description: string, signal: AbortSignal) => Promise<Server_response | null>
-    deleteAccount: (password:string, signal: AbortSignal) => Promise<Server_response | null>
-    getPublicUser: (username: string, signal: AbortSignal) => Promise<Server_response_public_user | null>
+    logout: (signal: AbortSignal) => Promise<ServerResponse| null>
+    forgotPassword: (email: string, signal: AbortSignal) => Promise<ServerResponse| null>
+    getCredits: (signal: AbortSignal) => Promise<ServerResponseCredits| null>
+    setProfilePicture: (formData: FormData, signal: AbortSignal) => Promise<ServerResponse | null>
+    setProfileBanner: (formData: FormData, signal: AbortSignal) => Promise<ServerResponse | null>
+    setProfileDescription: (description: string, signal: AbortSignal) => Promise<ServerResponse | null>
+    deleteAccount: (password:string, signal: AbortSignal) => Promise<ServerResponse | null>
+    getPublicUser: (username: string, signal: AbortSignal) => Promise<ServerResponsePublicUser | null>
 }
 
 
 class ApiCaller implements IApiCaller {
-    async deletePack(pack_id: string, signal: AbortSignal): Promise<Server_response | null> {
+    async deletePack(pack_id: string, signal: AbortSignal): Promise<ServerResponse | null> {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_pack/${pack_id}`, {
                 method: "POST",
@@ -32,7 +32,7 @@ class ApiCaller implements IApiCaller {
                 credentials: "include",
             })
     
-            const responseObj = await response.json() as Server_response
+            const responseObj = await response.json() as ServerResponse
             return responseObj
         } catch ( err: any ) {
             throw new Error(err)
@@ -55,7 +55,7 @@ class ApiCaller implements IApiCaller {
             throw new Error(err)
         }
     }
-    async buyPackPromotion(pack_id: string, signal: AbortSignal): Promise<Server_response | null> {
+    async buyPackPromotion(pack_id: string, signal: AbortSignal): Promise<ServerResponse | null> {
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/promote_pack/${pack_id}`, {
@@ -66,7 +66,7 @@ class ApiCaller implements IApiCaller {
                 signal: signal,
                 credentials: "include",
             })
-            const responseObj = await response.json() as Server_response
+            const responseObj = await response.json() as ServerResponse
             return responseObj
             
         } catch (err: any) {
@@ -74,7 +74,7 @@ class ApiCaller implements IApiCaller {
         }
         
     }
-    async usernameAvailable(username: string, signal: AbortSignal): Promise<Server_response | null> {
+    async usernameAvailable(username: string, signal: AbortSignal): Promise<ServerResponse | null> {
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/validate_username/${username}`, {
@@ -86,7 +86,7 @@ class ApiCaller implements IApiCaller {
                 credentials: "include",
             })
 
-            const responseObj = await response.json() as Server_response
+            const responseObj = await response.json() as ServerResponse
             return responseObj
             
         } catch (err: any) {
@@ -94,7 +94,7 @@ class ApiCaller implements IApiCaller {
         }
         
     }
-    async emailAvailable(email: string, signal: AbortSignal): Promise<Server_response | null> {
+    async emailAvailable(email: string, signal: AbortSignal): Promise<ServerResponse | null> {
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/validate_email/${email}`, {
@@ -106,7 +106,7 @@ class ApiCaller implements IApiCaller {
                 credentials: "include",
             })
 
-            const responseObj = await response.json() as Server_response
+            const responseObj = await response.json() as ServerResponse
             return responseObj
             
         } catch (err: any) {
@@ -114,7 +114,7 @@ class ApiCaller implements IApiCaller {
         }
         
     }
-    async createAccount(username: string, email: string, password: string, legal: boolean, occasionalEmails: boolean, signal: AbortSignal): Promise<Server_response | null> {
+    async createAccount(username: string, email: string, password: string, legal: boolean, occasionalEmails: boolean, signal: AbortSignal): Promise<ServerResponse | null> {
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/signup/create_account`, {
@@ -133,7 +133,7 @@ class ApiCaller implements IApiCaller {
                 })
             })
 
-            const responseObj = await response.json() as Server_response
+            const responseObj = await response.json() as ServerResponse
             return responseObj
             
         } catch (err: any) {
@@ -141,7 +141,7 @@ class ApiCaller implements IApiCaller {
         }
         
     }
-    async login(email: string, password: string, signal: AbortSignal): Promise<Server_response_login| null>{
+    async login(email: string, password: string, signal: AbortSignal): Promise<ServerResponseLogin| null>{
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/login`, {
@@ -157,7 +157,7 @@ class ApiCaller implements IApiCaller {
                 })
             })
 
-            const responseObj = await response.json() as Server_response_login
+            const responseObj = await response.json() as ServerResponseLogin
             return responseObj
             
         } catch (err: any) {
@@ -182,7 +182,7 @@ class ApiCaller implements IApiCaller {
             throw new Error(err)
         }
     }
-    async forgotPassword(email: string, signal: AbortSignal): Promise<Server_response| null>{
+    async forgotPassword(email: string, signal: AbortSignal): Promise<ServerResponse| null>{
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/forgot_password/${email}`, {
@@ -193,14 +193,14 @@ class ApiCaller implements IApiCaller {
                 },
             })
 
-            const responseObj = await response.json() as Server_response_login
+            const responseObj = await response.json() as ServerResponseLogin
             return responseObj
             
         } catch (err: any) {
             throw new Error(err)
         }
     }
-    async logout(signal: AbortSignal): Promise<Server_response| null> {
+    async logout(signal: AbortSignal): Promise<ServerResponse| null> {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/logout`, {
                 method: "POST",
@@ -211,14 +211,14 @@ class ApiCaller implements IApiCaller {
                 credentials: "include",
             })
 
-            const responseObj = await response.json() as Server_response
+            const responseObj = await response.json() as ServerResponse
             return responseObj
             
         } catch (err: any) {
             throw new Error(err)
         }
     }
-    async getCredits(signal: AbortSignal): Promise<Server_response_credits| null> {
+    async getCredits(signal: AbortSignal): Promise<ServerResponseCredits| null> {
         try {
             
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/get_credits`, {
@@ -230,14 +230,14 @@ class ApiCaller implements IApiCaller {
                 credentials: "include",
             })
 
-            const responseObj = await response.json() as Server_response_credits
+            const responseObj = await response.json() as ServerResponseCredits
             return responseObj
             
         } catch (err: any) {
             throw new Error(err)
         }
     }
-    async setProfilePicture(formData: FormData, signal: AbortSignal): Promise<Server_response | null> {
+    async setProfilePicture(formData: FormData, signal: AbortSignal): Promise<ServerResponse | null> {
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_image`, {
@@ -247,13 +247,13 @@ class ApiCaller implements IApiCaller {
                 body: formData
             })
 
-            const responseObj = await response.json() as Server_response
+            const responseObj = await response.json() as ServerResponse
             return responseObj
         } catch (err: any) {
             throw new Error(err)
         }
     }
-    async setProfileBanner(formData: FormData, signal: AbortSignal): Promise<Server_response | null> {
+    async setProfileBanner(formData: FormData, signal: AbortSignal): Promise<ServerResponse | null> {
 
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_profile_banner`, {
@@ -263,13 +263,13 @@ class ApiCaller implements IApiCaller {
                 body: formData
             })
 
-            const responseObj = await response.json() as Server_response
+            const responseObj = await response.json() as ServerResponse
             return responseObj
         } catch (err: any) {
             throw new Error(err)
         }
     }
-    async setProfileDescription(description: string, signal: AbortSignal): Promise<Server_response | null> {
+    async setProfileDescription(description: string, signal: AbortSignal): Promise<ServerResponse | null> {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_user_description`, {
                 method: "POST",
@@ -281,13 +281,13 @@ class ApiCaller implements IApiCaller {
                 body: JSON.stringify({description: description})
             })
 
-            const responseObj = await response.json() as Server_response
+            const responseObj = await response.json() as ServerResponse
             return responseObj
         } catch (err: any) {
             throw new Error(err)
         }
     }
-    async deleteAccount(password: string, signal: AbortSignal): Promise<Server_response | null> {
+    async deleteAccount(password: string, signal: AbortSignal): Promise<ServerResponse | null> {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_account`, {
                 method: "POST",
@@ -299,13 +299,13 @@ class ApiCaller implements IApiCaller {
                 body: JSON.stringify({password: password})
             })
 
-            const responseObj = await response.json() as Server_response
+            const responseObj = await response.json() as ServerResponse
             return responseObj
         } catch (err: any) {
             throw new Error(err)
         }
     }
-    async getPublicUser(username: string, signal: AbortSignal): Promise<Server_response_public_user | null> {
+    async getPublicUser(username: string, signal: AbortSignal): Promise<ServerResponsePublicUser | null> {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user/${username}`, {
                 method: "POST",
@@ -314,7 +314,7 @@ class ApiCaller implements IApiCaller {
                 },
             })
 
-            const responseObj = await response.json() as Server_response_public_user
+            const responseObj = await response.json() as ServerResponsePublicUser
             return responseObj
         } catch (err: any) {
             throw new Error(err)

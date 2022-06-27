@@ -14,14 +14,14 @@ import MetaGenerator from '../components/MetaGenerator';
 import PageContent from '../components/layout/pageContent';
 import apiCaller from '../lib/apiCaller';
 import NavigateCard from '../components/NavigateCard';
-import { AccountContext } from '../context/accountContextProvider';
+import useStoreAccount from '../stores/account';
 
 export default function PageRenderer() {
-    const account = useContext(AccountContext)
+    const account = useStoreAccount()
     
     return (
         <>
-            {account?.publicUser &&
+            {account.userData &&
                 <>
                     <MetaGenerator
                         title='Spritearc - Search'
@@ -30,7 +30,7 @@ export default function PageRenderer() {
                         imageLinkSecure={`https://${process.env.NEXT_PUBLIC_APP_NAME}.com/images/spritearc_wallpaper.png`}
                     />
 
-                    <AccountPage publicUser={account.publicUser} refresh={account.refresh}/>
+                    <AccountPage publicUser={account.userData}/>
 
                     <Footer/>
                 </>
@@ -39,10 +39,9 @@ export default function PageRenderer() {
     );
 }
 
-function AccountPage(props: {publicUser: PublicUser, refresh: () => void}) {
+function AccountPage(props: {publicUser: PublicUser}) {
     const popupContext = useContext(PopupProviderContext)
     const controller = useRef<null | AbortController>( null )
-    const refreshAccount = props.refresh
     const publicUser = props.publicUser
     const descriptionInputRef = useRef<null | HTMLInputElement>(null)
     const profilePictureRef = useRef<null | HTMLInputElement>(null)
@@ -55,7 +54,6 @@ function AccountPage(props: {publicUser: PublicUser, refresh: () => void}) {
         try {
             const response = await apiCaller.logout(controller.current.signal)
             if(!response?.success) return
-            refreshAccount()
             push('/login')
         } catch (error) {
             

@@ -9,8 +9,8 @@ import PasswordInput from '../components/passwordInput';
 import apiCaller from '../lib/apiCaller';
 import ForwardContainer from '../components/forwardContainer';
 import KingHeader from '../components/kingHeader';
-import { AccountContext } from '../context/accountContextProvider';
 import { useRouting } from '../lib/custom_hooks';
+import useStoreAccount from '../stores/account';
 
 
 export default function PageRenderer() {
@@ -38,9 +38,8 @@ export function LoginPage() {
     const abortControllerRef = useRef(new AbortController())
     const passwordInputRef = useRef<null | HTMLInputElement>(null)
     const emailInputRef = useRef<null | HTMLInputElement>(null)
-    const buttonRef = useRef<null | HTMLButtonElement>(null)
     const {push} = useRouting()
-    const account = useContext(AccountContext)
+    const account = useStoreAccount()
 
     async function resend_email_verification(email: string) {
         try {
@@ -59,86 +58,17 @@ export function LoginPage() {
         }
         
     }
-    function resetInputs() {
-        /* if(!passwordInputRef.current) return
-        if(!emailInputRef.current) return
-        passwordInputRef.current.value = ""
-
-        emailInputRef.current.focus() */
-    }
+    
     async function login() {
+        abortControllerRef.current = new AbortController()
         const passwordValue = passwordInputRef.current?.value
         if(!passwordValue) return
         const emailValue = emailInputRef.current?.value
         if(!emailValue) return
         
-        try {
-            set_loading(true)
-            const response = await apiCaller.login(emailValue.trim(), passwordValue, abortControllerRef.current.signal)
-            if(!response) {
-                popupContext?.setPopup({
-                    title: "Something went wrong!",
-                    message: "Something went wrong while trying to log you in. Please try again later.",
-                    buttonLabel: "Retry",
-                    success: false,
-                    buttonOnClick: () => {resetInputs(); popupContext.setPopup(null)},
-                })
-                return
-            }
-
-
-            const public_user = response?.public_user
-            const email = response?.email
-            const banned = response?.banned
-
-            if(banned) {
-                set_loading(false)
-                popupContext?.setPopup({
-                    title: "Banned!",
-                    message: "You're banned! Please contact an admin for more informations.",
-                    buttonLabel: "Ok",
-                    success: false,
-                    buttonOnClick: () => {resetInputs(); popupContext.setPopup(null)}
-
-                })
-                return
-            }
-
-            if(response?.verified === false) {
-                set_loading(false)
-                if(!email) return
-
-                popupContext?.setPopup({
-                    title: "Please confirm your email!",
-                    message: "You have to confirm your email address to be able to log into your account!",
-                    buttonLabel: "Send confirmation",
-                    success: true,
-                    buttonOnClick: () => {resend_email_verification(email); resetInputs(); popupContext.setPopup(null)}
-                })
-                return
-            }
-
-            if(!response.success) {
-                set_loading(false)
-                popupContext?.setPopup({
-                    success: false,
-                    title: "Failed!",
-                    message: response.message,
-                    buttonLabel: "Okay",
-                    buttonOnClick: () => {resetInputs(); popupContext.setPopup(null)}
-                })
-            }
-            
-            
-
-            if(!public_user) return
-            set_loading(false)
-            account?.refresh()
-            push("/account")
-
-        } catch ( err ) {
-            //Couldnt reach server
-        }
+        const response = await account.login(emailValue, passwordValue, abortControllerRef.current.signal)
+        
+        push("/account")
     }
 
     function setRef(el: HTMLInputElement | null) {

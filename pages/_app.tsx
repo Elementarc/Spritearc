@@ -3,7 +3,6 @@ import React, {useEffect} from 'react'
 import Layout from '../components/layout/layout'
 import Head from 'next/dist/shared/lib/head'
 import { useRouter } from 'next/router'
-import AccountContextProvider from '../context/accountContextProvider'
 
 export default function MyApp({ Component, pageProps}: any) {
     const router = useRouter()
@@ -23,11 +22,9 @@ export default function MyApp({ Component, pageProps}: any) {
             </Head>
             
             <React.StrictMode>
-                <AccountContextProvider>
-                    <Layout>
-                        <Component {...pageProps}/>
-                    </Layout>
-                </AccountContextProvider>
+                <Layout>
+                    <Component {...pageProps}/>
+                </Layout>
             </React.StrictMode>
         </>
     )

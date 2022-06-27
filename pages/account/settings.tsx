@@ -1,5 +1,5 @@
 import React, {useState, useContext, useRef, useEffect} from 'react';
-import { Server_response, Public_user, PublicUser,  } from '../../types';
+import { ServerResponse, Public_user, PublicUser, ServerResponseIsAuth,  } from '../../types';
 import Footer from '../../components/footer';
 import { format_date } from '../../lib/date_lib';
 import { validate_email, validate_password, validate_paypal_donation_link } from '../../spritearc_lib/validate_lib';
@@ -11,12 +11,12 @@ import DonationIcon from "../../public/icons/DonationIcon.svg"
 import Image from 'next/image';
 import useGetUserSafeEmail from '../../hooks/useGetUserSafeEmail';
 import { PopupProviderContext } from '../../context/popupProvider';
-import { AccountContext, IAccountContext } from '../../context/accountContextProvider';
 import MetaGenerator from '../../components/MetaGenerator';
 import PageContent from '../../components/layout/pageContent';
 import { useRouting } from '../../lib/custom_hooks';
 import apiCaller from '../../lib/apiCaller';
 import PasswordInput from '../../components/passwordInput';
+import useStoreAccount from '../../stores/account';
 
 
 
@@ -39,10 +39,7 @@ export default function PageRenderer() {
 
 
 export function AccountPage() {
-    const popupContext = useContext(PopupProviderContext)
-    const account = useContext(AccountContext)
-    const [account_delete_warning, set_account_delete_warning] = useState(false)
-    const [delete_account, set_delete_account] = useState(false)
+    const account = useStoreAccount()
     const [settings_state, set_settings_state] = useState("account")
     const {push} = useRouting()
     
@@ -61,31 +58,8 @@ export function AccountPage() {
                 body: JSON.stringify({password: password_input.value})
             })
 
-            const response_obj = await response.json() as Server_response
+            const response_obj = await response.json() as ServerResponse
 
-            
-            if(!response_obj.success) {
-                popupContext?.setPopup({
-                    success: false,
-                    title: "Something went wrong!",
-                    message: response_obj.message,
-                    buttonLabel: "Okay",
-                    cancelLabel: "Close window"
-                })
-                return
-            } 
-
-            popupContext?.setPopup({
-                success: true,
-                title: "Successfully deleted your account!",
-                message: "We have successfully deleted your account. We are sorry that we could'nt reach your expectations! We will work on to improve our service. Thank you for trying!",
-                buttonLabel: "Okay",
-                cancelLabel: "Close window",
-                buttonOnClick: () => {
-                    push("/")
-                    account?.refresh()
-                }
-            })
 
         } catch(err) {
             //COuldnt reach server
@@ -95,7 +69,7 @@ export function AccountPage() {
     return (
 
         <PageContent>
-            {account?.publicUser &&
+            {account.userData &&
                 <>
                     <div className='account_settings_navigation'>
 
@@ -114,23 +88,23 @@ export function AccountPage() {
 
                     <div className='account_content'>
                         {settings_state === "account" &&
-                            <AccountInformations account={account}/>
+                            <AccountInformations publicUser={account.userData} deleteAccount={account.deleteAccount}/>
                         }
 
                         {settings_state === "email" &&
-                            <EmailSettings />
+                            <EmailSettings/>
                         }
                         
                         {settings_state === "password" &&
-                            <PasswordSettings />
+                            <PasswordSettings/>
                         }
 
                         {settings_state === "socials" &&
-                            <SocialSettings public_user={account.publicUser} />
+                            <SocialSettings public_user={account.userData} />
                         }
 
                         {settings_state === "donation" &&
-                            <DonationSettings public_user={account.publicUser}/>
+                            <DonationSettings public_user={account.userData}/>
                         }
                     </div>
 
@@ -156,12 +130,12 @@ export function AccountNavigationCard(props: {state: string, icon: any, current_
     )
 }
 
-function AccountInformations(props: {account: IAccountContext}) {
+function AccountInformations(props: {publicUser: PublicUser, deleteAccount: (password: string, signal: AbortSignal) => Promise<ServerResponse | null>}) {
     const popupContext = useContext(PopupProviderContext)
     const abortControllerRef = useRef<null | AbortController>(null)
     const {push} = useRouting()
-    const publicUser = props.account.publicUser as PublicUser
-    const refresh = props.account.refresh
+    const publicUser = props.publicUser
+
     const safe_email = useGetUserSafeEmail()
     const passwordInputRef = useRef<null | HTMLInputElement>(null)
     
@@ -196,7 +170,7 @@ function AccountInformations(props: {account: IAccountContext}) {
             abortControllerRef.current = new AbortController()
             if(!passwordInputRef.current) return
 
-            const response = await apiCaller.deleteAccount(passwordInputRef.current.value, abortControllerRef.current.signal)
+            const response = await props.deleteAccount(passwordInputRef.current.value, abortControllerRef.current.signal)
 
             if(!response?.success) {
                 popupContext?.setPopup({
@@ -218,7 +192,6 @@ function AccountInformations(props: {account: IAccountContext}) {
                 cancelLabel: "Close window",
                 buttonOnClick: () => {
                     push("/")
-                    refresh()
                     popupContext?.setPopup(null)
                 }
             })
@@ -264,6 +237,7 @@ function AccountInformations(props: {account: IAccountContext}) {
         </>
     )
 }
+
 function EmailSettings() {
     const refs = useRef<any>([])
     const popupContext = useContext(PopupProviderContext)
@@ -308,7 +282,7 @@ function EmailSettings() {
                 body: JSON.stringify({new_email: refs.current["new_email"].value, password: refs.current["current_password"].value})
             })
             
-            const response_obj = await response.json() as Server_response
+            const response_obj = await response.json() as ServerResponse
             
             if(response.status !== 200) {
                 popupContext?.setPopup({
@@ -590,7 +564,7 @@ function DonationSettings(props: {public_user: Public_user}) {
                 body: JSON.stringify({donation_link: refs.current["donation_link"].value, password: refs.current["current_password"].value})
             })
             
-            const response_obj = await response.json() as Server_response
+            const response_obj = await response.json() as ServerResponse
             
             if(response.status !== 200) {
                 popupContext?.setPopup({

@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { Pack, Server_response_packs } from '../types';
+import { Pack, ServerResponsePacks } from '../types';
 
 export interface IPacksObj {
     currentPage: number,
@@ -26,7 +26,7 @@ export default function useGetPacks(api: string, page: number) {
 					signal: controller.signal,
 				})
 				
-				const response_obj = await response.json() as Server_response_packs
+				const response_obj = await response.json() as ServerResponsePacks
 				
                 setPacksObj({
                     currentPage: page,

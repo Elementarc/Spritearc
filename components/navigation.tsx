@@ -17,8 +17,8 @@ import ToggleIcon from "./toggleIcon";
 import ScrollList from "./scrollList";
 import useDevice, { EDevice } from "../hooks/useDevice";
 import ProfileBox, { ProfilePicture } from "./profileBox";
-import { AccountContext } from "../context/accountContextProvider";
 import useStoreNav from "../stores/navigation";
+import useStoreAccount from "../stores/account";
 
 export default function NavigationRenderer(): ReactElement {
     const device = useDevice()
@@ -33,8 +33,17 @@ export default function NavigationRenderer(): ReactElement {
 
 function NavigationDesktop() {
     const navigation = useStoreNav()
-    const account = useContext(AccountContext)
+    const account = useStoreAccount()
     const navContainer = useAnimation()
+
+    useEffect(() => {
+        const abortController = new AbortController()
+        account.isLoggedIn(abortController.signal)
+
+        return() => {
+            abortController.abort()
+        }
+    }, [account.isLoggedIn])
 
     //Animation to open Navigation
     useEffect(() => {
@@ -53,9 +62,6 @@ function NavigationDesktop() {
 
     }, [navContainer, navigation])
     
-    useEffect(() => {
-        console.log("TEST")
-    }, [])
     return (
         <div className="desktop_navigation_container">
             <ViewPort>
@@ -76,9 +82,9 @@ function NavigationDesktop() {
                         </ScrollList>
 
                         <div className="nav_user_container">
-                            {account?.publicUser === undefined && null}
-                            {account?.publicUser === null && <NavItem icon={SignInIcon} label="Sign in" link="/login"/> }
-                            {account?.publicUser && <ProfileBox publicUser={account.publicUser} accountRefresh={account?.refresh}/>}
+                            {account.userData === undefined && null}
+                            {account.userData === null && <NavItem icon={SignInIcon} label="Sign in" link="/login"/> }
+                            {account.userData && <ProfileBox publicUser={account.userData} logout={account.logout}/>}
                         </div>
                     </motion.div>
 
@@ -90,7 +96,7 @@ function NavigationDesktop() {
 
 function NavigationMobile() {
     const navigation = useStoreNav()
-    const account = useContext(AccountContext);
+    const account = useStoreAccount()
 
     const mobileNavAnimation = useAnimation()
     useEffect(() => {
@@ -113,7 +119,7 @@ function NavigationMobile() {
                 <ToggleIcon iconOne={CloseIcon2} iconTwo={MenuIcon} state={navigation.navState} toggleNav={navigation.toggleNav}/>
                 <div className="profile_picture_container">
                     <AnimatePresence>
-                        {account?.publicUser && !navigation.navState && <ProfilePicture imageLink={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${account.publicUser.profile_picture}`}/>}
+                        {account.userData && !navigation.navState && <ProfilePicture imageLink={`${process.env.NEXT_PUBLIC_SPRITEARC_API}/profile_pictures/${account.userData.profile_picture}`}/>}
                     </AnimatePresence>
                 </div>
             </div>
@@ -126,9 +132,9 @@ function NavigationMobile() {
                 <NavItem icon={SearchIcon} label="Search" link="/search" />
 
                 <div className="nav_item_wrapper">
-                    {account?.publicUser === undefined && null}
-                    {account?.publicUser === null && <NavItem icon={SignInIcon} label="Sign in" link="/login"/> }
-                    {account?.publicUser && <ProfileBox publicUser={account.publicUser} accountRefresh={account?.refresh}/>}
+                    {account.userData === undefined && null}
+                    {account.userData === null && <NavItem icon={SignInIcon} label="Sign in" link="/login"/> }
+                    {account.userData && <ProfileBox publicUser={account.userData} logout={account.logout}/>}
                 </div>
             </ScrollList>
         </motion.div>

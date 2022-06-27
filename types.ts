@@ -234,48 +234,50 @@ export interface Server_signup_obj extends Signup_obj {
     released_packs: Pack[]
 }
 
-export interface Server_response_pack{
-    success: boolean,
-    message: string,
-    pack: Pack | null,
-}
+
+
+
 export interface Server_response_pack_id{
     success: boolean,
     message: string,
     pack_id: string
 }
-export interface Server_response_packs extends Server_response{
+
+
+export interface ServerResponsePacks extends ServerResponse{
     packs: Pack[] | [],
     available_pages: number,
 }
-export interface Server_response_login extends Server_response{
+export interface ServerResponsePack extends ServerResponse{
+    pack: Pack | null,
+}
+export interface ServerResponseLogin extends ServerResponse{
     public_user: PublicUser | null, 
     token: string | null,
     banned?: boolean
     verified: boolean | null | undefined,
     email: string | undefined | null,
 }
-export interface Server_response_pack_rating extends Server_response{
+export interface ServerResponsePackRating extends ServerResponse{
     user_id: string,
     rating: number,
 }
-export interface Server_response_email extends Server_response{
+export interface ServerResponseEmail extends ServerResponse{
     email: string,
 }
-export interface Server_response_public_user extends Server_response{
+export interface ServerResponsePublicUser extends ServerResponse{
     public_user: PublicUser
 }
-export interface Server_response_credits extends Server_response{
+export interface ServerResponseCredits extends ServerResponse{
     credits: number
 }
-export interface Server_response {
+export interface ServerResponse {
     success: boolean,
     message: string
 }
-export interface ServerResponseIsAuth extends Server_response{
-    public_user: PublicUser | null
+export interface ServerResponseIsAuth extends ServerResponse{
+    publicUser: PublicUser | null
 }
-
 export interface PublicUser {
     _id: string
     username: string

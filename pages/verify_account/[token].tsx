@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
-import { Server_response } from '../../types';
+import { ServerResponse } from '../../types';
 import { PopupProviderContext } from '../../context/popupProvider';
 
 
@@ -23,7 +23,7 @@ export default function Verify_account_page_handler() {
                     },
                 })
 
-                const response_obj = await response.json() as Server_response
+                const response_obj = await response.json() as ServerResponse
 
                 if(!response_obj.success) set_verification_obj({success: response_obj.success, message: response_obj.message})
                 set_verification_obj(response_obj)

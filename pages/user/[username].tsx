@@ -1,7 +1,7 @@
 import React, {useState, useEffect, useContext, useMemo, useRef} from 'react';
 import Image from "next/image"
 import Link from "next/link"
-import { Public_user, Server_response_public_user } from '../../types';
+import { Public_user, ServerResponsePublicUser } from '../../types';
 import Footer from '../../components/footer';
 import { useParallax } from '../../lib/custom_hooks';
 import Twitter_logo from "../../public/logos/twitter_logo.svg"
@@ -265,7 +265,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             agent
         })
 
-        const response_obj = await response.json() as Server_response_public_user
+        const response_obj = await response.json() as ServerResponsePublicUser
 
     
         if(!response_obj.success) return {redirect: {destination: "/browse", permanent: false}} 

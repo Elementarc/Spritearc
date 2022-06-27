@@ -12,7 +12,7 @@ import { PublicUser } from '../types';
 import useGetUserCredits from '../hooks/useGetUserCredits';
 import useStoreNav from '../stores/navigation';
 
-export default function ProfileBox({publicUser, accountRefresh}: {publicUser: PublicUser, accountRefresh: () => void}) {
+export default function ProfileBox({publicUser, logout}: {publicUser: PublicUser, logout: (signal: AbortSignal) => Promise<any>}) {
     const navigation = useStoreNav()
     const popupProvider = useContext(PopupProviderContext)
     const router = useRouter()
@@ -23,25 +23,11 @@ export default function ProfileBox({publicUser, accountRefresh}: {publicUser: Pu
         router.push(`/user/${publicUser?.username.toLowerCase()}`, `/user/${publicUser?.username.toLowerCase()}`, {scroll: false})
     }
 
-    const logout = async() => {
+    const logoutFunc = async() => {
         abortControllerRef.current = new AbortController()
-        try {
-            const response = await apiCaller.logout(abortControllerRef.current.signal)
-            if(!response?.success) {
-                popupProvider?.setPopup({
-                    success: false,
-                    title: "Failed!",
-                    message: "Something went wrong while trying to log you out. Please try again later",
-                    buttonLabel: "Okay"
-                })
-                return
-            }
-            navigation.closeNav()
-            accountRefresh()
-            push("/login")
-        } catch (error) {
-            //Aborted
-        }
+        const response = await logout(abortControllerRef.current.signal)
+        navigation.closeNav()
+        push("/login")
     }
     
     useEffect(() => {
@@ -67,7 +53,7 @@ export default function ProfileBox({publicUser, accountRefresh}: {publicUser: Pu
                     <div className='credits_wrapper'>
                         <SpriteCredits credits={250}/>
                     </div>
-                    <a onClick={logout} className='small error'>Logout</a>
+                    <a onClick={logoutFunc} className='small error'>Logout</a>
                 </motion.div>
             </div>
             <Line display={navigation.navState} opacity={.3}/>

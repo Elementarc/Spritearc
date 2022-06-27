@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { Server_response_email } from "../types";
+import { ServerResponseEmail } from "../types";
 
 
 function useGetUserSafeEmail() {
@@ -18,7 +18,7 @@ function useGetUserSafeEmail() {
                     credentials: "include",
                 })
 
-                const response_obj = await response.json() as Server_response_email
+                const response_obj = await response.json() as ServerResponseEmail
                 if(!response_obj.success) return set_safe_email(null)
                 set_safe_email(response_obj.email)
 

@@ -1,6 +1,6 @@
 import React, {ReactElement, useEffect, useContext, useState, useCallback, useRef} from 'react';
 import Footer from '../../components/footer';
-import {Pack_rating,Server_response_pack, Server_response_pack_rating, PublicUser} from "../../types"
+import {Pack_rating,ServerResponsePack, ServerResponsePackRating, PublicUser} from "../../types"
 import Image from 'next/dist/client/image';
 import { useParallax } from '../../lib/custom_hooks';
 import ArrowIcon from "../../public/icons/ArrowIcon.svg"
@@ -426,7 +426,7 @@ function PackRate(props: {publicUser: PublicUser | null | undefined, set_prev_pa
             })
 
             
-            const response_obj = await response.json() as Server_response_pack_rating
+            const response_obj = await response.json() as ServerResponsePackRating
             
             if(!response_obj.success) {
                 popupProvider?.setPopup({
@@ -507,7 +507,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         })
     
         
-        const response_obj = await response.json() as Server_response_pack
+        const response_obj = await response.json() as ServerResponsePack
         
         if(!response_obj.success) return {redirect: {destination: "/browse", permanent: false}} 
     
