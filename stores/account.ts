@@ -1,4 +1,4 @@
-import create, { useStore } from "zustand"
+import create from "zustand"
 import apiCaller from "../lib/apiCaller";
 import { PublicUser, ServerResponseLogin, ServerResponse, ServerResponseCredits, ServerResponseIsAuth } from "../types";
 

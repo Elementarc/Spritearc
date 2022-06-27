@@ -38,7 +38,6 @@ function AccountPage() {
     const account = useStoreAccount()
     const popupContext = useContext(PopupProviderContext)
     const controller = useRef<null | AbortController>( null )
-    const publicUser = account.userData
     const descriptionInputRef = useRef<null | HTMLInputElement>(null)
     const profilePictureRef = useRef<null | HTMLInputElement>(null)
     const profileBannerRef = useRef<null | HTMLInputElement>(null)
@@ -56,7 +55,7 @@ function AccountPage() {
         }
     }
 
-    const setProfileDescription = async(signal: AbortSignal) => {
+    const setProfileDescription = async() => {
         const descriptionInput = descriptionInputRef.current
         if(!descriptionInput) return
         controller.current = new AbortController()
