@@ -1,4 +1,4 @@
-import { ServerResponseIsAuth, ServerResponse, ServerResponseCredits, ServerResponseLogin, Server_response_pack_id, ServerResponsePublicUser } from "../types";
+import { ServerResponseIsAuth, ServerResponse, ServerResponseCredits, ServerResponseLogin, Server_response_pack_id, ServerResponsePublicUser, SocialsObj } from "../types";
 import { PackFormData } from "./create_lib";
 
 interface IApiCaller {
@@ -15,6 +15,8 @@ interface IApiCaller {
     setProfilePicture: (formData: FormData, signal: AbortSignal) => Promise<ServerResponse | null>
     setProfileBanner: (formData: FormData, signal: AbortSignal) => Promise<ServerResponse | null>
     setProfileDescription: (description: string, signal: AbortSignal) => Promise<ServerResponse | null>
+    setSocials: (socialsObj: SocialsObj, signal: AbortSignal) => Promise<ServerResponse | null>
+    setDonationLink: (donationLink: string, password: string, signal: AbortSignal) => Promise<ServerResponse | null>
     deleteAccount: (password:string, signal: AbortSignal) => Promise<ServerResponse | null>
     getPublicUser: (username: string, signal: AbortSignal) => Promise<ServerResponsePublicUser | null>
 }
@@ -261,6 +263,46 @@ class ApiCaller implements IApiCaller {
                 credentials: "include",
                 signal,
                 body: formData
+            })
+
+            const responseObj = await response.json() as ServerResponse
+            return responseObj
+        } catch (err: any) {
+            throw new Error(err)
+        }
+    }
+    async setSocials(socialsObj: SocialsObj, signal: AbortSignal): Promise<ServerResponse | null> {
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_socials`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    instagram: socialsObj.instagram,
+                    twitter: socialsObj.twitter,
+                    artstation: socialsObj.artstation,
+                })
+            })
+
+            const responseObj = await response.json() as ServerResponse
+            return responseObj
+        } catch (err: any) {
+            throw new Error(err)
+        }
+    }
+    async setDonationLink(donationLink: string, password: string, signal: AbortSignal): Promise<ServerResponse | null> {
+
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_donation_link`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({donation_link: donationLink, password: password})
             })
 
             const responseObj = await response.json() as ServerResponse

@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useRef} from 'react';
-import { PublicUser } from '../types';
 import Footer from '../components/footer';
 import Image from "next/image"
 import Link from 'next/dist/client/link';
@@ -13,7 +12,7 @@ import { PopupProviderContext } from '../context/popupProvider';
 import MetaGenerator from '../components/MetaGenerator';
 import PageContent from '../components/layout/pageContent';
 import apiCaller from '../lib/apiCaller';
-import NavigateCard from '../components/NavigateCard';
+import AccountNavigateCard from '../components/AccountNavigateCard';
 import useStoreAccount from '../stores/account';
 
 export default function PageRenderer() {
@@ -204,10 +203,10 @@ function AccountPage() {
                     </div>
 
                     <div className='navigation_cards'>
-                        <NavigateCard label='Profile' description='Visit your public profile and checkout what others will see when visiting your account!' callb={() => {push(`/user/${account.userData?.username}`)}} icon={ProfileIcon}/>
-                        <NavigateCard label='Create Pack' description='Create your own Pixel art pack! Make yourself a name.' callb={() => {push('/create_pack')}}  icon={AddIcon}/>
-                        <NavigateCard label='Account Settings' description='Change important account informations of your account.' callb={() => {push('/account/settings')}}  icon={SettingsIcon}/>
-                        <NavigateCard label='Logout' description='Logout from your account.' callb={logout} icon={LogoutIcon}/>
+                        <AccountNavigateCard label='Profile' description='Visit your public profile and checkout what others will see when visiting your account!' callb={() => {push(`/user/${account.userData?.username}`)}} icon={ProfileIcon}/>
+                        <AccountNavigateCard label='Create Pack' description='Create your own Pixel art pack! Make yourself a name.' callb={() => {push('/create_pack')}}  icon={AddIcon}/>
+                        <AccountNavigateCard label='Account Settings' description='Change important account informations of your account.' callb={() => {push('/account/settings')}}  icon={SettingsIcon}/>
+                        <AccountNavigateCard label='Logout' description='Logout from your account.' callb={logout} icon={LogoutIcon}/>
                     </div>
                 </> 
             }

@@ -244,6 +244,12 @@ export interface Server_response_pack_id{
 }
 
 
+export interface SocialsObj {
+    instagram: string | null | undefined;
+    twitter: string | null | undefined;
+    artstation: string | null | undefined; 
+}
+
 export interface ServerResponsePacks extends ServerResponse{
     packs: Pack[] | [],
     available_pages: number,

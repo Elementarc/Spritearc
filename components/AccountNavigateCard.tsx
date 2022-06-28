@@ -1,4 +1,4 @@
-export default function NavigateCard(props: {label: string, description: string, callb: () => void, icon: any}) {
+export default function AccountNavigateCard(props: {label: string, description: string, callb: () => void, icon: any}) {
     const Icon = props.icon
     const label = props.label
     const descritpion = props.description

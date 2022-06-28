@@ -1,6 +1,6 @@
 import create from "zustand"
 import apiCaller from "../lib/apiCaller";
-import { PublicUser, ServerResponseLogin, ServerResponse, ServerResponseCredits, ServerResponseIsAuth } from "../types";
+import { PublicUser, ServerResponseLogin, ServerResponse, ServerResponseCredits, ServerResponseIsAuth, SocialsObj } from "../types";
 
 interface IGlobalAccount {
     userData: PublicUser | null | undefined;
@@ -14,6 +14,8 @@ interface IGlobalAccount {
     setProfileDescription: (description: string, signal: AbortSignal) => Promise<ServerResponse | null>
     setProfilePicture: (formData: FormData, signal: AbortSignal) => Promise<ServerResponse | null>
     setProfileBanner: (formData: FormData, signal: AbortSignal) => Promise<ServerResponse | null>
+    setSocials: (socialsObj: SocialsObj, signal: AbortSignal) => Promise<ServerResponse | null>
+    setDonationLink: (donationLink: string, password: string, signal: AbortSignal) => Promise<ServerResponse | null>
 }
 
 const useStoreAccount = create<IGlobalAccount>(set => ({
@@ -132,7 +134,27 @@ const useStoreAccount = create<IGlobalAccount>(set => ({
         } catch (err: any) {
             return null
         }
-    }
+    },
+    setSocials: async(socialsObj, signal) => {
+        try {
+            const response = await apiCaller.setSocials(socialsObj, signal)
+            if(!response?.success) return response
+
+            return response
+        } catch (err: any) {
+            return null
+        }
+    },
+    setDonationLink: async(donationLink: string, password: string, signal: AbortSignal) => {
+        try {
+            const response = await apiCaller.setDonationLink(donationLink, password, signal)
+            if(!response?.success) return response
+
+            return response
+        } catch (err: any) {
+            return null
+        }
+    },
 }))
 
 export default useStoreAccount

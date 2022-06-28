@@ -39,80 +39,53 @@ export default function PageRenderer() {
 
 
 export function AccountPage() {
-    const account = useStoreAccount()
     const [settings_state, set_settings_state] = useState("account")
-    const {push} = useRouting()
     
-
-    async function submit_account_deletion() {
-        try {
-            const password_input = document.getElementById("account_password_input") as HTMLInputElement
-            if(!password_input) return
-
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_account`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({password: password_input.value})
-            })
-
-            const response_obj = await response.json() as ServerResponse
-
-
-        } catch(err) {
-            //COuldnt reach server
-        }
-    }
-
     return (
 
         <PageContent>
-            {account.userData &&
-                <>
-                    <div className='account_settings_navigation'>
+            <>
+                <div className='account_settings_navigation'>
 
-                        <div className='account_navigation_items_container'>
-                        
-                            <AccountNavigationCard state="account" icon={ProfileIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                            <AccountNavigationCard state="email" icon={EmailIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                            <AccountNavigationCard state="password"icon={KeyIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                            <AccountNavigationCard state="socials" icon={GroupIcon} current_state={settings_state} set_current_state={set_settings_state} />
-                            <AccountNavigationCard state="donation"icon={DonationIcon} current_state={settings_state} set_current_state={set_settings_state} />
-
-                        </div>
-
-                    </div>
+                    <div className='account_navigation_items_container'>
                     
+                        <AccountNavigationCard state="account" icon={ProfileIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                        <AccountNavigationCard state="email" icon={EmailIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                        <AccountNavigationCard state="password"icon={KeyIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                        <AccountNavigationCard state="socials" icon={GroupIcon} current_state={settings_state} set_current_state={set_settings_state} />
+                        <AccountNavigationCard state="donation"icon={DonationIcon} current_state={settings_state} set_current_state={set_settings_state} />
 
-                    <div className='account_content'>
-                        {settings_state === "account" &&
-                            <AccountInformations publicUser={account.userData} deleteAccount={account.deleteAccount}/>
-                        }
-
-                        {settings_state === "email" &&
-                            <EmailSettings/>
-                        }
-                        
-                        {settings_state === "password" &&
-                            <PasswordSettings/>
-                        }
-
-                        {settings_state === "socials" &&
-                            <SocialSettings public_user={account.userData} />
-                        }
-
-                        {settings_state === "donation" &&
-                            <DonationSettings public_user={account.userData}/>
-                        }
                     </div>
 
-                    <div className='account_background_blob_container'>
-                        <Image loading='lazy' unoptimized={true} src={"/blobs/blob_3.svg"} layout="fill"  alt="Big wave blob"></Image>
-                    </div>
-                </>
-            }
+                </div>
+                
+
+                <div className='account_content'>
+                    {settings_state === "account" &&
+                        <AccountInformations/>
+                    }
+
+                    {settings_state === "email" &&
+                        <EmailSettings/>
+                    }
+                    
+                    {settings_state === "password" &&
+                        <PasswordSettings/>
+                    }
+
+                    {settings_state === "socials" &&
+                        <SocialSettings />
+                    }
+
+                    {settings_state === "donation" &&
+                        <DonationSettings/>
+                    }
+                </div>
+
+                <div className='account_background_blob_container'>
+                    <Image loading='lazy' unoptimized={true} src={"/blobs/blob_3.svg"} layout="fill"  alt="Big wave blob"></Image>
+                </div>
+            </>
         </PageContent>
     );
 }
@@ -130,11 +103,12 @@ export function AccountNavigationCard(props: {state: string, icon: any, current_
     )
 }
 
-function AccountInformations(props: {publicUser: PublicUser, deleteAccount: (password: string, signal: AbortSignal) => Promise<ServerResponse | null>}) {
+function AccountInformations() {
     const popupContext = useContext(PopupProviderContext)
+    const account = useStoreAccount()
     const abortControllerRef = useRef<null | AbortController>(null)
     const {push} = useRouting()
-    const publicUser = props.publicUser
+    const publicUser = account.userData
 
     const safe_email = useGetUserSafeEmail()
     const passwordInputRef = useRef<null | HTMLInputElement>(null)
@@ -170,7 +144,7 @@ function AccountInformations(props: {publicUser: PublicUser, deleteAccount: (pas
             abortControllerRef.current = new AbortController()
             if(!passwordInputRef.current) return
 
-            const response = await props.deleteAccount(passwordInputRef.current.value, abortControllerRef.current.signal)
+            const response = await account.deleteAccount(passwordInputRef.current.value, abortControllerRef.current.signal)
 
             if(!response?.success) {
                 popupContext?.setPopup({
@@ -228,7 +202,7 @@ function AccountInformations(props: {publicUser: PublicUser, deleteAccount: (pas
 
                     <div className='grid_item'>
                         <p className='grid_property'>User since:</p>
-                        <p className='grid_value'>{format_date(publicUser.created_at)}</p>
+                        <p className='grid_value'>{publicUser?.created_at ? format_date(publicUser.created_at) : "Error"}</p>
                     </div>
                 </div>
 
@@ -434,57 +408,29 @@ function PasswordSettings() {
         </div>
     )
 }
-function SocialSettings(props: {public_user: Public_user}) {
-    const refs = useRef<any>([])
-    const popupContext = useContext(PopupProviderContext)
-    const public_user = props.public_user
+function SocialSettings() {
+    const account = useStoreAccount()
+    const controllerRef = useRef<null | AbortController>(null)
+    const instaInputRef = useRef<null | HTMLInputElement>(null)
+    const twitterInputRef = useRef<null | HTMLInputElement>(null)
+    const artstationInputRef = useRef<null | HTMLInputElement>(null)
+    if(!account.userData) return null
 
-    async function submit_updated_socials() {
+    const publicUser = account.userData
+
+    const updateSocials = async() => {
+
         try {
-            
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_socials`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    instagram: refs.current["instagram_input"].value,
-                    twitter: refs.current["twitter_input"].value,
-                    artstation: refs.current["artstation_input"].value,
-                })
-            })
-            
-            if(response.status === 200) {
-                const response_obj = await response.json() as {success: boolean, message: string}
+            controllerRef.current = new AbortController()
 
-                if(response_obj.success) {
-                    popupContext?.setPopup({
-                        success: true,
-                        title: "Success!",
-                        message: "You have successfully updated your Socials.",
-                        buttonLabel: "Okay",
-                        cancelLabel: "Close window"
-                    })
-                } else {
-                    popupContext?.setPopup({
-                        success: false,
-                        title: "Something went wrong!",
-                        message: `We could'nt update what you wanted because: ${response_obj.message}`,
-                        buttonLabel: "Okay",
-                        cancelLabel: "Close window"
-                    })
-                }
-
-            } else {
-                popupContext?.setPopup({
-                    success: false,
-                    title: "Something went wrong!",
-                    message: `For some reason we could not update your social inputs! Please contact an admin.`,
-                    buttonLabel: "Okay",
-                    cancelLabel: "Close window"
-                })
+            const socials = {
+                instagram: instaInputRef?.current?.value,
+                twitter: twitterInputRef?.current?.value,
+                artstation: artstationInputRef?.current?.value
             }
+
+            const response = await account.setSocials(socials, controllerRef.current.signal)
+            
         } catch(err) {
             //COuldnt reach server
         } 
@@ -500,106 +446,39 @@ function SocialSettings(props: {public_user: Public_user}) {
             <div className='socials_content'>
                 <div className='social_flex'>
                     <p>www.Instagram.com/</p>
-                    <input ref={(el) => {refs.current["instagram_input"] = el}} type="text" defaultValue={public_user?.socials?.instagram.length > 0 ? public_user?.socials?.instagram : ""} placeholder='Account'/>
+                    <input ref={instaInputRef} type="text" defaultValue={publicUser?.socials?.instagram?.length > 0 ? publicUser?.socials?.instagram : ""} placeholder='Account'/>
                 </div>
 
                 <div className='social_flex'>
                     <p>www.Twitter.com/</p>
-                    <input ref={(el) => {refs.current["twitter_input"] = el}} type="text" defaultValue={public_user?.socials?.twitter.length > 0 ? public_user?.socials?.twitter : ""} placeholder='Account'/>
+                    <input ref={twitterInputRef} type="text" defaultValue={publicUser?.socials?.twitter.length > 0 ? publicUser?.socials?.twitter : ""} placeholder='Account'/>
                 </div>
 
                 <div className='social_flex'>
                     <p>www.Artstation.com/</p>
-                    <input ref={(el) => {refs.current["artstation_input"] = el}} type="text" defaultValue={public_user?.socials?.artstation.length > 0 ? public_user?.socials?.artstation : ""} placeholder='Account'/>
+                    <input ref={artstationInputRef} type="text" defaultValue={publicUser?.socials?.artstation.length > 0 ? publicUser?.socials?.artstation : ""} placeholder='Account'/>
                 </div>
                 
-                <button onClick={submit_updated_socials}>Save Changes</button>
+                <button onClick={updateSocials}>Save Changes</button>
             </div>
             
         </div>
     )
 }
-function DonationSettings(props: {public_user: Public_user}) {
-    const refs = useRef<any>([])
-    const public_user = props.public_user
-    const popupContext = useContext(PopupProviderContext)
+function DonationSettings() {
+    const donationLinkInputRef = useRef<null | HTMLInputElement>(null)
+    const passwordInputRef = useRef<null | HTMLInputElement>(null)
+    const controllerRef = useRef<null | AbortController>(null)
+    const account = useStoreAccount()
+    const public_user = account.userData
 
-    function disable_button(state: boolean) {
-        if(state === true) {
-            refs.current["update_donation_link_button"].classList.add("disabled_button")
-            refs.current["update_donation_link_button"].classList.remove("active_button")
-        } else {
-            refs.current["update_donation_link_button"].classList.add("active_button")
-            refs.current["update_donation_link_button"].classList.remove("disabled_button")
-        }
-    }
-    
-    function on_key_up_donation_link_validation() {
-
-        const valid_donation_link = validate_paypal_donation_link(refs.current["donation_link"].value)
-        if(typeof valid_donation_link === "string") {
-            disable_button(true)
-        } else {
-            disable_button(false)
-        }
-
-    }
-
-    async function submit_donation_link() {
-        const valid_donation_link = validate_paypal_donation_link(refs.current["donation_link"].value)
-        if(typeof valid_donation_link === "string") {
-            disable_button(true)
-        } else {
-            disable_button(false)
-        }
-
+    const setDonationLink = async() => {
+        if(!donationLinkInputRef.current) return
+        if(!passwordInputRef.current) return
+        controllerRef.current = new AbortController()
         try {
             
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/update_donation_link`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({donation_link: refs.current["donation_link"].value, password: refs.current["current_password"].value})
-            })
-            
-            const response_obj = await response.json() as ServerResponse
-            
-            if(response.status !== 200) {
-                popupContext?.setPopup({
-                    success: false,
-                    title: "Something went wrong!",
-                    message: response_obj.message,
-                    buttonLabel: "Okay",
-                    cancelLabel: "Close window",
-                    buttonOnClick: () => {refs.current["donation_link"].value = ""; refs.current["current_password"].value = "";disable_button(true); popupContext.setPopup(null)}
-                })
-                return
-            } 
-            
-            if(!response_obj.success) {
-                popupContext?.setPopup({
-                    success: false,
-                    title: "Email is already in use!",
-                    message: "Please choose an email that is not in use! Make sure that you are the owner of that email address!",
-                    buttonLabel: "Okay",
-                    cancelLabel: "Close window",
-                    buttonOnClick: () => {refs.current["donation_link"].value = ""; refs.current["current_password"].value = "";disable_button(true); popupContext.setPopup(null)}
-                }) 
-                return
-
-
-            } 
-
-            popupContext?.setPopup({
-                success: true,
-                title: "Success!",
-                message: "You have successfully updated your donation link.",
-                buttonLabel: "Okay",
-                cancelLabel: "Close window",
-                buttonOnClick: () => {refs.current["donation_link"].value = ""; refs.current["current_password"].value = "";disable_button(true); popupContext.setPopup(null)}
-            }) 
+            const response = await account.setDonationLink(donationLinkInputRef.current.value, passwordInputRef.current.value, controllerRef.current.signal)
 
         } catch(err) {
             //Couldnt reach server
@@ -613,9 +492,9 @@ function DonationSettings(props: {public_user: Public_user}) {
                 <p>Here you can add your <a href='https://www.paypal.com/donate/buttons' rel="noreferrer" target={"_blank"}>Paypal donation</a> link to your account. Make sure to keep it up to date, so people can tip you!</p>
             </div>
 
-            <input ref={(el) => {refs.current["current_password"] = el}} type="password" placeholder='Current Password'/>
-            <input ref={(el) => {refs.current["donation_link"] = el}} onKeyUp={on_key_up_donation_link_validation} onChange={on_key_up_donation_link_validation} type="text" defaultValue={public_user?.paypal_donation_link ? `${public_user.paypal_donation_link}` : ""} placeholder='Donation Link'/>
-            <button onClick={submit_donation_link} ref={(el) => refs.current["update_donation_link_button"] = el} className='disabled_button'>Save Donation Link</button>
+            <input ref={passwordInputRef} type="password" placeholder='Current Password'/>
+            <input ref={donationLinkInputRef}  type="text" defaultValue={public_user?.paypal_donation_link ? `${public_user.paypal_donation_link}` : ""} placeholder='Donation Link'/>
+            <button onClick={setDonationLink} className='disabled_button'>Save Donation Link</button>
         </div>
     )
 }
