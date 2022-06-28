@@ -29,3 +29,15 @@ export default function PackPreview(props: {pack: Pack}) {
 
 	);
 }
+
+
+export function PackPreviewSkeleton() {
+
+	return (
+        
+		<div className="pack_preview_skeleton">
+			<div className='line'></div>
+		</div>
+
+	);
+}
