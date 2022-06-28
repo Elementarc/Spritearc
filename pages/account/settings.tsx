@@ -1,8 +1,8 @@
 import React, {useState, useContext, useRef, useEffect} from 'react';
-import { ServerResponse, Public_user, PublicUser, ServerResponseIsAuth,  } from '../../types';
+import { ServerResponse } from '../../types';
 import Footer from '../../components/footer';
 import { format_date } from '../../lib/date_lib';
-import { validate_email, validate_password, validate_paypal_donation_link } from '../../spritearc_lib/validate_lib';
+import { validate_email, validate_password } from '../../spritearc_lib/validate_lib';
 import ProfileIcon from "../../public/icons/ProfileIcon.svg"
 import KeyIcon from "../../public/icons/KeyIcon.svg"
 import EmailIcon from "../../public/icons/EmailIcon.svg"
@@ -14,7 +14,6 @@ import { PopupProviderContext } from '../../context/popupProvider';
 import MetaGenerator from '../../components/MetaGenerator';
 import PageContent from '../../components/layout/pageContent';
 import { useRouting } from '../../lib/custom_hooks';
-import apiCaller from '../../lib/apiCaller';
 import PasswordInput from '../../components/passwordInput';
 import useStoreAccount from '../../stores/account';
 

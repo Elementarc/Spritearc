@@ -184,6 +184,24 @@ class ApiCaller implements IApiCaller {
             throw new Error(err)
         }
     }
+    async deleteAccount(password: string, signal: AbortSignal): Promise<ServerResponse | null> {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_account`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                signal,
+                body: JSON.stringify({password: password})
+            })
+
+            const responseObj = await response.json() as ServerResponse
+            return responseObj
+        } catch (err: any) {
+            throw new Error(err)
+        }
+    }
     async forgotPassword(email: string, signal: AbortSignal): Promise<ServerResponse| null>{
 
         try {
@@ -220,6 +238,7 @@ class ApiCaller implements IApiCaller {
             throw new Error(err)
         }
     }
+    
     async getCredits(signal: AbortSignal): Promise<ServerResponseCredits| null> {
         try {
             
@@ -239,6 +258,22 @@ class ApiCaller implements IApiCaller {
             throw new Error(err)
         }
     }
+    async getPublicUser(username: string, signal: AbortSignal): Promise<ServerResponsePublicUser | null> {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user/${username}`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+
+            const responseObj = await response.json() as ServerResponsePublicUser
+            return responseObj
+        } catch (err: any) {
+            throw new Error(err)
+        }
+    }
+
     async setProfilePicture(formData: FormData, signal: AbortSignal): Promise<ServerResponse | null> {
 
         try {
@@ -329,39 +364,8 @@ class ApiCaller implements IApiCaller {
             throw new Error(err)
         }
     }
-    async deleteAccount(password: string, signal: AbortSignal): Promise<ServerResponse | null> {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/user/delete_account`, {
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                signal,
-                body: JSON.stringify({password: password})
-            })
-
-            const responseObj = await response.json() as ServerResponse
-            return responseObj
-        } catch (err: any) {
-            throw new Error(err)
-        }
-    }
-    async getPublicUser(username: string, signal: AbortSignal): Promise<ServerResponsePublicUser | null> {
-        try {
-            const response = await fetch(`${process.env.NEXT_PUBLIC_SPRITEARC_API}/get_public_user/${username}`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-            })
-
-            const responseObj = await response.json() as ServerResponsePublicUser
-            return responseObj
-        } catch (err: any) {
-            throw new Error(err)
-        }
-    }
+    
+    
 }
 
 const apiCaller = new ApiCaller()
